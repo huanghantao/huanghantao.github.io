@@ -74,7 +74,7 @@ int main(int argc, char const *argv[])
     op_array.opcodes = malloc(2 * sizeof(zend_op));
 
     int arg1 = 1;
-    int arg2 = 1;
+    int arg2 = 2;
 
     op_array.opcodes[0].op1 = arg1;
     op_array.opcodes[0].op2 = arg2;
@@ -176,7 +176,7 @@ int main(int argc, char const *argv[])
     op_array.opcodes = malloc(2 * sizeof(zend_op));
 
     int arg1 = 1;
-    int arg2 = 1;
+    int arg2 = 2;
 
     op_array.opcodes[0].op1 = arg1;
     op_array.opcodes[0].op2 = arg2;

@@ -1,5 +1,5 @@
 ---
-title: 为什么类方法中创建Swoole协程之后可以使用
+title: 为什么类方法中创建Swoole协程之后可以使用$this
 date: 2020-10-15 11:09:12
 tags:
 - PHP

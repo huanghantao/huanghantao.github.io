@@ -152,7 +152,7 @@ void zend_compile_echo(zend_ast *ast) {
     znode expr_node;
     zend_compile_expr(&expr_node, expr_ast);
 
-    zend_emit_op(ZEND_ECHO, &expr_node, NULL);
+    zend_emit_op(ZEND_ECHO, &expr_node, nullptr);
 }
 ```
 

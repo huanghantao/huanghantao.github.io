@@ -14,6 +14,14 @@ tags:
 
 让`literals`和`opcodes`由原来分散存储的内存合并为连续的一块内存。这么做除了内存连续带来的性能提升之外，另一个好处是，在执行`opline`的时候，直接通过偏移量就可以拿到对应的字面量了，不需要传递`op_array`，相当于少传递了一个参数（之前需要通过`op_array->literals`的方式来获取）。
 
+## 重新设置常量的constant值
+
+> znode_op::constant最终是要存储这个常量相对这条`opline`的偏移量
+
+在编译完`AST`生成完`opcode`之后，`znode_op::constant`存储的是这个常量在`literals`数组的索引。
+
+`znode_op::constant`在从编译期转运行期之后，变成了相对这条`opline`的偏移量。
+
 ## 重新设置临时变量的var值
 
 > znode_op::var最终是要存储这个变量相对`execute_data`的偏移量

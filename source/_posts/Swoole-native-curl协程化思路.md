@@ -92,8 +92,6 @@ tags:
                                                                                                             ┌────────────────────────────────────────────┐                       │                 
                                                                                                             │                                            │                       │                 
                                                                                                             │                                            │                       │                 
-                                                                                                            │                                            │                       │                 
-                                                                                                            │                                            │                       │                 
                                                                                                             │                    co 1                    │                       │                 
                                                                                                             │                                            │                       │                 
                                                                                                             │write_header func to get response header -> │                       │                 
@@ -102,7 +100,9 @@ tags:
                                                                                                             │callback, a scheduler-to-coroutine switch is│                       │                 
                                                                                                             │                 required)                  │                       │                 
                                                                                                             │                                            │                       │                 
-                                                                                                            │                                            │                       │                 
+                                                                                                            │    why we should call it in coroutine?     │                       │                 
+                                                                                                            │  Because this callback function may have   │                       │                 
+                                                                                                            │                blocking IO                 │                       │                 
                                                                                                             │                                            │                       │                 
                                                                                                             │                                            │                       │                 
                                                                                                             └────────────────────────────────────────────┘                       │                 

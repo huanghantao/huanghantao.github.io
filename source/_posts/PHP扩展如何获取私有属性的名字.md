@@ -68,7 +68,13 @@ a
 
 ```
 
-可以发现，只打印出了`a`。如果我们要打印出私有属性，我们可以作如下操作：
+可以发现，只打印出了`a`。实际上，对于`b`这个属性，它在`zend_string`里的存储内容为：
+
+```bash
+\0Foo\0b
+```
+
+如果我们要打印出私有属性，我们可以作如下操作：
 
 ```cpp
 const char *get_property_name(zend_string *property_name) {

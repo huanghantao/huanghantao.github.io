@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/19/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-PHP内核剖析-二-数据类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/29/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%BA%8C-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="article-date">
+  <time class="dt-published" datetime="2017-12-29T01:53:48.000Z" itemprop="datePublished">2017-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/29/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%BA%8C-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">PHP内核剖析(二)-数据类型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>额，这篇博客与大家分享的是关于PHP内核的数据类型部分。</p>
+<p>何谓数据类型，我们在自己写的PHP代码里面貌似很少去关注一个变量的类型。但是，如果小伙伴们使用过C/C++、Java等静态语言，那么肯定会对变量的数据类型很敏感。例如，我在C语言里面这样写：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中的<code>int a = 2;</code></p>
+<p>这句话指的是，程序在运行的时候，在栈上会为变量<code>a</code>分配一个<code>int</code>类型大小的存储空间，用来存放右值2。而这个存储空间的大小一般是4个字节。那么，这个4字节其实就体现出了变量a的类型。OK，这个时候如果我在程序的某个位置用到了变量a，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> b = a + <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>那么CPU肯定是需要去内存中（不考虑缓存的影响）查找变量a并且取出里面的值对吧。对的，当我们找到了变量a的首地址之后，需要往后再去多少字节的数据呢？因为我们把变量a定义为了整型int，这种类型共占用了4字节的存储空间，所以当知道了变量a的首地址之后，还需要继续往后取3个字节的数据，然后把这四个字节的数据放到总线上面，最后传输给CPU。</p>
+<p>再比如说，我把<code>int a =2; </code>改成<code>double a = 2;</code>那么，就会为变量a分配一个<code>double</code>类型大小的存储空间，用来存放右值2。而这个存储空间的大小一般是8个字节。那么这个8字节其实就体现出了变量a的类型。</p>
+<p>通过上面的小例子，我们对变量的数据类型有了一个大概的了解。</p>
+<p>上面说的是静态语言，但是对于PHP这门动态语言而言，数据类型就显得没有那么明显了，至少我们很少会在定义一个变量的时候去指明该变量的类型。不仅我们不会去指明某个变量的类型，甚至有时候，我们会在代码中这样写：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = <span class="number">1</span>;</span><br><span class="line"><span class="comment">/* some code */</span></span><br><span class="line">$a = <span class="string">&#x27;I am a string&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>很神奇吧，当初我学习PHP的时候也被这种行为震惊了（之前先学了一点C语言）。其实不是说PHP没有数据类型，小伙伴们可以在PHP7源码的<code>include/php/Zend/zend_types.h</code>里面找到PHP支持的数据类型：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/1.PNG"></p>
+<p>那么为什么PHP这门语言可以支持这样的写法呢？下面的内容就是我想要给大家分享的了。</p>
+<p>这个问题要回答起来也很简单，既然PHP可以那么灵活，那么<strong>在底层肯定就为PHP做了很多事情</strong>咯。（我一直觉得PHP在某种意义上来讲是C写的一个框架，主要用于Web）</p>
+<p>OK，能够让PHP如此灵活的原因其实就是在底层有一些数据结构支撑着它。我们先介绍一下<code>zval</code>这个数据结构。</p>
+<h2 id="zval"><a href="#zval" class="headerlink" title="zval"></a>zval</h2><p>同样，我们可以在PHP7源码<code>include/php/Zend/zend_types.h</code>中找到这个结构的定义：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/2.PNG"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/3.PNG"></p>
+<p>这个结构体是用来保存PHP变量的所有信息的，包括变量的值等等信息。我们可以把它理解为一个容器，PHP变量的信息都往这个结构体里面丢。</p>
+<p>我大致讲一下这个<code>zval</code>结构体里面的东西。</p>
+<h3 id="zval-value-value"><a href="#zval-value-value" class="headerlink" title="zval_value  value"></a>zval_value  value</h3><p>这个<code>zval_value</code>结构可以用来存放PHP变量的值。</p>
+<p>它的定义是这样的：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/4.PNG"></p>
+<p>我们发现这个<code>zval_value  value</code>是一个联合体（我喜欢叫它<strong>共用体</strong>）。这个结构可以共用联合体里面变量的首地址。正是因为这个结构里面保存了众多的指向不同数据类型的内存空间的指针，使得PHP的类型切换变得简单了。</p>
+<h3 id="u1"><a href="#u1" class="headerlink" title="u1"></a>u1</h3><p>这个u1也是一个联合体，联合了一个结构体v和一个32位无符号整型<code>type_info</code>，<code>ZEND_ENDIAN_LOHI_4</code>宏是用来解决字节序问题的，我们可以不去管它。</p>
+<p><code>v</code>里面的<code>type</code>用于标识<code>zval_value  value</code>的类型。即：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/1.PNG"></p>
+<p><code>v</code>里面的<code>type_flags</code>是类型掩码，用于变量的内存管理。</p>
+<p>而u1里面的<code>type_info</code>实际上是将v结构的4个成员组合到了一起，v中的成员各占一个字节（共4字节）。所以<code>type_info</code>也是4个字节，每个字节对应v的一个成员。</p>
+<h3 id="u2"><a href="#u2" class="headerlink" title="u2"></a>u2</h3><p>这个结构体纯粹是用于一些辅助功能，zval结构的value、u1占用的空间分别为8字节、4字节，但是由于系统会进行字节对齐，这个zval结构体最终将占用16个字节。那么就有4个字节被浪费了。所以zval定义了一个u2结构把这4个字节利用了。</p>
+<p>嗯，通过这个结构，我们发现，无论PHP的变量类型是什么，都是需要把value结构开到8字节的内存大小的，所以可以看出，PHP因为类型灵活而付出了浪费空间的代价。</p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p>PHP中并没有使用char来表示字符串，而是为字符串单独定义了一个结构：<code>zend_string</code>。在<code>zend_value</code>中通过<code>str</code>指向具体的结构。</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/5.PNG"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/6.PNG"></p>
+<p>该结构有4个成员：</p>
+<ul>
+<li>gc：变量的引用计数信息，用于内存管理。</li>
+<li>h：字符串通过 Time33 算法计算得到的Hash Code。</li>
+<li>len：字符串长度。</li>
+<li>val：字符串内容。</li>
+</ul>
+<p>我们发现，用来存储字符串内容的结构有些奇怪，并不是直接使用<code>char*</code>指针来保存一个字符串内容的地址。而是使用了一个可变数组。正是因为数组是可变的，所以我们把<code>val[1]</code>放在了zend_string结构体的最后。val[1]并不代表它只能存储一个字节（可以存储多少与我们为这个结构体分配的内存大小有关），在字符串分配时实际上是类似这样的操作的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(zend_string) + 字符串长度)</span><br></pre></td></tr></table></figure>
+
+<p>也就是会多分配一些内存，而多出的这块内存的其实地址就是val（在表达式中数组名可以和指针互换），这样就可以直接将字符串内容存储到val中，通过val进行读取。如果val是一个指针<code>char*</code>，则需要额外进行一次分配内存的操作（即我们要让char* 指针指向新malloc出来的一片内存。这样很麻烦，到时候自己还得手动用free去释放这个char* 指针所指向的内存，容易造成内存泄漏），可变长度的结构体不仅可以省一次内存分配，而且有助于内存管理，free时直接释放zend_string即可（因为字符串是存在结构体中的，而没有另开内存去存放字符串）。</p>
+<p>另外需要注意的地方是，val多出来的一个字节（结构体中为val[1]而不是val[0]），用于存放字符串的最后一个字符：<code>&#39;\0&#39;</code>，比如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$a = <span class="string">&#x27;abc&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>对应的zend_string内存结构如图：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%BA%8C%29-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/7.PNG"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/29/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%BA%8C-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" data-id="ckkj72zrg0021f6vx9zii7w30" data-title="PHP内核剖析(二)-数据类型" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核剖析（一）-SAPI" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/19/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89-SAPI/" class="article-date">
+  <time class="dt-published" datetime="2017-12-19T10:06:09.000Z" itemprop="datePublished">2017-12-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/19/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89-SAPI/">PHP内核剖析(一)--SAPI</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>额，菜鸡博主以后要把PHP作为主要开发语言。emmm，所以正在阅读PHP的源码。博主最近在阅读秦朋先生的《PHP内核剖析》，所以呢，这篇博客属于总结性的。</p>
+<p>对了，前几天有一家公司的技术官就问了我对于Fpm的理解，当时我只是大概的知道它是用来管理进程的，却不是很清楚它具体做了些什么。因为我前期偏向于做更底层一些的事情，也就是在传输层和网络层，在应用层上面花的时间少了一些。以至于我对PHP本身的原理不是很清楚。这主要是受韩天峰老师当时对我的一些建议性指导的影响，让我先把基础打牢，然后再来研究那些框架呀等等，这样取得的成就更高。现在看来确实如此，如果没有去学习那些Linux知识、网络编程、并发编程的知识，要想理解那些高级的知识简直难于登天，真的非常感谢！</p>
+<p>OK，进入正题。这次与大家分享的是PHP的SAPI（Server API），顾名思义就是我要完成一个PHP服务所需要的接口。在这里我只说其中的两个：Cli、Fpm。</p>
+<h2 id="Cli"><a href="#Cli" class="headerlink" title="Cli"></a>Cli</h2><p>Cli（Command Line Interface）是命令行接口。也就是说，我们可以通过命令行的方式来执行PHP脚本。这个SAPI我记得是我当初在用PHP写爬虫的时候第一次使用的。我那个时候刚学PHP（或者说刚学编程）不久，然后看了一本PHP写网页爬虫的书籍，拿着书上的代码，通过Web服务器在浏览器里面跑这个爬虫脚本。跑着跑着，发现电脑的风扇在快速的转动……然后我才想起，在浏览器里面跑循环电脑不是很OK。所以寻找了另一种方案，于是找到了通过Cli的方式来跑爬虫脚本。这是我初始Cli。</p>
+<p>OK，现在我来稍微详细的介绍一下PHP的Cli。</p>
+<p>首先，在Cli模式执行PHP程序，它定义了很多命令行参数，不同的参数对应不同的处理，例如：执行PHP脚本、直接执行PHP代码（-r）、输出PHP版本（-v）等等。</p>
+<h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><p>Cli是单进程模式，处理完请求后就直接关闭了，生命周期先后经历了<code>module startup</code>、<code>request startup</code>、<code>execute script</code>、<code>request shutdown</code>、<code>module shutdown</code>，关键过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">main() -&gt; php_cli_startup -&gt; do_cli() -&gt; php_module_shutdown()</span><br></pre></td></tr></table></figure>
+
+<p>Cli SAPI的主函数位于<code>/sapi/cli/php_cli.c</code>，当我们通过形如<code>php -r &quot;echo 1;&quot;</code>的方式执行一段PHP代码的时候，会先解析这个<code>-r</code>参数，然后再来初始化<code>sapi_module_struct</code>。这个结构是用来记录SAPI信息的（具体有哪些信息可以看PHP源码）。</p>
+<p>完成了<code>sapi_module_struct</code>的初始化之后，就进入了<code>module startup</code>阶段。它是通过<code>sapi_module_struct</code>结构中的定义的一个<code>php_cli_startup</code>函数来进入这个阶段的。</p>
+<p>在完成了<code>module startup</code>阶段后，就进入请求初始化阶段（request startup阶段）。在这个阶段，有一个关键的函数<code>do_cli</code>，它将完成请求的处理。</p>
+<p>完成了请求初始化阶段之后，就可以开始执行PHP代码了（也就是我们上面的<code>echo 1;</code>）。</p>
+<p>当<code>do_cli()</code>完成以后，回到主函数，进入<code>module shutdown</code>阶段。</p>
+<p>emmm，这就是Cli模式下，进程所经历的生命周期。</p>
+<h2 id="Fpm"><a href="#Fpm" class="headerlink" title="Fpm"></a>Fpm</h2><p>Fpm就比Cli要复杂许多了。Fpm（FastCGI Process Manager）是一个进程管理器。FastCGI 是Web服务器和处理程序之间的一种通信协议，它是与HTTP类似的一种应用层通信协议（它只是一种协议），定义好了自己的输入和输出。</p>
+<p>在网络应用场景下，PHP并没有像Golang那样实现HTTP网络库，而是实现了FastCGI协议，然后与Web服务器配合实现了HTTP的处理，Web服务器来处理HTTP请求，然后将解析的结果再通过FastCGI协议转发给处理程序（PHP脚本），处理程序完成后将结果返回给Web服务器，Web服务器再返回给用户。如图：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%B8%80%29--SAPI/1.PNG"></p>
+<p>PHP实现了FastCGI协议的处理，但是并没有实现具体的网络处理，比较采用的网络处理模型有以下几种。</p>
+<ul>
+<li>多进程模型（Nginx就是采用这种模型）</li>
+<li>多线程模型（memcached就是这种模型）</li>
+</ul>
+<h3 id="基本实现"><a href="#基本实现" class="headerlink" title="基本实现"></a>基本实现</h3><p>Fpm是一种多进程模型，它由一个master进程和多个worker组成。master进程启动时会创建一个socket，但是不会接收、处理请求，而是由fork出的子进程完成请求的接收及处理。</p>
+<p>master进程的主要工作是管理worker进程，负责fork或杀掉worker进程。根据worker进程的空闲状态来决定是fork还是杀掉worker进程。</p>
+<p>worker进程的主要工作是处理请求，每个worker进程会竞争地Accept请求，接收成功后解析FastCGI，然后执行相应的脚本，处理完成后关闭请求，继续等待新的请求，这就是一个worker进程的生命周期。从worker进程的生命周期可以看到：一个worker进程只能处理一个请求，只有将一个请求处理完后才会处理下一个请求。这与Nginx的事件模型有很大的区别，Nginx的子进程epoll管理套接字，它是非阻塞的模型，只处理活跃的套接字。Fpm的这种处理模式大大简化了PHP的资源管理，使得在Fpm模式下不需要考虑并发导致的资源冲突（但是某些地方还是存在竞争的，例如父进程master获得子进程worker的信息是通过共享内存的方式来获取的）。master进程与worker进程之间不会直接进行通信，master通过共享内存获取worker进程的信息（对应fpm_scoreboard_s结构），比如worker进程当前的状态。</p>
+<p>Fpm可以同时监听多个端口，每个端口对应一个worker pool（对应fpm_worker_pool_s结构），每个pool下对应多个worker进程。每个worker pool之间构成一个链表。</p>
+<p>如图：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%28%E4%B8%80%29--SAPI/2.PNG"></p>
+<h3 id="Fpm初始化"><a href="#Fpm初始化" class="headerlink" title="Fpm初始化"></a>Fpm初始化</h3><p>首先进行SAPI的模块初始化，在这个阶段，会进行一系列的初始化操作。</p>
+<h4 id="fpm-conf-init-main"><a href="#fpm-conf-init-main" class="headerlink" title="fpm_conf_init_main()"></a>fpm_conf_init_main()</h4><p>解析<code>php-fpm.conf</code>配置文件，为每个worker pool分配一个fpm_worker_pool_s结构。</p>
+<h4 id="fpm-scoreboard-init-main"><a href="#fpm-scoreboard-init-main" class="headerlink" title="fpm_scoreboard_init_main()"></a>fpm_scoreboard_init_main()</h4><p>分配用于记录worker进程运行信息的结构，此结构分配在共享内存上。并且，每个pool中的worker进程都对应了一个<code>fpm_scoreboard_proc_s</code>结构，用来记录这个pool中此该进程的信息。</p>
+<h4 id="fpm-signals-init-main"><a href="#fpm-signals-init-main" class="headerlink" title="fpm_signals_init_main()"></a>fpm_signals_init_main()</h4><p>这一步会创建一个管道，这个管道并不是用于master与worker进程通信的，它只是在master进程中使用。</p>
+<h4 id="fpm-sockets-init-main"><a href="#fpm-sockets-init-main" class="headerlink" title="fpm_sockets_init_main()"></a>fpm_sockets_init_main()</h4><p>创建每个worker pool的socket套接字，启动后worker将监听此socket接收请求。</p>
+<h4 id="fpm-event-init-main"><a href="#fpm-event-init-main" class="headerlink" title="fpm_event_init_main()"></a>fpm_event_init_main()</h4><p>启动master的事件管理，Fpm实现了一个事件管理器用于管理I/O、定时事件。</p>
+<p>完成了上述的初始化操作之后，就是fpm_run操作了。此环节将fork出子进程，启动进程管理器，执行后master进程将不会返回这个函数，只有各worker进程会返回，也就是说main()函数中调用fpm_run()之后的操作均是worker进程的。</p>
+<h3 id="worker–请求处理"><a href="#worker–请求处理" class="headerlink" title="worker–请求处理"></a>worker–请求处理</h3><p>worker进程不断Accept请求，有请求到达后将读取并解析FastCGI协议的数据，解析完成后开始执行PHP脚本，执行完成后关闭请求，继续监听等待新的请求到达。</p>
+<ul>
+<li><strong>等待请求：</strong>worker进程阻塞的等待请求。</li>
+<li><strong>解析请求：</strong>fastcgi请求到达后被worker接收，然后开始接收并解析请求数据，直到request数据完全到达。</li>
+<li><strong>请求初始化</strong></li>
+<li><strong>执行PHP脚本：</strong>由<code>php_execute_script()</code>完成PHP脚本的编译、执行操作。</li>
+<li><strong>关闭请求</strong></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/19/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89-SAPI/" data-id="ckkj72zrh0023f6vx529uesxg" data-title="PHP内核剖析(一)--SAPI" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-如何写好一个服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/17/%E5%A6%82%E4%BD%95%E5%86%99%E5%A5%BD%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2017-12-17T06:19:14.000Z" itemprop="datePublished">2017-12-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/17/%E5%A6%82%E4%BD%95%E5%86%99%E5%A5%BD%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8/">如何写好一个服务器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>嗯，很久没写博客了，最近在忙着面试，我面的是PHP岗位。说一说我最近面试碰到的问题吧，大致如下：数据结构方面有快速排序，堆排序，一致性哈希算法。计算机网络方面有tcp/ip三次握手，如何确定是否是同一个tcp连接，http报文内容，http状态码。操作系统方面有进程与线程的区别，超线程，互斥锁，Linux内存管理，slab分配器，网络编程，IO多路复用的epoll模型，CGI等等。数据库方面有哈希索引和B+树索引的区别，聚集索引和非聚集索引区别等等。MVC思想，如果让你设计一个PV系统，你会怎么设计？还问了我最近看了些什么书，也是一些基础的书籍，比如《TCP/IP详解》、《UNIX环境高级编程》。额，还有一些问题不是很记得了。</p>
+<p>可以看出，这些问题还是很基础的，不是很难，可以答个70%~80%。我面试的时候，技术官就问了我这些基础性的东西。通过这次面试，我得出了一个道理，<strong>基础知识真的很重要</strong>，可以说是万金油。无论哪家知名公司，都会问基础知识的。我们需要不断的阅读、写代码，去理解这些基础知识。虽然说我还是很菜，但是我还在大三，还可以学很多东西，哈哈哈哈哈……</p>
+<p>有了这些基础知识，真的可以学得比别人快。</p>
+<p>OK，回到正题，这篇博客分享的是<strong>如何去写好一个服务器</strong>。例如一些比较好用、高效的API（例如减少用户空间和内核空间数据之间的拷贝），一些服务器程序的规范（例如日志）。</p>
+<p>这些内容主要是来自《Linux高性能服务器编程》（强烈推荐）。这是我三个月之后，第二次阅读这本书。</p>
+<h2 id="Linux网络编程基础API"><a href="#Linux网络编程基础API" class="headerlink" title="Linux网络编程基础API"></a>Linux网络编程基础API</h2><h3 id="命名socket"><a href="#命名socket" class="headerlink" title="命名socket"></a>命名socket</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> socket, <span class="keyword">const</span> struct sockaddr *address,</span></span></span><br><span class="line"><span class="function"><span class="params">           <span class="keyword">socklen_t</span> address_len)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>当我们创建了一个<code>socket</code>之后，<strong>对于服务器而言</strong>我们需要给这个<code>socket</code>命名。就好比那些常用的服务器占有固定的端口（Web服务器一般占用80端口，Mysql占用3306端口等等）。</p>
+<h3 id="关闭连接"><a href="#关闭连接" class="headerlink" title="关闭连接"></a>关闭连接</h3><p>以前，我一直使用close这个API来关闭一个连接的，但是，我再次读这本书的时候，发现了这个API：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">int</span> sockfd,<span class="keyword">int</span> howto)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个API可以立即终止连接。而不是将<code>socket</code>的引用计数减1。</p>
+<h2 id="高级I-O函数"><a href="#高级I-O函数" class="headerlink" title="高级I/O函数"></a>高级I/O函数</h2><h3 id="dup函数和dup2函数"><a href="#dup函数和dup2函数" class="headerlink" title="dup函数和dup2函数"></a>dup函数和dup2函数</h3><p>有时候，我们希望把标准输入重定向到一个文件，或者把标准输出重定向到一个网络连接（比如<strong>CGI编程</strong>）。可以使用这两个函数来完成。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> file_descriptor_one, <span class="keyword">int</span> file_descriptor_two)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p> <code>dup</code>函数创建一个新的文件描述符，该文件描述符和原有文件描述符<code>file_descriptor</code>指向相同的文件、管道或者网络连接。并且<code>dup</code>返回的文件描述符总是取系统当前可用的最小整数值。</p>
+<h3 id="readv函数和writev函数"><a href="#readv函数和writev函数" class="headerlink" title="readv函数和writev函数"></a>readv函数和writev函数</h3><p><code>readv</code>函数将数据从文件描述符读到分散的内存块中，即分散读；<code>writev</code>函数则将多块分散的内存数据一并写入文件描述符中，即集中写。</p>
+<p>例如，一个HTTP应答包含一个状态行、多个头部字段、一个空行和文档内容。其中，前三部分可能被Web服务器放置在一块内存中，而文档的内容则通常被读入到另外一块单独的内存中（通过read函数或mmap函数）。我们并不需要把这两部分内容拼接到一起再发送，而是可以使用<code>writev</code>函数将它们同时写出。</p>
+<h3 id="sendfile函数"><a href="#sendfile函数" class="headerlink" title="sendfile函数"></a>sendfile函数</h3><p>当初我没有理解这个API，虽然知道有零拷贝这个东西，但是理解的不是很透彻。现在对Linux内核有一定的认识，再次看到这个API，眼前一亮。</p>
+<p><code>sendfile</code>函数在两个文件描述符之间直接传递数据（完全在内核中操作），从而避免了内核缓冲区和用户缓冲区之间的数据拷贝，效率很高，这被称为零拷贝。</p>
+<h3 id="mmap函数和munmap函数"><a href="#mmap函数和munmap函数" class="headerlink" title="mmap函数和munmap函数"></a>mmap函数和munmap函数</h3><p><code>mmap</code>函数用于申请一段内存空间。我们可以将这段内存空间作为进程通信的共享内存，也可以将文件直接映射到其中。</p>
+<h3 id="fcntl函数"><a href="#fcntl函数" class="headerlink" title="fcntl函数"></a>fcntl函数</h3><p>提供了对文件描述符的各种控制操作。</p>
+<p>以上这些高级函数，很多时候我都没有去用，而是用一些更低效的函数去实现服务器。所以，下次写服务器的时候，得思考一下，在哪些地方可以去用它们，让服务器更加的高效。</p>
+<p>（未完）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/17/%E5%A6%82%E4%BD%95%E5%86%99%E5%A5%BD%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72zu2009cf6vxbw04h6d5" data-title="如何写好一个服务器" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-针对《读读代码-基于线程池的多并发Web服务器》中的一个思考" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/03/%E9%92%88%E5%AF%B9%E3%80%8A%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%8B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83/" class="article-date">
+  <time class="dt-published" datetime="2017-12-03T12:22:58.000Z" itemprop="datePublished">2017-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/03/%E9%92%88%E5%AF%B9%E3%80%8A%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%8B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83/">针对《读读代码-基于线程池的多并发Web服务器》中的一个思考</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在<a href="https://huanghantao.github.io/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/">《读读代码-基于线程池的多并发Web服务器》</a>这篇文章中，我们看到了一个技巧–使用条件变量来控制线程，以达到任务队列中的任务数量满足当前线程所需要的状态。</p>
+<p>消费者线程代码的主要意思是这样的（我省略了一些不是很要紧的代码）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pthread_mutex_lock(&amp;(pool-&gt;lock));</span><br><span class="line">pthread_cond_wait(&amp;(pool-&gt;notify), &amp;(pool-&gt;lock));</span><br><span class="line">pthread_mutex_unlock(&amp;(pool-&gt;lock));</span><br></pre></td></tr></table></figure>
+
+<p>我不知道大家对于这段代码是否思考过什么，是否觉得有一些什么疑问在里面，反正我是有所思考的。现在我来多说几句哈。</p>
+<p>第一行代码理解起来很简单：因为消费者线程需要去访问其他消费者共享的那个任务队列，所以需要加锁，以解决竞态问题。</p>
+<p>第二行代码也很容易理解：让消费者线程等待任务队列里面有任务到来。以免消费者从任务队列中获取任务的时候，队列中没有任务。</p>
+<p>第三行代码也容易理解：既然加锁了，最后就要记得释放锁，要不然其他线程就无法访问共享的资源。</p>
+<p>在这里，不知道有没有疑问。就是我们这个消费者线程对资源上锁了后，就开始等待队列中有任务被添加进来，消费者线程在等待的过程中，会去休眠。那么休眠了之后，就需要主线程去往任务队列中添加任务对吧。<strong>但是！</strong>这时候，共享资源是被消费者线程上锁了的，主线程是不能够访问共享资源的。那么，我们就可以猜测，<code>pthread_cond_wait</code>函数里面一定进行了解锁的操作，我们可以想象一下，这个函数展开之后的样子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pthread_mutex_unlock(&amp;(pool-&gt;lock));</span><br><span class="line">pthread_cond_just_wait(&amp;(pool-&gt;notify));</span><br><span class="line">pthread_mutex_lock(&amp;(pool-&gt;lock));</span><br></pre></td></tr></table></figure>
+
+<p>这也是为什么<code>pthread_cond_wait</code>函数需要传递一个锁作为参数。但是问题还没有完，我想说的主要问题不是这个，而是：如果在一个消费者线程执行上面这三行代码的第一行之后（还没来得及执行第二行等待的函数），主线程main被切换过来执行了。那么，如果主线程往任务队列里面添加了任务，并且发出了一个队列不为空的信号，则刚才那个消费者线程是不会接收到信号的（因为它还没有调用<code>pthread_cond_just_wait</code>函数）。所以，当之后再次切换会这个消费者线程的时候，它会接着执行第二行代码，也就是<code>pthread_cond_just_wait</code>函数。而此时，它就接着休眠去了。很显然，这样的设计是不够好的。应该这样设计会好些：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pthread_unlock_and_wait_cond(&amp;(pool-&gt;notify), &amp;(pool-&gt;notify));</span><br><span class="line">pthread_mutex_lock(&amp;(pool-&gt;lock));</span><br></pre></td></tr></table></figure>
+
+<p>这里再抛出一个问题：当一个消费者线程在等待条件成立的时候，此时已经解锁了，那么其他消费者线程也是可以访问这个共享资源的，此时也可能获得锁、释放锁、进入等待。这样，就有多个消费者同时在等待一个条件变量条件成立。如果此时main主线程发来一个信号通知说任务队列里面有任务了（只有一个任务），那么这些消费者线程都会被唤醒，当其中的一个消费者线程获取了任务之后，此时的任务队列里面就没有任务了，后面的消费者线程不能够获得任务，对于后面的消费者线程，我们把这种唤醒称为<strong>虚假唤醒</strong>。</p>
+<p>好的，今天晚上就说到这里……A题去咯（我这个算法渣竟然可以A了爱奇艺三道编程题的两道半编程题，心里美滋滋。今晚买了三个鸡腿，<strong>吃</strong>）……</p>
+<p>happy ending…..</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/03/%E9%92%88%E5%AF%B9%E3%80%8A%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%8B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83/" data-id="ckkj72zv900cmf6vx08hpfelv" data-title="针对《读读代码-基于线程池的多并发Web服务器》中的一个思考" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-读读代码-基于线程池的多并发Web服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2017-12-02T02:10:38.000Z" itemprop="datePublished">2017-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/">读读代码-基于线程池的多并发Web服务器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这次与大家分享的是我阅读的一个<strong>基于线程池</strong>的多并发Web服务器，收获很多，非常感谢<a target="_blank" rel="noopener" href="https://github.com/bjut-hz/HttpServer">这位兄弟的代码</a>。</p>
+<p>如果大家不是很清楚什么是线程池，可以看<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E6%B1%A0/4745661?fr=aladdin">百度百科的解释</a>。简单的来说，线程池有如下特点：</p>
+<ul>
+<li>线程数量</li>
+<li>工作线程</li>
+<li>任务接口</li>
+<li>任务队列</li>
+</ul>
+<p>这些特点会在后面的代码中体现出来（其实也是设计线程池的一些基本内容）。</p>
+<p>那么我们为什么需要使用线程池呢？</p>
+<p>如果客户端发起一个请求，服务器就创建一个线程来处理该请求，处理完了之后，销毁该线程，那么开销是相当大的。在实际使用中，为每个请求创建新线程的服务器在创建和销毁线程上花费的时间和消耗的系统资源，甚至可能要比花在处理实际的用户请求的时间和资源要多得多（在遇到这种<strong>大量短小请求</strong>时，适合使用线程池）。除了创建和销毁线程的开销之外，活动的线程也需要消耗系统资源。因此，我们可以使用这种<strong>池化技术</strong>来减少资源不足，尽量利用已有对象来进行服务。 （这种思路和内存池有些像，也是使用池化技术）</p>
+<p>OK，介绍完了线程池和它的优点之后，小伙伴们应该对它有了一些了解。接下来就是枯燥的阅读代码时刻（我也觉得很枯燥，但是想想可以学到新知识，就会坚持读下去，这个过程需要反复的去查找资料）。</p>
+<p>这次的代码量有些大了，超过1000行了（但是无论多么的长，我们只要找到主函数，就可以一直读下去。注意<strong>使用一个好的IDE或者文本编辑器</strong>，这些东西可以大大的提高我们的阅读效率），所以呢，我只挑我个人认为需要分享的地方咯……</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72zv400c2f6vxfwx735fe" data-title="读读代码-基于线程池的多并发Web服务器" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-读读代码-select-epoll的比较" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/11/30/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-select-epoll%E7%9A%84%E6%AF%94%E8%BE%83/" class="article-date">
+  <time class="dt-published" datetime="2017-11-30T13:08:28.000Z" itemprop="datePublished">2017-11-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/11/30/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-select-epoll%E7%9A%84%E6%AF%94%E8%BE%83/">读读代码--select/epoll的比较</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天，我阅读的代码是关于select和epoll这两种I/O多路复用方式的比较。通过代码对比和现象，我们可以更加深刻的理解这两种方式的区别。关于<code>select</code>我之前在 <a href="https://huanghantao.github.io/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/">I/O多路复用之select()系统调用</a>中有说，这里就不重复了，而epoll在上一篇文章中也有说过，所以我们这里就简单讲一下I/O多路复用的一个比较明显的共同特点吧：都是通过I/O多路复用的API来<strong>监听我们想要监听的文件描述符的某些事件发生，进而我们所操作的文件描述符都是已经就绪好了的，这样我们在使用accept正式操作的时候，阻塞发生的情况就更少了</strong>。</p>
+<p>OK，我们来读读代码。这次的代码是来自<a target="_blank" rel="noopener" href="https://github.com/rudy-yuan/select-epoll">这位哥们</a>。</p>
+<p>首先，我们阅读的第一份代码是一个<code>select</code>客户端，它监听了两个文件描述符，一个是标准输入（即键盘），另一个是表示连接的socket文件描述符（用来和服务器通信的）。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/11/30/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-select-epoll%E7%9A%84%E6%AF%94%E8%BE%83/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/11/30/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-select-epoll%E7%9A%84%E6%AF%94%E8%BE%83/" data-id="ckkj72zx700mif6vx8gw3hypk" data-title="读读代码--select/epoll的比较" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-读读代码-说说epoll" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/11/28/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E8%AF%B4%E8%AF%B4epoll/" class="article-date">
+  <time class="dt-published" datetime="2017-11-28T15:16:31.000Z" itemprop="datePublished">2017-11-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/11/28/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E8%AF%B4%E8%AF%B4epoll/">读读代码--说说epoll</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>因为自己的项目经历不是很经典，所以，从现在开始，除了刷算法题、看书以外，又多了一件事情–<strong>阅读别人的代码</strong>。在导师的建议下，并且我也觉得阅读别人的代码可以快速的提高自己的水平，不仅可以复习理论知识，也可以锻炼实践的能力，进而最后提高项目的质量。所以这件事我打算坚持下去。</p>
+<p>今天我阅读的是关于epoll的一个例子，<a target="_blank" rel="noopener" href="https://github.com/o0myself0o/epoll">源代码点击这里</a>。</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/11/28/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E8%AF%B4%E8%AF%B4epoll/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/11/28/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E8%AF%B4%E8%AF%B4epoll/" data-id="ckkj72zv500c4f6vx0nf47qch" data-title="读读代码--说说epoll" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-一道java期中考试题目引发的思考" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/11/27/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/" class="article-date">
+  <time class="dt-published" datetime="2017-11-27T13:51:25.000Z" itemprop="datePublished">2017-11-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/11/27/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/">一道java期中考试题目引发的思考</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天进行了java的期中考试，发现不翻书真的记不住啊……java和C++的差别还是挺多的（全程带着C++的思维去做的）……</p>
+<p>好了，进入正题……</p>
+<p>在这次的试题中，大概有这么一段java代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    String s = <span class="string">&quot;class A&quot;</span>;</span><br><span class="line">    <span class="comment">// other code ......</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">extends</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    String s = <span class="string">&quot;class B&quot;</span>;</span><br><span class="line">    <span class="comment">// other code ......</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TypeConvert</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span> <span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        B b1;</span><br><span class="line">        B b2 = <span class="keyword">new</span> B();</span><br><span class="line"></span><br><span class="line">        A a1, a2;</span><br><span class="line"></span><br><span class="line">        a1 = (A)b2;</span><br><span class="line">        b1 = (B)a1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这里，我断章取义了一下，直接看了最后一句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b1 = (B)a1;</span><br></pre></td></tr></table></figure>
+
+<p>我就感觉这是一条把父类对象赋值给子类对象的语句（实际上在java里面这是引用，我以为这是C++中的以静态方式创建的对象）。</p>
+<p>然后我就想：在C++中能否也以这样的方式赋值？</p>
+<p>于是我写下这样的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">string</span> s;</span><br><span class="line">	A() &#123;</span><br><span class="line">		s = <span class="string">&quot;class A&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; s &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span> <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">string</span> s;</span><br><span class="line">	B() &#123;</span><br><span class="line">	    s = <span class="string">&quot;class B&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">show</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; s &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	A a1;</span><br><span class="line">	B b1;</span><br><span class="line"></span><br><span class="line">	b1 = a1;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; b1.s &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; a1.s &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/1.PNG"></p>
+<p>我们会发现，这里有一句：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">no match for &#x27;operator=&#x27; (operand types are &#x27;B&#x27; and &#x27;A&#x27;)</span><br><span class="line">  b1 = a1;</span><br></pre></td></tr></table></figure>
+
+<p>的报错。</p>
+<p>意思是没有匹配到对应的重载的<code>=</code>运算符。</p>
+<p>我先说一下我开始的时候是怎么分析的：首先，我们知道父类对象a1所占的内存要比子类对象b1所占的内存小，所以，把一个占用内存更小的父类对象a1拷贝到占用内存更大的子类对象b1应该是可以做到的。也就是说，我是从内存大小的角度去思考这个问题的。然而，在这里我忘了一个致命性的问题：<strong>用一个对象给另一个对象赋值是不行的</strong>。那为什么有时候又可以使用<code>=</code>把一个对象给另一个对象赋值呢？因为，编译器帮我们做了一件事情：合成了一个默认的<strong>拷贝构造函数</strong>。</p>
+<p>我是看到这个提醒才醒悟过来：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/2.PNG"></p>
+<p>这个</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">B&amp; B::<span class="keyword">operator</span>=(<span class="keyword">const</span> B&amp;)</span><br></pre></td></tr></table></figure>
+
+<p>就是编译器为我们偷偷做的事情。</p>
+<p>我们再来看下一个提醒：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/3.PNG"></p>
+<p>说的是类型转换出了问题。</p>
+<p>所以我们修改一下代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b1 = (B&amp;)a1;</span><br></pre></td></tr></table></figure>
+
+<p>再来看一下结果：<br><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/4.PNG"></p>
+<p>OK，编译通过。</p>
+<p>其实这里还有一个疑问，先保留，等我在stackoverflow上提问后，得到解答了再来更新，嘿嘿……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/11/27/%E4%B8%80%E9%81%93java%E6%9C%9F%E4%B8%AD%E8%80%83%E8%AF%95%E9%A2%98%E7%9B%AE%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/" data-id="ckkj72zte0074f6vxe2hg5d8g" data-title="一道java期中考试题目引发的思考" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-说一说C++多态（后续）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/11/19/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81%EF%BC%88%E5%90%8E%E7%BB%AD%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2017-11-19T02:10:06.000Z" itemprop="datePublished">2017-11-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/11/19/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81%EF%BC%88%E5%90%8E%E7%BB%AD%EF%BC%89/">说一说C++多态（后续）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>好久没写博客了，因为在阅读一些书籍，例如《Linux内核设计与实现》、《unix 内核源码剖析》、《剑指offer》（终于A完了《剑指offer》，很happy啊）、《深度探索C++对象模型》，给自己充充电，同时回味一些知识。不能保证都可以吸收，但是挺有收获的，以后肯定还要阅读的。感觉书中有一些东西有些老了，和自己原来所知道的有些不同，但是，主要是学习思想。</p>
+<p>OK，开始主题咯。</p>
+<p>在上一篇文章《说一说C++多态》中快结尾的部分，我们看到了有这样的两段汇编代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/29.PNG"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/26.PNG"></p>
+<p>它们分别对应着这两句C++代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pBase-&gt;sleep();</span><br><span class="line">pRe.sleep();</span><br></pre></td></tr></table></figure>
+
+<p>在那篇文章中，我说就是因为这两段汇编代码实现了多态的效果。有小伙伴对我说，还是有一些懵逼。好的，现在我来多说几句，这两段汇编代码为什么可以实现多态。</p>
+<p>首先，我说一说这两段汇编代码真正对应着什么C++代码。也就是说编译器会把：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pBase-&gt;sleep();</span><br><span class="line">pRe.sleep();</span><br></pre></td></tr></table></figure>
+
+<p>转化为什么代码。实际上，这两段C++代码都会被转化为一种形式，即：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*ptr-&gt;vptr[n])(ptr);</span><br></pre></td></tr></table></figure>
+
+<p>这句话中的这些东西代表什么呢？</p>
+<p>其中，ptr表示实际指向的类对象的指针（也就是Animal类对象的指针）。</p>
+<p>vptr表示由编译器产生的指针（存放在每一个具有虚函数的对象中），指向虚函数表。</p>
+<p>n表示整个虚函数在虚函数表中的索引值（这里，n应该为1）。</p>
+<p>OK，我补充一些东西帮助大家理解。假如，有一个类是这样定义的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fruit</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Color</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Fruit::color()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Weight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Fruit::weight()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Water</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Fruit::water()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">string</span> color;</span><br><span class="line">	<span class="keyword">double</span> weight;</span><br><span class="line">	<span class="keyword">double</span> water;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Fruit* ptr = <span class="keyword">new</span> Fruit();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么，我可以得到如下的图片：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81%EF%BC%88%E5%90%8E%E7%BB%AD%EF%BC%89/.1.PNG"></p>
+<p>好的，我们再来看看这个：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*ptr-&gt;vptr[n])(ptr);</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>ptr</code>对应着</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fruit* ptr = <span class="keyword">new</span> Fruit();</span><br></pre></td></tr></table></figure>
+
+<p>中的<code>Fruit* ptr  </code>，vptr对应着图中的<code>_vptr_Fruit</code>，n对应着<code>#0</code>、<code>#1</code>……</p>
+<p>到这里就快要结束这篇文章了，在这里，有些小伙伴估计发现了一个细节，就是我们在实现多态的时候，使用了指针或者引用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Base* pBase = &amp;dargon;</span><br><span class="line">Base&amp; pRe = dog;</span><br></pre></td></tr></table></figure>
+
+<p>那么，我们可不可以直接把一个子类对象赋值给父类对象实现多态呢？答案是不能的，为什么？因为这会发生“切割”，因为，一个子类对象所占的内存是大于父类对象所占的内存的，所以把一个子类的对象直接赋值给父类，实际上得到的还是一个父类的对象。所以，实现不了多态。就好比我把一个超出了int型范围的doble类型变量赋值给一个int类型的变量，不能够存下来的，多出来的部分是放不下的。</p>
+<p>而指针为什么可以呢？因为指针类型会告诉编译器如何解释某个特定地址中的内容及其大小，然后再配合指向虚函数表的那个<code>vptr</code>指针，从而实现多态。</p>
+<p>我有一个梦想，happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/11/19/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81%EF%BC%88%E5%90%8E%E7%BB%AD%EF%BC%89/" data-id="ckkj72zv400bzf6vx7hie9i40" data-title="说一说C++多态（后续）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-说一说C++多态" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/11/03/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/" class="article-date">
+  <time class="dt-published" datetime="2017-11-03T10:56:57.000Z" itemprop="datePublished">2017-11-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/11/03/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/">说一说C++多态</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>何为多态？我们简单的说一下，<strong>在面向对象语言中，接口的多种不同的实现方式即为多态</strong>。在C++中，多态分为<strong>静态多态</strong>和<strong>动态多态</strong>。怎么理解这两种多态呢？下面，我们通过实践，来理解一下。</p>
+<h2 id="静态多态"><a href="#静态多态" class="headerlink" title="静态多态"></a>静态多态</h2><p>静态多态是通过函数的重载来实现的。</p>
+<p>首先，我给出一段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">foo</span><span class="params">(<span class="keyword">double</span> d)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the first foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the second foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	foo(<span class="number">666.666</span>);</span><br><span class="line">    foo(<span class="number">666</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行一下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ test.cpp</span><br><span class="line">./a</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/1.png"></p>
+<p>OK，在这里，我们可以看到，我们调用了两次函数。这两次调用的函数都是同一个名字的，只是参数的类型有所不同（第一个是浮点型的，第二个是整型的）。但是，却调用了不同的函数。可以说，这操作还是挺骚的。</p>
+<p>好的，现在让我们来看看为什么可以实现这种骚操作。</p>
+<p>怎么看呢？我们来看看生成的那个可执行文件里面有什么蹊跷吧：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat a.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/2.png"></p>
+<p>为什么看不了呢？可能因为<code>a.exe</code>是二进制文件的缘故吧，<code>cat</code>命令看不了，会乱码。</p>
+<p>OK，我们换一种方式，使用<code>nm</code>命令看看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm a.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/3.png"></p>
+<p>nice，可以看了，我们接下来去锁定一下那两个同名的函数，使用<code>grep</code>命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm a.exe | grep foo</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/4.png"></p>
+<p>看到了没，在符号表中（图片中的那个T表示位于代码区的符号），那两个<code>foo</code>的表示形式是有所不同的，前面的<code>_Z3foo</code>是一样的，但是后面的一个字母是不同的，一个是<code>d</code>（表示的含义是double），一个是<code>i</code>（表示的含义是int）。也就是说，实际上我们的这两个函数是可以这样写的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> _Z3food(<span class="keyword">double</span> d) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the first foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> _Z3fooi(<span class="keyword">int</span> a)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the second foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	_Z3food(<span class="number">666.666</span>);</span><br><span class="line">    _Z3fooi(<span class="number">666</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/5.PNG"></p>
+<p>奶思，效果是一样的。</p>
+<p>细心的小伙伴们可能发现了，返回值的类型<code>char</code>并没有在<code>_Z3food</code>和<code>_Z3fooi</code>这两个符号中体现出来。所以，这就是为什么<strong>重载</strong>只能是通过函数的形参列表的不同加以区分而不能通过返回值的类型加以区分的原因了。</p>
+<p>综上所述，静态多态是在编译阶段就确定了要执行哪个函数。</p>
+<h2 id="动态多态"><a href="#动态多态" class="headerlink" title="动态多态"></a>动态多态</h2><p>动态多态是通过虚函数来实现的。</p>
+<p>首先，我给出一段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span> :</span> <span class="keyword">public</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">size_t</span> age;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">    Animal dargon;</span><br><span class="line">    Animal dog;</span><br><span class="line">    </span><br><span class="line">    Base* pBase = &amp;dargon;</span><br><span class="line">    Base&amp; pRe = dog;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//通过基类的指针指向派生类对象来实现动态多态</span></span><br><span class="line">    pBase-&gt;sleep();</span><br><span class="line">    <span class="comment">//通过基类的引用指向派生类对象来实现动态多态</span></span><br><span class="line">    pRe.sleep();</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/6.PNG"></p>
+<p>又是骚操作，指针类型是基类的，执行的却是子类的函数。</p>
+<p>好的，现在让我们来看看为什么可以实现这种骚操作。</p>
+<p>我们这次从汇编的代码来看看为什么可以有这样的骚操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ -S test.cpp</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/7.png"></p>
+<p>我们现在就针对这个汇编代码来研究一番。</p>
+<h3 id="虚函数表"><a href="#虚函数表" class="headerlink" title="虚函数表"></a>虚函数表</h3><p>首先，我们来先看一看文件中一个叫做<code>_ZTV4Base</code>的东西：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/8.png"></p>
+<p>这是什么呢？我们可以通过<code>c++filt</code>命令来转换：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZTV4Base</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/9.PNG"></p>
+<p>翻译过来就是<strong>Base的虚函数表</strong>。</p>
+<p>OK，那这个虚函数表里面有什么东西呢？从图片中我们可以看到有：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.quad   0</span><br><span class="line">.quad   _ZTI4Base</span><br><span class="line">.quad   _ZN4Base5sleepEv</span><br><span class="line">.quad   _ZN4Base3eatEv</span><br><span class="line">.quad   _ZN4Base3runEv</span><br><span class="line">.globl  _ZTS6Animal</span><br><span class="line">.section        .rdata$_ZTS6Animal,&quot;dr&quot;</span><br><span class="line">.linkonce same_size</span><br></pre></td></tr></table></figure>
+
+<p>其中，它的第一项是0，第二项_ZIT4Base是关于Base的类型信息，这与typeid有关。我们不讨论它们。现在让我们来看看后面的几项。和刚才的方法一样，我们使用<code>c++filt</code>命令来分别查看它们：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4Base5sleepEv</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/10.PNG"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4Base3eatEv</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/11.PNG"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4Base3runEv</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/12.PNG"></p>
+<p>可以看出，在这个虚函数表中，前三项刚好是按照类中定义顺序的那些三个虚函数。</p>
+<p>我们继续看后面的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZTS6Animal</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/13.PNG"></p>
+<p>这个和_ZTI4Base那项一样是个数据符号，我们不讨论这一项。</p>
+<p>类似的，我们来查看一下Animal的虚函数表：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/14.PNG"></p>
+<p>OK，这张图片和上面的差不多，我们类推出在Animal虚函数表中，有<code>Animal::sleep</code>、<code>Animal::eat</code>、<code>Animal::run</code>这三个函数。</p>
+<p>那么，还是没有解决“为什么指针类型是基类的，执行的却是子类的函数”这个问题。</p>
+<h3 id="类对象中，有指向虚函数表的指针"><a href="#类对象中，有指向虚函数表的指针" class="headerlink" title="类对象中，有指向虚函数表的指针"></a>类对象中，有指向虚函数表的指针</h3><p>我们继续看汇编代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/15.PNG"></p>
+<p>我们来看看，<code>_ZN4BaseC2Ev</code>是啥：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4BaseC2Ev</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/16.PNG"></p>
+<p>发现它是<code>Base</code>类的构造函数。</p>
+<p>我们来看看构造函数所做的工作是什么。我们在图片中可以看到这个：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/17.PNG"></p>
+<p>这个不是上面出现的那个虚函数表吗？</p>
+<p>实际上<code>16+$_ZTV4Base </code>就是Base类的虚函数表在内存中的地址。这也就是说，构造函数把虚表的地址给了一个变量，而这个变量，用来指向内存中Base类的虚函数表。因此，我们可以大胆的猜测一下，对应的C++代码是：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>-&gt;vtable = &amp;Base_vtable;</span><br></pre></td></tr></table></figure>
+
+<p>类似的，我们来看看Animal类的构造函数做了什么：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/18.PNG"></p>
+<p>我们在这张图片里面可以看到这个：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/19.PNG"></p>
+<p>第一句是：<code>call    _ZN4BaseC2Ev</code>。了解汇编的同学一定知道这句话的意思是<strong>子程序调用指令</strong>。 也就是说，在执行Animal类的构造函数的时候，还执行了Base类的构造函数。</p>
+<p>OK，继续看，后面的两句和Base类的构造函数所做的工作差不多，即把Animal类的虚函数表的地址给一个变量。因此，我们可以大胆的猜测一下，对应的C++代码是：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>-&gt;vtable = &amp;Animal_vtable;</span><br></pre></td></tr></table></figure>
+
+<p>OK，也就是说，<strong>因为虚函数的存在，使得类中多了一个指针变量来保存类的虚函数表的地址</strong>。</p>
+<p>我们来测试一下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">    Base base;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(base) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/30.PNG"></p>
+<p>为什么这里会打印出1而不是保存sleep函数地址所需要的内存大小呢？</p>
+<p>因为，函数的地址只与类型相关，而与类型的实例无关，编译器不会因为这个sleep函数而在实例内添加任何额外的信息。</p>
+<p>那么为什么会打印出1呢？明明在类中没有定义任何变量呀。这是因为当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。（至于需要多少内存空间，由编译器决定。我这个编译器是分配1个字节的内存单元）</p>
+<p>OK，现在，我们把sleep声明为虚函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">    Base base;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(base) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/31.PNG"></p>
+<p>奶思，符合我们的预期。说明编译器为我们增加了一个指针变量。</p>
+<p>虽然知道了这些，但是还是没有解决为什么执行的是子类的函数。</p>
+<p>我们继续……</p>
+<h3 id="动态绑定"><a href="#动态绑定" class="headerlink" title="动态绑定"></a>动态绑定</h3><p>我们继续来看汇编代码。以下是主函数部分：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/20.PNG"></p>
+<p>我们来回顾一下，进入主函数以后，执行的第一条C++语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Animal dargon;</span><br></pre></td></tr></table></figure>
+
+<p>对应的汇编代码是：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/21.PNG"></p>
+<p>前面两句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leaq    -32(%rbp), %rax</span><br><span class="line">movq    %rax, %rcx</span><br></pre></td></tr></table></figure>
+
+<p>其实是先移动栈指针，给变量dargon在栈上分配内存。变量dargon的首地址是 rbp - 32。</p>
+<p>第三句是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call    _ZN6AnimalC1Ev</span><br></pre></td></tr></table></figure>
+
+<p>也就是执行了Animal类的构造函数。这个很容易理解，当使用静态方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classA object;</span><br></pre></td></tr></table></figure>
+
+<p>定义了一个类对象的时候，会调用构造函数。</p>
+<p>OK，接下来看看C++的第二条语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Animal dog;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看对应的汇编代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/22.PNG"></p>
+<p>和上面类似的，栈指针移动，为变量dog分配内存，然后，再调用Animal类的构造函数。变量dog的首地址是 rbp - 48。</p>
+<p>OK，我们接下来看看C++的第三条语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Base* pBase = &amp;dargon;</span><br></pre></td></tr></table></figure>
+
+<p>对应的汇编代码为：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/23.PNG"></p>
+<p>因为我们什么分析了，变量dargon的首地址是 rbp - 32 ，所以，两句汇编的含义就是把：dargon变量的地址指针变量pBase。</p>
+<p>我们继续看C++的第四条语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Base&amp; pRe = dog;</span><br></pre></td></tr></table></figure>
+
+<p>对应的汇编代码为：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/24.PNG"></p>
+<p>这句话和上面的类似。</p>
+<p>我们继续看C++的第5和第6条语句：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pBase-&gt;sleep();</span><br><span class="line">pRe.sleep();</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/29.PNG"></p>
+<p>实现了动态多态的效果。</p>
+<p>同理，后面的汇编代码也实现了动态多态：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/26.PNG"></p>
+<h3 id="再次测试"><a href="#再次测试" class="headerlink" title="再次测试"></a>再次测试</h3><p>通过什么的分析，我们大致可以得出如下关于虚函数表的图：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/27.jpg"></p>
+<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span> :</span> <span class="keyword">public</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">size_t</span> age;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    定义一个函数指针类型，类型为 void () (Animal * )；</span></span><br><span class="line"><span class="comment">    用于指向虚函数sleep，eat，run；</span></span><br><span class="line"><span class="comment">    这里之所以多出一个Animal * 参数是因为c++类的非静态成员函数，</span></span><br><span class="line"><span class="comment">    编译器会默认在参数列表开头加入指向类指针的参数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(* pFun)</span><span class="params">(Animal * animal)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">    Animal dargon;</span><br><span class="line">    Animal dog;</span><br><span class="line">    </span><br><span class="line">    Base* pBase = &amp;dargon;</span><br><span class="line">    Base&amp; pRe = dog;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//通过基类的指针指向派生类对象来实现动态多态</span></span><br><span class="line">    pBase-&gt;sleep();</span><br><span class="line">    <span class="comment">//通过基类的引用指向派生类对象来实现动态多态</span></span><br><span class="line">    pRe.sleep();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        取出Animal的虚表指针.</span></span><br><span class="line"><span class="comment">        (size_t *)&amp;dargon =&gt; dargon起始地址转换为size_t *</span></span><br><span class="line"><span class="comment">        *(size_t *)&amp;dargon =&gt; dargon起始地址开始取sizeof(size_t)个字节解析成size_t(虚表指针的值)</span></span><br><span class="line"><span class="comment">        (size_t *)*(size_t *)&amp;dargon =&gt; 把这个值转换成size_t *类型</span></span><br><span class="line"><span class="comment">    </span></span><br><span class="line"><span class="comment">        size_t在32位机是4个字节，在64位机是8个字节，指针变量的大小和size_t的大小是一致的。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">size_t</span>* vptable_dargon = (<span class="keyword">size_t</span>*)*(<span class="keyword">size_t</span>*)&amp;dargon;</span><br><span class="line">    <span class="keyword">size_t</span>* vptable_dog = (<span class="keyword">size_t</span>*)*(<span class="keyword">size_t</span>*)&amp;dog;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;size_t size = &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(<span class="keyword">size_t</span>) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//一个类公用一个虚表指针</span></span><br><span class="line">    <span class="keyword">if</span> (vptable_dog == vptable_dargon)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;vptable value is equal&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//遍历虚表指针</span></span><br><span class="line">    <span class="keyword">while</span> (*vptable_dargon)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//取出每个虚表函数</span></span><br><span class="line">        pFun fun = (pFun)(*vptable_dargon);</span><br><span class="line">        <span class="comment">//调用每个虚表函数</span></span><br><span class="line">        fun(&amp;dargon);</span><br><span class="line">        vptable_dargon++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/28.PNG"></p>
+<p>OK，和图片的猜想一致。</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/11/03/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/" data-id="ckkj72zv300bxf6vxb9fv93hr" data-title="说一说C++多态" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

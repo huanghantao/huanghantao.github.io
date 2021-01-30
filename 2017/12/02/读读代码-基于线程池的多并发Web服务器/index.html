@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>读读代码-基于线程池的多并发Web服务器 | codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="这次与大家分享的是我阅读的一个基于线程池的多并发Web服务器，收获很多，非常感谢这位兄弟的代码。 如果大家不是很清楚什么是线程池，可以看百度百科的解释。简单的来说，线程池有如下特点：  线程数量 工作线程 任务接口 任务队列  这些特点会在后面的代码中体现出来（其实也是设计线程池的一些基本内容）。 那么我们为什么需要使用线程池呢？ 如果客户端发起一个请求，服务器就创建一个线程来处理该请求，处理完了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读读代码-基于线程池的多并发Web服务器">
+<meta property="og:url" content="http://huanghantao.github.io/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="这次与大家分享的是我阅读的一个基于线程池的多并发Web服务器，收获很多，非常感谢这位兄弟的代码。 如果大家不是很清楚什么是线程池，可以看百度百科的解释。简单的来说，线程池有如下特点：  线程数量 工作线程 任务接口 任务队列  这些特点会在后面的代码中体现出来（其实也是设计线程池的一些基本内容）。 那么我们为什么需要使用线程池呢？ 如果客户端发起一个请求，服务器就创建一个线程来处理该请求，处理完了">
+<meta property="og:locale">
+<meta property="article:published_time" content="2017-12-02T02:10:38.000Z">
+<meta property="article:modified_time" content="2021-01-30T04:04:11.102Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="C语言">
+<meta property="article:tag" content="网络编程">
+<meta property="article:tag" content="并发">
+<meta property="article:tag" content="线程池">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-读读代码-基于线程池的多并发Web服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2017-12-02T02:10:38.000Z" itemprop="datePublished">2017-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      读读代码-基于线程池的多并发Web服务器
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这次与大家分享的是我阅读的一个<strong>基于线程池</strong>的多并发Web服务器，收获很多，非常感谢<a target="_blank" rel="noopener" href="https://github.com/bjut-hz/HttpServer">这位兄弟的代码</a>。</p>
+<p>如果大家不是很清楚什么是线程池，可以看<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E6%B1%A0/4745661?fr=aladdin">百度百科的解释</a>。简单的来说，线程池有如下特点：</p>
+<ul>
+<li>线程数量</li>
+<li>工作线程</li>
+<li>任务接口</li>
+<li>任务队列</li>
+</ul>
+<p>这些特点会在后面的代码中体现出来（其实也是设计线程池的一些基本内容）。</p>
+<p>那么我们为什么需要使用线程池呢？</p>
+<p>如果客户端发起一个请求，服务器就创建一个线程来处理该请求，处理完了之后，销毁该线程，那么开销是相当大的。在实际使用中，为每个请求创建新线程的服务器在创建和销毁线程上花费的时间和消耗的系统资源，甚至可能要比花在处理实际的用户请求的时间和资源要多得多（在遇到这种<strong>大量短小请求</strong>时，适合使用线程池）。除了创建和销毁线程的开销之外，活动的线程也需要消耗系统资源。因此，我们可以使用这种<strong>池化技术</strong>来减少资源不足，尽量利用已有对象来进行服务。 （这种思路和内存池有些像，也是使用池化技术）</p>
+<p>OK，介绍完了线程池和它的优点之后，小伙伴们应该对它有了一些了解。接下来就是枯燥的阅读代码时刻（我也觉得很枯燥，但是想想可以学到新知识，就会坚持读下去，这个过程需要反复的去查找资料）。</p>
+<p>这次的代码量有些大了，超过1000行了（但是无论多么的长，我们只要找到主函数，就可以一直读下去。注意<strong>使用一个好的IDE或者文本编辑器</strong>，这些东西可以大大的提高我们的阅读效率），所以呢，我只挑我个人认为需要分享的地方咯……</p>
+<a id="more"></a>
+
+<p>首先，我们来看一看线程池的结构（在<code>threadpool.c</code>文件中）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 线程池的结构定义</span></span><br><span class="line"><span class="comment"> *  @var lock         用于内部工作的互斥锁</span></span><br><span class="line"><span class="comment"> *  @var notify       线程间通知的条件变量</span></span><br><span class="line"><span class="comment"> *  @var threads      线程数组，这里用指针来表示，数组名 = 首元素指针（数组是指针的语法糖）</span></span><br><span class="line"><span class="comment"> *  @var thread_count 线程数量</span></span><br><span class="line"><span class="comment"> *  @var queue        存储任务的数组，即任务队列</span></span><br><span class="line"><span class="comment"> *  @var queue_size   任务队列大小</span></span><br><span class="line"><span class="comment"> *  @var head         任务队列中首个任务位置（注：任务队列中所有任务都是未开始运行的）</span></span><br><span class="line"><span class="comment"> *  @var tail         任务队列中最后一个任务的下一个位置（注：队列以数组存储，head 和 tail 指示队列位置）</span></span><br><span class="line"><span class="comment"> *  @var count        任务队列里的任务数量，即等待运行的任务数</span></span><br><span class="line"><span class="comment"> *  @var shutdown     表示线程池是否关闭（不太理解）</span></span><br><span class="line"><span class="comment"> *  @var started      开始的线程数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">threadpool_t</span> &#123;</span></span><br><span class="line">  <span class="keyword">pthread_mutex_t</span> lock;</span><br><span class="line">  <span class="keyword">pthread_cond_t</span> notify;</span><br><span class="line">  <span class="keyword">pthread_t</span> *threads;</span><br><span class="line">  <span class="keyword">threadpool_task_t</span> *<span class="built_in">queue</span>;</span><br><span class="line">  <span class="keyword">int</span> thread_count;</span><br><span class="line">  <span class="keyword">int</span> queue_size;</span><br><span class="line">  <span class="keyword">int</span> head;</span><br><span class="line">  <span class="keyword">int</span> tail;</span><br><span class="line">  <span class="keyword">int</span> count;</span><br><span class="line">  <span class="keyword">int</span> shutdown;</span><br><span class="line">  <span class="keyword">int</span> started;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>上面的注释是代码作者之前已经写好了的。我这里就讲讲这些变量的作用吧。</p>
+<ul>
+<li><p>lock</p>
+<p>顾名思义，锁的意思。它的作用是用来使线程同步的，为了防止竞争，条件变量的使用总是和一个互斥锁结合在一起。（有一个需要注意的地方就是，这个互斥锁不是用来保护条件变量的，因为条件变量是原子操作。这个互斥锁是用来保护wait的）</p>
+</li>
+<li><p>notify</p>
+<p>条件变量也是一种同步机制，主要包括两个动作：一个线程等待条件变量的条件成立，另一个线程使条件成立（在这里，等待条件变量的条件成立的线程是线程池中的那些线程；条件变量的条件是任务队列中是否有任务；使条件成立的线程是main主线程，它负责往任务队列中添加任务）</p>
+</li>
+</ul>
+<p>OK，我们现在从主函数开始读起（因为与socket相关的代码部分，我们之前讲过了，所以我们这里主要是讲与线程池有关的部分）。</p>
+<p>首先是创建一个线程池（在<code>httpserver.c</code>文件中）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pool = threadpool_create( THREAD, QUEUE, <span class="number">0</span> )</span><br></pre></td></tr></table></figure>
+
+<p>这个函数是创建一个线程池，线程池中线程的最大个数是THREAD个，任务队列中任务的最大个数是QUEUE个。</p>
+<p>我们继续看看<code>threadpool_create()</code>函数内部定义：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pool = (<span class="keyword">threadpool_t</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">threadpool_t</span>))</span><br></pre></td></tr></table></figure>
+
+<p>这条语句是申请一块内存，用来存放线程池。</p>
+<p>分配了内存给线程池用之后，需要给该线程池进行初始化（这一点和new操作符不一样，new操作符会调用构造函数，在构造函数中初始化线程池中的变量）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pool-&gt;threads = (<span class="keyword">pthread_t</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">pthread_t</span>) * thread_count);</span><br></pre></td></tr></table></figure>
+
+<p>这条语句是申请一块内存，用来存放线程。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 创建指定数量的线程开始运行 */</span></span><br><span class="line"><span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; thread_count; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span>(pthread_create(&amp;(pool-&gt;threads[i]), <span class="literal">NULL</span>,threadpool_thread, (<span class="keyword">void</span>*)pool) != <span class="number">0</span>)&#123;</span><br><span class="line">        threadpool_destroy(pool, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">    pool-&gt;thread_count++;</span><br><span class="line">    pool-&gt;started++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码是创建指定数量的线程。</p>
+<p>接着我们来看看<code>pthread_create</code>函数中每个线程在跑的<code>threadpool_thread</code>函数做了些什么。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(;;) &#123;</span><br><span class="line">    <span class="comment">/* Lock must be taken to wait on conditional variable 锁必需等待wait*/</span></span><br><span class="line">    <span class="comment">/* 取得互斥锁资源 */</span></span><br><span class="line">    pthread_mutex_lock(&amp;(pool-&gt;lock));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Wait on condition variable, check for spurious wakeups. 等待条件变量，检查虚假唤醒</span></span><br><span class="line"><span class="comment">       When returning from pthread_cond_wait(), we own the lock. 从pthread_cond_wait（）返回时，我们拥有锁。*/</span></span><br><span class="line">    <span class="comment">/* 用 while 是为了在唤醒时重新检查条件 */</span></span><br><span class="line">    <span class="keyword">while</span>((pool-&gt;count == <span class="number">0</span>) &amp;&amp; (!pool-&gt;shutdown)) &#123;</span><br><span class="line">        <span class="comment">/* 任务队列为空，且线程池没有关闭时阻塞在这里 */</span></span><br><span class="line">        pthread_cond_wait(&amp;(pool-&gt;notify), &amp;(pool-&gt;lock));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 关闭的处理 */</span></span><br><span class="line">    <span class="keyword">if</span>((pool-&gt;shutdown == immediate_shutdown) ||</span><br><span class="line">       ((pool-&gt;shutdown == graceful_shutdown) &amp;&amp;</span><br><span class="line">        (pool-&gt;count == <span class="number">0</span>))) &#123;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Grab our task */</span></span><br><span class="line">    <span class="comment">/* 取得任务队列的第一个任务 */</span></span><br><span class="line">    task.function = pool-&gt;<span class="built_in">queue</span>[pool-&gt;head].function;</span><br><span class="line">    task.argument = pool-&gt;<span class="built_in">queue</span>[pool-&gt;head].argument;</span><br><span class="line">    <span class="comment">/* 更新 head 和 count */</span></span><br><span class="line">    pool-&gt;head += <span class="number">1</span>;</span><br><span class="line">    pool-&gt;head = (pool-&gt;head == pool-&gt;queue_size) ? <span class="number">0</span> : pool-&gt;head; <span class="comment">// 相当于实现一个循环队列。其实也可以使用取模来实现循环的效果。</span></span><br><span class="line">    pool-&gt;count -= <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Unlock */</span></span><br><span class="line">    <span class="comment">/* 释放互斥锁 */</span></span><br><span class="line">    pthread_mutex_unlock(&amp;(pool-&gt;lock));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Get to work */</span></span><br><span class="line">    <span class="comment">/* 开始运行任务 */</span></span><br><span class="line">    (*(task.function))(task.argument);</span><br><span class="line">    <span class="comment">/* 这里一个任务运行结束 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，因为刚开始初始化线程池的时候，任务队列里面是没有任务的，所以开始创建的线程都会因为条件变量的条件不满足而阻塞（此时的阻塞状态不是一直占用CPU等待，而是休眠起来。之后main主线程会往任务队列里面添加任务，此时线程池中的线程会被唤醒。所以初始化线程池的操作就是为了<strong>让线程们休眠起来</strong>）。</p>
+<p>可能有小伙伴对：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*(task.function))(task.argument);</span><br></pre></td></tr></table></figure>
+
+<p>会有一些疑问，我们在主线程main中的后面会有讲解。</p>
+<p>好的，我们继续返回到main主线程里面读代码，在<code>while</code>循环中，main主线程去接收客户端的请求，然后往线程池中的任务队列里面添加任务：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">threadpool_add( pool, &amp;accept_request, (<span class="keyword">void</span>*)&amp;client_sock, <span class="number">0</span> )</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看<code>threadpool_add</code>函数，首先来看看函数声明的部分：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">threadpool_add</span><span class="params">(<span class="keyword">threadpool_t</span> *pool, <span class="keyword">void</span> (*function)(<span class="keyword">void</span> *),</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">void</span> *argument, <span class="keyword">int</span> flags)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个函数的第一个参数是一个线程池对象。第二个参数是一个函数指针。可以看出，这是在C语言里面实现<strong>回调函数</strong>的一个技巧。而第三个参数就是回调函数的一个参数。第四个参数没有用上。</p>
+<p>继续看：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(pthread_mutex_lock(&amp;(pool-&gt;lock)) != <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> threadpool_lock_failure;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>刚开始的时候，我一直在想，为什么这里需要获得互斥锁？不是只有主线程main在往线程池中的任务队列里面添加任务吗？没有其他的线程在往任务队列中添加任务了呀？</p>
+<p>然后我发现了这个模型实际上是一个<strong>生存者与消费者的模型</strong>。我在学习操作系统的时候，就遇到了这个问题。加锁是为了解决生存者与消费者之间的同步问题。在这里，生存者是main主线程，而消费者是线程池里面的线程。加锁是为了防止生存者在生产（添加任务）的时候，消费者过来了消费（获取任务）。</p>
+<p>继续看代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pthread_cond_signal(&amp;(pool-&gt;notify))</span><br></pre></td></tr></table></figure>
+
+<p><code>pthread_cond_signal</code>只能唤醒已经处于pthread_cond_wait的线程。也就是说，如果signal的时候没有线程在condition wait，那么本次signal就没有效果，<strong>后续的线程进入condition wait之后，无法被之前的signal唤醒</strong>。</p>
+<p>OK，现在我们就可以解释：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*(task.function))(task.argument);</span><br></pre></td></tr></table></figure>
+
+<p>是什么意思了。这个实际上就是处理客户端请求的一个函数（任务）。参数是一个表示连接的socket文件描述符。</p>
+<p>额，既然我们学习了一个基于线程池的Web服务器，那么，我们应该就想要知道它处理多个请求的能力如何？于是，我上Github找了一个工具，叫做：<a target="_blank" rel="noopener" href="https://github.com/EZLippi/WebBench">Webbench</a>。具体的使用方法可以<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xxyBlogs/p/5639103.html">参考这里</a>。（注意，在url结尾的处要使用<code>/</code>，例如：<code>./webbench -c 10 http://www.baidu.com/ </code>）</p>
+<p>我测试的时候，使用几百个客户端对这个服务器（不是百度的这个，是我们读的这个服务器）发起请求还是比较稳定的，但是当我使用1000个客户端的时候，服务器就不稳定了，有时候会直接死掉。</p>
+<p>好的，这次的分享就到这里了。总的来说这个小项目还是需要一定的基础的，例如是否可以看出添加任务和执行任务实际上就是我们所学的生产者与消费者模型；使用循环队列这个数据结构来存放任务（这个又和任务调度的知识点有关了）；操作系统这一块的知识就更多了，必须要懂什么是线程，如何做到线程安全，怎么解决消费者想要获取任务而任务队列中却没有任务的问题等等。</p>
+<p>总之，有一个好的基础非常重要。（尽管我一直在打基础，但是还是有很多地方理解不到位，所以呀，必须得理论结合实践嘛）</p>
+<p>OK，接着学习其他项目，待我去Github上面筛选一波……ps：其实我挺想读Swoole这个网络通信框架的，然而呵呵了。能力还是有限……以后一定读，毕竟我想要那个啥……</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72zv400c2f6vxfwx735fe" data-title="读读代码-基于线程池的多并发Web服务器" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/03/%E9%92%88%E5%AF%B9%E3%80%8A%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%8B%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          针对《读读代码-基于线程池的多并发Web服务器》中的一个思考
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/11/30/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-select-epoll%E7%9A%84%E6%AF%94%E8%BE%83/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">读读代码--select/epoll的比较</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

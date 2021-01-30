@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/18/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-对MySQL数据表分区一定会提高查询效率吗" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/" class="article-date">
+  <time class="dt-published" datetime="2018-02-19T13:20:10.000Z" itemprop="datePublished">2018-02-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/">对MySQL数据表分区一定会提高查询效率吗</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>作为一个后端开发人员，我们一般都听说过<strong>对数据表进行分区</strong>的操作。甚至有开发人员说：这张表以后的数据量一定会很大，至少有好几千万条，我们对这张表分区吧。</p>
+<p>然而，有时候并没有感受到查询速度的提升，<strong>反而感觉更加的慢</strong>了。原因就是不好的分区设计导致对磁盘的IO操作次数增加了。</p>
+<p>我们现在来做个测试，数据有1000W条，储存引擎用的是InnoDB。</p>
+<p>首先我们创建数据表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">create table user (</span><br><span class="line">    id int(11) not null auto_increment,</span><br><span class="line">    key_id int(11) not null,</span><br><span class="line">    primary key (id),</span><br><span class="line">    key key_id (key_id)</span><br><span class="line">) engine &#x3D; innodb</span><br><span class="line">partition by hash (id)</span><br><span class="line">partitions 10;</span><br></pre></td></tr></table></figure>
+
+<p>我们采取的分区类型是hash分区，因为这样可以让数据比较均匀的储存在不同的分区中（我们之后可以看看数据分布情况）。且以主键id为标准进行分区。</p>
+<p><code>partitions 10</code>指的是对这张表分10个区。</p>
+<p>好的，创建完数据表之后，我们插入1000W条数据。我们采用存储过程来实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">delimiter $$</span><br><span class="line"></span><br><span class="line">create procedure myproc() </span><br><span class="line">begin </span><br><span class="line">declare num int; </span><br><span class="line">set num &#x3D; 1; </span><br><span class="line">while num &lt;&#x3D; 10000000 do </span><br><span class="line">insert into user (key_id) values(num); set num &#x3D; num + 1;</span><br><span class="line">end while;</span><br><span class="line">end</span><br><span class="line">$$</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/1.png"></p>
+<p>定义完了存储过程之后，我们调用它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call myproc()$$</span><br></pre></td></tr></table></figure>
+
+<p>执行存储过程大概有15分钟，耐心等待。</p>
+<p>OK，接下来我们大致看看数据表中的数据：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/2.png"></p>
+<p>我们来查看下总共有多少条记录在数据表里面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count(*) from user$$</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/3.png"></p>
+<p>1000W条记录对吧，嗯，真刺激。</p>
+<p>接下来我们来看看数据在这10个分区的分布情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select table_name, partition_name, table_rows</span><br><span class="line">from information_schema.partitions</span><br><span class="line">where table_schema&#x3D;DATABASE() AND table_name&#x3D;&#39;user&#39;\G</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/4.png"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/5.png"></p>
+<p>通过table_rows可以看出，记录比较均匀的分布在10个分区里面。和我们预期一致。</p>
+<p>OK，接下来我们就开始查询比较，看看分区是否真的有用。我们先对主键进行查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN PARTITIONS SELECT * FROM user WHERE id &#x3D; 1\G</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/6.png"></p>
+<p>可以看到，只查询了分区p1。因为一般B+树是2～3层，所以最多进行了2～3次IO操作。</p>
+<p>这样吧，假设1000W条数据的单表构成的B+树有3层，而100W条数据表构成的B+树只有2层，那么，确实可以减少一次IO操作。但是如果100W和1000W行的数据构成的B+树层次都是一样的，可能都是2层。那么上述按照主键id分区的索引并不会带来性能的提高。</p>
+<p>OK，分析到这里，我们再来看看可能让大家吃惊的一条查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN PARTITIONS SELECT * FROM user WHERE key_id &#x3D; 1\G</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/7.png"></p>
+<p>可以看到，这一条查询对所有的分区（共10个）都进行了查询。这意味着什么？对磁盘的IO操作次数大大提高了。假设100W条记录构成的B+树只有2层好吧，那么对这10个分区进行查询也至少需要执行20次IO操作。很显然，因为分区后，以key_id列索引作为查询条件时，查询效率大大降低。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/" data-id="ckkj72zu8009of6vxhpfb8fvq" data-title="对MySQL数据表分区一定会提高查询效率吗" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-命令行下可以跑PHP脚本，但是浏览器就不能跑？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/" class="article-date">
+  <time class="dt-published" datetime="2018-02-04T14:50:18.000Z" itemprop="datePublished">2018-02-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/">命令行下可以跑PHP脚本，但是通过浏览器却不能跑？</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今晚我在使用YAF框架的时候，遇到了一个问题：命令行下可以跑YAF框架的入口文件，但是通过浏览器却不能跑？</p>
+<p>这个问题折腾了我一晚上，好在一个群友慢慢帮我分析了一波，非常感谢！</p>
+<p>原因是：我的FPM并没有使用yaf.so，但是CLI使用了yaf.so。</p>
+<p>那么为什么会出现这种情况呢？因为<strong>命令行和PHP-FPM是两个不同的SAPI，它们可以加载不同路径下的php.ini文件</strong>。</p>
+<p>而通过：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php php文件名</span><br></pre></td></tr></table></figure>
+
+<p>这种方式是使用CLI这个SAPI。</p>
+<p>通过：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost&#x2F;index.php</span><br></pre></td></tr></table></figure>
+
+<p>这种方式使用的是FPM这种SAPI。</p>
+<p>那么我们如何查看CLI模式下添加了哪些扩展呢？使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -m</span><br></pre></td></tr></table></figure>
+
+<p>而在PHP脚本中使用如下函数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">phpinfo();</span><br></pre></td></tr></table></figure>
+
+<p>则可以查看PHP-FPM添加了哪些扩展。</p>
+<p>我放错误的原因主要是我一直以为CLI和FPM一定共用同一个php.ini文件，其实不一定，这是在编译PHP源代码的时候可以指定的。</p>
+<p>emmm，希望可以帮助到大家。</p>
+<p>基础真的很重要……</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/" data-id="ckkj72ztw008sf6vx1j7ddgzb" data-title="命令行下可以跑PHP脚本，但是通过浏览器却不能跑？" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-聊一聊PHP的对象" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="article-date">
+  <time class="dt-published" datetime="2018-01-31T14:08:07.000Z" itemprop="datePublished">2018-01-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/">聊一聊PHP的对象</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今晚在过一遍PHP手册的时候，看了一下PHP的对象那一部分知识点。我发现还是有一些坑点的。</p>
+<p>官网上有一个例子是这样的：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleClass</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">// property declaration</span></span><br><span class="line">    <span class="keyword">public</span> $var = <span class="string">&#x27;a default value&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// method declaration</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">displayVar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;var;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$instance = <span class="keyword">new</span> SimpleClass();</span><br><span class="line"></span><br><span class="line">$assigned   =  $instance;</span><br><span class="line">$reference  = &amp;$instance;</span><br><span class="line"></span><br><span class="line">$instance-&gt;var = <span class="string">&#x27;$assigned will have this value&#x27;</span>;</span><br><span class="line"></span><br><span class="line">$instance = <span class="literal">null</span>; <span class="comment">// $instance and $reference become null</span></span><br><span class="line"></span><br><span class="line">var_dump($instance);</span><br><span class="line">var_dump($assigned);</span><br><span class="line">var_dump($reference);</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/3.PNG"></p>
+<p>通过代码的执行结果，我们可以看到，因为这一句：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$instance = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+
+<p>而导致了变量<code>$instance</code>和<code>$reference</code>都为null。emmm，只看这一个结果还是很好解释的。因为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$reference  = &amp;$instance;</span><br></pre></td></tr></table></figure>
+
+<p>所以我们说<code>$reference</code>是<code>$instance</code>的引用。那么什么是引用呢？emmm，我先说一说什么是拷贝吧，这样会好理解一些。emmm，我从C语言的角度来说（因为PHP有一个叫做写时拷贝的机制，所以用PHP来举例子会麻烦些）。</p>
+<p>有如下代码段：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = a;</span><br></pre></td></tr></table></figure>
+
+<p>那么，当执行这段代码的时候，在内存中会发生什么呢？</p>
+<p>首先是执行<code>int a = 1;</code>，操作系统会为变量a分配4个字节的存储单元（一般int型是4个字节，具体多少，可以用sizeof(int)查看），然后再把数据1存放到这4个字节的存储单元中。</p>
+<p>可以简单的用如下图片表示（这里不考虑机器字节序和网络字节序，反正我是记不住，哈哈哈）：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/4.PNG"></p>
+<p>然后再执行语句<code>int b = a;</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/" data-id="ckkj72zuz00bnf6vxfl7232vb" data-title="聊一聊PHP的对象" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-浅谈IO处理的几种方式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" class="article-date">
+  <time class="dt-published" datetime="2018-01-29T13:36:09.000Z" itemprop="datePublished">2018-01-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">浅谈IO处理的几种方式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一、read阻塞方式"><a href="#一、read阻塞方式" class="headerlink" title="一、read阻塞方式"></a>一、read阻塞方式</h2><p>只能处理一个文件描述符。此时，如果进程阻塞在了某个文件描述符上面，则这个进程就不可以处理其他已经就绪的文件描述符。必须要等待这个文件描述符变活跃了，且被进程处理完了，这个进程才能处理其他文件描述符。（在这个进程阻塞的过程中，其他进程可以被切换过来。也就是说服务器这边没啥大问题，但是会导致客户端那边久等）</p>
+<h2 id="二、read非阻塞方式"><a href="#二、read非阻塞方式" class="headerlink" title="二、read非阻塞方式"></a>二、read非阻塞方式</h2><p>可以不断地循环检测所有的文件描述符，直到处理完这个文件描述符。这样就不会阻塞在这个文件描述符上面了。<br>如果这些文件描述符只是偶尔不活跃，用这种方式也是可以的。但是，如果这些文件描述符长时间处于不活跃的状态，就会浪费CPU，CPU一直循环地检测一些还没就绪的文件描述符，做无用功。<br>（在时间片用完前，其他进程可能不能够被切换进来，导致CPU浪费。也就是说客户端那边不会等太久，但是服务器这边会浪费资源）</p>
+<h2 id="三、多进程-上面的其中一种方式"><a href="#三、多进程-上面的其中一种方式" class="headerlink" title="三、多进程+上面的其中一种方式"></a>三、多进程+上面的其中一种方式</h2><p>由一个主进程负责调度子进程来处理文件描述符。如果是进程池，那么还是会遇到上面两种方式的问题；如果是每次处理一个文件描述符的时候都创建一个新的进程来处理，那么会非常消耗服务器资源（内存有限且CPU有限）。</p>
+<h2 id="四、IO多路复用方式"><a href="#四、IO多路复用方式" class="headerlink" title="四、IO多路复用方式"></a>四、IO多路复用方式</h2><p>第一种方式的问题是进程不可以处理那些已经就绪好了的文件描述符，第二种方式的问题是，CPU一直在做无用的计算。第三种方式是可能会耗服务器资源。所以，我们聪明的程序员就发明了这种先收集就绪的文件描述符，再处理的方式。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" data-id="ckkj72zuh00aif6vxh69gb9hf" data-title="浅谈IO处理的几种方式" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-nginx数据结构容器-链表" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/28/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8-%E9%93%BE%E8%A1%A8/" class="article-date">
+  <time class="dt-published" datetime="2018-01-28T14:08:18.000Z" itemprop="datePublished">2018-01-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/28/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8-%E9%93%BE%E8%A1%A8/">nginx数据结构容器--链表</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天继续阅读了陶辉前辈的《深入理解Nginx模块开发与架构解析》，看到了Nginx的数据结构部分。因为书中并没有提供详细的源码，所以，只看书不动手做实验总是感觉很不踏实。</p>
+<p>于是我今晚把Nginx中链表和内存池中的代码抽取了出来，够折腾的，到处改代码。希望我的浪费时间可以给大家节约时间。本篇博客的代码 <a target="_blank" rel="noopener" href="https://github.com/huanghantao/ngxdatastructure/tree/master/ngx_list">在这里</a>。</p>
+<p>首先，我从设计的角度给大家介绍下Nginx中的链表。首先我们要知道，Nginx对内存分配非常吝啬（因为只有保证低内存消耗，才有可能实现巨大的同时并发连接数），所以<strong>链表是存放在内存池上面的</strong>。</p>
+<p>OK，知道这个结论之后，我给大家介绍一下Nginx中与链表有关的数据结构：</p>
+<h2 id="nginx-list-t数据结构"><a href="#nginx-list-t数据结构" class="headerlink" title="nginx_list_t数据结构"></a>nginx_list_t数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ngx_list_part_s</span> <span class="title">ngx_list_part_t</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ngx_list_part_s</span> &#123;</span></span><br><span class="line">    <span class="keyword">void</span> *elts;</span><br><span class="line">    <span class="keyword">ngx_uint_t</span> nelts;</span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *last;</span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> part;</span><br><span class="line">    <span class="keyword">size_t</span> size;</span><br><span class="line">    <span class="keyword">ngx_uint_t</span> nalloc;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *pool;</span><br><span class="line">&#125; <span class="keyword">ngx_list_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>ngx_list_t</code>结构体中的<code>ngx_pool_t *pool;</code>成员就是用来给<code>ngx_list_t</code>配置一个内存池用的。</p>
+<p>OK，知道了与链表相关的数据结构之后，我来用一幅图表示一下它们之间的联系以便于小伙伴们对于后续代码的理解：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/1.PNG"></p>
+<p><a target="_blank" rel="noopener" href="http://hankjin.blog.163.com/blog/static/33731937201091111303630/">图片来自这里，侵删</a></p>
+<p>现在我们通过代码一步一步的来理解这个数据结构如何使用以及内存分布的样子。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var = ngx_list_push(testlist);</span><br><span class="line">    *var = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *part = &amp;(testlist-&gt;part);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var1 = part-&gt;elts;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= part-&gt;nelts) &#123;</span><br><span class="line">        	<span class="keyword">if</span> (<span class="literal">NULL</span> == part-&gt;next) &#123;</span><br><span class="line">        		<span class="keyword">break</span>;</span><br><span class="line">        	&#125;</span><br><span class="line"></span><br><span class="line">        	part = part-&gt;next;</span><br><span class="line">        	var1 = part-&gt;elts;</span><br><span class="line">        	i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;list element:%d\n&quot;</span>, var1[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们执行一下这段代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/2.PNG"></p>
+<p>OK，代码执行没问题，我来讲解一下代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这段代码是用来创建一个内存池的，内存池的大小为1024字节。返回值是内存池的地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+
+<p><code>ngx_list_create</code>用来在内存池<code>ngx_mem_pool</code>上面创建新的链表。6指的是每个链表数组可容纳元素的个数是6（相当于ngx_list_t结构体中的nalloc成员）。<code>sizeof(int)</code>是每个元素的数据大小，这里我们想要在链表中存放整型数据。该函数的返回值是创建的链表的地址。</p>
+<p>好的，我们来打印一下内存池的地址和链表的地址，看看它们的关系，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;内存池地址:%p\n链表地址:%p\n&quot;</span>, ngx_mem_pool, testlist);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/3.PNG"></p>
+<p>首先，我们知道，我们给内存池开的大小有1M，而栈的大小也就几兆。所以，讲道理内存池在实现上面应该不会开在栈上面，所以是开在堆上面的。而堆的地址增长一般是从低地址到高地址的（详情查看C语言的内存模型），所以根据图中所示，链表首地址和内存池首地址只是相差了48个字节，远远小于1M。所以我们可以得出链表被分配在内存池上面的结论。我们运行代码再来测试一次：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/4.PNG"></p>
+<p>依旧是相差48字节。咦( ′◔ ‸◔`)，这是很神奇的。为啥都是相差48字节呢？我们可以读读这些函数的实现来分析出答案。</p>
+<p>OK，我们继续讲解第一份代码的剩余部分。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+
+<p>是用来初始化一个已有的链表。我们可以看到，区别只是比<code>ngx_list_create</code>函数多了第一个参数。我们来看看调用了<code>ngx_list_create</code>和<code>ngx_list_init</code>之后，链表的区别在哪里，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;create函数调用之后的结果:\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;nalloc);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, testlist-&gt;pool);</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;init函数调用之后的结果:\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;nalloc);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, testlist-&gt;pool);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/5.PNG"></p>
+<p>可以看出，<code>ngx_list_t</code>这个结构体中的成员size、nalloc、pool在使用<code>ngx_list_create</code>函数的时候，已经进行了初始化。至于这两个函数的区别，我们还是需要从源码来分析。</p>
+<p>OK，我们继续读代码的剩余部分。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ngx_int_t</span> *var = ngx_list_push(testlist);</span><br><span class="line">*var = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码表示往链表<code>testlist</code>中添加一个元素，且返回值是这个元素的地址。我们可能会奇怪，为啥不直接<code>ngx_list_push(元素)</code>，而是要先<code>ngx_list_push(testlist)</code>后再来对其赋值呢？感觉有些脱了裤子来放屁啊！我开始读这个代码的时候也感到非常疑惑。但是细细一想，得到了答案：同一个内存池上面可能有其他链表，如果直接<code>ngx_list_push(元素)</code>，那么程序怎么知道要往哪个链表中添加元素呢？对吧。我们可以来测试一下，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;内存池地址:%p\n&quot;</span>, ngx_mem_pool);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist_1 = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;链表1的地址:%p\n&quot;</span>, testlist_1);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist_1) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist_1, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var = ngx_list_push(testlist_1);</span><br><span class="line">    *var = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist_2 = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;链表2的地址:%p\n&quot;</span>, testlist_2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist_2) &#123;</span><br><span class="line">        exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist_2, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    var = ngx_list_push(testlist_2);</span><br><span class="line">    *var = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *part1 = &amp;(testlist_1-&gt;part);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var1 = part1-&gt;elts;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= part1-&gt;nelts) &#123;</span><br><span class="line">        	<span class="keyword">if</span> (<span class="literal">NULL</span> == part1-&gt;next) &#123;</span><br><span class="line">        		<span class="keyword">break</span>;</span><br><span class="line">        	&#125;</span><br><span class="line"></span><br><span class="line">        	part1 = part1-&gt;next;</span><br><span class="line">        	var1 = part1-&gt;elts;</span><br><span class="line">        	i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;list1 element:%d\n&quot;</span>, var1[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *part2 = &amp;(testlist_2-&gt;part);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var2 = part2-&gt;elts;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= part2-&gt;nelts) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="literal">NULL</span> == part2-&gt;next) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            part2 = part2-&gt;next;</span><br><span class="line">            var2 = part2-&gt;elts;</span><br><span class="line">            i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;list2 element:%d\n&quot;</span>, var2[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/6.PNG"></p>
+<p>第一份代码的最后部分：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= part-&gt;nelts) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> == part-&gt;next) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        part = part-&gt;next;</span><br><span class="line">        var1 = part-&gt;elts;</span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;list element:%d\n&quot;</span>, var1[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的作用就是遍历出链表中的所有元素。</p>
+<p>最后，再附上一张内存池上存放链表的图片：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/7.png"></p>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/u012377333/article/details/40582431">图片来自这里，侵删</a></p>
+<p>好了，这篇博客到此结束了，希望小伙伴们有所收获。希望小伙伴们可以感受到通过我的博客，我在与你面对面交流，能够达到这个作用，我就很欣慰了。</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/28/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8-%E9%93%BE%E8%A1%A8/" data-id="ckkj72zst0059f6vxgpwj22n8" data-title="nginx数据结构容器--链表" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-为什么说线程是CPU调度的基本单位" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%98%AFCPU%E8%B0%83%E5%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8D%95%E4%BD%8D/" class="article-date">
+  <time class="dt-published" datetime="2018-01-26T13:30:26.000Z" itemprop="datePublished">2018-01-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%98%AFCPU%E8%B0%83%E5%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8D%95%E4%BD%8D/">为什么说线程是CPU调度的基本单位</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在大学操作系统的课本中，一般会有那么一句话：线程是CPU调度的基本单位。但是课本很少会去解释为什么。emmm，这里我简单说一下哈。因为寄存器中保存了当前线程的状态，例如一些栈指针呀，程序计数器呀。但是这种答案好像并没有解释为什么要让线程是CPU调度的基本单位，这只是告诉了我们一个结果说线程是CPU调度的基本单位。因为我们还有进程这个概念呀，为什么不让进程成为CPU调度的基本单位呢？<br>这里我从设计的角度给出一个可能的原因。<br>首先我们要知道什么算作CPU调度，也就是拥有时间片对吧。OK，我们也知道一个进程是可以有多个线程的对吧。现在我们假设我们的计算机是单 CPU 4核。此时，我们的进程中的4个线程占据了CPU的所有核。因为任务不同，所以这些线程执行的时间也不同。如果这个进程中的某个线程已经完成了自己的任务，那么这个完成了任务的线程所占据的那个CPU核就处于空闲的状态了对吧。OK，此时我们的操作系统有两种设计方式：<br>1、以进程为CPU的调度单位<br>2、以线程为CPU的调度单位<br>假如是第一种设计方式，因为这个进程中还有另外3个线程在执行任务，所以因为一个线程执行完了而把当前进程切换掉，显然是很不明智的。那么，如果不切换进程，而去等待另外3个线程执行完任务的话，那么肯定会有CPU的某个或者某些核处于空闲的状态，此时没有充分利用好硬件。<br>因此，如果以进程为CPU的调度单位，在面对上面这种情况的时候，显得很无力。<br>OK，假如是第二种设计方式，就可以很好地解决这个问题了。操作系统把所有的线程一视同仁，我不管你这个线程是属于哪个进程的，只要你任务完成或者时间片用完，我就切换掉你，换一个线程过来。至于这个换过来的线程是同一个进程的线程还是其他进程的线程我不管，因为我是以线程为调度单位的。显然，第二种方式能够充分利用好CPU的所有核，不至于让某些核无所事事。<br>好了，分享到这里，希望能够提高大家对于进程和线程的理解。<br>我是一个乐于分享的同学……<br>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%98%AFCPU%E8%B0%83%E5%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8D%95%E4%BD%8D/" data-id="ckkj72zti007hf6vx32s216zc" data-title="为什么说线程是CPU调度的基本单位" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP命名空间" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/05/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/" class="article-date">
+  <time class="dt-published" datetime="2018-01-05T06:13:49.000Z" itemprop="datePublished">2018-01-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/05/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/">PHP命名空间</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这篇文章是关于PHP<strong>命名空间</strong>的一些使用方法的介绍。命名空间的概念我就不多说了，随便百度一下就好了。</p>
+<p>直接上代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>很多博客可能会千篇一律的写一段这样的代码。然后再接着写：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
+
+<p>然后问大家输出什么结果，其实这样很没意思，至少我是这么觉得。这样学习是很不对的。</p>
+<p>emmm，先看一下结果吧：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/1.PNG"></p>
+<p>现在我给大家介绍一个常量：<code>__NAMESPACE__</code>。这个常量保存了当前区域所处的命名空间。有了这个东西，就不用猜测了，一切都很明显。我们来测试一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们执行这段代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/2.PNG"></p>
+<p>说明<code>namespace School\Teacher;</code>和<code>namespace School\Parent;</code>之间的代码是属于命名空间<code>School\Teacher</code>的。OK，我们继续测试：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们执行一下这段代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/3.PNG"></p>
+<p>说明在<code>namespace School\Parent;</code>之后的区域都属于命名空间<code>School\Parent</code>的。</p>
+<p>好的，到了这一步，我们就明白为什么在上面实例化<code>Person</code>类的时候，是输出<code>I am Parent</code>了吧。</p>
+<p>但是，这两个类名都是同样的呀，PHP它是如何区分的呢？这里我还不确定，但是我猜测底层为我们加上了命名空间前缀。（先保留这个问题，等我看了源码之后，再来回答）</p>
+<p>OK，那如果我非要在<code>School\Parent</code>命名空间中实例化<code>School\Teacher</code>命名空间中的Person呢？我们来做个测试一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $obj = <span class="keyword">new</span> School\Teacher\Person();</span><br><span class="line">    var_dump($obj);</span><br></pre></td></tr></table></figure>
+
+<p>这样会报错：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/4.PNG"></p>
+<p>我们可以看到，它是在<code>School\Parent</code>的命名空间下去寻找命名空间<code>School\Teacher</code>中的<code>Person</code>类。那么这是不是很像我们平常接触的目录的相对路径？所以我们需要修改一下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$obj = <span class="keyword">new</span> \School\Teacher\Person();</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/5.PNG"></p>
+<p>那么这种写法是不是很像绝对路径？这说明了一个问题，命名空间应该是有一个<code>根</code>。 </p>
+<p>大家会不会觉得<code>new</code>后面跟了很长的一段东西，OK，我们把它改简单一点。这时候我们可以使用<code>use</code>关键字：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
+
+<p>我们看看结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/6.PNG"></p>
+<p>我们发现和上面的结果不一样对吧，这次我们实例化的是<code>School\Parent</code>命名空间中的<code>Person</code>类。很奇怪啊，上面我明明使用了：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br></pre></td></tr></table></figure>
+
+<p>语句啊，为什么还是在<code>School\Parent</code>命名空间中搜索<code>Person</code>类呢？很多初学者如果不去仔细分析的话，很可能会有这样的疑问。</p>
+<p>我们修改一下代码，打印一下命名空间：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/7.PNG"></p>
+<p>这说明了<code>use School\Teacher;</code>并不是使后面的命名空间变为<code>School\Teacher</code>。这下知道上面为什么是实例化<code>School\Parent</code>命名空间下的<code>Person</code>类了吧。</p>
+<p>那么<code>use</code>到底是什么作用呢？OK，其实它是起到了一个简写的作用。也就是说，我们可以用<code>use School\Teacher;</code>中最后的那个<code>Teacher</code>代替<code>\School\Teacher</code>（注意不是代替<code>School\Teacher</code>，通过我们上面的实验可以验证这一点）。</p>
+<p>OK，知道了这个之后，我们再次修改一下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Teacher\Person();</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/8.PNG"></p>
+<p>OK，果然是这样的对吧。</p>
+<p>如果还是不信的话，我再次修改一下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/9.PNG"></p>
+<p>说的是不能够<code>use School\Teacher\Person as Person</code>。有人会问后面的<code>as Person</code>是什么鬼？其实<code>as Person</code>的意思是用<code>Person</code>来代替<code>\School\Teacher\Person</code>。但是我们在代码里面没有使用<code>as Person</code>呀？我个人觉得是因为它默认会取<code>use School\Teacher\Person</code>中的最后一个（即Person）来<code>as</code>。我们可以测试一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span> <span class="title">as</span> <span class="title">Person</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
+
+<p>得到如下结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/10.PNG"></p>
+<p>一样的报错对吧。</p>
+<p>OK，既然它说不能够<code>as Person</code>的话，那我就换一个呗：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span> <span class="title">as</span> <span class="title">Teacher</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Teacher();</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/11.PNG"></p>
+<p>这样的结果可以证明我说的<code>use</code>的作用了吧。</p>
+<p>接下来简单演示一下多个文件中如何使用<code>use</code>（用过Laravel、ThinkPHP框架的人一定知道），我发现很多博客都没有讲这一点，导致一些新手容易产生一个幻觉。</p>
+<p>首先，我建立两个文件：<code>Parent.php</code>和<code>Teacher.php</code>。</p>
+<p>我们还是使用上面的代码但是，把这两个类分别写在这两个文件里面：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// Teacher.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// Parent.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们在<code>test.php</code>文件里面分别去实例化这两个类：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span> <span class="title">as</span> <span class="title">Teacher</span>;</span><br><span class="line">    <span class="keyword">new</span> Teacher();</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/12.PNG"></p>
+<p>咦，我们使用别人写的框架的时候，不是可以做类似跨文件的操作吗？（反正当初菜鸡博主尝试过，以为是可以的。然而框架欺骗了我的感情）</p>
+<p>其实小伙伴们被框架给迷惑了，PHP至少现在还不支持这种骚操作。（我也觉的不要这样子，代码很容易混乱的）</p>
+<p>框架的真实情况可能是这样的，把这两个类文件在一个入口文件里面引入，然后才能进行这样的操作。例如，菜鸡博主最近在开发一个框架，就有类似的代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	应用（项目）的入口文件index.php</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">include</span> <span class="string">&#x27;HHTCore/Common/bootstrap.php&#x27;</span>;</span><br><span class="line">    <span class="keyword">include</span> <span class="string">&#x27;HHTCore/Controller/Controller.php&#x27;</span>; <span class="comment">// 注意这个地方引入了一个文件</span></span><br><span class="line"></span><br><span class="line">    $app = <span class="keyword">isset</span>($_GET[<span class="string">&#x27;app&#x27;</span>]) ? $_GET[<span class="string">&#x27;app&#x27;</span>] : <span class="string">&#x27;Home&#x27;</span>; <span class="comment">// 默认的应用是Home</span></span><br><span class="line">    $controller = <span class="keyword">isset</span>($_GET[<span class="string">&#x27;c&#x27;</span>]) ? $_GET[<span class="string">&#x27;c&#x27;</span>] : <span class="string">&#x27;Index&#x27;</span>; <span class="comment">// 默认的控制器是Home目录下的IndexController</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* some code */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is_file($file)) &#123;</span><br><span class="line">    	<span class="keyword">include</span> $file; <span class="comment">// 这里又引入了一个文件</span></span><br><span class="line">    	$controller = <span class="string">&#x27;\APP\Home\Controller\\&#x27;</span> . $controller;</span><br><span class="line"></span><br><span class="line">    	$appClassObject = <span class="keyword">new</span> $controller();</span><br><span class="line">    	$appClassObject-&gt;$action();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="keyword">echo</span> <span class="string">&#x27;error&#x27;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，又有两个文件：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// Controller.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">HHTCore</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">$view = <span class="string">&#x27;&#x27;</span>, $data = []</span>) </span>&#123;</span><br><span class="line">            var_dump(dirname(<span class="keyword">__FILE__</span>));</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// IndexController.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">APP</span>\<span class="title">Home</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">HHTCore</span>\<span class="title">Controller</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">IndexController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    		<span class="keyword">$this</span>-&gt;render();</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>看起来我在<code>IndexController.php</code>里面使用了<code>use HHTCore\Controller\Controller;</code>之后，就可以直接使用类<code>Controller</code>了。然而不是的，我们在上面的<code>Teacher.php</code>和<code>Parent.php</code>做过实验。真实情况是，我们每次访问我们的Web项目，都是要从那个入口文件<code>index.php</code>里面去访问的，所以每次都会去引入那两个文件（其中后面的那个文件是根据URL动态变化的），因此，就会出现我们上面的错觉。</p>
+<p>这篇博客就和大家分享到这里吧。</p>
+<p>我希望我的每一篇博客都用心去写。</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/05/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/" data-id="ckkj72zrm002jf6vx26mr8zgx" data-title="PHP命名空间" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-nginx-fpm-出现502问题的一个可能原因" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/03/nginx-fpm-%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/" class="article-date">
+  <time class="dt-published" datetime="2018-01-03T08:05:09.000Z" itemprop="datePublished">2018-01-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/03/nginx-fpm-%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/">nginx(fpm)出现502问题的一个可能原因</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>为什么要重新配nginx呢？因为我一直以来都是用lnmp一键安装包，那时候看到配置就害怕。虽然省去了很多配置的问题，对新手比较友好，但是随着学习的深入，迟早是要分开来用的，不能老用一键安装包。碰巧今天测试秒杀系统的时候，模拟了5000个客户端去请求数据库，不知道怎么搞的就把MySQL搞坏了，也不知道怎么解决，索性卸了数据库。也把Nginx卸了，分开来安装……</p>
+<p>我前几天在Windows上面分开来安装过。比较顺利，但是今天在Linux上面因为一个坑折腾了很久……</p>
+<p>我简单说一下。首先看Nginx配置文件的关键部分：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/1.PNG"></p>
+<p>我配置完了之后，写了一个简单的php脚本进行测试，打开网页，显示了nginx自带的error页面：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/2.PNG"></p>
+<p>遇到这种问题怎么解决呢？我们不是复制里面的英文，然后谷歌、百度（这是我刚开始学习编程的做法）。我们一般是按下<code>F12</code>（我当前用的是UC浏览器，不同浏览器快捷键可能有所不同，谷歌也是<code>F12</code>），或者鼠标右键，选择检查，会弹出这个东西：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/3.PNG"></p>
+<p>我们点击那个被我圈出来的英文：</p>
+<p>然后再点击下面被我圈出来的东西：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/4.PNG"></p>
+<p>得到如下图片：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/5.PNG"></p>
+<p>我们会发现，在上面这张图片中有一个叫做：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Status Code:502 Bad Gateway (from disk cache)</span><br></pre></td></tr></table></figure>
+
+<p>的东西</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/6.PNG"></p>
+<p>状态码为502，而且说网关出了问题。我们分析一下，这个网关可能是什么？我们知道PHP有一个SAPI叫做FPM，翻译过来就是<code>FastCGI进程管理</code>，那么CGI是什么呢？翻译过来就是通用网关接口（当初有一个技术官面试我的时候，让我解释了一下这个东西，小伙伴们一定要理解这个东西，这个东西关键，很多时候就是因为这个东西导致<strong>网站</strong>运行不起来）。</p>
+<p>我们到了这一步，可以测试一下，HTML页面可以访问吗？</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/11.PNG"></p>
+<p>OK，到这里，我们大致可以猜测一下是FPM某方面出了问题，缩小了出错的范围。</p>
+<p>这个时候，我们就可以带着问题去谷歌和百度了。我百度出来的解决方案很多，大多数是什么FPM开的进程数量太少啊、资源耗尽了啊。这些配置我都有尝试过，但是都无法解决我的502问题。我也想：只有我一个人访问，怎么可能会是FPM开的进程数量太少、更不可能耗尽资源了。</p>
+<p>我们继续回到第一张图片的Nginx的配置；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">location ~ \.php$ &#123;</span><br><span class="line">            root           &#x2F;home&#x2F;wwwroot&#x2F;default;</span><br><span class="line">            fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">            fastcgi_index  index.php;</span><br><span class="line">            fastcgi_param  SCRIPT_FILENAME  &#x2F;home&#x2F;wwwroot&#x2F;default$fastcgi_script_name;</span><br><span class="line">            include        fastcgi_params;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看一看哪些和FPM有关。第一个是网站的根目录，肯定是和FPM无关的。接下来是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastcgi_pass  127.0.0.1:9000;</span><br></pre></td></tr></table></figure>
+
+<p>这个东西是和FPM有关的，意思是告诉Nginx把客户端的请求发送给FPM，也就是找到FPM对吧。我想了一下，问题也是可能出在这里，因为Nginx找不到的话，也是无法把请求给FPM的。所以我去看了看FPM的配置，看看它监听哪个端口：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/7.PNG"></p>
+<p>我们发现，它和Nginx的不一致，php这边监听的是sock文件然而nginx那边设置的是9000端口。我们把它修改一下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/8.PNG"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen &#x3D; 127.0.0.1:9000</span><br></pre></td></tr></table></figure>
+
+<p>然后，问题就得到了解决：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/9.PNG"></p>
+<p>然后下面这个地方也没有红色了：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/10.PNG"></p>
+<p>好的，这篇博客到这里差不多要结束了。相信大家也有收获吧。这篇博客不仅仅是教大家如何复制粘贴的去胡乱解决问题，而是与大家分享一下我一般是如何解决一个问题的。缩小范围，缩小谷歌、百度的范围，精确问题的所在，问题一般都可以解决。而且，大家也知道了FPM有<strong>两种监听方式</strong>、静态页面是不需要经过FPM的。</p>
+<p>最后，在多说一句，基础知识很重要，如果你不知道FPM是什么，你不知道Nginx扮演什么角色，你不懂一点网络编程的知识，这个问题也够我们折腾了。</p>
+<p>一个希望成为大牛的大三菜鸡……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/03/nginx-fpm-%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/" data-id="ckkj72zss0057f6vxhy90gurq" data-title="nginx(fpm)出现502问题的一个可能原因" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-秒杀系统" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/01/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" class="article-date">
+  <time class="dt-published" datetime="2018-01-01T07:21:23.000Z" itemprop="datePublished">2018-01-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/01/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/">秒杀系统</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这两天在GitHub上面找了一个比较小型的秒杀系统的源码读了读，1000多行代码，收获很多。前辈他没有使用PHP框架，所以我学习了如何用原生的PHP代码来实现一个小型的MVC框架、一个很微型的模板引擎的功能，目录结构特别清晰。</p>
+<p>简单的说一说什么是秒杀系统吧。顾名思义，秒杀系统是在最后几秒，用户需要kill掉这个商品，也就是购买。那么，我们就需要解释一下为什么会存在这么一个场景呢？首先，这个东西很有用或者很贵现在打折，那么人们肯定就会去买这个商品对吧。那么为什么大家会一直守在页面前，等待最后几秒然后下单呢？而不是活动开始一段时间之后再来购买？原因是这件商品<strong>有限</strong>，<strong>数量不多</strong>。那么大家当然就会一直坚守到最后几秒抢购。这样一来，就有很多人都在等待，然后抢购。所以就导致了一个问题：在短时间内，许多客户端会请求服务器，那么可以想象一下并发量有多大。</p>
+<p>那么即使请求量多了，服务器也还是需要尽可能快的处理完这些请求对吧。那么很有可能需要使用到多进程的模型。那么使用多进程的模型可能会导致一个什么问题呢？我举一个例子哈。假设在同一个时刻Nginx服务器同时接收到两个购买的请求然后通过FastCGI把请求给了PHP应用程序，PHP分别处理这两个请求。首先在PHP代码里面需要先查找一下数据库中库存是否还够。我们假设库存只有一个了。那么PHP脚本首先为第一个用户的请求查询一下数据库，这个时候，PHP脚本再为第二个用户的请求查询一下数据库。OK，假设数据库是多进程的，它开了两个进程去查询库存，第一个进程先查了一下，发现库存是1个，大于0，说明还可以卖。然后，数据库第一个进程时间片到了，第二个进程也查了一下库存，发现是1个，大于0，说明也还可以卖。之后，两个查询都返回给了PHP脚本的那两个进程，说还可以卖。然后两个PHP进程都对数据库请求一次更新操作，导致库存变为了-1。</p>
+<p>很显然，上面的结果是不如意的。我们本来只能再卖一个的，却卖了两个。可以想象一下，上面还只是两个用户请求，如果千千万万的用户同时发起请求，而系统做得又不够好，那么超卖（即超出库存数量还在卖）就会特别严重。这显然不是我们想要的结果。</p>
+<p>额，对于上面的多进程问题，如果我们可以很好的做好同步操作，理论上是可以解决超卖问题。</p>
+<p>好的，说到这里，大家大概对秒杀系统有了一个简单的认识吧。接下来我们看一看两种简单的秒杀系统：基于Redis和Mysql的事务和锁。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/01/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" data-id="ckkj72zus00b7f6vxbtq0guib" data-title="秒杀系统" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-初识redis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/30/%E5%88%9D%E8%AF%86redis/" class="article-date">
+  <time class="dt-published" datetime="2017-12-30T12:00:01.000Z" itemprop="datePublished">2017-12-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/30/%E5%88%9D%E8%AF%86redis/">初识Redis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Redis这个技术我很久之前就已经听过了，一直想要尝试一下，但是那时候我还是一个很菜很菜的新手，看不懂，在大学里面也没有人带我，只能自学了，各种谷歌、百度。很累但很有成就感，自学能力得到锻炼……</p>
+<p>没关系，今天我学了一下这个东西，主要是我想要实现一个秒杀系统。里面需要用到这个技术，所以临时学了一下这个技术。我只说一说我想说的地方，其他那些概念呀、用法呀之类的我就不说了。而且我所提到的Redis都指的是Redis服务器而不是Redis客户端。（Redis客户端没啥好讲的，各种实现都有。Redis服务器才是关键）</p>
+<p>Redis是一个数据结构服务器。怎么说呢？它的数据类型有字符串(String)，哈希(Map)，列表(List)，集合(Sets)和有序集合(Sorted Sets)等类型。</p>
+<p>而且Redis是直接把数据保存在内存中的。Redis不像我们平常使用的那些数据库，例如MySQL，它是把数据存在磁盘上的。我们在这里可以简单的对比一下Redis和MySQL：</p>
+<p>Redis：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/1.PNG"></p>
+<p>MySQL：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/2.PNG"></p>
+<p>我们点开那个data目录：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/3.PNG"></p>
+<p>这里，每一个文件夹都对应了一个数据库：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/4.PNG"></p>
+<p>从目录结构我们就可以很直观的看出，Redis非常的轻量。而且它的目录里面大多只是一些配置文件和可执行文件。所以它没有花费大量的力气在运行的时候，让数据在内存和磁盘之间移动。真是因为对磁盘的操作少，所以<strong>效率是非常的高的</strong>。</p>
+<p>说到这里，大家可能就会有一个疑问：Redis服务器被关闭的时候，那些原来的数据不就丢失了吗？额，这个问题我之后讲一下Redis是如何处理的。</p>
+<p>然后呢，我说一说Redis另一个吸引我的地方：<strong>发布订阅</strong>功能。</p>
+<p>为什么去这么一个名字呢？因为这个功能很符合我们现实生活。例如，许多人订阅了一个打王者荣耀的美女主播的频道。那么，当这个美女主播某个时间点要开始直播了，那么她就会发布一些消息告诉那些订阅了的人，本宝宝要开始打王者农药了、今天我用的英雄是阿珂。然后所有订阅了这个频道的人都会收到这两条消息。OK，我们来模拟一下这个过程：</p>
+<p>首先</p>
+<p>假设美女主播创建一个频道叫做 wangzherongyao。然后有三个人去订阅这个频道：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/5.PNG"></p>
+<p>这个时候，美女主播发布了一条消息：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/6.PNG"></p>
+<p>（打不粗中文啊，别介意……）</p>
+<p>此时，那三个人就会受到这条消息：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/7.PNG"></p>
+<p>注意，在这里美女主播和订阅了的人都属于Redis客户端。负责处理这些消息的是Redis服务器，Redis服务器负责把美女主播发送的这条消息广播给那三个人。那么在底层实现上面，就是Redis服务器读取美女主播连接这个socket文件描述符上的数据，然后往其他三个连接到这个服务器的表示连接的socket文件描述符里面写入这条消息（遍历一遍，然后分别推送）。</p>
+<p>OK，然后我再说一说Redis服务器的基于事件的epoll模型。我再菜鸟教程上面看到了这么一句话：<strong>Redis 在网络事件处理上采用的是非阻塞多路复用模型</strong>。嗯，我简单的说一下为什么要采用非阻塞多路复用模型。首先，Redis服务器是基于epoll模型的，然后我猜它是设置成了边沿触发。那么为什么设置成了边沿触发就要把表示连接的socket文件描述符设置为非阻塞的呢？我先说说边沿触发的特点吧：如果某个文件描述符上面有事件没有处理的话，那么下次就不会返回这个文件描述符了（所以边沿触发的效率还是很高的，不会无脑返回我们不想处理的文件描述符）。那么，如果我们想要处理完这个文件描述符上面的数据，就需要去循环的处理完这些数据，直到不能再处理这个文件描述符了。所以我们需要设置为非阻塞的。OK，我再说一说为什么要循环的处理这个文件描述符：如果我们这次不处理完这个文件描述符，例如文件描述符本来可以读取‘a’、’b’、’c’三个字符，我们却只读了’a’、’b’，还剩字符’c’没有读，那么由于我们设置的是边沿触发，所以下次就不会返回这个文件描述符了，而是有其他数据往这个文件描述符里面写入时，才会返回这个文件描述符，而此时字符’c’还留在这个文件描述符里面。OK，当这个文件描述符里面又写入了’d’、’e’两个字符，另一端又可以读取这个文件描述符里面的内容了。但是它会先读出上次那个没有读完的字符’c’。然后才可能读取另外两个字符’d’、’e’。试想一下，如果是一个聊天系统，这肯定是无法接受的。</p>
+<p>OK，在最后，我用PHP来举例使用一下Redis吧，顺便回答一下上面那个问题。</p>
+<p>首先是PHP代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//连接本地的 Redis 服务</span></span><br><span class="line">$redis = <span class="keyword">new</span> Redis();</span><br><span class="line">$redis-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">6379</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Connection to server sucessfully\n&quot;</span>;</span><br><span class="line"><span class="comment">//存储数据到列表中</span></span><br><span class="line">$redis-&gt;lpush(<span class="string">&quot;hehe&quot;</span>, <span class="string">&quot;Redis&quot;</span>);</span><br><span class="line">$redis-&gt;lpush(<span class="string">&quot;hehe&quot;</span>, <span class="string">&quot;Mongodb&quot;</span>);</span><br><span class="line">$redis-&gt;lpush(<span class="string">&quot;hehe&quot;</span>, <span class="string">&quot;Mysql&quot;</span>);</span><br><span class="line"><span class="comment">// 获取存储的数据并输出</span></span><br><span class="line">$arList = $redis-&gt;lrange(<span class="string">&quot;hehe&quot;</span>, <span class="number">0</span> ,<span class="number">100</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Stored string in redis\n&quot;</span>;</span><br><span class="line">var_dump($arList);</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/8.PNG"></p>
+<p>OK，我们知道，对于PHP的这个Cli SAPI，它的生命周期就是一次脚本的执行。所以，这个进程所使用的内存在进程结束的时候，就会被操作系统所回收。</p>
+<p>好的，我们再次执行一下这个PHP脚本看看结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/9.PNG"></p>
+<p>咦，很神奇吧，上次的那些结果还在耶。到这里，我们<strong>或许</strong>可以得出那些内存的分配实际上不是由PHP进程来管理的，可能是由Redis服务器这个进程来管理的。客户端需要什么数据，则请求服务器，由服务器来传回。这与数组很不一样，我们对比一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = <span class="keyword">array</span>(</span><br><span class="line"><span class="string">&#x27;key1&#x27;</span> =&gt; <span class="string">&#x27;value1&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;key2&#x27;</span> =&gt; <span class="string">&#x27;value2&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;key3&#x27;</span> =&gt; <span class="string">&#x27;value3&#x27;</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/10.PNG"></p>
+<p>我们再次执行以下这个脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/11.PNG"></p>
+<p>依然还是只有那三个元素。所以，同样是保存在内存中的，但是对数据的处理方式却不同。这也很好理解为什么。</p>
+<p>OK，我们这次把Redis服务器给关了：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/12.PNG"></p>
+<p>然后再次执行原来那个和Redis有关PHP脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/13.PNG"></p>
+<p>发现连接不上Redis服务器。嗯嗯，Redis服务器没有开启，我们重新开启一下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/14.PNG"></p>
+<p>我们再次执行PHP脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/15.PNG"></p>
+<p>呵呵，这就很奇怪了对吧。不是说好了把数据存放在内存中的吗……欺骗咱们的感情。我开始想，难不成是操作系统拷贝了用户空间的数据？但是这明显不可能啊，操作系统又不可能只为Redis服务器服务，成百上千的服务需要操作系统来配合完成，所以这不可能。然后我就猜想是不是最终保存在了其他地方，或者是把这些东西都写成了日志，就像MySQL事务中保证持久性的那个重写日志一样……</p>
+<p>果然，网上搜到了一个答案。这个文件就类似于重写日志：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/16.PNG"></p>
+<p>额，大概就是这样了的吧。今天学了2个小时的Redis，想法就这样了，有时间读一本讲解Redis原理的书籍。明天写一写秒杀系统。</p>
+<p>happy ending……</p>
+<p>对了，那个美女主播叫<strong>LD-Un倪</strong>。</p>
+<p>加油。给自己十年时间……</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/17.jpg"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/30/%E5%88%9D%E8%AF%86redis/" data-id="ckkj72ztu008if6vxc72v0p32" data-title="初识Redis" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

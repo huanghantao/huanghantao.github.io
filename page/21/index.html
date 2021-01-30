@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/21/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-用C写一个服务器吧（二）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/21/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2017-09-21T02:10:51.000Z" itemprop="datePublished">2017-09-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/21/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/">用C++写一个服务器吧（二）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在这个系列的第一篇文章里面，我们说到了让浏览器来接收服务器发送给它的资源，并且显示出这个HTML页面。然后，结果并没有如预期的那样。在这篇文章，我们将解决这个问题。</p>
+<p>好的，现在我们回忆一下第一篇文章。我们已经看到了，HTML文件里面的内容已经被我们完整的获取了。所以说，不是因为HTML的内容导致失败的。</p>
+<p>然后，我们也看到了浏览器显示<code>malformed HTTP status code &quot;/index.html&quot;</code>这条信息。也就是说问题是出在了服务器那里。</p>
+<p>我们再来审查元素看看：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/5.PNG"></p>
+<p>发现响应出问题了。</p>
+<h3 id="遵循协议"><a href="#遵循协议" class="headerlink" title="遵循协议"></a>遵循协议</h3><p>在这个系列的第一篇文章里，我们谈到了协议这部分内容。而协议顾名思义就是一套标准、一套规范。谁不遵循这个规范，我就不按照你的意思去做。</p>
+<p>关于涉及到HTTP协议的那部分内容出现在了两个地方：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/1.PNG"></p>
+<p>和</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/2.2.PNG"></p>
+<p>我们发现，第二张图片中的响应头信息是对的。只是少了一些具体的信息，我们把她完善一些：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sprintf</span>(buff, <span class="string">&quot;HTTP/1.0 200 OK\r\n&quot;</span>);</span><br><span class="line"><span class="built_in">sprintf</span>(buff, <span class="string">&quot;%sServer: HHTWS Web Server\r\n&quot;</span>, buff);</span><br><span class="line"><span class="built_in">sprintf</span>(buff, <span class="string">&quot;%sContent-length: %d\r\n&quot;</span>, buff, file_size);</span><br><span class="line"><span class="built_in">sprintf</span>(buff, <span class="string">&quot;%sContent-type: %s\r\n\r\n&quot;</span>, buff, file_type);</span><br></pre></td></tr></table></figure>
+
+<p>然后我们看看第一张图片发送的信息。</p>
+<p>因为它是从表示连接的<code>socket</code>文件描述符中读取信息的，因此，读到的自然也就是请求头的信息。而此时，我们又把请求头中的信息发送给浏览器，显然是不符合响应头的要求的。因此，我们把这一行删掉，来看看结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/3.gif"></p>
+<p>OK，美丽的HTML页面出现了！！</p>
+<p>我们来审查一下元素，看看</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/4.PNG"></p>
+<p>这些不正是我们在代码里面写的响应头吗？</p>
+<p>OK。接下来做些小小的优化。</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>虽然<code>write()</code>不太可能返回一个<strong>部分写</strong>的结果。而且，对<code>write</code>系统调用来说没有<code>EOF</code>情况。对于普通文件，除非发生一个错误，否则<code>write</code>将保证写入所有的请求。</p>
+<p>所以，对于普通文件，不需要进行循环写入了。然后，<strong>对于其他类型–例如套接字–大概得有个循环来保证你真的写入了所有请求的字节</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">makesure_write</span><span class="params">(<span class="keyword">int</span> connect_fd, <span class="keyword">void</span>* buff, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> remain_num = n;</span><br><span class="line">    <span class="keyword">int</span> success_write_num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span>* buff_current_postition = (<span class="keyword">char</span>*)buff;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (remain_num &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    	success_write_num = write(connect_fd, buff_current_postition, remain_num);</span><br><span class="line">    	remain_num -= success_write_num;</span><br><span class="line">    	buff_current_postition += success_write_num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> n - remain_num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好了，这次的教程结束。happy ending</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/21/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ckkj72zuq00b2f6vxdfk6cty5" data-title="用C++写一个服务器吧（二）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-496-Next-Greater-Element-I（leetcode）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/19/496-Next-Greater-Element-I%EF%BC%88leetcode%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2017-09-19T06:34:08.000Z" itemprop="datePublished">2017-09-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/19/496-Next-Greater-Element-I%EF%BC%88leetcode%EF%BC%89/">496. Next Greater Element（leetcode）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>You are given two arrays (without duplicates) nums1 and nums2 where nums1’s elements are subset of nums2.<br>Find all the next greater numbers for nums1’s elements in the corresponding places of nums2.</p>
+<p>The Next Greater Number of a number x in nums1 is the first greater number to its right in nums2.<br>If it does not exist, output -1 for this number.</p>
+<p>简单的说就是对于第一个数组中的每一个数字，我们都去第二个数组里面找，直到找到第一个比它大的数字，然后放入一个容器里面。如果没有找到，就把-1放入容器里面。</p>
+<pre><code>Input: nums1 = [4,1,0], nums2 = [1,0,4,2].
+Output: [-1,4,4]
+    Explanation:
+    For number 4 in the first array, 
+    you cannot find the next greater number for it in the second array, 
+    so output -1.
+
+    For number 1 in the first array, 
+    the next greater number for it in the second array is 4.
+
+    For number 0 in the first array, 
+    there is no next greater number for it in the second array, 
+    so output 4.
+
+Input: nums1 = [2,4], nums2 = [1,2,3,4].
+Output: [3,-1]
+Explanation:
+    For number 2 in the first array, 
+    the next greater number for it in the second array is 3.
+
+    For number 4 in the first array, 
+    there is no next greater number for it in the second array, 
+    so output -1</code></pre>
+<h3 id="暴力破解"><a href="#暴力破解" class="headerlink" title="暴力破解"></a>暴力破解</h3><p>暴力破解，也就是没有利用数据之间的规律。毫无技巧可言，只需要细心一些即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">nextGreaterElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; findNums, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator iter;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator i = findNums.begin(); i != findNums.end(); ++i) &#123;</span><br><span class="line">        	iter = find(nums.begin(), nums.end(), *i);</span><br><span class="line">            <span class="keyword">int</span> front = *iter;</span><br><span class="line">            <span class="keyword">int</span> next = *(++iter);</span><br><span class="line">            --iter;</span><br><span class="line">        	<span class="keyword">if</span> ((iter != nums.end()) &amp;&amp; (iter != --nums.end())) &#123;</span><br><span class="line">        		<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator j;</span><br><span class="line">        		<span class="keyword">for</span> (j = iter; j != nums.end(); ++j) &#123;</span><br><span class="line">        			<span class="keyword">if</span> (*j &gt; *iter) &#123;</span><br><span class="line">                        v.push_back(*j);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">        			&#125;</span><br><span class="line">        		&#125;</span><br><span class="line">        		<span class="keyword">if</span> (j == nums.end()) &#123;</span><br><span class="line">        			v.push_back(<span class="number">-1</span>);</span><br><span class="line">        		&#125;</span><br><span class="line">        	&#125;</span><br><span class="line">        	<span class="keyword">else</span> &#123;</span><br><span class="line">        		v.push_back(<span class="number">-1</span>);</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> v;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>(建议对vector容器的遍历用下标来访问，而不是我上面的那样用迭代器来操作)</p>
+<p>可以看出，这样的代码虽然可以解出来，但是太烂了，看起来和那个啥一样。所以我们就需要一种新的思路。</p>
+<h3 id="优化方案一"><a href="#优化方案一" class="headerlink" title="优化方案一"></a>优化方案一</h3><p>首先，我们仔细分析一下题目。题目说了<strong>第一个数组是第二个数组的子集</strong>对吧。那么，这就意味着我<strong>一定可以在第二个数组里面找到第一个数组中的元素</strong>。正是因为有了这个一定可以找到的特点，我们可以使用哈希表。让第二个数组中的元素值和它所在的位置做一个映射。这样做了之后，当我们需要在第二个数组里面查找第一个数组中的数据的时候，我们就可以以<strong>O(1)的时间复杂度</strong>找到这个元素在第二个数组中的位置。然后，我们只需要对它后面的元素进行遍历即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">nextGreaterElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; findNums, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">res</span><span class="params">(findNums.size())</span></span>;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; m;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.size(); ++i) &#123;</span><br><span class="line">            m[nums[i]] = i; <span class="comment">// 做一个映射的关系</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; findNums.size(); ++i) &#123;</span><br><span class="line">            res[i] = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">int</span> start = m[findNums[i]];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = start + <span class="number">1</span>; j &lt; nums.size(); ++j) &#123;</span><br><span class="line">                <span class="keyword">if</span> (nums[j] &gt; findNums[i]) &#123;</span><br><span class="line">                    res[i] = nums[j];</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，是不是代码更清晰易懂了？</p>
+<h3 id="优化方案二"><a href="#优化方案二" class="headerlink" title="优化方案二"></a>优化方案二</h3><p>在优化方案一中，我们是利用哈希表在第二个数组中找第一个数组中的元素。但是我们并没有立马得出这个元素的后面出现的第一个比这个元素大的元素，那么我们可以想，是否能够利用哈希表来直接得到这个元素后面出现的第一个比这个元素大的元素呢？</p>
+<p>我们的做法是把第二个数组中的元素和该元素后面出现的第一个最大值做一个映射。</p>
+<p>那么为了减少无效的遍历（因为，这个元素前面的元素是没有意义的。例如：有个数组<code>[1,3,4,2]</code>，当我们去查找4这个元素后面出现的第一个比4大的元素的时候，我们去遍历1和3是没有意义的。我们称之为无效的遍历）。所以我们使用栈这个数据结构帮我们解决掉无效的遍历，简化了搜索空间。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">nextGreaterElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; findNums, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; res;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; st;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; m;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">            <span class="keyword">while</span> (!st.empty() &amp;&amp; st.top() &lt; num) &#123;</span><br><span class="line">                m[st.top()] = num; st.pop();</span><br><span class="line">            &#125;</span><br><span class="line">            st.push(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num : findNums) &#123;</span><br><span class="line">            res.push_back(m.count(num) ? m[num] : <span class="number">-1</span>);</span><br><span class="line">        &#125;        </span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>所以，遇到这种查找一个元素是否在这个数组（数组中的元素不重复）里面的问题，我们可以用哈希表来处理。首先对这个数组进行元素和位置的映射，然后，无论你要查找哪个元素，我都可以轻而易举的找到，而不用每次都去遍历来查找。</p>
+<p>栈这种数据结构可以寻找相邻的更大或者更小的数字，简化搜索空间。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/19/496-Next-Greater-Element-I%EF%BC%88leetcode%EF%BC%89/" data-id="ckkj72zqg0006f6vxanl7ez7p" data-title="496. Next Greater Element（leetcode）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-669-Trim-a-Binary-Search-Tree（leetcode）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/17/669-Trim-a-Binary-Search-Tree%EF%BC%88leetcode%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2017-09-17T02:43:33.000Z" itemprop="datePublished">2017-09-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/17/669-Trim-a-Binary-Search-Tree%EF%BC%88leetcode%EF%BC%89/">669. Trim a Binary Search Tree（leetcode）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Given a binary search tree and the lowest and highest boundaries as L and R, </span><br><span class="line">trim the tree so that all its elements lies in [L, R] (R &gt;&#x3D; L). </span><br><span class="line">You might need to change the root of the tree, </span><br><span class="line">so the result should return the new root of the trimmed binary search tree.</span><br><span class="line"></span><br><span class="line">Example 1:</span><br><span class="line">Input: </span><br><span class="line">    1</span><br><span class="line">   &#x2F; \</span><br><span class="line">  0   2</span><br><span class="line"></span><br><span class="line">  L &#x3D; 1</span><br><span class="line">  R &#x3D; 2</span><br><span class="line"></span><br><span class="line">Output: </span><br><span class="line">    1</span><br><span class="line">      \</span><br><span class="line">       2</span><br><span class="line"></span><br><span class="line">Example 2:</span><br><span class="line">Input: </span><br><span class="line">    3</span><br><span class="line">   &#x2F; \</span><br><span class="line">  0   4</span><br><span class="line">   \</span><br><span class="line">    2</span><br><span class="line">   &#x2F;</span><br><span class="line">  1</span><br><span class="line"></span><br><span class="line">  L &#x3D; 1</span><br><span class="line">  R &#x3D; 3</span><br><span class="line"></span><br><span class="line">Output: </span><br><span class="line">      3</span><br><span class="line">     &#x2F; </span><br><span class="line">   2   </span><br><span class="line">  &#x2F;</span><br><span class="line"> 1</span><br></pre></td></tr></table></figure>
+
+<p>题目大意就是删除那些不在范围内的节点，同时保证这棵树还是一棵二分搜索树</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * struct TreeNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     TreeNode *left;</span></span><br><span class="line"><span class="comment"> *     TreeNode *right;</span></span><br><span class="line"><span class="comment"> *     TreeNode(int x) : val(x), left(NULL), right(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">trimBST</span><span class="params">(TreeNode* root, <span class="keyword">int</span> L, <span class="keyword">int</span> R)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">if</span> (<span class="literal">NULL</span> == root) &#123;</span><br><span class="line">    		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    	&#125;</span><br><span class="line"></span><br><span class="line">    	<span class="keyword">if</span> ((root-&gt;val &gt;= L) &amp;&amp; (root-&gt;val &lt;= R)) &#123;</span><br><span class="line">    		root-&gt;left = trimBST(root-&gt;left, L, R);</span><br><span class="line">    		root-&gt;right = trimBST(root-&gt;right, L, R);</span><br><span class="line">    		<span class="keyword">return</span> root;</span><br><span class="line">    	&#125;</span><br><span class="line"></span><br><span class="line">    	<span class="keyword">if</span> (root-&gt;val &lt; L) &#123;</span><br><span class="line">    		<span class="keyword">return</span> trimBST(root-&gt;right, L, R); <span class="comment">// 如果这个节点小于L，那么这个节点和它的左子树都被丢弃</span></span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">if</span> (root-&gt;val &gt; R) &#123;</span><br><span class="line">    		<span class="keyword">return</span> trimBST(root-&gt;left, L, R); <span class="comment">// 如果这个节点大于R，那么这个节点和它的右子树都被丢弃</span></span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键就是利用二叉树的性质：左子树中所有的节点都比父节点小，右子树所有的节点都比父节点大。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/17/669-Trim-a-Binary-Search-Tree%EF%BC%88leetcode%EF%BC%89/" data-id="ckkj72zqj000bf6vxdubn5sgs" data-title="669. Trim a Binary Search Tree（leetcode）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Add-Two-Numbers" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/16/Add-Two-Numbers/" class="article-date">
+  <time class="dt-published" datetime="2017-09-16T07:01:54.000Z" itemprop="datePublished">2017-09-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/16/Add-Two-Numbers/"> Add Two Numbers</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>You are given two <strong>non-empty</strong> linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p><strong>Input:</strong> (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)<br><strong>Output:</strong> 7 -&gt; 0 -&gt; 8</p>
+<p><strong>Input:</strong> (1 -&gt; 8) + (0)<br><strong>Output:</strong> 1 -&gt; 8</p>
+<p>题目的意思就是模拟两个数的加法运算</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>1、使用一个新的链表来存放这些加好的数字。</p>
+<p>2、先让两个数字对应的部分相加，然后再加上上一次相加的进位（如果没有进位，那么进位实际上就是0），得到一个新的数字。</p>
+<p>3、如果这个数字大于9，那么就要对这个数字进行进位了。其实就是分出个位和十位。保留个位，而十位留给下一次相加的数。</p>
+<p>4、关键是要考虑两个链表不一样长的情况（也就是数字的位数不同的情况）。为了好操作，我们可以<strong>把短的链表用0来填充</strong>。而且由于链表的长度不一样，很容易会让本来就是NULL的节点往后面指。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">    	ListNode *headNode = <span class="keyword">new</span> ListNode(<span class="number">0</span>), *currentNode = headNode;</span><br><span class="line">    	ListNode *p = l1, *q = l2; <span class="comment">// 一般我们不会去直接操作传过来的参数，所以另外保存它们</span></span><br><span class="line">    	<span class="keyword">int</span> carry = <span class="number">0</span>, x, y, sum;</span><br><span class="line">    	<span class="keyword">while</span> (p != <span class="literal">NULL</span> || q != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    		x = (p != <span class="literal">NULL</span>) ? p-&gt;val : <span class="number">0</span>;</span><br><span class="line">    		y = (q != <span class="literal">NULL</span>) ? q-&gt;val : <span class="number">0</span>;</span><br><span class="line">            </span><br><span class="line">            sum = x + y + carry;</span><br><span class="line">            currentNode-&gt;next = <span class="keyword">new</span> ListNode(sum % <span class="number">10</span>);</span><br><span class="line">            currentNode = currentNode-&gt;next;</span><br><span class="line">            carry = sum / <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ((p != <span class="literal">NULL</span>) &amp;&amp; (p-&gt;next != <span class="literal">NULL</span>)) &#123;</span><br><span class="line">            	p = p-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">            	p = <span class="literal">NULL</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ((q != <span class="literal">NULL</span>) &amp;&amp; (q-&gt;next != <span class="literal">NULL</span>)) &#123;</span><br><span class="line">            	q = q-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">            	q = <span class="literal">NULL</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    	&#125;</span><br><span class="line"></span><br><span class="line">    	<span class="keyword">if</span>  (carry &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    		currentNode-&gt;next = <span class="keyword">new</span> ListNode(carry);</span><br><span class="line">    	&#125;</span><br><span class="line"></span><br><span class="line">    	<span class="keyword">return</span> headNode-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/16/Add-Two-Numbers/" data-id="ckkj72zqk000cf6vxfn2o7htj" data-title=" Add Two Numbers" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-I-O多路复用之select-系统调用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2017-09-13T06:15:44.000Z" itemprop="datePublished">2017-09-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/">I/O多路复用之select()系统调用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="为什么要使用I-O多路复用"><a href="#为什么要使用I-O多路复用" class="headerlink" title="为什么要使用I/O多路复用"></a>为什么要使用I/O多路复用</h3><p>应用程序常常需要在多于一个文件描述符上阻塞：例如响应键盘输入（stdin）、进程间通信以及同时操作多个文件。</p>
+<p>在不使用线程（怎么理解线程的存在呢？我么可以举一个例子。当我们运行qq这个进程的时候，是可以执行不同的任务的。例如，我们可以在使用qq发送消息的同时来收发文件。而这两个不同的任务就是利用线程来完成的），<strong>尤其是独立处理每一个文件的情况下，进程无法在多个文件描述符上同时阻塞。如果文件都处于准备好被读写的状态，同时操作多个文件描述符是没有问题的</strong>。但是，一旦在该过程中出现一个未准备好的文件描述符（就是说，如果一个<code>read()</code>被调用，但没有读入数据），则这个进程将会阻塞，不能再操作其他文件。可能阻塞只有几秒钟，但是应用无响应也会造成不好的用户体验。然而，如果文件描述符始终没有任何可用数据，就可能一直阻塞下去。</p>
+<p><strong>如果使用非阻塞I/O，应用可以发起I/O请求并返回一个特别的错误，从而避免阻塞</strong>。但是，从两个方面来讲，这种方法效率较差。首先，进程需要以某种不确定的方式<strong>不断发起I/O操作</strong>，直到某个打开的文件描述符准备好进行I/O。其次，如果程序可以睡眠的话将更加有效，可以让处理器进行其他工作，直到一个或更多文件描述符可以进行I/O时再唤醒。</p>
+<h3 id="三种I-O多路复用方案"><a href="#三种I-O多路复用方案" class="headerlink" title="三种I/O多路复用方案"></a>三种I/O多路复用方案</h3><p>I/O多路复用允许应用在多个文件描述符上同时阻塞，并在其中某个可以读写时收到通知。这时I/O多路复用就成了应用的关键所在。</p>
+<p>I/O多路复用的设计遵循一下原则：</p>
+<p>1、I/O多路复用：当任何文件描述符准备好I/O时告诉我</p>
+<p>2、在一个或更多文件描述符就绪前始终处于睡眠状态</p>
+<p>3、唤醒：哪个准备好了？</p>
+<p>4、在不阻塞的情况下处理所有I/O就绪的文件描述符</p>
+<p>5、返回第一步，重新开始</p>
+<p>Linux提供了三种I/O多路复用方案：<code>select</code>、<code>poll</code>、<code>epoll</code>。</p>
+<h3 id="先来说说select"><a href="#先来说说select" class="headerlink" title="先来说说select()"></a>先来说说select()</h3><h4 id="select-系统调用的声明"><a href="#select-系统调用的声明" class="headerlink" title="select()系统调用的声明"></a>select()系统调用的声明</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">作用：通知执行了select()的进程哪个Socket或文件可读</span></span><br><span class="line"><span class="comment">返回值：负值：select错误，见ERRORS。 </span></span><br><span class="line"><span class="comment">       正值：某些文件可读写或出错  </span></span><br><span class="line"><span class="comment">       0：等待超时，没有可读写或错误的文件</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span> <span class="params">(<span class="keyword">int</span> n,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *readfds,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *writefds,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *exceptfds,</span></span></span><br><span class="line"><span class="function"><span class="params">            struct timeval *timeout</span></span></span><br><span class="line"><span class="function"><span class="params">            )</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>fd_set</code>是<code>select</code>机制中提供的一种数据结构，实际上是一<code>long</code>类型的数组，每一个数组元素都能与一打开的文件句柄（不仅是<code>socket</code>句柄，还是其他文件或命名管道或设备句柄）建立联系，建立联系的工作由程序员完成，当调用<code>select()</code>时，由内核根据IO状态修改<code>fd_set</code>的内容，由此来通知执行了<code>select()</code>的进程哪一个<code>socket</code>或文件发生了可读或可写事件</p>
+<p>监测的文件描述符可以分为三类，分别等待不同的事件。监测<code>readfds</code>集合中的文件描述符，确认其中是否有可读数据（也就是说，确认好了的文件描述符的读操作可以<strong>无阻塞</strong>的完成）。监测<code>writefds</code>集合中的文件描述符，<strong>确认</strong>其中是否有一个写操作可以<strong>不阻塞</strong>地完成。监测<code>exceptfds</code>中的文件描述符，确认其中是否有出现异常发生或者出现带外数据（这种情况只适用于套接字）。指定的集合可能为空（NULL）。相应的，<code>select()</code>则不对此类事件进行监测。</p>
+<p><strong>成功返回时，每个集合只包含对应类型的I/O就绪的文件描述符</strong>。举个例子，<code>readfds</code>集合中有两个文件描述符：7和9.当调用返回时，如果7还在集合中，该文件描述符就准备好进行无阻塞I/O了。如果9已不在集合中，它可能在被读取时会发生阻塞。<strong>出现错误返回-1</strong>。</p>
+<p>第一个参数n，等于<strong>所有集合中文件描述符的最大值加1</strong>。这样，<code>select()</code>的调用者需要找到最大的文件描述符值，并将其加1后传给第一个参数。</p>
+<p><code>timeout</code>参数是一个指向<code>timeval</code>结构体的指针，定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> tv_sec; <span class="comment">/* seconds */</span></span><br><span class="line">    <span class="keyword">long</span> tv_usec; <span class="comment">/* microseconds */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果这个参数不是NULL，即使此时没有文件描述符处于I/O就绪状态，<code>select()</code>调用也将在<code>tv_sec秒、tv_usec微秒</code>后返回。即 <strong>select在timeout时间内阻塞，超时时间之内有事件到来就返回了，否则在超时后不管怎样一定返回</strong>。</p>
+<p><strong>如果时限中的两个值都是0</strong>，调用会立即返回，并报告调用时所有事件对应的文件描述符均不可用，且不等待任何后续事件。</p>
+<p>若将<strong>NULL</strong>以形参传入，即不传入时间结构，就是将select<strong>置于阻塞状态，</strong>一定等到监视文件描述符集合中某个文件描述符发生变化为止</p>
+<h3 id="举个select-的小例子"><a href="#举个select-的小例子" class="headerlink" title="举个select()的小例子"></a>举个select()的小例子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIMEOUT 5 <span class="comment">/* 选择超时秒数 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_LEN 1024 <span class="comment">/* 读缓冲区字节 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">    fd_set readfds;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">     </span><br><span class="line">    <span class="comment">/* 等待输入 */</span></span><br><span class="line">    FD_ZERO(&amp;readfds); <span class="comment">// 把writefds集合中的所有文件描述符移除</span></span><br><span class="line">    FD_SET(STDIN_FILENO, &amp;readfds); <span class="comment">// 向writefds集合中添加文件描述符STDIN_FILENO。STDIN_FILENO就是标准输入设备（一般是键盘）的文件描述符。它的值为0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 设置等待为5秒 */</span></span><br><span class="line">    tv.tv_sec = TIMEOUT;</span><br><span class="line">    tv.tv_usec = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 在指定的tv时间内阻塞 */</span></span><br><span class="line">    ret = select(STDIN_FILENO + <span class="number">1</span>, &amp;readfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv); <span class="comment">// 通知执行了select()的进程哪个Socket或文件可读</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ret == <span class="number">-1</span>) &#123;</span><br><span class="line">    	perror(<span class="string">&quot;select&quot;</span>);</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!ret) &#123;</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;%d 秒 已经过去了. \n&quot;</span>, TIMEOUT);</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (FD_ISSET(STDIN_FILENO, &amp;readfds)) &#123; <span class="comment">// 测试给定的文件描述符在不在给定的集合中。检查fdset联系的文件句柄fd是否可读写，当&gt;0表示可读写</span></span><br><span class="line">    	<span class="keyword">char</span> buf[BUF_LEN + <span class="number">1</span>];</span><br><span class="line">    	<span class="keyword">int</span> len;</span><br><span class="line">    	<span class="comment">/* 保证没有阻塞 */</span></span><br><span class="line">    	len = read(STDIN_FILENO, buf, BUF_LEN);</span><br><span class="line">    	<span class="keyword">if</span> (len == <span class="number">-1</span>) &#123;</span><br><span class="line">    		perror(<span class="string">&quot;read&quot;</span>);</span><br><span class="line">    		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">if</span> (len) &#123;</span><br><span class="line">    		buf[len] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    		<span class="built_in">printf</span>(<span class="string">&quot;read: %s\n&quot;</span>, buf);</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;This should not happen!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>让我们执行这段代码之后，等待5秒：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/I/O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect%28%29%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/1.gif"></p>
+<p>可以看到，在这5秒内，进程是处于阻塞状态的（因为文件描述符的状态没有发生变化）</p>
+<p>现在让我们执行完这段代码后输入一些内容：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/I/O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect%28%29%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/2.gif"></p>
+<p>上面这个例子虽然只是检测了一个文件描述符（因此不是多路复用），但是对于<code>select()</code>这个系统调用的用法已经很清晰了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" data-id="ckkj72zqr000qf6vx35pa1b2d" data-title="I/O多路复用之select()系统调用" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-用C写一个服务器吧（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/08/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2017-09-08T08:49:19.000Z" itemprop="datePublished">2017-09-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/08/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%80%EF%BC%89/">用C++写一个Web服务器吧（一）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://github.com/huanghantao/HHTWS">获取本服务器完整的源码</a></p>
+<p>首先，要实现一个Web服务器，必须要有一定的理论基础，才知道要做什么事情（如何写代码）</p>
+<h3 id="理论知识"><a href="#理论知识" class="headerlink" title="理论知识"></a>理论知识</h3><p>首先，我们要知道什么是客户端和服务器</p>
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><blockquote>
+<p>指<strong>与服务器相对应</strong>，为客户提供本地服务的程序。除了一些只在本地运行的应用程序之外，一般安装在普通的客户机上，需要与服务端互相配合运行</p>
+<p>​                                                                                                      –摘自百度百科</p>
+</blockquote>
+<p>举个例子，我们常常用的<strong>浏览器就是一个客户端</strong></p>
+<h4 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h4><p>与客户端相对的，提供服务的。一般服务器上面都放有客户端需要的资源。当客户端请求服务器上的某些资源的时候，如果服务器允许的话，那么服务器可以返回这些资源给客户端。例如，浏览器去访问<code>www.baidu.com</code>的时候，百度的服务器就会返回一个<code>html</code>文件给浏览器，然后经过浏览器的渲染，呈现给用户一个美丽的页面</p>
+<h4 id="客户端与服务器进行交流的本质"><a href="#客户端与服务器进行交流的本质" class="headerlink" title="客户端与服务器进行交流的本质"></a>客户端与服务器进行交流的本质</h4><p>我们知道，无论是客户端的程序还是服务器的程序，本质都是程序。那么当程序跑起来之后，就是进程了。而进程之间进行交流就需要使用进程通信的一些方法了。并且，这两个进程是处于不同的位置对吧（可能在世界的两端），不是简单的由父进程<code>fork</code>一下，然后使用类似于管道、信号之类的进程通信手段就可以完成通信的。既然它们是在网络中的，就需要遵循<strong>网络协议</strong></p>
+<h4 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h4><p>HTTP是一个客户端和服务器端请求和应答的标准协议。通常，由HTTP客户端发起一个请求，建立一个到服务器指定端口（默认是80端口）的TCP连接</p>
+<p>因此我们要做的工作就是利用Linux系统提供的TCP通信接口来实现HTTP协议。此时我们用到的就是<strong>socket（套接字）</strong></p>
+<p><strong>每一对网络连接称为一个socket对，包括两个端点的socket地址</strong></p>
+<h4 id="socket处理请求与响应示意图"><a href="#socket处理请求与响应示意图" class="headerlink" title="socket处理请求与响应示意图"></a>socket处理请求与响应示意图</h4><p><img src="http://oklbfi1yj.bkt.clouddn.com/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/9.PNG"></p>
+<p>我们接下来要写的代码就是<strong>围绕这幅图进行的</strong></p>
+<h4 id="IP和端口号"><a href="#IP和端口号" class="headerlink" title="IP和端口号"></a>IP和端口号</h4><p>IP是用来在互联网中寻找主机用的，端口号则是用来区分应用的。比如说，我要访问<code>www.baidu.com</code>这个网页，我是需要知道它的IP地址才能访问的，除此之外，我还必须知道端口号。为什么呢？我们可以把IP地址想象成<strong>家</strong>，而我不可能和<strong>家</strong>通信吧，我还必须知道我要通信的这个人在哪里对吧，此时端口号就起了作用，用来标识<strong>哪个人</strong></p>
+<h3 id="实现接受GET请求的功能"><a href="#实现接受GET请求的功能" class="headerlink" title="实现接受GET请求的功能"></a>实现接受GET请求的功能</h3><h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> BUFFSIZE = <span class="number">1024</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXLINK = <span class="number">10</span>; <span class="comment">// 未经过处理的连接请求队列可以容纳的最大数目</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> DEFAULT_PORT = <span class="number">8080</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span>* <span class="title">get_file_name</span> <span class="params">(<span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* file_name = buff + <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">char</span> *space = <span class="built_in">strchr</span>(file_name, <span class="string">&#x27; &#x27;</span>);</span><br><span class="line">    *space = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> file_name;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">deal_get_http</span><span class="params">(<span class="keyword">int</span> connect_fd, <span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* file_name = get_file_name(buff);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> http_correct_header[] = <span class="string">&quot;HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n&quot;</span>;</span><br><span class="line">    <span class="keyword">int</span> res = write(connect_fd, http_correct_header, <span class="built_in">strlen</span>(http_correct_header));</span><br><span class="line">    <span class="keyword">if</span> (res &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    	<span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;send success&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_get_http</span><span class="params">(<span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strncmp</span>(buff, <span class="string">&quot;GET&quot;</span>, <span class="number">3</span>)) &#123; <span class="comment">// 如果是GET请求</span></span><br><span class="line">    	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> socket_fd, connect_fd;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">servaddr</span>;</span></span><br><span class="line">    <span class="keyword">char</span> buff[BUFFSIZE];</span><br><span class="line"></span><br><span class="line">    socket_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (socket_fd == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;create socket error&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;servaddr, <span class="number">0</span>, <span class="keyword">sizeof</span>(servaddr));</span><br><span class="line">    servaddr.sin_family = AF_INET;</span><br><span class="line">    servaddr.sin_addr.s_addr = htonl(INADDR_ANY); <span class="comment">// IP必须是网络字节序，INADDR_ANY是绑定本机上所有IP</span></span><br><span class="line">    servaddr.sin_port = htons(DEFAULT_PORT); <span class="comment">// 端口号必须是网络字节序</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (bind(socket_fd, (struct sockaddr*)&amp;servaddr, <span class="keyword">sizeof</span>(servaddr)) == <span class="number">-1</span>) &#123;</span><br><span class="line">    	<span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;bind error&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (listen(socket_fd, MAXLINK) == <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;listen error&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    connect_fd = accept(socket_fd, (struct sockaddr*)<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (connect_fd == <span class="number">-1</span>) &#123;</span><br><span class="line">    	<span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;accept error&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;连接成功&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">memset</span>(buff, <span class="string">&#x27;\0&#x27;</span>, <span class="keyword">sizeof</span>(buff));</span><br><span class="line"></span><br><span class="line">	recv(connect_fd, buff, BUFFSIZE - <span class="number">1</span>, <span class="number">0</span>); <span class="comment">// 把请求头（或发送的消息）写入buff中</span></span><br><span class="line">	send(connect_fd, buff, BUFFSIZE - <span class="number">1</span>, <span class="number">0</span>); <span class="comment">// 向客户端发送消息（发送buff中的内容）</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;recive message from client: &quot;</span>&lt;&lt;buff&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (is_get_http(buff)) &#123;</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;<span class="string">&quot;it is get http&quot;</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">		deal_get_http(connect_fd, buff);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    close(connect_fd);  </span><br><span class="line">    close(socket_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好的，到这里，我们就已经写完了一个可以接收GET请求的服务器了，我们来测试一下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7/1.gif"></p>
+<p>在上面，我们只是模拟了使用telnet发送一个GET请求，这个请求去请求<code>index.html</code>文件，然后我们返回一部分响应头给客户端，此时并没有返回<code>index.html</code>的内容给客户端。接下来，我们就来完成这部分功能，一步一步的让这个服务器健全起来。</p>
+<h3 id="返回请求文件的内容"><a href="#返回请求文件的内容" class="headerlink" title="返回请求文件的内容"></a>返回请求文件的内容</h3><h4 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">deal_get_http</span><span class="params">(<span class="keyword">int</span> connect_fd, <span class="keyword">char</span>* request_header)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* file_name = get_file_name(request_header);</span><br><span class="line">    <span class="keyword">int</span> file_size = get_file_size(file_name);</span><br><span class="line">    <span class="keyword">char</span> file_type[BUFFSIZE];</span><br><span class="line">    get_filetype(file_name, file_type);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> fd = open(file_name, O_RDONLY);</span><br><span class="line">    <span class="keyword">void</span>* file_in_mem_addr = mmap(<span class="number">0</span>, file_size, PROT_READ, MAP_PRIVATE, fd, <span class="number">0</span>); <span class="comment">// 存储映射</span></span><br><span class="line">    close(fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> buff[BUFFSIZE];</span><br><span class="line">    <span class="built_in">strcat</span>(buff, <span class="string">&quot;HTTP/1.0 200 OK\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">strcat</span>(buff, <span class="string">&quot;Server: HHTWS Web Server\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">strcat</span>(buff, <span class="string">&quot;Connection: close\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">strcat</span>(buff, <span class="string">&quot;Content-length: \r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">strcat</span>(buff, <span class="string">&quot;Content-type: \r\n\r\n&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    send(connect_fd, buff, <span class="built_in">strlen</span>(buff), <span class="number">0</span>);</span><br><span class="line">    send(connect_fd, file_in_mem_addr, file_size, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    munmap(file_in_mem_addr, file_size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看效果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7/2.gif"></p>
+<h4 id="存储映射机制"><a href="#存储映射机制" class="headerlink" title="存储映射机制"></a>存储映射机制</h4><p>除了标准文件I/O，内核提供了另一种高级的I/O方式，允许应用程序<strong>将文件映射到内存中</strong>，即<strong>内存和文件中数据是一一对应的</strong>。程序员可以<strong>直接通过内存来访问文件，就像操作内存的数据块一样</strong>，甚至可以写入内存数据区，然后通过透明的映射机制将文件写入磁盘。</p>
+<p>当映射一个文件描述符的时候，描述符引用计数增加。<strong>如果映射文件后关闭文件，你的进程依然可以访问该文件</strong>。当你取消映射或者进程终止时，对应的文件引用计数会减1。</p>
+<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><h5 id="读取整个文件"><a href="#读取整个文件" class="headerlink" title="读取整个文件"></a>读取整个文件</h5><p>开始的时候是想到了常规的方法，也就是使用<code>fgets()</code>函数等等，但是，因为它会给每一个字符串加上<code>&#39;\0&#39;</code>。所以当我使用它的时候，出现了一些乱码。之后我突然想起了我最近在《Linux系统编程》中看到的一个存储映射机制，于是就用上了它。非常方便的把文件的内容获取到了。</p>
+<h5 id="Segmentation-fault问题"><a href="#Segmentation-fault问题" class="headerlink" title="Segmentation fault问题"></a>Segmentation fault问题</h5><p>我在运行这个服务器的时候，出现了这个错误。最后经过排查，发现是由于存在野指针。开始的时候，我是这样定义一个文件类型的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span>* file_type;</span><br></pre></td></tr></table></figure>
+
+<p>然后我就直接把这个野指针给传进<code>get_filetype</code>函数里面去了。导致问题发生。</p>
+<p>好了，到这里，我们就写完了一个可以说是完整的支持GET请求的Web服务器了。那小伙伴们是不是想在浏览器里面试一试效果！！看看能不能看到这个HTML文件被浏览器渲染出来！！</p>
+<p>我们来试试！！</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AAWeb%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7/3.gif"></p>
+<p>咦( ′◔ ‸◔`)？为什么不能在浏览器上面看到呢？小伙伴们，我将在下面一篇文章中继续为大家讲解。happy ending</p>
+<p>（未完–持续更新加入新功能中）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/08/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zup00b0f6vxdqav4sd9" data-title="用C++写一个Web服务器吧（一）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-一个循环把整数反转" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/08/31/%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E6%8A%8A%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" class="article-date">
+  <time class="dt-published" datetime="2017-08-31T06:29:41.000Z" itemprop="datePublished">2017-08-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/08/31/%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E6%8A%8A%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">整数反转</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>反转一个数字的问题还是很常见的问题，这里介绍一种简单的方法（关键是<strong>取余数、取整数</strong>）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;  </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">reserver_int</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> m = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (n) &#123;  </span><br><span class="line">        m = m * <span class="number">10</span> + n % <span class="number">10</span>;  </span><br><span class="line">        n /= <span class="number">10</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num;</span><br><span class="line">	<span class="built_in">cin</span>&gt;&gt;num; </span><br><span class="line">    <span class="keyword">int</span> the_reserver_int = reserver_int(num);</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;the_reserver_int;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>让我们来看看<code>reserver_int</code>这个函数的<code>while</code>部分</p>
+<p>这个循环里面模拟的一个过程可以简单的表述成：<strong>每次取原来的数字的末尾，然后再拼接到新的数字的末尾</strong></p>
+<p>知道这个思路之后就很简单了，取一个数字的末尾a，就要用到<code>%</code>运算符，而把一个数字a拼接到一个数字b的末尾就是把这个数字b乘以10，再和a相加</p>
+<p>然后就是<strong>循环的条件也是关键的地方</strong>，那么什么时候要结束呢？</p>
+<p>很简单，当原来的那个数字的末尾全部被取下来了，也就不需要循环了。而<strong>表示取下一个数字的方法就是除以10</strong></p>
+<h3 id="让字符数组和整型数组做一个映射"><a href="#让字符数组和整型数组做一个映射" class="headerlink" title="让字符数组和整型数组做一个映射"></a>让字符数组和整型数组做一个映射</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/08/31/%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E6%8A%8A%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" data-id="ckkj72ztc006zf6vx5ln43p1p" data-title="整数反转" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2017暑假学习总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" class="article-date">
+  <time class="dt-published" datetime="2017-08-28T08:49:41.000Z" itemprop="datePublished">2017-08-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">2017暑假学习总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>很快，两个多月的暑假就过去了。针对这个暑假所学习的东西，做个简单的总结。</p>
+<p>说实话，很意外，我会选择走技术这条路而不是学术这条路，因为我去年暑假还在家里刷着高数竞赛书籍，大概…..3本吧。曾经的我，是个想要考清华的研究生的好孩子，每天刷着题库，现在想想都很有劲，是我最怀念的一段学习经历了。但是，意外的，我接触了 Web ，我被它迷上了。我开始坚持写代码，感觉这是不是更有成就感？（说实话，我大一除了老师布置的实验，我没有敲过任何一行代码，所以C语言只考了80多分）</p>
+<p>不扯了，进入主题咯。</p>
+<p>感觉暑假在业务上面所学的技术不是很多，更多的是偏向了底层的东西。因为在将近一年的编程中，我花了半年左右去学习了一个网站该如何去写。但是，久而久之，会发现，在学校里，是接触不到那些经典的项目的，大多数都是写重复的代码，处理业务逻辑。随着我对计算机的技术的认识慢慢的提高，我时常在想：这些技术是怎么写出来的？我对这门技术是否真正的理解了？由表及里？显然，我并没有做到，我只是停留在用的层面上。然后我又在想：如果这门技术没有人维护了，或者出现了更优秀的技术，我该怎么办？难道又是马不停蹄的去找教程快速入门？</p>
+<p>不知道是在暑假的哪一天，我突然想通了：<strong>就算我再精通这门技术，也始终是别人的。我需要重点学习的是计算机的本质，这是不轻易改变的。</strong></p>
+<p>于是，我从暑假开始减少了对Web技术的学习，转而学习计算机基础</p>
+<p>在这个暑假，我看了一些书籍，不是很多，但是收获很大。这些知识让我明白了以前在学习 Web 的时候，为什么要这样做。现在，让我来总结一下我暑假所学到的东西</p>
+<h3 id="1、Vue-js"><a href="#1、Vue-js" class="headerlink" title="1、Vue.js"></a>1、Vue.js</h3><p>这个<code>js</code>框架主要是由国人所开发的（可以看 github 上贡献者的提交），其思想就是<strong>数据驱动、组件系统</strong>。</p>
+<p>说一说数据驱动，指的是通过数据的改变，来改变视图层。举一个例子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-show</span>=<span class="string">&quot;isShow&quot;</span>&gt;</span></span><br><span class="line">	我在这里</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--other code--&gt;</span></span><br><span class="line">data() &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    isShow: &quot;false&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，我们是看不到<code>&lt;p&gt;</code>标签的，但是，我们可以在程序执行的过程中来动态的改变<code>isShow</code>的值为<code>true</code>，从而让<code>&lt;p&gt;</code>标签显示出来。这里通过<code>isShow</code>来改变<code>&lt;p&gt;</code>标签的方式就是<strong>数据驱动</strong></p>
+<p>而组件系统其实就是代码复用的思想，把一样的部分，我写成一个组件，到时候在需要这个组件的时候，我引入进去就行了（当然，这只是简单的使用。组件之间还需要传递它们的数据）</p>
+<p>所以说，通过学习了<code>vue.js</code>这个框架，我学习到了这两个重要的思想</p>
+<p>附上我学习这个框架后做的一个项目：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/huanghantao/hchat">https://github.com/huanghantao/hchat</a></p>
+<p>这是一个仿造手机qq界面的一个 Web app 项目</p>
+<h3 id="2、《图解TCP-IP》"><a href="#2、《图解TCP-IP》" class="headerlink" title="2、《图解TCP/IP》"></a>2、《图解TCP/IP》</h3><p>这是一本我入门TCP/IP的书籍</p>
+<p>你知道吗？在我没有学习这本书的时候，我竟然不知道<strong>端口号</strong>是什么！！实际上端口号用来<strong>识别同一台计算机中进行通信的不同应用程序</strong>。因此，它也被称为<strong>程序地址</strong>。</p>
+<p>曾经的我还以为加一个数字80在<code>localhost</code>后面是很厉害的事情。现在想想是多么的愚蠢，大多数情况下根本就没必要加，Web服务器的默认端口号就是80。可见基础的重要性，丢失了基础是多么可怕的一件事情。</p>
+<p>还有就是，当初在学习使用<code>github</code>的时候，那个公钥和密钥不是很理解，只知道它是一个钥匙。现在明白了，这个实际上是采取了一个非对称的加密算法，公钥是可以给别人看的，密钥是自己保留着的</p>
+<p>关于TCP/IP，最核心的就是那个四层模型。</p>
+<h4 id="哪四层？"><a href="#哪四层？" class="headerlink" title="哪四层？"></a>哪四层？</h4><p>应用层、传输层、网络层、网络接口层（由上往下）</p>
+<p>对于应用层，搞Web的人是必须要知道的</p>
+<p>对于传输层和网络层（特别是TCP、UDP、IP这三个协议），对于追求高的人是必须要理解的</p>
+<h4 id="为什么要分层？"><a href="#为什么要分层？" class="headerlink" title="为什么要分层？"></a>为什么要分层？</h4><p>因为<strong>分层可以将每个分层独立使用，即时系统中某些分成发生变化，也不会波及整个系统</strong></p>
+<h3 id="3、《Linux就该这么学》"><a href="#3、《Linux就该这么学》" class="headerlink" title="3、《Linux就该这么学》"></a>3、《Linux就该这么学》</h3><p>这是我快速入门Linux的书籍（之所以没有选择《鸟哥的私房菜》是因为太厚了，没有看的欲望）。这本书告诉了我如何使用一些命令。最重要的一点就是，在Linux的世界里，<strong>一切皆文件</strong>（甚至网卡也是文件）</p>
+<h3 id="4、《C-Primer-Plus》"><a href="#4、《C-Primer-Plus》" class="headerlink" title="4、《C Primer Plus》"></a>4、《C Primer Plus》</h3><p>快速复习了一遍，为后面的Linux网络编程做准备</p>
+<h3 id="5、Swoole"><a href="#5、Swoole" class="headerlink" title="5、Swoole"></a>5、Swoole</h3><p>这个东西主要是由韩天峰开发的一个PHP的异步、并行、高性能网络通信引擎，使用纯C语言编写（不得不佩服峰总的能力，也为他对PHP所做的贡献点赞）</p>
+<p>我没有把文档全部学完，因为一些基础还不够扎实，不想浪费时间，所以只学了<code>Server</code>、<code>Client</code>、<code>Process</code>、<code>HttpServer</code>、<code>WebSocket</code>的部分</p>
+<p>学完了这些，按照官网的例子，为我上面的那个项目写了一个群聊的功能，超级开心</p>
+<h3 id="6、《TCP-IP详解卷1：协议》"><a href="#6、《TCP-IP详解卷1：协议》" class="headerlink" title="6、《TCP-IP详解卷1：协议》"></a>6、《TCP-IP详解卷1：协议》</h3><p>因为看了《图解TCP/IP》感觉不够，所以看了一下这本书</p>
+<h3 id="7、《图解Http》"><a href="#7、《图解Http》" class="headerlink" title="7、《图解Http》"></a>7、《图解Http》</h3><p>HTTP协议属于TCP/IP协议族中的应用层部分</p>
+<p>看完这本书对曾经不理解的HTTPS和HTTP的关系有了一个大致的了解：通常，HTTP 直接和 TCP 通信。当使用 SSL 时，则演变成先和SSL 通信，再由 SSL 和 TCP 通信了。简言之，所谓 HTTPS，其实就是<strong>身披 SSL 协议这层外壳的 HTTP</strong>，并<strong>不是一种新的协议</strong></p>
+<p>也了解了一些<strong>状态码</strong>，这样在浏览器中查看的时候，也可以对症下药了</p>
+<p>明白了正向代理和反向代理：正向代理我们是知道要和哪个代理服务器进行通信的，与我们使用的客户端处于一个逻辑中。而反向代理则和服务器处于一个逻辑中，客户端是直接和反向代理服务器进行通信的，而反向代理起到了一个<strong>分发请求</strong>的作用</p>
+<h3 id="8、Laravel框架"><a href="#8、Laravel框架" class="headerlink" title="8、Laravel框架"></a>8、Laravel框架</h3><p>学习这个框架花了我5天，算是花我时间很久的一件事</p>
+<p>这个框架给我的感觉就是写代码很爽，写一个项目非常快。（但是对数据库的请求是不是会比较多？我没有研究源码，但是给我的感觉有点）</p>
+<p>花了3天撸了一个小项目：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/huanghantao/phpcom-app">https://github.com/huanghantao/phpcom-app</a></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193444.png"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193546.jpg"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193709.jpg"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193819.png"></p>
+<h3 id="9、《Linux高性能服务器编程》"><a href="#9、《Linux高性能服务器编程》" class="headerlink" title="9、《Linux高性能服务器编程》"></a>9、《Linux高性能服务器编程》</h3><p>说实话，这本书花了我最久时间去学习了</p>
+<p>我在暑假学完了Linux的时候，立马去看这本书。但是，当我面对那奇奇怪怪的七层网络模型的时候，我放弃了（我是先学Linux再学TCP/IP协议的）。所以我先看了一遍《图解TCP/IP》，然后再来看这本，感觉轻松了好多</p>
+<p>这本书是关于Linux网络编程方面的书，偏底层一些，学习了这个，对于服务器有了更深的了解了</p>
+<h3 id="10、《Modern-PHP》"><a href="#10、《Modern-PHP》" class="headerlink" title="10、《Modern PHP》"></a>10、《Modern PHP》</h3><p>这本书，让我的PHP代码更加的规范了，更加理解了<code>Trait</code>（性状）。也让我明白了，框架并不是必须的，因为<code>composer</code>这个类似于<code>npm</code>的依赖管理器，我们可以轻松的管理组件。将精力放在核心业务上，避免重复造轮子    </p>
+<h3 id="11、《C专家编程》"><a href="#11、《C专家编程》" class="headerlink" title="11、《C专家编程》"></a>11、《C专家编程》</h3><p>这本书主要是讲解了指针和数组。分析了它们什么时候是相同的，什么时候是不同的。学完这本书我至少知道了：<strong>指针和数组是两码事</strong></p>
+<h3 id="12、《Linux网络编程》"><a href="#12、《Linux网络编程》" class="headerlink" title="12、《Linux网络编程》"></a>12、《Linux网络编程》</h3><p>这本书其实和《Linux高性能服务器编程》这本书有很多地方是类似的，但是比《Linux高性能服务器编程》基础一些，代码会比《Linux高性能服务器编程》这本书多，比《Linux高性能服务器编程》适合入门Linux网络编程</p>
+<p>学习完了这本书，我知道怎么实现<strong>并发</strong>了。写一个简单的服务器还是可以的</p>
+<h3 id="13、其它"><a href="#13、其它" class="headerlink" title="13、其它"></a>13、其它</h3><p>其他的也就是一些零零散散的技术文章了，主要是了解PHP的一些偏底层的知识。比如一个很经典的问题：在什么情况下，单引号的性能好？或者是双引号的性能好。答案是：在任何情况下，单引号都比双引号要好（不知道我有没有理解对鸟哥的文章）</p>
+<h3 id="14、下一步"><a href="#14、下一步" class="headerlink" title="14、下一步"></a>14、下一步</h3><p>下学期就是大三了，即将面临找实习的难题。希望我付出的终有所得。</p>
+<p>下一步，就是我的算法之旅了，不仅仅是为了笔试，而是成为一个写出优秀代码的程序员的必经之路</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" data-id="ckkj72zq90001f6vxdi2k4y82" data-title="2017暑假学习总结" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-使用signal系统调用处理进程接收到的信号" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/08/26/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/" class="article-date">
+  <time class="dt-published" datetime="2017-08-26T11:12:17.000Z" itemprop="datePublished">2017-08-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/08/26/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/">使用signal系统调用处理进程接收到的信号</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们知道，一个进程在接收到一个信号之后，一般都会中断（例如，当进程收到了<code>SIGINT</code>信号之后，会终止运行的程序）。然而，我们可以使用<code>signal()</code>这个系统调用来处理接收到的信号</p>
+<p><code>signal()</code>函数有两个参数。其中，第一个参数指明了所要处理的信号类型（例如：<code>SIGINT</code>），它可以取<strong>除了 SIGKILL 和 SIGSTOP 外</strong>的任何一种信号。第二个参数描述了与信号关联的动作，一般是一个<strong>函数地址</strong></p>
+<p>举个例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">catch</span><span class="params">(<span class="keyword">int</span> sig)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    signal(SIGINT, <span class="keyword">catch</span>); <span class="comment">/* 将 SIGINT 信号与 catch 函数关联 */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in main function\n&quot;</span>);</span><br><span class="line">    sleep(<span class="number">10</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;end\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">catch</span><span class="params">(<span class="keyword">int</span> sig)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Catch succeed!\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们编译它：</p>
+<p><img src="https://segmentfault.com/img/bVTIOn?w=827&h=203"></p>
+<p>报错：说第二参数需要一个<code>__sighandler_t</code>类型的参数</p>
+<p>遇到这种情况该如何下手？</p>
+<p>我们如果不是很清楚<code>signal</code>的原型究竟是什么，可以使用<code>man</code>命令来查看（<code>man</code>命令不仅仅可以用来查看命令，还可以用来查看函数）：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/2.PNG"></p>
+<p>我们可以看到那个<code>void</code>，所以，把<code>catch</code>函数的返回值类型改为<code>void</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">catch</span><span class="params">(<span class="keyword">int</span> sig)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    signal(SIGINT, <span class="keyword">catch</span>); <span class="comment">/* 将 SIGINT 信号与 catch 函数关联 */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in main function\n&quot;</span>);</span><br><span class="line">    sleep(<span class="number">10</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;end\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">catch</span><span class="params">(<span class="keyword">int</span> sig)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Catch succeed!\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次编译，然后运行：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/3.PNG"></p>
+<p>然后按下<code>Ctrl+c</code>，向这个进程发送<code>SIGINT</code>信号：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/4.PNG"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/08/26/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/" data-id="ckkj72ztq0083f6vx0yjh87zs" data-title="使用signal系统调用处理进程接收到的信号" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-使用swoole来建立一个简单的客户端和服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/08/06/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2017-08-06T05:07:49.000Z" itemprop="datePublished">2017-08-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/08/06/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/">使用swoole来建立一个简单的客户端和服务器(接入图灵机器人)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们来用swoole这个php扩展实现一个简单的客户端和服务器，并且让它们进行简单的交流</p>
+<p>首先，我们先来实现客户端(命名为：client.php)：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$client = <span class="keyword">new</span> swoole_client(SWOOLE_SOCK_TCP);</span><br><span class="line"><span class="keyword">if</span> (!$client-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, <span class="number">-1</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="string">&quot;connect failed. Error: <span class="subst">&#123;$client-&gt;errCode&#125;</span>\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fwrite(STDOUT, <span class="string">&#x27;Enter the message you want to send, and you can enter the no to quit it &#x27;</span>.<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">	fwrite(STDOUT, <span class="string">&#x27;client: &#x27;</span>);  </span><br><span class="line">	$info = fgets(STDIN);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">&#x27;no&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $info) &#123;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	$client-&gt;send($info);</span><br><span class="line">	$recive = $client-&gt;recv();</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;server: &#x27;</span>.$recive.<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">$client-&gt;close();</span><br></pre></td></tr></table></figure>
+
+<p>然后，再来实现一个简单的服务器(命名为：server.php)：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$server = <span class="keyword">new</span> swoole_server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, SWOOLE_BASE, SWOOLE_SOCK_TCP);</span><br><span class="line">$server-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$server, $fd, $from_id, $data</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">&#x27;what is your name&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $data) &#123;</span><br><span class="line">		$server-&gt;send($fd, <span class="string">&#x27;My name is huanghantao&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">elseif</span>(<span class="string">&#x27;where are you from&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $data) &#123;</span><br><span class="line">		$server-&gt;send($fd, <span class="string">&#x27;I am from China&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">elseif</span>(<span class="string">&#x27;how old are you&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $data) &#123;</span><br><span class="line">		$server-&gt;send($fd, <span class="string">&#x27;I am 20&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		$apiKey = <span class="string">&quot;7e97323fbb5b4c5691bc7f1ff5231b20&quot;</span>; </span><br><span class="line">		$apiURL = <span class="string">&quot;http://www.tuling123.com/openapi/api?key=KEY&amp;info=INFO&quot;</span>; </span><br><span class="line">		<span class="comment">// 设置报文头, 构建请求报文 </span></span><br><span class="line">		header(<span class="string">&quot;Content-type: text/html; charset=utf-8&quot;</span>); </span><br><span class="line">		$reqInfo = $data; </span><br><span class="line">		$url = str_replace(<span class="string">&quot;INFO&quot;</span>, $reqInfo, str_replace(<span class="string">&quot;KEY&quot;</span>, $apiKey, $apiURL)); </span><br><span class="line"></span><br><span class="line">		$res = json_decode(file_get_contents($url), <span class="literal">true</span>);</span><br><span class="line">		$server-&gt;send($fd, $res[<span class="string">&#x27;text&#x27;</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>接下来，进入这两个文件所在的目录</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/1.PNG"></p>
+<p>然后再执行这server.php文件来启动服务器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php server.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/2.PNG"></p>
+<p>此时，就开始监听换回地址127.0.0.1的9501端口</p>
+<p>接着，我们执行client.php这个文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php client.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/3.PNG"></p>
+<p>这样，客户端和服务器就建立了一个TCP网络连接</p>
+<p>现在，我们就可以在客户端和服务器进行通信了，现在我们来试一试，很好玩的：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/4.PNG"></p>
+<p>最后，我们输入no来让客户端主动断开与服务器的连接</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/5.PNG"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/08/06/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72ztr0086f6vx2x7lfqme" data-title="使用swoole来建立一个简单的客户端和服务器(接入图灵机器人)" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

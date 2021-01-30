@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Linux基础知识第一讲-Shell解释器用法 | codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="作业(job) 控制现代的shell解释器中存在作业控制功能1、按ctrl+ Z将向当前进程发送SIGSTOP信号，如果当前进程没有实现SIGSTOP的特定逻辑，默认的行为是当前进程暂停并置入后台 2、使用命令fg来使恢复后台进程的前台运行 3、使用命令bg来使暂停的后台进程后台继续运行 4、使用命令jobs来显示后台作业 5、作业号不同于进程号 举个例子，比如我要查看Docker容器的输出日志：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux基础知识第一讲-Shell解释器用法">
+<meta property="og:url" content="http://huanghantao.github.io/2019/08/23/Linux%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AC%AC%E4%B8%80%E8%AE%B2-Shell%E8%A7%A3%E9%87%8A%E5%99%A8%E7%94%A8%E6%B3%95/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="作业(job) 控制现代的shell解释器中存在作业控制功能1、按ctrl+ Z将向当前进程发送SIGSTOP信号，如果当前进程没有实现SIGSTOP的特定逻辑，默认的行为是当前进程暂停并置入后台 2、使用命令fg来使恢复后台进程的前台运行 3、使用命令bg来使暂停的后台进程后台继续运行 4、使用命令jobs来显示后台作业 5、作业号不同于进程号 举个例子，比如我要查看Docker容器的输出日志：">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-08-23T02:44:36.000Z">
+<meta property="article:modified_time" content="2021-01-30T04:04:11.067Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Linux基础知识第一讲-Shell解释器用法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/08/23/Linux%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AC%AC%E4%B8%80%E8%AE%B2-Shell%E8%A7%A3%E9%87%8A%E5%99%A8%E7%94%A8%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2019-08-23T02:44:36.000Z" itemprop="datePublished">2019-08-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux基础知识第一讲-Shell解释器用法
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="作业-job-控制"><a href="#作业-job-控制" class="headerlink" title="作业(job) 控制"></a>作业(job) 控制</h1><h2 id="现代的shell解释器中存在作业控制功能"><a href="#现代的shell解释器中存在作业控制功能" class="headerlink" title="现代的shell解释器中存在作业控制功能"></a>现代的shell解释器中存在作业控制功能</h2><p>1、按<code>ctrl+ Z</code>将向当前进程发送<code>SIGSTOP</code>信号，如果当前进程没有实现<code>SIGSTOP</code>的特定逻辑，默认的行为是当前进程暂停并置入后台</p>
+<p>2、使用命令<code>fg</code>来使恢复后台进程的前台运行</p>
+<p>3、使用命令<code>bg</code>来使暂停的后台进程后台继续运行</p>
+<p>4、使用命令<code>jobs</code>来显示后台作业</p>
+<p>5、作业号不同于进程号</p>
+<p>举个例子，比如我要查看<code>Docker</code>容器的输出日志：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ docker logs -f php</span><br><span class="line">log1</span><br><span class="line">log2</span><br><span class="line">log3</span><br><span class="line">^Z</span><br><span class="line">[1]+  Stopped                 docker logs -f php</span><br></pre></td></tr></table></figure>
+
+<p>这个时候，我按下了<code>ctrl + z</code>。容器就会停止打印日志。</p>
+<p>这里</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[1]+  Stopped                 docker logs -f php</span><br></pre></td></tr></table></figure>
+
+<p>中的<code>1</code>就是作业号。如果我们想要恢复作业的执行，可以输入命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ bg %1</span><br><span class="line">log4</span><br><span class="line">log5</span><br></pre></td></tr></table></figure>
+
+<p>虽然还在打印日志，但是我们可以在这个时候执行命令，因为这个作业是跑在后台的（尽管它的输出是<code>STDOUT</code>）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ ls</span><br><span class="line">Applications		Downloads		Music			Public			data			dockerfileDir		huanghantao.github.io</span><br><span class="line">Desktop			Library			Pictures		cert			db			eclipse			tmp</span><br><span class="line">Documents		Movies			Postman			codeDir			dev			eclipse-workspace	var</span><br></pre></td></tr></table></figure>
+
+<p>再举个例子，假设我在编辑一个文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ vim test.txt</span><br><span class="line"></span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">&quot;test.txt&quot; [New File]</span><br></pre></td></tr></table></figure>
+
+<p>这个时候，我会进入<code>vim</code>编辑器。此时，我们写<code>hello world</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">-- INSERT --</span><br></pre></td></tr></table></figure>
+
+<p>接着，我想写一下<code>open()</code>这个函数的用法，但是我忘了。这个时候，我们可以不需要另起一个终端，我们先按<code>esc</code>退出<code>vim</code>的编辑模式，然后按下<code>ctrl + z</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ vim test.txt</span><br><span class="line"></span><br><span class="line">[1]+  Stopped                 vim test.txt</span><br><span class="line">hantaohuang@~ </span><br></pre></td></tr></table></figure>
+
+<p>这个时候，我们再查看文档：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ man open</span><br><span class="line">NAME</span><br><span class="line">     open -- open files and directories</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们再通过命令<code>fg</code>把作业拉回前台：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ fg %1</span><br><span class="line">hello world</span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~ </span><br></pre></td></tr></table></figure>
+
+<p>然后写下<code>open()</code>函数的用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br><span class="line">open -- open files and directories</span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~                                                                                                                                                                                                           </span><br><span class="line">~ </span><br><span class="line">-- INSERT --</span><br></pre></td></tr></table></figure>
+
+<p>然后再关闭文件。</p>
+<p>（如果你是通过<code>bg</code>命令来恢复<code>vim</code>的话，是不可以编辑的，小伙伴们可以尝试一下）</p>
+<h1 id="通过分号来分隔多条命令"><a href="#通过分号来分隔多条命令" class="headerlink" title="通过分号来分隔多条命令"></a>通过分号来分隔多条命令</h1><p>之前，我一直是通过<code>&amp;&amp;</code>来分隔多条命令的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo 1 &amp;&amp; echo 2</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>其实也可以通过<code>;</code>来分隔多条命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo 1 ; echo 2</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<h1 id="用-amp-后台执行条命令"><a href="#用-amp-后台执行条命令" class="headerlink" title="用&amp;后台执行条命令"></a>用&amp;后台执行条命令</h1><p>我们上面举了一个在后台输出<code>Docker</code>容器日志的例子。其实，<code>ctrl + z</code>和<code>bg %1</code>可以用命令后面加<code>&amp;</code>来完成。来测试一下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@~ docker logs -f php &amp;</span><br><span class="line">log1</span><br><span class="line">log2</span><br><span class="line">log3</span><br><span class="line">hantaohuang@~ ls</span><br><span class="line">Applications		Downloads		Music			Public			data			dockerfileDir		huanghantao.github.io</span><br><span class="line">Desktop			Library			Pictures		cert			db			eclipse			tmp</span><br><span class="line">Documents		Movies			Postman			codeDir			dev			eclipse-workspace	var</span><br><span class="line">log4</span><br><span class="line">log5</span><br></pre></td></tr></table></figure>
+
+<p>实际上，通过命令加<code>&amp;</code>也会生成一个作业号。当然，我们就可以去控制这个作业了。</p>
+<h1 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">|</span><br><span class="line"><span class="meta">&gt;</span></span><br><span class="line">&lt;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id=""><a href="#" class="headerlink" title="|"></a>|</h2><p><code>|</code>会把前一个命令的输出作为后一条命令的输入。</p>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo hello | base64</span><br><span class="line">aGVsbG8K</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们把<code>echo</code>命令的输出作为<code>base64</code>命令的输入，所以这里会把<code>hello</code>字符串进行<code>base64</code>编码。</p>
+<p>如果我们需要把<code>aGVsbG8K</code>解码，可以做类似的操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo aGVsbG8K | base64 -d</span><br><span class="line">hello</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>成功解码。</p>
+<h2 id="gt"><a href="#gt" class="headerlink" title="&gt;"></a>&gt;</h2><p>把输出内容写入文件里面，举个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo hello &gt; test.txt</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>然后查看内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat test.txt </span><br><span class="line">hello</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<h2 id="gt-gt"><a href="#gt-gt" class="headerlink" title="&gt;&gt;"></a>&gt;&gt;</h2><p>以追加模式打开文件内容，然后把输出内容追加到文件末尾，举个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo world &gt;&gt; test.txt </span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>然后查看内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat test.txt </span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<h2 id="lt"><a href="#lt" class="headerlink" title="&lt;"></a>&lt;</h2><p>可以把文件里面的内容作为左边命令的标准输入，举个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # base64 &lt; test.txt </span><br><span class="line">aGVsbG8Kd29ybGQK</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们解码一下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo aGVsbG8Kd29ybGQK | base64 -d</span><br><span class="line">hello</span><br><span class="line">world</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<h1 id="Heredoc"><a href="#Heredoc" class="headerlink" title="Heredoc"></a>Heredoc</h1><p>在命令后使用<code>&lt;&lt;</code>来使用<code>heredoc</code>功能。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # base64 &lt;&lt;EOF</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> hello</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> EOF</span></span><br><span class="line">aGVsbG8K</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现<code>Heredoc</code>可以作为标准输入。</p>
+<p>我们在<code>&lt;&lt;</code>的后面输入一个终结符<code>EOF</code>，但是终结符可以用其他任意的字符串，例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # base64 &lt;&lt;EO</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> hello</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> EO</span></span><br><span class="line">aGVsbG8K</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>但是，开头和结尾必须要匹配：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # base64 &lt;&lt;EO</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> hello</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> Eo</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> EO</span></span><br><span class="line">aGVsbG8KRW8K</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现，大小写要一致。</p>
+<p>那么，我们能否直接用<code>&lt;</code>呢？小伙伴们发现，<code>&lt;&lt;</code>和<code>&lt;</code>很类似对吧，我们来测试一下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # base64 &lt; hello</span><br><span class="line">sh: can&#x27;t open hello: no such file</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现不行，因为<code>&lt;</code>的右边得是一个文件名字而不是字符串。</p>
+<p>我们再举一个比较高级一点的例子，<code>cat</code>命令可以打开一个文件、读取里面的内容，然后输出到<code>stdout</code>。</p>
+<p>举个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo hello &gt; test.txt </span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat test.txt </span><br><span class="line">hello</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们先往文件<code>test.txt</code>里面写入字符串<code>hello</code>，然后通过命令<code>cat</code>读取到<code>test.txt</code>文件的内容输出到<code>stdout</code>。但是，如果<code>cat</code>命令后面没有接文件名会怎么样？</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，这个进程会阻塞起来。然后，如果我们输入一些字符串按下回车：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat</span><br><span class="line">hello</span><br><span class="line">hello</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，会打印出我们敲入的字符串<code>hello</code>。这说明了什么问题？说明<code>cat</code>后面不接文件名，那么就会读取<code>stdin</code>的内容，然后输出到<code>stdout</code>。</p>
+<p>我们继续来看这个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # echo in &gt; in.txt</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat in.txt &gt; out.txt</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat out.txt </span><br><span class="line">in</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们把文件<code>in.txt</code>里面的内容通过<code>cat</code>命令输出后通过<code>&gt;</code>重定向到了文件<code>out.txt</code>里面，所以我们可以在文件<code>out.txt</code>里面看到内容<code>in</code>。</p>
+<p>我们再来看一个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat &gt; test.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用了<code>&gt;</code>意味着我们想把第一个命令的<code>stdout</code>重定向到文件<code>test.txt</code>里面对吧。我们输入内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat &gt; test.txt </span><br><span class="line">hello</span><br><span class="line">^C</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat test.txt </span><br><span class="line">hello</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>我们输入<code>hello</code>之后按下回车键，然后按下<code>ctrl + c</code>关闭进程。可以看到，文件<code>test.txt</code>里面有了内容<code>hello</code>。</p>
+<p>最后，我们来完成一个高级的例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat &gt; test.txt &lt;&lt; EOF</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> world</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> EOF</span></span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # cat test.txt </span><br><span class="line">world</span><br><span class="line">~/codeDir/phpCode/swoole-src-4.4.4 # </span><br></pre></td></tr></table></figure>
+
+<p>通过上面的例子，我相信大家可以很好的例子这条命令了。我们通过<code>heredoc</code>语法把<code>world</code>字符串作为<code>stdin</code>，然后因为<code>cat</code>命令后面没有根文件名，所以会去读取<code>stdin</code>里面的内容，即<code>world</code>，然后输出到<code>stdout</code>，最后通过<code>&gt;</code>重定向到文件<code>test.txt</code>里面。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/08/23/Linux%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AC%AC%E4%B8%80%E8%AE%B2-Shell%E8%A7%A3%E9%87%8A%E5%99%A8%E7%94%A8%E6%B3%95/" data-id="ckkj72zqv000yf6vxbvizesmz" data-title="Linux基础知识第一讲-Shell解释器用法" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/23/%E7%8E%B0%E4%BB%A3%E5%8C%96PHP-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%B8%8B%E4%BC%98%E5%8C%96Composer%E5%8A%A0%E8%BD%BD%E7%9A%84%E5%8E%9F%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          现代化PHP-生产环境下优化Composer加载的原理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/22/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%AC%E4%BA%8C%E8%AE%B2-TCP%E5%85%B3%E9%97%AD%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">网络编程第二讲-TCP关闭连接的常见问题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

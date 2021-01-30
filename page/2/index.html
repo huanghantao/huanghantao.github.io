@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/2/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-PHP内核编译if语句" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/12/PHP%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91if%E8%AF%AD%E5%8F%A5/" class="article-date">
+  <time class="dt-published" datetime="2020-11-12T07:23:06.000Z" itemprop="datePublished">2020-11-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/12/PHP%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91if%E8%AF%AD%E5%8F%A5/">PHP内核编译if语句</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们有如下脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$i = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($i &lt; <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>opcode</code>为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#0     ASSIGN                  $i                   4</span></span><br><span class="line">L5    <span class="comment">#1     IS_SMALLER              $i                   5                    ~1</span></span><br><span class="line">L5    <span class="comment">#2     JMPZ                    ~1                   J5</span></span><br><span class="line">L6    <span class="comment">#3     ECHO                    1</span></span><br><span class="line">L6    <span class="comment">#4     JMP                     J6</span></span><br><span class="line">L8    <span class="comment">#5     ECHO                    2</span></span><br><span class="line">L10   <span class="comment">#6     RETURN&lt;-1&gt;              1</span></span><br></pre></td></tr></table></figure>
+
+<p>首先，我们把if语句的组成部分说一下（当然，这是一个没有包含递归的语法，简化版）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">T_IF &#39;(&#39; cond_expr &#39;)&#39; true_statement T_ELSE false_statement</span><br></pre></td></tr></table></figure>
+
+<p>对应：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">T_IF =&gt; <span class="keyword">if</span></span><br><span class="line">cond_exprs =&gt; <span class="variable">$i</span> &lt; 5</span><br><span class="line">true_statement =&gt; <span class="built_in">echo</span> 1;</span><br><span class="line">T_ELSE =&gt; <span class="keyword">else</span></span><br><span class="line">false_statement =&gt; <span class="built_in">echo</span> 2;</span><br></pre></td></tr></table></figure>
+
+<p>OK，我们来从编译出来的opcode总结出编译for语句的一般规律：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">   ┌─────────────────────────────────┐   </span><br><span class="line">   │                                 │   </span><br><span class="line">   │                                 │   </span><br><span class="line">   │           cond_exprs            │   </span><br><span class="line">   │                                 │   </span><br><span class="line">   │                                 │   </span><br><span class="line">   └─────────────────────────────────┘   </span><br><span class="line">                    │                    </span><br><span class="line">                    │                    </span><br><span class="line">                    │                    </span><br><span class="line">                    ▼                    </span><br><span class="line">   ┌─────────────────────────────────┐   </span><br><span class="line">   │                                 │   </span><br><span class="line">   │                                 │   </span><br><span class="line">   │              JMPZ               │──┐</span><br><span class="line">   │                                 │  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">   └─────────────────────────────────┘  │</span><br><span class="line">                    │                   │</span><br><span class="line">                    │                   │</span><br><span class="line">                    │                   │</span><br><span class="line">                    ▼                   │</span><br><span class="line">   ┌─────────────────────────────────┐  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">   │         true_statement          │  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">   └─────────────────────────────────┘  │</span><br><span class="line">                    │                   │</span><br><span class="line">                    │                   │</span><br><span class="line">                    │                   │</span><br><span class="line">                    ▼                   │</span><br><span class="line">   ┌─────────────────────────────────┐  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">   │                                 │  │</span><br><span class="line">┌──│               JMP               │  │</span><br><span class="line">│  │                                 │  │</span><br><span class="line">│  │                                 │  │</span><br><span class="line">│  └─────────────────────────────────┘  │</span><br><span class="line">│                   │                   │</span><br><span class="line">│                   │                   │</span><br><span class="line">│                   │                   │</span><br><span class="line">│                   ▼                   │</span><br><span class="line">│  ┌─────────────────────────────────┐  │</span><br><span class="line">│  │                                 │  │</span><br><span class="line">│  │                                 │  │</span><br><span class="line">│  │         false_statement         │◀─┘</span><br><span class="line">│  │                                 │   </span><br><span class="line">│  │                                 │   </span><br><span class="line">│  └─────────────────────────────────┘   </span><br><span class="line">│                   │                    </span><br><span class="line">│                   │                    </span><br><span class="line">│                   │                    </span><br><span class="line">│                   │                    </span><br><span class="line">│                   ▼                    </span><br><span class="line">│  ┌─────────────────────────────────┐   </span><br><span class="line">│  │                                 │   </span><br><span class="line">│  │                                 │   </span><br><span class="line">└─▶│           out_if_stmt           │   </span><br><span class="line">   │                                 │   </span><br><span class="line">   │                                 │   </span><br><span class="line">   └─────────────────────────────────┘   </span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/12/PHP%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91if%E8%AF%AD%E5%8F%A5/" data-id="ckkj72zrk002ff6vx2nwdh6kr" data-title="PHP内核编译if语句" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Swoole的writeVector和readVector功能介绍" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/10/Swoole%E7%9A%84writeVector%E5%92%8CreadVector%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D/" class="article-date">
+  <time class="dt-published" datetime="2020-11-10T06:10:38.000Z" itemprop="datePublished">2020-11-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/10/Swoole%E7%9A%84writeVector%E5%92%8CreadVector%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D/">Swoole的writeVector和readVector功能介绍</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在<code>Swoole v4.5.7</code>版本中，我们新增了两个<code>API</code>，分别是<code>writeVector</code>和<code>readVector</code>。这篇文章，我们来介绍下这两个方法。</p>
+<h2 id="writeVector"><a href="#writeVector" class="headerlink" title="writeVector"></a>writeVector</h2><blockquote>
+<p>该方法在\Swoole\Coroutine\Socket类里面</p>
+</blockquote>
+<p>这个方法用来把分散的字符串一块发送给对端，例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$conn = <span class="keyword">new</span> \Swoole\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);</span><br><span class="line">$conn-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$data1 = <span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line">$data2 = <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line">$ret = $conn-&gt;writeVector([$data1, $data2]);</span><br></pre></td></tr></table></figure>
+
+<p>那么，<code>writeVector</code>就会<code>hello</code>和<code>world</code>一块发送给对端。那在没有<code>writeVector</code>之前，我们是如何发送这两个字符串的呢？</p>
+<p>我们有以下两种方式。</p>
+<p>方式一：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$conn = <span class="keyword">new</span> \Swoole\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);</span><br><span class="line">$conn-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$data1 = <span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line">$data2 = <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line"></span><br><span class="line">$data3 = $data1 . $data2;</span><br><span class="line">$ret = $conn-&gt;send($data3);</span><br></pre></td></tr></table></figure>
+
+<p>方式二：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$conn = <span class="keyword">new</span> \Swoole\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);</span><br><span class="line">$conn-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$data1 = <span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line">$data2 = <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line"></span><br><span class="line">$ret = $conn-&gt;send($data1);</span><br><span class="line">$ret = $conn-&gt;send($data2);</span><br></pre></td></tr></table></figure>
+
+<p>方式一和方式二都会有它特有的性能问题。</p>
+<p>其中，方式一的思路是，只想调用一次<code>send</code>方法，所以，就先拼接两个字符串。但是，这样会产生内存拷贝。拷贝的字节数是<code>strlen($data1) + strlen(data2)</code>。具体怎么拷贝的，我们可以去查看<code>PHP</code>内核<code>ZEND_CONCAT</code>对应的<code>handler</code>。</p>
+<p>方式二的思路是，调用两次<code>send</code>方法来发送<code>$data1</code>和<code>$data2</code>。</p>
+<p>因为，<code>send</code>方法只是把字符串从我们的应用空间拷贝到内核空间，不会立马发送字符串给对端（意味着两次<code>send</code>实际上只有一次网络发包的时间），所以，方式一和方式二实际上是在系统调用时间和拷贝字节数之间做权衡。</p>
+<p>所以，我们需要<code>writeVector</code>这么一个方法，直接把分散在多个地方的字符串，一块发送出去。这样，应用层不存在字符串拼接，也只需要一次系统调用就行了。</p>
+<h2 id="readVector"><a href="#readVector" class="headerlink" title="readVector"></a>readVector</h2><blockquote>
+<p>该方法在\Swoole\Coroutine\Socket类里面</p>
+</blockquote>
+<p><code>readVector</code>和<code>writeVector</code>的优化目的是一样的。</p>
+<p>使用方法如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$conn = <span class="keyword">new</span> \Swoole\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);</span><br><span class="line">$conn-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$ret = $conn-&gt;readVector([<span class="number">5</span>, <span class="number">5</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>如果对端发来了<code>helloworld</code>，那么，<code>$ret</code>就会得到对应的数组<code>[&#39;hello&#39;, &#39;world&#39;]</code>。</p>
+<p>那么，在没有<code>readVector</code>之前，我们也有两种方式来读取并分成两个字符串。</p>
+<p>方式一：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$conn = <span class="keyword">new</span> \Swoole\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);</span><br><span class="line">$conn-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$data = $conn-&gt;recv(<span class="number">5</span> + <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">$data1 = substr($data, <span class="number">0</span>, <span class="number">5</span>);</span><br><span class="line">$data2 = substr($data, <span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+
+<p>此时，我们通过一次系统调用来把字符串读取出来。但是，如果我们要分开来拿到这两个字符串，就需要调用<code>substr</code>来进行字符串截取了。此时，也会发生内存拷贝，拷贝的总字节数是<code>strlen($data1) + strlen($data2)</code>。</p>
+<p>方式二：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$conn = <span class="keyword">new</span> \Swoole\Coroutine\Socket(AF_INET, SOCK_STREAM, IPPROTO_IP);</span><br><span class="line">$conn-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$data1 = $conn-&gt;recv(<span class="number">5</span>);</span><br><span class="line">$data2 = $conn-&gt;recv(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+
+<p>此时，我们通过两次<code>recv</code>系统调用来读取出两个字符串。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/10/Swoole%E7%9A%84writeVector%E5%92%8CreadVector%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D/" data-id="ckkj72zsc0046f6vx7up38jgu" data-title="Swoole的writeVector和readVector功能介绍" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核编译for语句" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/08/PHP%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91for%E8%AF%AD%E5%8F%A5/" class="article-date">
+  <time class="dt-published" datetime="2020-11-08T11:28:29.000Z" itemprop="datePublished">2020-11-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/08/PHP%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91for%E8%AF%AD%E5%8F%A5/">PHP内核编译for语句</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们有如下脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; <span class="number">10</span>; $i = $i + <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">echo</span> $i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>opcode</code>为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#0     ASSIGN                  $i                   0</span></span><br><span class="line">L3    <span class="comment">#1     JMP                     J5</span></span><br><span class="line">L4    <span class="comment">#2     ECHO                    $i</span></span><br><span class="line">L3    <span class="comment">#3     ADD                     $i                   1                    ~1</span></span><br><span class="line">L3    <span class="comment">#4     ASSIGN                  $i                   ~1</span></span><br><span class="line">L3    <span class="comment">#5     IS_SMALLER              $i                   10                   ~3</span></span><br><span class="line">L3    <span class="comment">#6     JMPNZ                   ~3                   J2</span></span><br><span class="line">L6    <span class="comment">#7     RETURN&lt;-1&gt;              1</span></span><br></pre></td></tr></table></figure>
+
+<p>首先，我们把<code>for</code>语句的组成部分说一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">T_FOR &#39;(&#39; init_exprs &#39;;&#39; cond_exprs &#39;;&#39; loop_exprs &#39;)&#39; for_statement</span><br></pre></td></tr></table></figure>
+
+<p>对应：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">T_FOR &#x3D;&gt; for</span><br><span class="line">init_exprs &#x3D;&gt; $i &#x3D; 0</span><br><span class="line">cond_exprs &#x3D;&gt; $i &lt; 10</span><br><span class="line">loop_exprs &#x3D;&gt; $i &#x3D; $i + 1</span><br><span class="line">for_statement &#x3D;&gt; echo $i;</span><br></pre></td></tr></table></figure>
+
+<p>因为，这些<code>opcode</code>是没有经过任何优化的，所以，我们看到的<code>opcode</code>顺序就是<code>PHP</code>解释器去编译的顺序。</p>
+<p><code>OK</code>，我们来从编译出来的<code>opcode</code>总结出编译<code>for</code>语句的一般规律。</p>
+<p>首先是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#0     ASSIGN                  $i                   0</span></span><br></pre></td></tr></table></figure>
+
+<p>这对应着我们的<code>init_exprs</code>。</p>
+<p>接着是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#1     JMP                     J5</span></span><br></pre></td></tr></table></figure>
+
+<p>没有对应的代码。</p>
+<p>接着是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L4    <span class="comment">#2     ECHO                    $i</span></span><br></pre></td></tr></table></figure>
+
+<p>对应着我们的<code>for_statement</code>。</p>
+<p>接着是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#3     ADD                     $i                   1                    ~1</span></span><br><span class="line">L3    <span class="comment">#4     ASSIGN                  $i                   ~1</span></span><br></pre></td></tr></table></figure>
+
+<p>对应着我们的<code>loop_exprs</code>。</p>
+<p>接着是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#5     IS_SMALLER              $i                   10                   ~3</span></span><br></pre></td></tr></table></figure>
+
+<p>对应着我们的<code>cond_exprs</code>。</p>
+<p>最后是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L3    <span class="comment">#6     JMPNZ                   ~3                   J2</span></span><br></pre></td></tr></table></figure>
+
+<p>没有对应的代码。</p>
+<p>我们可以得到如下图：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">   ┌──────────────────────────────┐   </span><br><span class="line">   │                              │   </span><br><span class="line">   │          init_exprs          │   </span><br><span class="line">   │                              │   </span><br><span class="line">   └──────────────────────────────┘   </span><br><span class="line">                   │                  </span><br><span class="line">                   │                  </span><br><span class="line">                   ▼                  </span><br><span class="line">   ┌──────────────────────────────┐   </span><br><span class="line">   │                              │   </span><br><span class="line">┌──│             JMP              │◀─┐</span><br><span class="line">│  │                              │  │</span><br><span class="line">│  └──────────────────────────────┘  │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  ▼                 │</span><br><span class="line">│  ┌──────────────────────────────┐  │</span><br><span class="line">│  │                              │  │</span><br><span class="line">│  │        for_statement         │  │</span><br><span class="line">│  │                              │  │</span><br><span class="line">│  └──────────────────────────────┘  │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  ▼                 │</span><br><span class="line">│  ┌──────────────────────────────┐  │</span><br><span class="line">│  │                              │  │</span><br><span class="line">│  │          loop_exprs          │  │</span><br><span class="line">│  │                              │  │</span><br><span class="line">│  └──────────────────────────────┘  │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  │                 │</span><br><span class="line">│                  ▼                 │</span><br><span class="line">│  ┌──────────────────────────────┐  │</span><br><span class="line">│  │                              │  │</span><br><span class="line">└─▶│          cond_exprs          │  │</span><br><span class="line">   │                              │  │</span><br><span class="line">   └──────────────────────────────┘  │</span><br><span class="line">                   │                 │</span><br><span class="line">                   │                 │</span><br><span class="line">                   │                 │</span><br><span class="line">                   ▼                 │</span><br><span class="line">   ┌──────────────────────────────┐  │</span><br><span class="line">   │                              │  │</span><br><span class="line">   │            JMPNZ             │──┘</span><br><span class="line">   │                              │   </span><br><span class="line">   └──────────────────────────────┘   </span><br></pre></td></tr></table></figure>
+
+<p>这实际上，就是通过<code>if</code>和<code>goto</code>来实现<code>for</code>循环。</p>
+<p>我们在写编译器的时候，就可以借鉴这个模型。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/08/PHP%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91for%E8%AF%AD%E5%8F%A5/" data-id="ckkj72zrk002df6vxarar6mh8" data-title="PHP内核编译for语句" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-epoll处理连接关闭的一个细节问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/06/epoll%E5%A4%84%E7%90%86%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E7%BB%86%E8%8A%82%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2020-11-06T13:17:54.000Z" itemprop="datePublished">2020-11-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/06/epoll%E5%A4%84%E7%90%86%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E7%BB%86%E8%8A%82%E9%97%AE%E9%A2%98/">epoll处理连接关闭的一个细节问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>最近在写<code>Swoole</code>的<code>Coroutine::Socket::readv</code>功能的时候，遇到了一个处理连接关闭的细节问题。</p>
+<p>一般情况下，当本端主动关闭连接之后，会触发<code>EPOLLIN</code>和<code>EPOLLHUP</code>事件，然后当本端调用<code>recv</code>的时候，返回值会是<code>0</code>，那么，本端就会进行一些清理连接和内存的操作。但是，不是所有的情况都是如此，如果仅仅依赖于这个<code>recv</code>的返回值来判断连接是否断了，那么可能会有一些问题。在<code>alpine</code>上面，收到<code>EPOLLHUP</code>事件之后，调用<code>recv</code>得到的一个<code>EAGAIN</code>错误。那么，如果我们仅仅是判断<code>recv</code>返回了<code>EAGAIN</code>，那么，我们接下来就会直接回到事件循环。并且，这个<code>EAGAIN</code>是持续的，这就导致了死循环了。</p>
+<p>所以，我们需要对<code>EPOLLHUP</code>事件进行一次判断，来确定连接有没有关闭，如果得到了<code>EPOLLHUP</code>事件，那么我们就需要进行连接的清理工作了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/06/epoll%E5%A4%84%E7%90%86%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E7%BB%86%E8%8A%82%E9%97%AE%E9%A2%98/" data-id="ckkj72zsm004uf6vx2rbgh2co" data-title="epoll处理连接关闭的一个细节问题" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-虚拟机设计与实现-虚拟机组成" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%84%E6%88%90/" class="article-date">
+  <time class="dt-published" datetime="2020-11-05T16:32:25.000Z" itemprop="datePublished">2020-11-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%84%E6%88%90/">虚拟机设计与实现--虚拟机组成</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">                               ┌─────────────────────────────┐                                                            </span><br><span class="line">                               │                             │                                                            </span><br><span class="line">                               │                             │               ┌─────────────────────────────────────────┐  </span><br><span class="line">                               │                             │               │                                         │  </span><br><span class="line">                          ┌───▶│ Loaders and dynamic linkers │──────────────▶│For example, convert symbols to addresses│  </span><br><span class="line">                          │    │                             │               │                                         │  </span><br><span class="line">                          │    │                             │               └─────────────────────────────────────────┘  </span><br><span class="line">                          │    │                             │                                                            </span><br><span class="line">                          │    └─────────────────────────────┘                                                            </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │    ┌─────────────────────────────┐                                                            </span><br><span class="line">                          │    │                             │                                                            </span><br><span class="line">                          │    │                             │            ┌─────────────────────────────────────────┐     </span><br><span class="line">                          │    │                             │            │                                         │     </span><br><span class="line">                          ├───▶│      Execution engine       │───────────▶│     Execute opcode or machine code      │     </span><br><span class="line">                          │    │                             │            │                                         │     </span><br><span class="line">┌────────────────────┐    │    │                             │            └─────────────────────────────────────────┘     </span><br><span class="line">│                    │    │    │                             │                                                            </span><br><span class="line">│                    │    │    └─────────────────────────────┘                                                            </span><br><span class="line">│                    │    │                                                                                               </span><br><span class="line">│  virtual machine   │    │                                               ┌─────────────────────────────────────────┐     </span><br><span class="line">│                    │────┤                                               │Use traditional memory managers, such as │     </span><br><span class="line">│                    │    │                                        ┌─────▶│  malloc and Free. Focus more on memory  │     </span><br><span class="line">│                    │    │                                        │      │               allocation                │     </span><br><span class="line">│                    │    │    ┌─────────────────────────────┐     │      └─────────────────────────────────────────┘     </span><br><span class="line">└────────────────────┘    │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          ├───▶│       Memory manager        │─────┤                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │      ┌──────────────────────────────────────────────┐</span><br><span class="line">                          │    └─────────────────────────────┘     │      │   Or use the virtual machine<span class="string">&#x27;s own memory    │</span></span><br><span class="line"><span class="string">                          │                                        │      │ allocation strategy to pay more attention to │</span></span><br><span class="line"><span class="string">                          │                                        └─────▶│  memory recovery. For example, the garbage   │</span></span><br><span class="line"><span class="string">                          │                                               │                  collector                   │</span></span><br><span class="line"><span class="string">                          │                                               │                                              │</span></span><br><span class="line"><span class="string">                          │                                               └──────────────────────────────────────────────┘</span></span><br><span class="line"><span class="string">                          │                                                                                               </span></span><br><span class="line"><span class="string">                          │     ┌─────────────────────────────┐                                                           </span></span><br><span class="line"><span class="string">                          │     │                             │           ┌──────────────────────────────────────────────┐</span></span><br><span class="line"><span class="string">                          │     │                             │           │                                              │</span></span><br><span class="line"><span class="string">                          │     │                             │           │                                              │</span></span><br><span class="line"><span class="string">                          └────▶│          extension          │──────────▶│                     FFI                      │</span></span><br><span class="line"><span class="string">                                │                             │           │                                              │</span></span><br><span class="line"><span class="string">                                │                             │           │                                              │</span></span><br><span class="line"><span class="string">                                │                             │           └──────────────────────────────────────────────┘</span></span><br><span class="line"><span class="string">                                └─────────────────────────────┘                                                           </span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%84%E6%88%90/" data-id="ckkj72zv200buf6vx21t7fqeh" data-title="虚拟机设计与实现--虚拟机组成" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核对字面量的优化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/05/PHP%E5%86%85%E6%A0%B8%E5%AF%B9%E5%AD%97%E9%9D%A2%E9%87%8F%E7%9A%84%E4%BC%98%E5%8C%96/" class="article-date">
+  <time class="dt-published" datetime="2020-11-05T14:35:49.000Z" itemprop="datePublished">2020-11-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/05/PHP%E5%86%85%E6%A0%B8%E5%AF%B9%E5%AD%97%E9%9D%A2%E9%87%8F%E7%9A%84%E4%BC%98%E5%8C%96/">PHP内核对字面量的优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>前几天，我发现<code>PHP</code>内核在处理字面量的时候是比较简单粗暴的，编译出一个常量，就直接把它放到<code>literals</code>里面了。那么这就会导致同一个常量会被存储多份，这显然是没有必要的。然后我对这部分代码优化好几个小时后发现，<code>opcache</code>已经对这个进行了优化，在函数<code>zend_optimizer_compact_literals</code>里面，会对等价的字面量进行合并。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/05/PHP%E5%86%85%E6%A0%B8%E5%AF%B9%E5%AD%97%E9%9D%A2%E9%87%8F%E7%9A%84%E4%BC%98%E5%8C%96/" data-id="ckkj72zri0026f6vx7fwohh9d" data-title="PHP内核对字面量的优化" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核对符号的处理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/01/PHP%E5%86%85%E6%A0%B8%E5%AF%B9%E7%AC%A6%E5%8F%B7%E7%9A%84%E5%A4%84%E7%90%86/" class="article-date">
+  <time class="dt-published" datetime="2020-11-01T07:14:03.000Z" itemprop="datePublished">2020-11-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/01/PHP%E5%86%85%E6%A0%B8%E5%AF%B9%E7%AC%A6%E5%8F%B7%E7%9A%84%E5%A4%84%E7%90%86/">PHP内核对符号的处理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p><code>PHP</code>内核在编译<code>PHP</code>脚本的过程中，会把符号的名字转化为符号对应的数据存储空间的地址（注意，不是符号的地址，而是符号对应的数据存储空间的地址）。</p>
+</blockquote>
+<p>我们知道，<code>opline</code>的结构如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> _znode_op &#123;</span><br><span class="line">    <span class="keyword">uint32_t</span>      constant;</span><br><span class="line">    <span class="keyword">uint32_t</span>      var;</span><br><span class="line">    <span class="keyword">uint32_t</span>      num;</span><br><span class="line">&#125; znode_op;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zend_op</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">void</span> *handler;</span><br><span class="line">    znode_op op1;</span><br><span class="line">    znode_op op2;</span><br><span class="line">    znode_op result;</span><br><span class="line">    <span class="keyword">uint32_t</span> extended_value;</span><br><span class="line">    <span class="keyword">uint32_t</span> lineno;</span><br><span class="line">    zend_uchar opcode;</span><br><span class="line">    zend_uchar op1_type;</span><br><span class="line">    zend_uchar op2_type;</span><br><span class="line">    zend_uchar result_type;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>znode_op</code>这个结构，它是一个<code>uint32_t</code>类型的数字，可以用来存放和操作数地址有关的东西。这也就意味着，编译完<code>PHP</code>脚本之后，可以丢弃这些符号的名字，都转换成地址即可。</p>
+<p>而名字到地址的转换，核心函数是<code>lookup_cv</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lookup_cv</span><span class="params">(zend_string *name)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span>&#123;</span><br><span class="line">    zend_op_array *op_array = CG(active_op_array);</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    zend_ulong hash_value = zend_string_hash_val(name);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt; op_array-&gt;last_var) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ZSTR_H(op_array-&gt;vars[i]) == hash_value</span><br><span class="line">        &amp;&amp; zend_string_equals(op_array-&gt;vars[i], name)) &#123;</span><br><span class="line">            <span class="keyword">return</span> EX_NUM_TO_VAR(i);</span><br><span class="line">        &#125;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">    i = op_array-&gt;last_var;</span><br><span class="line">    op_array-&gt;last_var++;</span><br><span class="line">    <span class="keyword">if</span> (op_array-&gt;last_var &gt; CG(context).vars_size) &#123;</span><br><span class="line">        CG(context).vars_size += <span class="number">16</span>; <span class="comment">/* FIXME */</span></span><br><span class="line">        op_array-&gt;vars = erealloc(op_array-&gt;vars, CG(context).vars_size * <span class="keyword">sizeof</span>(zend_string*));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    op_array-&gt;vars[i] = zend_string_copy(name);</span><br><span class="line">    <span class="keyword">return</span> EX_NUM_TO_VAR(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码，就是用来确定一个个<code>CV</code>变量在栈中的存储地址。也就意味着，栈的大小，在编译期间就确定好了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/01/PHP%E5%86%85%E6%A0%B8%E5%AF%B9%E7%AC%A6%E5%8F%B7%E7%9A%84%E5%A4%84%E7%90%86/" data-id="ckkj72zri0028f6vx4ogr3fql" data-title="PHP内核对符号的处理" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核的op-array由编译时转化为运行时" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/10/31/PHP%E5%86%85%E6%A0%B8%E7%9A%84op-array%E7%94%B1%E7%BC%96%E8%AF%91%E6%97%B6%E8%BD%AC%E5%8C%96%E4%B8%BA%E8%BF%90%E8%A1%8C%E6%97%B6/" class="article-date">
+  <time class="dt-published" datetime="2020-10-31T15:00:46.000Z" itemprop="datePublished">2020-10-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/10/31/PHP%E5%86%85%E6%A0%B8%E7%9A%84op-array%E7%94%B1%E7%BC%96%E8%AF%91%E6%97%B6%E8%BD%AC%E5%8C%96%E4%B8%BA%E8%BF%90%E8%A1%8C%E6%97%B6/">PHP内核的op_array由编译时转化为运行时</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><code>PHP</code>内核在<code>pass_two</code>这个函数里面，会对<code>op_array</code>进行一个编译时到运行时的转化。</p>
+<p>主要体现在以下几个地方：</p>
+<h2 id="重新分配literals"><a href="#重新分配literals" class="headerlink" title="重新分配literals"></a>重新分配literals</h2><p>让<code>literals</code>和<code>opcodes</code>由原来分散存储的内存合并为连续的一块内存。这么做除了内存连续带来的性能提升之外，另一个好处是，在执行<code>opline</code>的时候，直接通过偏移量就可以拿到对应的字面量了，不需要传递<code>op_array</code>，相当于少传递了一个参数（之前需要通过<code>op_array-&gt;literals</code>的方式来获取）。</p>
+<h2 id="重新设置常量的constant值"><a href="#重新设置常量的constant值" class="headerlink" title="重新设置常量的constant值"></a>重新设置常量的constant值</h2><blockquote>
+<p>znode_op::constant最终是要存储这个常量相对这条<code>opline</code>的偏移量</p>
+</blockquote>
+<p>在编译完<code>AST</code>生成完<code>opcode</code>之后，<code>znode_op::constant</code>存储的是这个常量在<code>literals</code>数组的索引。</p>
+<p><code>znode_op::constant</code>在从编译期转运行期之后，变成了相对这条<code>opline</code>的偏移量。</p>
+<h2 id="重新设置临时变量的var值"><a href="#重新设置临时变量的var值" class="headerlink" title="重新设置临时变量的var值"></a>重新设置临时变量的var值</h2><blockquote>
+<p>znode_op::var最终是要存储这个变量相对<code>execute_data</code>的偏移量</p>
+</blockquote>
+<p>我们知道，<code>IS_CV</code>变量它相对<code>execute_data</code>的偏移量在编译这个变量的时候就已经通过<code>EX_NUM_TO_VAR</code>确定了。但是，<code>IS_TMP</code>类型的变量，它的<code>znode_op::var</code>里面只存了这个临时变量是第几个，还没有确定这个临时变量相对<code>execute_data</code>的偏移量。所以，在编译时转化为运行时的阶段，需要确定好。</p>
+<p>那么为什么只有<code>IS_TMP</code>需要做转化呢？而<code>IS_CV</code>不需要呢？这是和<code>PHP</code>栈帧的设计有关的，<code>PHP</code>的栈帧结构如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * Stack Frame Layout (the whole stack frame is allocated at once)</span><br><span class="line"> * ==================</span><br><span class="line"> *</span><br><span class="line"> *                             +========================================+</span><br><span class="line"> * EG(current_execute_data) -&gt; | zend_execute_data                      |</span><br><span class="line"> *                             +----------------------------------------+</span><br><span class="line"> *     EX_VAR_NUM(0) --------&gt; | VAR[0] = ARG[1]                        |</span><br><span class="line"> *                             | ...                                    |</span><br><span class="line"> *                             | VAR[op_array-&gt;num_args-1] = ARG[N]     |</span><br><span class="line"> *                             | ...                                    |</span><br><span class="line"> *                             | VAR[op_array-&gt;last_var-1]              |</span><br><span class="line"> *                             | VAR[op_array-&gt;last_var] = TMP[0]       |</span><br><span class="line"> *                             | ...                                    |</span><br><span class="line"> *                             | VAR[op_array-&gt;last_var+op_array-&gt;T-1]  |</span><br><span class="line"> *                             | ARG[N+1] (extra_args)                  |</span><br><span class="line"> *                             | ...                                    |</span><br><span class="line"> *                             +----------------------------------------+</span><br><span class="line"> */</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，前面是<code>IS_CV</code>类型的变量，<code>IS_TMP</code>类型的变量在<code>IS_CV</code>变量的后面。所以，我们在编译出<code>IS_TMP</code>的时候，还无法确定<code>IS_CV</code>变量的个数，所以，也就无法确定<code>IS_TMP</code>相对于<code>execute_data</code>的偏移量。所以，得把<code>IS_TMP</code>的转化放在后面进行。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/10/31/PHP%E5%86%85%E6%A0%B8%E7%9A%84op-array%E7%94%B1%E7%BC%96%E8%AF%91%E6%97%B6%E8%BD%AC%E5%8C%96%E4%B8%BA%E8%BF%90%E8%A1%8C%E6%97%B6/" data-id="ckkj72zrj002bf6vxdvgo7a5d" data-title="PHP内核的op_array由编译时转化为运行时" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核如何确定一个opcode有几个操作数" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/10/31/PHP%E5%86%85%E6%A0%B8%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A%E4%B8%80%E4%B8%AAopcode%E6%9C%89%E5%87%A0%E4%B8%AA%E6%93%8D%E4%BD%9C%E6%95%B0/" class="article-date">
+  <time class="dt-published" datetime="2020-10-31T14:44:12.000Z" itemprop="datePublished">2020-10-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/10/31/PHP%E5%86%85%E6%A0%B8%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A%E4%B8%80%E4%B8%AAopcode%E6%9C%89%E5%87%A0%E4%B8%AA%E6%93%8D%E4%BD%9C%E6%95%B0/">PHP内核如何确定一个opcode有几个操作数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>首先，<code>PHP</code>内核包含的所有<code>zend_ast</code>节点类型在文件<code>zend_ast.h</code>里面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_AST_SPECIAL_SHIFT      6</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_AST_IS_LIST_SHIFT      7</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_AST_NUM_CHILDREN_SHIFT 8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> _zend_ast_kind &#123;</span><br><span class="line">    <span class="comment">// 省略其他的节点类型</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 0 child nodes */</span></span><br><span class="line">    ZEND_AST_MAGIC_CONST = <span class="number">0</span> &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT,</span><br><span class="line">    ZEND_AST_TYPE,</span><br><span class="line">    ZEND_AST_CONSTANT_CLASS,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 1 child node */</span></span><br><span class="line">    ZEND_AST_VAR = <span class="number">1</span> &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT,</span><br><span class="line">    ZEND_AST_CONST,</span><br><span class="line">    ZEND_AST_UNPACK,</span><br><span class="line">    ZEND_AST_UNARY_PLUS,</span><br><span class="line">    ZEND_AST_UNARY_MINUS,</span><br><span class="line">    ZEND_AST_CAST,</span><br><span class="line">    ZEND_AST_EMPTY,</span><br><span class="line">    ZEND_AST_ISSET,</span><br><span class="line">    ZEND_AST_SILENCE,</span><br><span class="line">    ZEND_AST_SHELL_EXEC,</span><br><span class="line">    ZEND_AST_CLONE,</span><br><span class="line">    ZEND_AST_EXIT,</span><br><span class="line">    ZEND_AST_PRINT,</span><br><span class="line">    ZEND_AST_INCLUDE_OR_EVAL,</span><br><span class="line">    ZEND_AST_UNARY_OP,</span><br><span class="line">    ZEND_AST_PRE_INC,</span><br><span class="line">    ZEND_AST_PRE_DEC,</span><br><span class="line">    ZEND_AST_POST_INC,</span><br><span class="line">    ZEND_AST_POST_DEC,</span><br><span class="line">    ZEND_AST_YIELD_FROM,</span><br><span class="line">    ZEND_AST_CLASS_NAME,</span><br><span class="line"></span><br><span class="line">    ZEND_AST_GLOBAL,</span><br><span class="line">    ZEND_AST_UNSET,</span><br><span class="line">    ZEND_AST_RETURN,</span><br><span class="line">    ZEND_AST_LABEL,</span><br><span class="line">    ZEND_AST_REF,</span><br><span class="line">    ZEND_AST_HALT_COMPILER,</span><br><span class="line">    ZEND_AST_ECHO,</span><br><span class="line">    ZEND_AST_THROW,</span><br><span class="line">    ZEND_AST_GOTO,</span><br><span class="line">    ZEND_AST_BREAK,</span><br><span class="line">    ZEND_AST_CONTINUE,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 2 child nodes */</span></span><br><span class="line">    ZEND_AST_DIM = <span class="number">2</span> &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT,</span><br><span class="line">    ZEND_AST_PROP,</span><br><span class="line">    ZEND_AST_NULLSAFE_PROP,</span><br><span class="line">    ZEND_AST_STATIC_PROP,</span><br><span class="line">    ZEND_AST_CALL,</span><br><span class="line">    ZEND_AST_CLASS_CONST,</span><br><span class="line">    ZEND_AST_ASSIGN,</span><br><span class="line">    ZEND_AST_ASSIGN_REF,</span><br><span class="line">    ZEND_AST_ASSIGN_OP,</span><br><span class="line">    ZEND_AST_BINARY_OP,</span><br><span class="line">    ZEND_AST_GREATER,</span><br><span class="line">    ZEND_AST_GREATER_EQUAL,</span><br><span class="line">    ZEND_AST_AND,</span><br><span class="line">    ZEND_AST_OR,</span><br><span class="line">    ZEND_AST_ARRAY_ELEM,</span><br><span class="line">    ZEND_AST_NEW,</span><br><span class="line">    ZEND_AST_INSTANCEOF,</span><br><span class="line">    ZEND_AST_YIELD,</span><br><span class="line">    ZEND_AST_COALESCE,</span><br><span class="line">    ZEND_AST_ASSIGN_COALESCE,</span><br><span class="line"></span><br><span class="line">    ZEND_AST_STATIC,</span><br><span class="line">    ZEND_AST_WHILE,</span><br><span class="line">    ZEND_AST_DO_WHILE,</span><br><span class="line">    ZEND_AST_IF_ELEM,</span><br><span class="line">    ZEND_AST_SWITCH,</span><br><span class="line">    ZEND_AST_SWITCH_CASE,</span><br><span class="line">    ZEND_AST_DECLARE,</span><br><span class="line">    ZEND_AST_USE_TRAIT,</span><br><span class="line">    ZEND_AST_TRAIT_PRECEDENCE,</span><br><span class="line">    ZEND_AST_METHOD_REFERENCE,</span><br><span class="line">    ZEND_AST_NAMESPACE,</span><br><span class="line">    ZEND_AST_USE_ELEM,</span><br><span class="line">    ZEND_AST_TRAIT_ALIAS,</span><br><span class="line">    ZEND_AST_GROUP_USE,</span><br><span class="line">    ZEND_AST_CLASS_CONST_GROUP,</span><br><span class="line">    ZEND_AST_ATTRIBUTE,</span><br><span class="line">    ZEND_AST_MATCH,</span><br><span class="line">    ZEND_AST_MATCH_ARM,</span><br><span class="line">    ZEND_AST_NAMED_ARG,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 3 child nodes */</span></span><br><span class="line">    ZEND_AST_METHOD_CALL = <span class="number">3</span> &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT,</span><br><span class="line">    ZEND_AST_NULLSAFE_METHOD_CALL,</span><br><span class="line">    ZEND_AST_STATIC_CALL,</span><br><span class="line">    ZEND_AST_CONDITIONAL,</span><br><span class="line"></span><br><span class="line">    ZEND_AST_TRY,</span><br><span class="line">    ZEND_AST_CATCH,</span><br><span class="line">    ZEND_AST_PROP_GROUP,</span><br><span class="line">    ZEND_AST_PROP_ELEM,</span><br><span class="line">    ZEND_AST_CONST_ELEM,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 4 child nodes */</span></span><br><span class="line">    ZEND_AST_FOR = <span class="number">4</span> &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT,</span><br><span class="line">    ZEND_AST_FOREACH,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 5 child nodes */</span></span><br><span class="line">    ZEND_AST_PARAM = <span class="number">5</span> &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，有几个子节点，那么就从<code>子节点个数 &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT</code>开始。所以，对应的，我们可以通过反过来拿到子节点的个数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_ast_kind &gt;&gt; ZEND_AST_NUM_CHILDREN_SHIFT</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/10/31/PHP%E5%86%85%E6%A0%B8%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A%E4%B8%80%E4%B8%AAopcode%E6%9C%89%E5%87%A0%E4%B8%AA%E6%93%8D%E4%BD%9C%E6%95%B0/" data-id="ckkj72zrh0024f6vx58yv5giy" data-title="PHP内核如何确定一个opcode有几个操作数" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-移进规约冲突" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/10/29/%E7%A7%BB%E8%BF%9B%E8%A7%84%E7%BA%A6%E5%86%B2%E7%AA%81/" class="article-date">
+  <time class="dt-published" datetime="2020-10-29T15:12:58.000Z" itemprop="datePublished">2020-10-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/10/29/%E7%A7%BB%E8%BF%9B%E8%A7%84%E7%BA%A6%E5%86%B2%E7%AA%81/">移进规约冲突</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天写了一个移进规约冲突的文法。文法规则如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#include &quot;zend_compile.h&quot;</span><br><span class="line">#include &quot;zend_opcode.h&quot;</span><br><span class="line">#include &quot;zend_vm.h&quot;</span><br><span class="line"></span><br><span class="line">#define YYDEBUG 1</span><br><span class="line"></span><br><span class="line">#define zendparse yyparse</span><br><span class="line"></span><br><span class="line">extern int yylex(void);</span><br><span class="line">extern int yyparse(void);</span><br><span class="line">extern FILE *yyin;</span><br><span class="line">extern int yylineno;</span><br><span class="line"></span><br><span class="line">int yywrap()</span><br><span class="line">&#123;</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void yyerror(const char *s)</span><br><span class="line">&#123;</span><br><span class="line">    printf(&quot;[error] %s, in line %d\n&quot;, s, yylineno);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char const *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">%left &#39;+&#39; &#39;-&#39;</span><br><span class="line">%left &#39;*&#39; &#39;&#x2F;&#39;</span><br><span class="line">%left &#39;(&#39; &#39;)&#39;</span><br><span class="line"></span><br><span class="line">%token &lt;ident&gt; T_ECHO    &quot;&#39;echo&#39;&quot;</span><br><span class="line">%token &lt;ast&gt; T_LNUMBER   &quot;integer&quot;</span><br><span class="line">%token &lt;ast&gt; T_VARIABLE  &quot;variable&quot;</span><br><span class="line"></span><br><span class="line">%union &#123;</span><br><span class="line">    zend_ast *ast;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">%type &lt;ast&gt; top_statement statement</span><br><span class="line">%type &lt;ast&gt; expr</span><br><span class="line">%type &lt;ast&gt; echo_expr</span><br><span class="line">%type &lt;ast&gt; scalar</span><br><span class="line">%type &lt;ast&gt; top_statement_list</span><br><span class="line">%type &lt;ast&gt; variable</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">start:</span><br><span class="line">    top_statement_list  &#123; CG(ast) &#x3D; $1; &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">top_statement_list:</span><br><span class="line">        top_statement_list top_statement &#123; $$ &#x3D; zend_ast_list_add($1, $2); &#125;</span><br><span class="line">    |   %empty &#123; $$ &#x3D; zend_ast_create_list(0, ZEND_AST_STMT_LIST); &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">top_statement:</span><br><span class="line">    statement                       &#123; $$ &#x3D; $1; &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">statement:</span><br><span class="line">    T_ECHO echo_expr &#39;;&#39;     &#123; $$ &#x3D; $2; &#125;</span><br><span class="line">|   expr &#39;;&#39; &#123; $$ &#x3D; $1; &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">echo_expr:</span><br><span class="line">    expr &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;create echo zend_ast&quot; &lt;&lt; std::endl;</span><br><span class="line">        $$ &#x3D; zend_ast_create_1(ZEND_AST_ECHO, 0, $1);</span><br><span class="line">    &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">expr:</span><br><span class="line">    variable &#39;&#x3D;&#39; expr &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;create assign zend_ast&quot; &lt;&lt; std::endl;</span><br><span class="line">        $$ &#x3D; zend_ast_create_2(ZEND_AST_ASSIGN, 0, $1, $3);</span><br><span class="line">    &#125;</span><br><span class="line">|</span><br><span class="line">    expr &#39;+&#39; expr   &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;create + zend_ast&quot; &lt;&lt; std::endl;</span><br><span class="line">        $$ &#x3D; zend_ast_create_binary_op(ZEND_ADD, $1, $3);</span><br><span class="line">    &#125;</span><br><span class="line">|	expr &#39;-&#39; expr   &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;create - zend_ast&quot; &lt;&lt; std::endl;</span><br><span class="line">        $$ &#x3D; zend_ast_create_binary_op(ZEND_SUB, $1, $3);</span><br><span class="line">    &#125;</span><br><span class="line">|	expr &#39;*&#39; expr   &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;create * zend_ast&quot; &lt;&lt; std::endl;</span><br><span class="line">        $$ &#x3D; zend_ast_create_binary_op(ZEND_MUL, $1, $3);</span><br><span class="line">    &#125;</span><br><span class="line">|	expr &#39;&#x2F;&#39; expr   &#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;create &#x2F; zend_ast&quot; &lt;&lt; std::endl;</span><br><span class="line">        $$ &#x3D; zend_ast_create_binary_op(ZEND_DIV, $1, $3);</span><br><span class="line">    &#125;</span><br><span class="line">|	&#39;(&#39; expr &#39;)&#39;    &#123; $$ &#x3D; $2; &#125;</span><br><span class="line">|	scalar &#123; $$ &#x3D; $1; &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">scalar:</span><br><span class="line">    T_LNUMBER   &#123; $$ &#x3D; $1; &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">variable:</span><br><span class="line">    T_VARIABLE  &#123; $$ &#x3D; $1; &#125;</span><br><span class="line"></span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
+
+<p>执行生成代码的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">bison -d -Wcounterexamples zend_language_parser.y</span><br><span class="line"></span><br><span class="line">zend_language_parser.y: warning: 4 <span class="built_in">shift</span>/reduce conflicts [-Wconflicts-sr]</span><br><span class="line">zend_language_parser.y: warning: <span class="built_in">shift</span>/reduce conflict on token <span class="string">&#x27;+&#x27;</span> [-Wcounterexamples]</span><br><span class="line">  Example: variable <span class="string">&#x27;=&#x27;</span> expr • <span class="string">&#x27;+&#x27;</span> expr</span><br><span class="line">  Shift derivation</span><br><span class="line">    expr</span><br><span class="line">    ↳ variable <span class="string">&#x27;=&#x27;</span> expr</span><br><span class="line">                   ↳ expr • <span class="string">&#x27;+&#x27;</span> expr</span><br><span class="line">  Reduce derivation</span><br><span class="line">    expr</span><br><span class="line">    ↳ expr                  <span class="string">&#x27;+&#x27;</span> expr</span><br><span class="line">      ↳ variable <span class="string">&#x27;=&#x27;</span> expr •</span><br><span class="line"></span><br><span class="line"><span class="comment"># 省略其他的警告</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，警告说是有<code>4</code>个地方有移进规约的冲突。</p>
+<p>那么，什么是移进规约冲突呢？意思就是说，当我们预读了词素的时候，既可以对分析栈里面已有的词素进行规约也可以对预读的词素进行移进，这就是已经规约冲突。</p>
+<p><code>OK</code>，我们来看看上面的报错。可以看到，当有字符串：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = 1 + 1</span><br></pre></td></tr></table></figure>
+
+<p>输入时，会发生移进规约的冲突。</p>
+<p>我们来看看如果是优先移进的话，状态是如何变化的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|                                  |   |init |   |            <span class="variable">$a</span> = 1 + 1            |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|                <span class="variable">$a</span>                |   |<span class="built_in">shift</span>|   |             = 1 + 1              |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|               <span class="variable">$a</span> =               |   |<span class="built_in">shift</span>|   |              1 + 1               |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|              <span class="variable">$a</span> = 1              |   |<span class="built_in">shift</span>|   |               + 1                |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|             <span class="variable">$a</span> = 1 +             |   |<span class="built_in">shift</span>|   |                1                 |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|            <span class="variable">$a</span> = 1 + 1            |   |<span class="built_in">shift</span>|   |                                  |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">|            <span class="variable">$a</span> = expr             |   |reduce|  |                                  |</span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">|               expr               |   |reduce|  |                                  |</span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>AST</code>如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">               +------------+                             </span><br><span class="line">               |ZEND_ASSIGN |                             </span><br><span class="line">               |            |                             </span><br><span class="line">               +------------+                             </span><br><span class="line">                      |                                   </span><br><span class="line">                      |                                   </span><br><span class="line">       +--------------+--------------+                    </span><br><span class="line">       |                             |                    </span><br><span class="line">       |                             |                    </span><br><span class="line">       v                             v                    </span><br><span class="line">+------------+                +------------+              </span><br><span class="line">|     <span class="variable">$a</span>     |                |  ZEND_ADD  |              </span><br><span class="line">|            |                |            |              </span><br><span class="line">+------------+                +------------+              </span><br><span class="line">                                     |                    </span><br><span class="line">                                     |                    </span><br><span class="line">                                     |                    </span><br><span class="line">                     +---------------+-------------+      </span><br><span class="line">                     |                             |      </span><br><span class="line">                     |                             |      </span><br><span class="line">                     v                             v      </span><br><span class="line">              +------------+                +------------+</span><br><span class="line">              |     1      |                |     1      |</span><br><span class="line">              |            |                |            |</span><br><span class="line">              +------------+                +------------+</span><br></pre></td></tr></table></figure>
+
+<p>计算这个<code>AST</code>，我们会得到<code>$a</code>的最终值为<code>2</code>。这是符合主流语言的预期的。</p>
+<p>我们来看看如果是优先规约的话，状态是如何变化的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|                                  |   |init |   |            <span class="variable">$a</span> = 1 + 1            |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|                <span class="variable">$a</span>                |   |<span class="built_in">shift</span>|   |             = 1 + 1              |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|               <span class="variable">$a</span> =               |   |<span class="built_in">shift</span>|   |              1 + 1               |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|              <span class="variable">$a</span> = 1              |   |<span class="built_in">shift</span>|   |               + 1                |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">|               expr               |   |reduce|  |               + 1                |</span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|              expr +              |   |<span class="built_in">shift</span>|   |                1                 |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">|             expr + 1             |   |<span class="built_in">shift</span> |  |                                  |</span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">                                                                                     </span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br><span class="line">|               expr               |   |reduce|  |                                  |</span><br><span class="line">+----------------------------------+   +------+  +----------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>AST</code>如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">                                  +-----------------+                 </span><br><span class="line">                                  |                 |                 </span><br><span class="line">                                  |    ZEND_ADD     |                 </span><br><span class="line">                                  |                 |                 </span><br><span class="line">                                  +-----------------+                 </span><br><span class="line">                                           |                          </span><br><span class="line">                                           |                          </span><br><span class="line">                           +---------------+----------------+         </span><br><span class="line">                           |                                |         </span><br><span class="line">                           |                                |         </span><br><span class="line">                           v                                v         </span><br><span class="line">                  +-----------------+              +-----------------+</span><br><span class="line">                  |                 |              |                 |</span><br><span class="line">                  |   ZEND_ASSIGN   |              |        1        |</span><br><span class="line">                  |                 |              |                 |</span><br><span class="line">                  +-----------------+              +-----------------+</span><br><span class="line">                           |                                          </span><br><span class="line">                           |                                          </span><br><span class="line">                           |                                          </span><br><span class="line">         +-----------------+----------------+                         </span><br><span class="line">         |                                  |                         </span><br><span class="line">         |                                  |                         </span><br><span class="line">         v                                  v                         </span><br><span class="line">+-----------------+                +-----------------+                </span><br><span class="line">|                 |                |                 |                </span><br><span class="line">|       <span class="variable">$a</span>        |                |        1        |                </span><br><span class="line">|                 |                |                 |                </span><br><span class="line">+-----------------+                +-----------------+                </span><br></pre></td></tr></table></figure>
+
+<p>计算这个<code>AST</code>，我们会得到<code>$a</code>的最终值为<code>1</code>。这和我们想的不太一样。</p>
+<p>所以，移进规约的冲突，会导致一些执行的顺序不一致。如果我们学习过<code>bison</code>官方文档经典的<code>if ... else</code>的移进规约冲突问题的话，我们知道，解决它的办法是修改文法，进而避免冲突（因为这个例子有一点绕，所以我没有用那个例子）。那我们这种情况呢，就可以通过设置词素的优先级来解决掉，我们设置<code>=</code>的优先级低于<code>+</code>即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">%left &#39;&#x3D;&#39;</span><br><span class="line">%left &#39;+&#39; &#39;-&#39;</span><br><span class="line">%left &#39;*&#39; &#39;&#x2F;&#39;</span><br><span class="line">%left &#39;(&#39; &#39;)&#39;</span><br></pre></td></tr></table></figure>
+
+<p>这样的话，当我们的分析栈为如下情况的时候：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br><span class="line">|              <span class="variable">$a</span> = 1              |   |<span class="built_in">shift</span>|   |               + 1                |</span><br><span class="line">+----------------------------------+   +-----+   +----------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>我们预读一个<code>+</code>，因为<code>+</code>号的优先级更高一点，所以，此时不会选择规约，而是把<code>+</code>移进。这样，我们可以保证在后续规约的时候，先规约<code>1 + 1</code>，进而也保证了运算符的优先级。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/10/29/%E7%A7%BB%E8%BF%9B%E8%A7%84%E7%BA%A6%E5%86%B2%E7%AA%81/" data-id="ckkj72zuu00bbf6vxb8207l9q" data-title="移进规约冲突" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

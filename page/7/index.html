@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/7/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-自己动手实现PHP8的match语法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2020-07-15T14:20:58.000Z" itemprop="datePublished">2020-07-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/">自己动手实现PHP8的match语法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们现在来实现一下<code>PHP8</code>的<code>match</code>语法。大概形如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> match (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; <span class="number">2</span></span><br><span class="line">    <span class="number">2</span> =&gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，我们来看看这里有哪些<code>token</code>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> <span class="keyword">echo</span> 对应 T_ECHO</span><br><span class="line"><span class="number">2.</span> match 对应 T_MATCH</span><br><span class="line"><span class="number">3.</span> ( 对应 T_LEFT_PARENTHESIS</span><br><span class="line"><span class="number">4.</span> ) 对应 T_RIGHT_PARENTHESIS</span><br><span class="line"><span class="number">5.</span> <span class="number">1</span> 对应 T_NUMBER</span><br><span class="line"><span class="number">6.</span> =&gt; 对应 T_DOUBLE_ARROW</span><br><span class="line"><span class="number">7.</span> &#123; 对应 T_LEFT_BRACE</span><br><span class="line"><span class="number">8.</span> &#125; 对应 T_RIGHT_BRACE</span><br></pre></td></tr></table></figure>
+
+<p>所以，我们可以很轻易的写出解析<code>token</code>的规则（<code>match.l</code>）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;match.tab.h&quot;</span></span></span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">echo    &#123;<span class="keyword">return</span> T_ECHO;&#125;</span><br><span class="line">match   &#123;<span class="keyword">return</span> T_MATCH;&#125;</span><br><span class="line">[(]     &#123;<span class="keyword">return</span> T_LEFT_PARENTHESIS;&#125;</span><br><span class="line">[)]     &#123;<span class="keyword">return</span> T_RIGHT_PARENTHESIS;&#125;</span><br><span class="line">[&#123;]     &#123;<span class="keyword">return</span> T_LEFT_BRACE;&#125;</span><br><span class="line">[&#125;]     &#123;<span class="keyword">return</span> T_RIGHT_BRACE;&#125;</span><br><span class="line">[<span class="number">0</span><span class="number">-9</span>]+  &#123;yylval = atoi(yytext); <span class="keyword">return</span> T_NUMBER;&#125;</span><br><span class="line">=&gt;      &#123;<span class="keyword">return</span> T_DOUBLE_ARROW;&#125;</span><br><span class="line">\n      <span class="comment">/* ignore end of line */</span></span><br><span class="line">[ \t]+  <span class="comment">/* ignore whitespace */</span></span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
+
+<p>接着，我们要去定义我们的语法规则（<code>match.y</code>）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">yylex</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">yyparse</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="keyword">extern</span> FILE *yyin;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> yylineno;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">map</span>[<span class="number">100</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">yywrap</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">yyerror</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[error] %s, in %d\n&quot;</span>, s, yylineno);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *file = argv[<span class="number">1</span>];</span><br><span class="line">    FILE *fp = fopen(file, <span class="string">&quot;r&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(fp == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;cannot open %s\n&quot;</span>, file);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    yyin = fp;</span><br><span class="line">    yyparse();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">%token T_ECHO T_MATCH T_LEFT_PARENTHESIS T_RIGHT_PARENTHESIS T_NUMBER T_DOUBLE_ARROW T_LEFT_BRACE T_RIGHT_BRACE</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">statement:</span><br><span class="line">|   T_ECHO echo_expr    &#123; <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, $<span class="number">2</span>); &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">echo_expr:</span><br><span class="line">expr</span><br><span class="line">&#123;</span><br><span class="line">    $$ = $<span class="number">1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">expr:</span><br><span class="line">|   match_expr &#123; $$ = $<span class="number">1</span>;&#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">match_expr:</span><br><span class="line">T_MATCH T_LEFT_PARENTHESIS T_NUMBER T_RIGHT_PARENTHESIS T_LEFT_BRACE match_arm_list T_RIGHT_BRACE</span><br><span class="line">&#123;</span><br><span class="line">    $<span class="number">6</span> = <span class="built_in">map</span>[$<span class="number">3</span>];</span><br><span class="line">    $$ = $<span class="number">6</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">match_arm_list:</span><br><span class="line">| match_arm_list match_arm</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">match_arm:</span><br><span class="line">T_NUMBER T_DOUBLE_ARROW T_NUMBER</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">map</span>[$<span class="number">1</span>] = $<span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
+
+<p>语法规则会稍微难理解一点，我们来解释一下。其中，<code>statement</code>是起始的非终结符，可以推导出我们的<code>echo</code>表达式<code>echo_expr</code>；而我们的<code>echo</code>表达式实际上也是一个表达式，这个表达式可以是我们的<code>match</code>表达式<code>match_expr</code>；<code>match_expr</code>需要匹配到<code>match</code>、<code>（</code>等等这些<code>token</code>。但是，我们的匹配列表<code>match_arm_list</code>它不是终结符，我们还可以继续推导，可以发现，实际上<code>match_arm_list</code>是一个递归的，知道推导出<code>match_arm</code>某一项。一旦我们匹配到了<code>match_arm</code>，我们就把<code>key</code>和<code>value</code>保存在<code>map</code>里面。</p>
+<p>我们来编译一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lex match.l</span><br><span class="line"></span><br><span class="line">bison -d match.y</span><br><span class="line"></span><br><span class="line">cc -o match lex.yy.c match.tab.c</span><br></pre></td></tr></table></figure>
+
+<p>此时会生成可执行文件<code>match</code>。</p>
+<p>我们来写一下我们的测试脚本 （<code>match.php</code>）：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> match (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; <span class="number">2</span></span><br><span class="line">    <span class="number">2</span> =&gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后执行脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./match match.php</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<p>此时会输出<code>2</code>。如果我们把匹配条件改一下，改成<code>2</code>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> match (<span class="number">2</span>) &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; <span class="number">2</span></span><br><span class="line">    <span class="number">2</span> =&gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将会输出<code>3</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./match match.php</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+
+<p>符合我们的预期。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/" data-id="ckkj72zv200bsf6vx0mpgbhn4" data-title="自己动手实现PHP8的match语法" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP中的SEPARATE_ARRAY" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/" class="article-date">
+  <time class="dt-published" datetime="2020-07-11T13:34:56.000Z" itemprop="datePublished">2020-07-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/">PHP中的SEPARATE_ARRAY</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本篇文章基于PHP的commit为：9fa1d1330138ac424f990ff03e62721120aaaec3</p>
+</blockquote>
+<p>在<code>PHP</code>内核里面，有一个叫做<code>SEPARATE_ARRAY</code>的宏。长这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEPARATE_ARRAY(zv) do &#123;                     \</span></span><br><span class="line">    zval *_zv = (zv);                               \</span><br><span class="line">    zend_array *_arr = Z_ARR_P(_zv);                \</span><br><span class="line">    <span class="keyword">if</span> (UNEXPECTED(GC_REFCOUNT(_arr) &gt; <span class="number">1</span>)) &#123;        \</span><br><span class="line">        <span class="keyword">if</span> (Z_REFCOUNTED_P(_zv)) &#123;                  \</span><br><span class="line">            GC_DELREF(_arr);                        \</span><br><span class="line">        &#125;                                           \</span><br><span class="line">        ZVAL_ARR(_zv, zend_array_dup(_arr));        \</span><br><span class="line">    &#125;                                               \</span><br><span class="line">&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>一句话来说，这个宏做的事情就是分离<code>zend_array</code>。我们知道，<code>PHP</code>是通过引用计数来管理多个变量对数组的引用，如果其中一个变量需要去修改数组的内容，那么底层就会单独为这个变量分配一个新的<code>zend_array</code>，并且原来的<code>zend_array</code>的引用计数减一。然后，<code>SEPARATE_ARRAY</code>做的事情就是这个。</p>
+<p>因为<code>PHP</code>底层实在是有太多需要修改数组的操作了，所以我们确实需要<code>SEPARATE_ARRAY</code>来帮助我们去分离数组。</p>
+<p>除此之外，我们会在<code>zend_hash.c</code>文件的所有写数组的函数里面发现<code>HT_ASSERT_RC1</code>这个断言宏。这个宏对于写<code>C</code>扩展的我们来说，在<code>debug</code>上是非常的有帮助的。我们来看看<code>HT_ASSERT_RC1</code>这个宏：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HT_ASSERT_RC1(ht) HT_ASSERT(ht, GC_REFCOUNT(ht) == 1)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> ZEND_DEBUG</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> HT_ASSERT(ht, expr) \</span></span><br><span class="line">    ZEND_ASSERT((expr) || (HT_FLAGS(ht) &amp; HASH_FLAG_ALLOW_COW_VIOLATION))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> HT_ASSERT(ht, expr)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>首先，这个宏只会在<code>PHP</code>开启<code>debug</code>的时候才会起作用。</p>
+<p>然后，我们发现，这个断言宏能够成功的情况有两个。一个是设置了<code>zend_array</code>的<code>HASH_FLAG_ALLOW_COW_VIOLATION</code>标志；第二个是<code>zend_array</code>的引用计数是<code>1</code>。我们先来说一下第二点，因为第一点和第二点有关系。</p>
+<p>为什么<code>zend_array</code>的引用计数要是<code>1</code>？</p>
+<p>因为<code>PHP</code>扩展操作数组的函数没法对数组进行分离。我们知道，如果修改一个数组，是需要发生写时复制的（我们也可以叫做写时分离），如果不进行写时复制，那么就会导致其他引用了这个数组的变量出问题（可能这是一个你意想不到的修改）。所以，只要这个数组的引用计数是<code>1</code>，我们就可以确定，这个数组只有一个变量在引用，所以我们可以放心的去修改它了。</p>
+<p>那么，如果我们非要在引用计数大于<code>1</code>的时候去修改这个数组呢？那么第一种情况就起作用了，我们可以设置<code>HASH_FLAG_ALLOW_COW_VIOLATION</code>这个标志（翻译过来就是<strong>允许违反写时复制</strong>），来强制不遵守写时复制的规则。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/" data-id="ckkj72zra001pf6vx7rmwee26" data-title="PHP中的SEPARATE_ARRAY" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP扩展中的Makefile-frag文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/" class="article-date">
+  <time class="dt-published" datetime="2020-07-10T09:31:41.000Z" itemprop="datePublished">2020-07-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/">PHP扩展中的Makefile.frag文件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于PHP8的commit为：9fa1d1330138ac424f990ff03e62721120aaaec3</p>
+</blockquote>
+<p>首先，我们来创建一个扩展骨架：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ php ext_skel.php --ext frag</span><br><span class="line"></span><br><span class="line">Copying config scripts... <span class="keyword">done</span></span><br><span class="line">Copying sources... <span class="keyword">done</span></span><br><span class="line">Copying tests... <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">Success. The extension is now ready to be compiled. To <span class="keyword">do</span> so, use the</span><br><span class="line">following steps:</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /path/to/php-src/ext/frag</span><br><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line">Don<span class="string">&#x27;t forget to run tests once the compilation is done:</span></span><br><span class="line"><span class="string">make test</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Thank you for using PHP!</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，我们进入<code>frag</code>目录，并且创建文件<code>Makefile.frag</code>：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">generate: show-generate-info</span></span><br><span class="line">    touch generate.c</span><br><span class="line"></span><br><span class="line"><span class="section">show-generate-info:</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            GENERATE FILE                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            =============                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo</span><br><span class="line">    @echo</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这里实现的功能是创建文件<code>generate.c</code>。</p>
+<p>然后，我们修改<code>config.m4</code>文件，完整替换为如下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE([frag],</span><br><span class="line">  [whether to <span class="built_in">enable</span> frag support],</span><br><span class="line">  [AS_HELP_STRING([--enable-frag],</span><br><span class="line">    [Enable frag support])],</span><br><span class="line">  [no])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> <span class="string">&quot;<span class="variable">$PHP_FRAG</span>&quot;</span> != <span class="string">&quot;no&quot;</span>; <span class="keyword">then</span></span><br><span class="line">  AC_DEFINE(HAVE_FRAG, 1, [ Have frag support ])</span><br><span class="line"></span><br><span class="line">  PHP_ADD_MAKEFILE_FRAGMENT(Makefile.frag)</span><br><span class="line"></span><br><span class="line">  PHP_NEW_EXTENSION(frag, frag.c generate.c, <span class="variable">$ext_shared</span>)</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>我们注意到，我们需要编译的文件除了<code>frag.c</code>之外，还有待生成的<code>generate.c</code>文件。</p>
+<p>接着，我们开始编译我们的扩展：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ phpize</span><br><span class="line">Configuring <span class="keyword">for</span>:</span><br><span class="line">PHP Api Version:         20190128</span><br><span class="line">Zend Module Api No:      20190128</span><br><span class="line">Zend Extension Api No:   420190128</span><br><span class="line"></span><br><span class="line">$ ./configure</span><br><span class="line">creating libtool</span><br><span class="line">appending configuration tag <span class="string">&quot;CXX&quot;</span> to libtool</span><br><span class="line">configure: patching config.h.in</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating config.h</span><br></pre></td></tr></table></figure>
+
+<p>到这里，我们的<code>Makefile</code>文件已经生成了，我们会发现，在我们的<code>Makefile</code>文件里面，有如下内容：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">.NOEXPORT:</span></span><br><span class="line"><span class="section">generate: show-generate-info</span></span><br><span class="line">    touch generate.c</span><br><span class="line"></span><br><span class="line"><span class="section">show-generate-info:</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            GENERATE FILE                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            =============                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo</span><br><span class="line">    @echo</span><br></pre></td></tr></table></figure>
+
+<p>这实际上就是我们<code>Makefile.frag</code>里面的内容了。</p>
+<p>所以，接下来我们要先创建<code>generate.c</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ make generate</span><br><span class="line">  +----------------------------------------------------------------------+</span><br><span class="line">  |                                                                      |</span><br><span class="line">  |                            GENERATE FILE                             |</span><br><span class="line">  |                            =============                             |</span><br><span class="line">  |                                                                      |</span><br><span class="line">  +----------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">touch generate.c</span><br></pre></td></tr></table></figure>
+
+<p>然后编译扩展：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">make</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">Libraries have been installed <span class="keyword">in</span>:</span><br><span class="line">   /Users/hantaohuang/codeDir/cCode/php-src/ext/frag/modules</span><br><span class="line"></span><br><span class="line">If you ever happen to want to link against installed libraries</span><br><span class="line"><span class="keyword">in</span> a given directory, LIBDIR, you must either use libtool, and</span><br><span class="line">specify the full pathname of the library, or use the `-LLIBDIR<span class="string">&#x27;</span></span><br><span class="line"><span class="string">flag during linking and do at least one of the following:</span></span><br><span class="line"><span class="string">   - add LIBDIR to the `DYLD_LIBRARY_PATH&#x27;</span> environment variable</span><br><span class="line">     during execution</span><br><span class="line"></span><br><span class="line">See any operating system documentation about shared libraries <span class="keyword">for</span></span><br><span class="line">more information, such as the ld(1) and ld.so(8) manual pages.</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">Build complete.</span><br><span class="line">Don<span class="string">&#x27;t forget to run &#x27;</span>make <span class="built_in">test</span><span class="string">&#x27;.</span></span><br></pre></td></tr></table></figure>
+
+<p>此时，我们完成了这次扩展的编译。</p>
+<p>这个技巧在我们需要动态生成源文件的时候可以使用，比如<code>json</code>扩展它有一个词法分析的文件，他就是通过这个方法来实现构建的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/" data-id="ckkj72zrq002sf6vx4j1pgd0a" data-title="PHP扩展中的Makefile.frag文件" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-zend-throw-error用法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2020-07-08T01:34:53.000Z" itemprop="datePublished">2020-07-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/">zend_throw_error用法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于PHP的commit为：b18b2c8fe587321384c9423470cf97d8040b32e2</p>
+</blockquote>
+<p>在执行<code>PHP</code>扩展层面的代码的时候，如果遇到了错误，我们可以通过<code>zend_throw_error</code>这个函数来设置<code>error</code>异常对象，然后使用宏<code>RETURN_THROWS</code>来退出扩展函数。例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">digest = algo-&gt;hash(password, options);</span><br><span class="line"><span class="keyword">if</span> (!digest) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!EG(exception)) &#123;</span><br><span class="line">        zend_throw_error(<span class="literal">NULL</span>, <span class="string">&quot;Password hashing failed for unknown reason&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    RETURN_THROWS();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看<code>zend_throw_error</code>会做些什么：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API ZEND_COLD <span class="keyword">void</span> <span class="title">zend_throw_error</span><span class="params">(zend_class_entry *exception_ce, <span class="keyword">const</span> <span class="keyword">char</span> *format, ...)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    va_list va;</span><br><span class="line">    <span class="keyword">char</span> *message = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!exception_ce) &#123;</span><br><span class="line">        exception_ce = zend_ce_error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Marker used to disable exception generation during preloading. */</span></span><br><span class="line">    <span class="keyword">if</span> (EG(exception) == (<span class="keyword">void</span>*)(<span class="keyword">uintptr_t</span>)<span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    va_start(va, format);</span><br><span class="line">    zend_vspprintf(&amp;message, <span class="number">0</span>, format, va);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//<span class="doctag">TODO:</span> we can&#x27;t convert compile-time errors to exceptions yet???</span></span><br><span class="line">    <span class="keyword">if</span> (EG(current_execute_data) &amp;&amp; !CG(in_compilation)) &#123;</span><br><span class="line">        zend_throw_exception(exception_ce, message, <span class="number">0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        zend_error(E_ERROR, <span class="string">&quot;%s&quot;</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    efree(message);</span><br><span class="line">    va_end(va);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!exception_ce) &#123;</span><br><span class="line">    exception_ce = zend_ce_error;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会先判断是否传递了异常类<code>exception_ce</code>，如果没有传递，那么使用<code>PHP</code>默认的<code>zend_ce_error</code>异常类。</p>
+<p>然后，这里核心的地方是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (EG(current_execute_data) &amp;&amp; !CG(in_compilation)) &#123;</span><br><span class="line">    zend_throw_exception(exception_ce, message, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ZEND_API ZEND_COLD zend_object *<span class="title">zend_throw_exception</span><span class="params">(zend_class_entry *exception_ce, <span class="keyword">const</span> <span class="keyword">char</span> *message, zend_long code)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_string *msg_str = message ? zend_string_init(message, <span class="built_in">strlen</span>(message), <span class="number">0</span>) : <span class="literal">NULL</span>;</span><br><span class="line">    zend_object *ex = zend_throw_exception_zstr(exception_ce, msg_str, code);</span><br><span class="line">    <span class="keyword">if</span> (msg_str) &#123;</span><br><span class="line">        zend_string_release(msg_str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ex;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_object *<span class="title">zend_throw_exception_zstr</span><span class="params">(zend_class_entry *exception_ce, zend_string *message, zend_long code)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">    object_init_ex(&amp;ex, exception_ce);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (message) &#123;</span><br><span class="line">        ZVAL_STR(&amp;tmp, message);</span><br><span class="line">        zend_update_property_ex(exception_ce, &amp;ex, ZSTR_KNOWN(ZEND_STR_MESSAGE), &amp;tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (code) &#123;</span><br><span class="line">        ZVAL_LONG(&amp;tmp, code);</span><br><span class="line">        zend_update_property_ex(exception_ce, &amp;ex, ZSTR_KNOWN(ZEND_STR_CODE), &amp;tmp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    zend_throw_exception_internal(&amp;ex);</span><br><span class="line">    <span class="keyword">return</span> Z_OBJ(ex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ZEND_API ZEND_COLD <span class="keyword">void</span> <span class="title">zend_throw_exception_internal</span><span class="params">(zval *exception)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">    <span class="keyword">if</span> (exception != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        zend_object *previous = EG(exception);</span><br><span class="line">        zend_exception_set_previous(Z_OBJ_P(exception), EG(exception));</span><br><span class="line">        EG(exception) = Z_OBJ_P(exception);</span><br><span class="line">        <span class="keyword">if</span> (previous) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码做了一件事情，把<code>zend_ce_error</code>异常类实例化，然后设置它的<code>message</code>等属性，最后设置<code>EG(exception)</code>为这个实例化的对象。（所以，我们的<code>RETURN_THROWS</code>断言会成功）。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/" data-id="ckkj72zsy005nf6vx3guwgq00" data-title="zend_throw_error用法" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP8-RETURN-THROWS宏" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/07/PHP8-RETURN-THROWS%E5%AE%8F/" class="article-date">
+  <time class="dt-published" datetime="2020-07-07T09:38:07.000Z" itemprop="datePublished">2020-07-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/07/PHP8-RETURN-THROWS%E5%AE%8F/">PHP8 RETURN_THROWS宏用法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于php的commit为：b18b2c8fe587321384c9423470cf97d8040b32e2</p>
+</blockquote>
+<p>在<code>PHP8</code>之前，扩展函数解析参数的时候，如果解析失败了，那么会<code>return</code>，如下所示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (zend_parse_parameters_none() == FAILURE) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>PHP8</code>后，扩展函数解析参数失败的时候，会使用<code>RETURN_THROWS</code>这个宏，例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (c() == FAILURE) &#123;</span><br><span class="line">    RETURN_THROWS();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看<code>RETURN_THROWS</code>这个宏：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RETURN_THROWS()             do &#123; ZEND_ASSERT(EG(exception)); (void) return_value; return; &#125; while (0)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> ZEND_DEBUG</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ZEND_ASSERT(c) assert(c)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ZEND_ASSERT(c) ZEND_ASSUME(c)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>可以看出，这个宏只会去断言此时<code>EG(exception)</code>不为<code>NULL</code>。因为在<code>PHP8</code>中，大部分不被期待的错误都应该抛异常。</p>
+<p>但是，真正会去打印异常消息的地方是在函数<code>zend_execute_scripts</code>里面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (op_array) &#123;</span><br><span class="line">    zend_execute(op_array, retval);</span><br><span class="line">    zend_exception_restore();</span><br><span class="line">    <span class="keyword">if</span> (UNEXPECTED(EG(exception))) &#123;</span><br><span class="line">        <span class="keyword">if</span> (Z_TYPE(EG(user_exception_handler)) != IS_UNDEF) &#123;</span><br><span class="line">            zend_user_exception_handler();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (EG(exception)) &#123;</span><br><span class="line">            ret = zend_exception_error(EG(exception), E_ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    destroy_op_array(op_array);</span><br><span class="line">    efree_size(op_array, <span class="keyword">sizeof</span>(zend_op_array));</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (type==ZEND_REQUIRE) &#123;</span><br><span class="line">    ret = FAILURE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在执行完了我们的<code>opcode</code>之后，会去判断<code>EG(exception)</code>是否为<code>NULL</code>，如果不为<code>NULL</code>，就会调用<code>zend_exception_error</code>函数，这个函数的核心是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_string *message = zval_get_string(GET_PROPERTY(&amp;exception, ZEND_STR_MESSAGE));</span><br><span class="line">zend_string *file = zval_get_string(GET_PROPERTY_SILENT(&amp;exception, ZEND_STR_FILE));</span><br><span class="line">zend_long line = zval_get_long(GET_PROPERTY_SILENT(&amp;exception, ZEND_STR_LINE));</span><br></pre></td></tr></table></figure>
+
+<p>（其中，<code>exception</code>指向的是<code>EG(exception)</code>）</p>
+<p>可以看到，这三行会去获取<code>EG(exception)</code>异常对象<code>zend_object</code>的三个属性，分别是<code>message</code>，<code>file</code>、<code>line</code>。然后组成我们的报错信息，最后通过<code>zend_error_va</code>函数（实际上调用的是<code>zend_error_cb</code>函数）打印出来。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/07/PHP8-RETURN-THROWS%E5%AE%8F/" data-id="ckkj72zr4001gf6vx7nbbd96g" data-title="PHP8 RETURN_THROWS宏用法" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP-debugInfo魔术方法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/05/PHP-debugInfo%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2020-07-05T03:07:04.000Z" itemprop="datePublished">2020-07-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/05/PHP-debugInfo%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95/">PHP __debugInfo魔术方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>该方法在<code>PHP 5.6.0</code>及其以上版本可以用</p>
+</blockquote>
+<p>我们直接来看一段代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__debugInfo</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> [</span><br><span class="line">            <span class="string">&#x27;one&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">            <span class="string">&#x27;two&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">        ];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var_dump(<span class="keyword">new</span> Foo);</span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">object(Foo)<span class="comment">#1 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;one&quot;</span>]=&gt;</span><br><span class="line">  int(1)</span><br><span class="line">  [<span class="string">&quot;two&quot;</span>]=&gt;</span><br><span class="line">  int(2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，使用<code>var_dump</code>的时候，会去调用<code>__debugInfo</code>魔术方法。这个方法对于调试还是比较有用，比如我们写<code>PHP</code>的<code>C</code>扩展，如果自定义了类对象，我们如果想要输出<code>struct</code>里面的信息，就可以去实现<code>__debugInfo</code>方法，然后在这个方法中去获取<code>struct</code>里面的信息，作为数组返回。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/05/PHP-debugInfo%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95/" data-id="ckkj72zr00016f6vx9h9eg8hl" data-title="PHP __debugInfo魔术方法" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP内核贡献经验" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/02/PHP%E5%86%85%E6%A0%B8%E8%B4%A1%E7%8C%AE%E7%BB%8F%E9%AA%8C/" class="article-date">
+  <time class="dt-published" datetime="2020-07-02T08:47:09.000Z" itemprop="datePublished">2020-07-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/02/PHP%E5%86%85%E6%A0%B8%E8%B4%A1%E7%8C%AE%E7%BB%8F%E9%AA%8C/">PHP内核贡献经验</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>最近我在关注<code>PHP8</code>的代码和变更，贡献了一些代码，这里想总结一下。</p>
+<h2 id="保留php-src仓库"><a href="#保留php-src仓库" class="headerlink" title="保留php-src仓库"></a>保留php-src仓库</h2><p>因为<code>php-src</code>项目还是比较大的，所以我们每次去<code>clone</code>这个仓库是非常耗时的，所以我们可以先把<code>github</code>上面的<code>php-src</code>在<code>gitee.com</code>上面做一个镜像，然后再从<code>gitee</code>上面<code>clone</code>下来，最后修改一个<code>git remote</code>信息即可。而且这个仓库不要删除，留着来<code>git pull</code></p>
+<h2 id="编译问题"><a href="#编译问题" class="headerlink" title="编译问题"></a>编译问题</h2><p>因为我们在<code>master</code>分支进行工作，所以免不了要经常编译，我们一定要习惯<code>make clean</code>。而且我发现这个<code>make clean</code>也清理不干净构建出来的文件，有一些需要自己手动去删除。举个例子，词法分析的文件，编译出来的文件，<code>make clean</code>没有去删除，这就导致我某次编译失败了。</p>
+<p>还有就是，如果我们直接<code>./configure</code>，然后编译，会编译比较久，因为它会编译好多扩展，所以我如果只看核心的东西，我会加上<code>--disable-all</code>。</p>
+<h2 id="stub文件"><a href="#stub文件" class="headerlink" title="stub文件"></a>stub文件</h2><p>我们在内核代码中，经常会看到很多的<code>stub</code>文件，这些文件其实是用来生成函数的<code>arginfo</code>信息的。所以我们不要去手写函数的<code>arginfo</code>信息。我们可以通过<code>gen_stub.php</code>这个脚本来实现，生成方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php build/gen_stub.php</span><br></pre></td></tr></table></figure>
+
+<p>或者指定文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php build/gen_stub.php 某个stub文件</span><br></pre></td></tr></table></figure>
+
+<p>因为跑这个脚本需要<code>nikic</code>写的<code>PHP-Parser</code>，而<code>PHP-Parser</code>需要安装<code>tokenizer</code>扩展，所以我们需要一个安装了<code>tokenizer</code>扩展的<code>php</code>来执行它，并且<code>php</code>的版本要是<code>7.1+</code>。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>我们改动了<code>PHP</code>内核，难免会导致一些测试失败，所以我们需要去修改失败的测试。运行单个测试文件，我们可以这么做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php run-tests.php 失败的那个.phpt文件</span><br></pre></td></tr></table></figure>
+
+<h2 id="时间问题"><a href="#时间问题" class="headerlink" title="时间问题"></a>时间问题</h2><p>因为<code>PHP</code>开发组的人大部分是在国外，由于时差问题，国内时间是下午和晚上他们会和我们交流，国内时间早上问问题基本不回了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/02/PHP%E5%86%85%E6%A0%B8%E8%B4%A1%E7%8C%AE%E7%BB%8F%E9%AA%8C/" data-id="ckkj72zrl002hf6vx62ap12uv" data-title="PHP内核贡献经验" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP8通过ZPP宏获取zend_class_entry" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/" class="article-date">
+  <time class="dt-published" datetime="2020-07-01T13:12:03.000Z" itemprop="datePublished">2020-07-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/">PHP8通过ZPP宏获取zend_class_entry</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于的<code>commit</code>为：e93d20ad7ebc1075ef1248a663935ee5ea69f1cd</p>
+</blockquote>
+<p>昨天（2020-6-30），有一个宏被加入到了<code>PHP8</code>里面，用来快速获取一个类名字或者对象的<code>zend_class_entry</code>结构，在<code>PHP7</code>里面，如果我们要去获取类，我们必须得这么做：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">zval *arg;</span><br><span class="line">zend_class_entry *ce = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">zend_parse_parameters(ZEND_NUM_ARGS(), <span class="string">&quot;z&quot;</span>, &amp;arg)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (Z_TYPE_P(arg) == IS_OBJECT) &#123;</span><br><span class="line">    ce = Z_OBJ_P(arg)-&gt;ce;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (Z_TYPE_P(arg) == IS_STRING) &#123;</span><br><span class="line">    ce = zend_lookup_class(Z_STR_P(arg));</span><br><span class="line">&#125;</span><br><span class="line">RETURN_STR_COPY(ce-&gt;name);</span><br></pre></td></tr></table></figure>
+
+<p>现在，有了<code>Z_PARAM_CLASS_NAME_OR_OBJ</code>宏，我们可以非常方便的去实现这个操作：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ZEND_PARSE_PARAMETERS_START(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    Z_PARAM_CLASS_NAME_OR_OBJ(ce)</span><br><span class="line">ZEND_PARSE_PARAMETERS_END();</span><br><span class="line"></span><br><span class="line">RETURN_STR_COPY(ce-&gt;name);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/" data-id="ckkj72zr9001nf6vxfhamfthx" data-title="PHP8通过ZPP宏获取zend_class_entry" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP8编译lex编译不过的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2020-07-01T11:48:46.000Z" itemprop="datePublished">2020-07-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/">PHP8编译lex编译不过的问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于的php-src commit为：915abeb6995bad124c325c69b8c44de65da36879</p>
+</blockquote>
+<p>由于我经常需要去拉<code>php-src</code>的<code>master</code>分支代码的代码，然后时不时需要重新编译<code>php</code>，然后出了一个这个问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Zend/zend_language_scanner.l:309:15 error conflicting types <span class="keyword">for</span> <span class="string">&#x27;zend_lex_tstring&#x27;</span></span><br><span class="line">    ZEND_API int zend_lex_tstring(zval *zv, zend_lexer_ident_ref ident_ref)</span><br><span class="line"></span><br><span class="line">In file included from Zend/zend_language_scanner.l:40:0:</span><br><span class="line">php-src/Zend/zend_language_scanner.h:81:14: note: previous declaration of <span class="string">&#x27;zend_lex_tstring&#x27;</span> was here</span><br><span class="line">    ZEND_API int zend_lex_tstring(zval *zv, zend_lexer_ident_ref ident_ref)</span><br></pre></td></tr></table></figure>
+
+<p>这个问题是因为在<code>php-src</code>下面跑<code>make clean</code>无法清理完所有编译出来的东西（包括词法分析器编译出来的<code>.c</code>文件），所以，我们这里跑完<code>make clean</code>后需要自己手动去删除这些没删干净的东西（例如<code>zend_language_scanner.c</code>）。如何判断要删除哪些呢？也很简单，只要这个文件没有加入到<code>git</code>仓库，我们就可以删除。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72zr7001kf6vx4xls1s0h" data-title="PHP8编译lex编译不过的问题" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-使用gcov测试C语言代码覆盖率" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/06/29/%E4%BD%BF%E7%94%A8gcov%E6%B5%8B%E8%AF%95C%E8%AF%AD%E8%A8%80%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87/" class="article-date">
+  <time class="dt-published" datetime="2020-06-29T12:09:08.000Z" itemprop="datePublished">2020-06-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/06/29/%E4%BD%BF%E7%94%A8gcov%E6%B5%8B%E8%AF%95C%E8%AF%AD%E8%A8%80%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87/">使用gcov测试C语言代码覆盖率</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>最近在给<code>Swoole</code>的内核代码做覆盖率测试，我们测试的是<code>Swoole</code>的<code>core-tests</code>对<code>libswoole</code>的代码覆盖率，这个过程中遇到了一些问题，所以总结下。</p>
+<h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><p>我通过一个简单的例子来进行讲解。</p>
+<p>首先，定义一些函数（可以理解为<code>libswoole</code>）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lib.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">(<span class="keyword">int</span> a)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        a--;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        a++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">    b++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>main</code>函数去调用这些函数（可以理解为<code>core-tests</code>）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gcov.c</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">func1</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">func2</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    func1(<span class="number">1</span>);</span><br><span class="line">    func2();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们开始测试覆盖率。首先是编译我们需要测试的库，也就是<code>lib.c</code>这个文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">gcov.c  lib.c</span><br><span class="line"></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc --coverage -c lib.c</span></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">gcov.c  lib.c  lib.gcno  lib.o</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，如果我们在编译文件的时候加上了<code>--coverage</code>，那么就会为这个文件产生一个对应的<code>.gcno</code>文件。</p>
+<p>接着编译出可执行文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc lib.o gcov.c -lgcov</span></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  gcov.c  lib.c  lib.gcno  lib.o</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>现在，我们执行这个可执行文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ./a.out</span></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  gcov.c  lib.c  lib.gcda  lib.gcno  lib.o</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，当执行完可执行文件之后，会为我们代测试的文件产生一个<code>.gcda</code>文件（我们需要记住的一点就是，一定要生成了<code>.gcda</code>文件之后，才可以看到覆盖率）。</p>
+<p>然后，我们就可以测试<code>lib.c</code>的覆盖率了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcov lib.c</span></span><br><span class="line">File <span class="string">&#x27;lib.c&#x27;</span></span><br><span class="line">Lines executed:88.89% of 9</span><br><span class="line">Creating <span class="string">&#x27;lib.c.gcov&#x27;</span></span><br><span class="line"></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看出，<code>lib.c</code>的测试覆盖率是<code>88.89%</code>。</p>
+<p>但是，光看这一点信息是看不出到底是没有覆盖到哪些代码。</p>
+<p>此时，我们注意到，多了一个<code>.gcov</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  gcov.c  lib.c  lib.c.gcov  lib.gcda  lib.gcno  lib.o</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以看一下这个文件内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># cat lib.c.gcov</span></span><br><span class="line">        -:    0:Source:lib.c</span><br><span class="line">        -:    0:Graph:lib.gcno</span><br><span class="line">        -:    0:Data:lib.gcda</span><br><span class="line">        -:    0:Runs:1</span><br><span class="line">        -:    0:Programs:1</span><br><span class="line">        1:    1:void func1(int a) &#123;</span><br><span class="line">        1:    2:    <span class="keyword">if</span> (a &gt; 0) &#123;</span><br><span class="line">        1:    3:        a--;</span><br><span class="line">        -:    4:    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">#####:    5:        a++;</span></span><br><span class="line">        -:    6:    &#125;</span><br><span class="line">        1:    7:&#125;</span><br><span class="line">        -:    8:</span><br><span class="line">        1:    9:void <span class="function"><span class="title">func2</span></span>() &#123;</span><br><span class="line">        1:   10:    int b = 0;</span><br><span class="line">        1:   11:    b++;</span><br><span class="line">        1:   12:&#125;</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>其中，标记为<code>1</code>的代表覆盖到了，标记为<code>#####</code>代表没有覆盖到。</p>
+<p>所以，我们需要修改一下我们的测试代码，来覆盖到这一行：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">func1</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">func2</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    func1(<span class="number">1</span>);</span><br><span class="line">    func1(<span class="number">-1</span>);</span><br><span class="line">    func2();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后重新编译可执行文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc lib.o gcov.c -lgcov</span></span><br></pre></td></tr></table></figure>
+
+<p>然后重新执行可执行文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ./a.out</span></span><br></pre></td></tr></table></figure>
+
+<p>然后重新测试覆盖率：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcov lib.c</span></span><br><span class="line">File <span class="string">&#x27;lib.c&#x27;</span></span><br><span class="line">Lines executed:100.00% of 9</span><br><span class="line">Creating <span class="string">&#x27;lib.c.gcov&#x27;</span></span><br><span class="line"></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，测试覆盖率达到了<code>100.00%</code>。</p>
+<h2 id="通过lcov可视化结果"><a href="#通过lcov可视化结果" class="headerlink" title="通过lcov可视化结果"></a>通过lcov可视化结果</h2><p>除了用<code>gcov</code>来查看覆盖率之外，我们还可以用<code>lcov</code>来生成<code>html</code>页面来看覆盖率：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># lcov --directory . --capture --output-file coverage.info</span></span><br><span class="line">Found gcov version: 4.8.5</span><br><span class="line">Scanning . <span class="keyword">for</span> .gcda files ...</span><br><span class="line">Found 1 data files <span class="keyword">in</span> .</span><br><span class="line">Processing lib.gcda</span><br><span class="line">Finished .info-file creation</span><br><span class="line"></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  coverage.info  gcov.c  lib.c  lib.gcda  lib.gcno  lib.o</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>此时生成了文件<code>coverage.info</code>。</p>
+<p>其中，<code>--directory</code>用来指定<code>.gcda</code>文件的目录。现在我们的<code>.gcda</code>是在当前目录。假设我们不知道<code>.gcda</code>文件的路径，我们可以通过如下方法来查看：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># strings a.out | grep gcda</span></span><br><span class="line">/root/codeDir/cCode/<span class="built_in">test</span>/gcov/lib.gcda</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>然后我们可以通过如下命令来看覆盖率：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># lcov --list coverage.info</span></span><br><span class="line">Reading tracefile coverage.info</span><br><span class="line">            |Lines       |Functions  |Branches</span><br><span class="line">Filename    |Rate     Num|Rate    Num|Rate     Num</span><br><span class="line">==================================================</span><br><span class="line">[/root/codeDir/cCode/<span class="built_in">test</span>/gcov/]</span><br><span class="line">lib.c       | 100%      9| 100%     2|    -      0</span><br><span class="line">==================================================</span><br><span class="line">      Total:| 100%      9| 100%     2|    -      0</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，我们可以去生成<code>html</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># genhtml -o report_dir coverage.info</span></span><br><span class="line">Reading data file coverage.info</span><br><span class="line">Found 1 entries.</span><br><span class="line">Found common filename prefix <span class="string">&quot;/root/codeDir/cCode/test&quot;</span></span><br><span class="line">Writing .css and .png files.</span><br><span class="line">Generating output.</span><br><span class="line">Processing file gcov/lib.c</span><br><span class="line">Writing directory view page.</span><br><span class="line">Overall coverage rate:</span><br><span class="line">  lines......: 100.0% (9 of 9 lines)</span><br><span class="line">  <span class="built_in">functions</span>..: 100.0% (2 of 2 <span class="built_in">functions</span>)</span><br><span class="line"></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls report_dir/</span></span><br><span class="line">amber.png  emerald.png  gcov  gcov.css  glass.png  index-sort-f.html  index-sort-l.html  index.html  ruby.png  snow.png  updown.png</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>（我们用浏览器打开<code>index.html</code>文件就可以看到覆盖率信息了）</p>
+<h2 id="gcov实现原理"><a href="#gcov实现原理" class="headerlink" title="gcov实现原理"></a>gcov实现原理</h2><p><code>gcc</code>编译的时候，如果加上了<code>--coverage</code>覆盖率测试选项后，<code>gcc</code>会作如下处理：</p>
+<ol>
+<li>在输出目标文件中留出一段存储区保存统计数据</li>
+<li>在源代码中每行可执行语句生成的代码之后附加一段更新覆盖率统计结果的代码。（若用户进程并非调用<code>exit</code>正常退出，覆盖率统计数据就无法输出，也就无从生成报告了）</li>
+<li>在可执行文件进入<code>main</code>函数之前调用<code>gcov_init</code>内部函数初始化统计数据区，并将<code>gcov_exit</code>内部函数注册为<code>exit handlers</code></li>
+<li>可执行文件调用<code>exit</code>正常结束时，<code>gcov_exit</code>函数得到调用，其继续调用<code>__gcov_flush</code>函数输出统计数据到<code>*.gcda</code>文件中</li>
+</ol>
+<p>服务器程序一般启动后就很少主动退出，用<code>kill</code>杀死进程强制退出时就不会调用<code>exit</code>，因此没有覆盖率统计结果产生。为了解决这个问题，我们可以给待测程序增加一个<code>signal handler</code>，拦截<code>SIGHUP</code>、<code>SIGINT</code>、<code>SIGQUIT</code>、<code>SIGTERM</code>等常见强制退出信号，并在<code>signal handler</code>中主动调用<code>exit</code>或<code>__gcov_flush</code>函数输出统计结果即可。</p>
+<p>这种方案会修改我们的待测程序，所以，我们可以通过动态库预加载技术和<code>gcc</code>扩展的<code>constructor</code>属性，然后将<code>signalhandler</code>和其注册过程都封装到一个独立的动态库中，并在预加载动态库时实现信号拦截注册。</p>
+<p>我们来举个例子，修改一下我们的测试库：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lib.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">(<span class="keyword">int</span> a)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        a--;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        a++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">    b++;</span><br><span class="line">    sleep(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后重复上面的过程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># yes | rm -r a.out \</span></span><br><span class="line">coverage.info \</span><br><span class="line">lib.gcda \</span><br><span class="line">lib.gcno \</span><br><span class="line">lib.o \</span><br><span class="line">report_dir</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc --coverage -c lib.c</span></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc lib.o gcov.c -lgcov</span></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ./a.out</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们会发现，我们的程序阻塞了，不会退出。此时，我们按<code>CTRL + C</code>来退出进程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ./a.out</span></span><br><span class="line">^C</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  gcov.c  lib.c  lib.gcno  lib.o</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，不会生成<code>.gcda</code>文件，所以我们需要去捕获退出信号。我们来编写一下我们的预加载动态库：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// preload.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">void</span> __gcov_flush();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sighandler</span><span class="params">(<span class="keyword">int</span> signo)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    __gcov_flush();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__ ((constructor)) <span class="function"><span class="keyword">void</span> <span class="title">ctor</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sigs[] = &#123; SIGILL, SIGFPE, SIGABRT, SIGBUS, SIGSEGV, SIGHUP, SIGINT, SIGQUIT, SIGTERM &#125;;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">sa</span>;</span></span><br><span class="line"></span><br><span class="line">    sa.sa_handler = sighandler;</span><br><span class="line">    sigemptyset(&amp;sa.sa_mask);</span><br><span class="line">    sa.sa_flags = SA_RESETHAND;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="keyword">sizeof</span>(sigs) / <span class="keyword">sizeof</span>(sigs[<span class="number">0</span>]); ++i) &#123;</span><br><span class="line">        sigaction(sigs[i], &amp;sa, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们编译出动态库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc -shared -fPIC preload.c -o libpreload.so -lgcov</span></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  gcov.c  lib.c  lib.gcno  lib.o  preload.c  libpreload.so</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>此时，我们在编译可执行文件的时候，链接一下这个库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcc lib.o gcov.c -L. -lgcov -lpreload</span></span><br></pre></td></tr></table></figure>
+
+<p>执行可执行文件后终止它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ./a.out</span></span><br><span class="line">^C</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># ls</span></span><br><span class="line">a.out  gcov.c  lib.c  lib.gcda  lib.gcno  lib.o  libpreload.so  preload.c</span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，会生成<code>.gcda</code>文件。我们现在就可以来查看覆盖率了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment"># gcov lib.c</span></span><br><span class="line">File <span class="string">&#x27;lib.c&#x27;</span></span><br><span class="line">Lines executed:100.00% of 10</span><br><span class="line">Creating <span class="string">&#x27;lib.c.gcov&#x27;</span></span><br><span class="line"></span><br><span class="line">[root@a896c4eb1fc4 gcov]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/06/29/%E4%BD%BF%E7%94%A8gcov%E6%B5%8B%E8%AF%95C%E8%AF%AD%E8%A8%80%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87/" data-id="ckkj72ztp0081f6vxb5l0e8xv" data-title="使用gcov测试C语言代码覆盖率" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

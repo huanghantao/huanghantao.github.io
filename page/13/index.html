@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/13/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-docker-build-报错：Unknown-parent-image-id" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/06/13/docker-build-%E6%8A%A5%E9%94%99%EF%BC%9AUnknown-parent-image-id/" class="article-date">
+  <time class="dt-published" datetime="2019-06-13T08:58:11.000Z" itemprop="datePublished">2019-06-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/06/13/docker-build-%E6%8A%A5%E9%94%99%EF%BC%9AUnknown-parent-image-id/">当Docker遇上傻CI</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>昨天下午在用公司<code>ci</code>进行<code>docker build</code>的时候，报了一个错误，内容大致如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invalid from flag value ***: No such image: sha256:123456123456*************</span><br></pre></td></tr></table></figure>
+
+<p>说的是一个<code>image</code>没有找到。</p>
+<p>其中，第一个<code>Dockerfile_1</code>结构如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> composer AS builder</span><br><span class="line"></span><br><span class="line">// 省略一些东西......</span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> 一些东西 构件1  // 产生了一个layer，假设id为：123456123456</span></span><br></pre></td></tr></table></figure>
+
+<p>第二个<code>Dockerfile_2</code>结构如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> composer AS builder</span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> 一些东西 构件1 // 用的是第一个Dockerfile_1中的cache：123456123456</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">FROM</span> nginx:alpine</span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=builder 构件1 到某个目录 // 报错点就是这句，此时报错123456123456没找到</span></span><br></pre></td></tr></table></figure>
+
+<p>编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker build -f dockerfile_1 .</span><br><span class="line">docker build -f dockerfile_2 .</span><br></pre></td></tr></table></figure>
+
+<p>然后报错：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invalid from flag value ***: No such image: sha256:3490ffda0</span><br></pre></td></tr></table></figure>
+
+<p>这个问题很奇葩，几乎不会出现，但是，在使用公司的<code>ci</code>的时候就有可能报这个错。因为<code>ci</code>发现第一个<code>Dockerfile_1</code>编译出的<code>image</code>存留太久了就会把它删掉。。。。。。然后我们优化了第二个<code>Dockerfile_2</code>解决了这个问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/06/13/docker-build-%E6%8A%A5%E9%94%99%EF%BC%9AUnknown-parent-image-id/" data-id="ckkj72zsl004sf6vx80hdhu6i" data-title="当Docker遇上傻CI" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-没指定alpine版本导致docker-build失败" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/06/13/%E6%B2%A1%E6%8C%87%E5%AE%9Aalpine%E7%89%88%E6%9C%AC%E5%AF%BC%E8%87%B4docker-build%E5%A4%B1%E8%B4%A5/" class="article-date">
+  <time class="dt-published" datetime="2019-06-13T08:04:10.000Z" itemprop="datePublished">2019-06-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/06/13/%E6%B2%A1%E6%8C%87%E5%AE%9Aalpine%E7%89%88%E6%9C%AC%E5%AF%BC%E8%87%B4docker-build%E5%A4%B1%E8%B4%A5/">没指定alpine版本导致docker build失败</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这两天因为这件事情折腾了比较久，浪费了比较多的时间，写下这篇文章提醒自己和大家。</p>
+<p>情况是这样的，5个月前，我们写了一份Dockerfile，主要内容是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">FROM php:7.2-cli-alpine</span><br><span class="line"></span><br><span class="line">RUN echo &quot;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;main&#x2F;&quot; &gt; &#x2F;etc&#x2F;apk&#x2F;repositories \</span><br><span class="line">        &amp;&amp; echo &quot;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;community&#x2F;&quot; &gt;&gt; &#x2F;etc&#x2F;apk&#x2F;repositories</span><br><span class="line"></span><br><span class="line">RUN apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS linux-headers libpng-dev &amp;&amp; \</span><br><span class="line">    apk add --no-cache libpng libstdc++ &amp;&amp; \</span><br><span class="line">    pecl install swoole &amp;&amp; \</span><br><span class="line">    docker-php-ext-install \</span><br><span class="line">        pdo_mysql \</span><br><span class="line">        mysqli \</span><br><span class="line">        sockets \</span><br><span class="line">        pcntl \</span><br><span class="line">        gd \</span><br><span class="line">        zip &amp;&amp; \</span><br><span class="line">    docker-php-ext-enable swoole &amp;&amp; \</span><br><span class="line">    apk del .phpize-deps</span><br></pre></td></tr></table></figure>
+
+<p>5个月前我用这份Dockerfile编译了一次，可以编译成功。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-87893d34a05977797a2157c24eacc821_hd.png" alt="img"></p>
+<p>（可以看出，基础镜像是5个月前的）</p>
+<p>那个时候，php:7.2-cli-alpine的alpine的版本还是 3.8 。</p>
+<p>但是，前些日子在同事的电脑上用这份Dockerfile编译就过不了了，报了一个错误：</p>
+<p><img src="https://pic2.zhimg.com/80/v2-cb92dd90f9bdab48eba11d071e76c0b0_hd.png" alt="img"></p>
+<p>说是一个函数没有找到，一开始，我一直以为是PHP的一个bug，但是一直没解决（事实上并不是PHP的bug）。 </p>
+<p>但是，在我的电脑上就可以编译通过。（一开始觉得这件事非常的神奇）</p>
+<p>尝试解决也没有解决成功，也没有问组里的大佬，所以，别人要编译的话，就拿我的机器进行编译。。。。。。</p>
+<p>今天下午，和大佬说了一下，大佬一眼看出了问题（在别人的电脑进行编译的）：</p>
+<p><img src="https://pic1.zhimg.com/80/v2-3220469a173c90fe8e543d00c3e51144_hd.png" alt="img"></p>
+<p>发现，这里拉的是alpine 3.8 的包。因为，我们的Dockerfile里面有如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN echo &quot;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;main&#x2F;&quot; &gt; &#x2F;etc&#x2F;apk&#x2F;repositories \</span><br><span class="line">        &amp;&amp; echo &quot;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;community&#x2F;&quot; &gt;&gt; &#x2F;etc&#x2F;apk&#x2F;repositories</span><br></pre></td></tr></table></figure>
+
+<p>用的是alpine3.8。 </p>
+<p>但是，现在的alpine已经更新到了3.9。而我们的Dockerfile里面 FROM php:7.2-cli-alpine 没有指定alpine的版本，那么基础镜像默认用的是最新的3.9的版本，所以就报错了。 </p>
+<p>那么，为什么在同事的电脑用这份Dockerfile不可以进行编译，在我的 电脑上就可以呢。因为我们电脑上的php:7.2-cli-alpine镜像一直没有删掉，所以，alpine的版本一直是5个月前的3.8。。。。。。 </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/06/13/%E6%B2%A1%E6%8C%87%E5%AE%9Aalpine%E7%89%88%E6%9C%AC%E5%AF%BC%E8%87%B4docker-build%E5%A4%B1%E8%B4%A5/" data-id="ckkj72zug00agf6vx2xx2hds1" data-title="没指定alpine版本导致docker build失败" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《PHP扩展开发》-协程-规范" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E8%A7%84%E8%8C%83/" class="article-date">
+  <time class="dt-published" datetime="2019-05-30T10:43:34.000Z" itemprop="datePublished">2019-05-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E8%A7%84%E8%8C%83/">《PHP扩展开发》--协程(规范)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在开始开发之前，很有必要先说一下开发的规范问题。</p>
+<p>1、我们的<code>PHP</code>扩展函数的声明都放在文件<code>php_study.h</code>里面。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(test);</span><br></pre></td></tr></table></figure>
+
+<p>2、只在项目根目录下的<code>study_*.cc</code>文件里面使用<code>Zend API</code>，不在<code>src</code>目录的代码里面使用<code>Zend API</code>。</p>
+<p>（待补充）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E8%A7%84%E8%8C%83/" data-id="ckkj72zt1005xf6vxgdy80fhk" data-title="《PHP扩展开发》--协程(规范)" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《PHP扩展开发》-协程-编写config-m4文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E7%BC%96%E5%86%99config-m4%E6%96%87%E4%BB%B6/" class="article-date">
+  <time class="dt-published" datetime="2019-05-30T05:51:26.000Z" itemprop="datePublished">2019-05-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E7%BC%96%E5%86%99config-m4%E6%96%87%E4%BB%B6/">《PHP扩展开发》--协程(编写config.m4文件)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://github.com/php-extension-research/study">仓库地址</a></p>
+<p>这是一个系列的文章，会逐步带大家去实现一个<code>PHP</code>协程扩展。我们把这个扩展叫做<code>study</code>。</p>
+<p>首先，我们需要去生成扩展的基本目录。我们可以在<code>PHP</code>的源码里面找到一个工具叫做<code>ext_skel</code>。它可以帮我们生成扩展目录。这里不进行介绍。</p>
+<p>生成扩展目录后，我们需要去复制一份<code>Swoole</code>扩展目录下的<code>thirdparty/boost</code>。因为我们写上下文切换的时候，会用到这些库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # tree</span><br><span class="line">.</span><br><span class="line">├── CREDITS</span><br><span class="line">├── EXPERIMENTAL</span><br><span class="line">├── config.m4</span><br><span class="line">├── include</span><br><span class="line">├── make.sh</span><br><span class="line">├── php_study.h</span><br><span class="line">├── study.c</span><br><span class="line">├── study.php</span><br><span class="line">├── tests</span><br><span class="line">│   └── 001.phpt</span><br><span class="line">└── thirdparty</span><br><span class="line">    └── boost</span><br><span class="line">        └── asm</span><br><span class="line">            ├── jump_arm64_aapcs_elf_gas.S</span><br><span class="line">            ├── jump_arm64_aapcs_macho_gas.S</span><br><span class="line">            ├── jump_arm_aapcs_elf_gas.S</span><br><span class="line">            ├── jump_arm_aapcs_macho_gas.S</span><br><span class="line">            ├── jump_arm_aapcs_pe_armasm.asm</span><br><span class="line">            ├── jump_combined_sysv_macho_gas.S</span><br><span class="line">            ├── jump_i386_ms_pe_gas.asm</span><br><span class="line">            ├── jump_i386_ms_pe_masm.asm</span><br><span class="line">            ├── jump_i386_sysv_elf_gas.S</span><br><span class="line">            // 省略了其他的文件</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们打开<code>config.m4</code>文件，进行编写：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE(study, whether to enable study support,</span><br><span class="line">Make sure that the comment is aligned:</span><br><span class="line">[  --enable-study           Enable study support])</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> AC_CANONICAL_HOST</span></span><br><span class="line"></span><br><span class="line">if test &quot;$PHP_STUDY&quot; != &quot;no&quot;; then</span><br><span class="line">    PHP_ADD_LIBRARY(pthread)</span><br><span class="line">    STUDY_ASM_DIR=&quot;thirdparty/boost/asm/&quot;</span><br><span class="line">    CFLAGS=&quot;-Wall -pthread $CFLAGS&quot;</span><br><span class="line"></span><br><span class="line">    AS_CASE([$host_os],</span><br><span class="line">      [linux*], [STUDY_OS=&quot;LINUX&quot;],</span><br><span class="line">      []</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    AS_CASE([$host_cpu],</span><br><span class="line">      [x86_64*], [STUDY_CPU=&quot;x86_64&quot;],</span><br><span class="line">      [x86*], [STUDY_CPU=&quot;x86&quot;],</span><br><span class="line">      [i?86*], [STUDY_CPU=&quot;x86&quot;],</span><br><span class="line">      [arm*], [STUDY_CPU=&quot;arm&quot;],</span><br><span class="line">      [aarch64*], [STUDY_CPU=&quot;arm64&quot;],</span><br><span class="line">      [arm64*], [STUDY_CPU=&quot;arm64&quot;],</span><br><span class="line">      []</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    if test &quot;$STUDY_CPU&quot; = &quot;x86_64&quot;; then</span><br><span class="line">        if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">            STUDY_CONTEXT_ASM_FILE=&quot;x86_64_sysv_elf_gas.S&quot;</span><br><span class="line">        fi</span><br><span class="line">    elif test &quot;$STUDY_CPU&quot; = &quot;x86&quot;; then</span><br><span class="line">        if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">            STUDY_CONTEXT_ASM_FILE=&quot;i386_sysv_elf_gas.S&quot;</span><br><span class="line">        fi</span><br><span class="line">    elif test &quot;$STUDY_CPU&quot; = &quot;arm&quot;; then</span><br><span class="line">        if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">            STUDY_CONTEXT_ASM_FILE=&quot;arm_aapcs_elf_gas.S&quot;</span><br><span class="line">        fi</span><br><span class="line">    elif test &quot;$STUDY_CPU&quot; = &quot;arm64&quot;; then</span><br><span class="line">        if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">            STUDY_CONTEXT_ASM_FILE=&quot;arm64_aapcs_elf_gas.S&quot;</span><br><span class="line">        fi</span><br><span class="line">    elif test &quot;$STUDY_CPU&quot; = &quot;mips32&quot;; then</span><br><span class="line">        if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">           STUDY_CONTEXT_ASM_FILE=&quot;mips32_o32_elf_gas.S&quot;</span><br><span class="line">        fi</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    study_source_file=&quot;\</span><br><span class="line">        study.c \</span><br><span class="line">        $&#123;STUDY_ASM_DIR&#125;make_$&#123;STUDY_CONTEXT_ASM_FILE&#125; \</span><br><span class="line">        $&#123;STUDY_ASM_DIR&#125;jump_$&#123;STUDY_CONTEXT_ASM_FILE&#125;</span><br><span class="line">    &quot;</span><br><span class="line"></span><br><span class="line">    PHP_NEW_EXTENSION(study, $study_source_file, $ext_shared, ,, cxx)</span><br><span class="line"></span><br><span class="line">    PHP_ADD_INCLUDE([$ext_srcdir])</span><br><span class="line">    PHP_ADD_INCLUDE([$ext_srcdir/include])</span><br><span class="line"></span><br><span class="line">    PHP_INSTALL_HEADERS([ext/study], [*.h config.h include/*.h thirdparty/*.h])</span><br><span class="line"></span><br><span class="line">    PHP_REQUIRE_CXX()</span><br><span class="line"></span><br><span class="line">    CXXFLAGS=&quot;$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations&quot;</span><br><span class="line">    CXXFLAGS=&quot;$CXXFLAGS -std=c++11&quot;</span><br><span class="line"></span><br><span class="line">    PHP_ADD_BUILD_DIR($ext_builddir/thirdparty/boost)</span><br><span class="line">    PHP_ADD_BUILD_DIR($ext_builddir/thirdparty/boost/asm)</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>内容很长，我们慢慢来看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">AS_CASE([$</span><span class="bash">host_os],</span></span><br><span class="line">  [linux*], [STUDY_OS=&quot;LINUX&quot;],</span><br><span class="line">  []</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这段是用来判断我们机器所使用的操作系统是什么类型的，然后把操作系统的类型赋值给变量<code>STUDY_OS</code>。因为，我们的这个扩展只打算支持<code>Linux</code>，所以，我这个里面只写了<code>Linux</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">AS_CASE([$</span><span class="bash">host_cpu],</span></span><br><span class="line">  [x86_64*], [STUDY_CPU=&quot;x86_64&quot;],</span><br><span class="line">  [x86*], [STUDY_CPU=&quot;x86&quot;],</span><br><span class="line">  [i?86*], [STUDY_CPU=&quot;x86&quot;],</span><br><span class="line">  [arm*], [STUDY_CPU=&quot;arm&quot;],</span><br><span class="line">  [aarch64*], [STUDY_CPU=&quot;arm64&quot;],</span><br><span class="line">  [arm64*], [STUDY_CPU=&quot;arm64&quot;],</span><br><span class="line">  []</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>类似的，这段是判断<code>CPU</code>的类型，然后赋值给变量<code>STUDY_CPU</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">if test &quot;$STUDY_CPU&quot; = &quot;x86_64&quot;; then</span><br><span class="line">  if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">  	STUDY_CONTEXT_ASM_FILE=&quot;x86_64_sysv_elf_gas.S&quot;</span><br><span class="line">  fi</span><br><span class="line">elif test &quot;$STUDY_CPU&quot; = &quot;x86&quot;; then</span><br><span class="line">  if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">  	STUDY_CONTEXT_ASM_FILE=&quot;i386_sysv_elf_gas.S&quot;</span><br><span class="line">  fi</span><br><span class="line">elif test &quot;$STUDY_CPU&quot; = &quot;arm&quot;; then</span><br><span class="line">  if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">  	STUDY_CONTEXT_ASM_FILE=&quot;arm_aapcs_elf_gas.S&quot;</span><br><span class="line">  fi</span><br><span class="line">elif test &quot;$STUDY_CPU&quot; = &quot;arm64&quot;; then</span><br><span class="line">  if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">  	STUDY_CONTEXT_ASM_FILE=&quot;arm64_aapcs_elf_gas.S&quot;</span><br><span class="line">  fi</span><br><span class="line">elif test &quot;$STUDY_CPU&quot; = &quot;mips32&quot;; then</span><br><span class="line">  if test &quot;$STUDY_OS&quot; = &quot;LINUX&quot;; then</span><br><span class="line">  	STUDY_CONTEXT_ASM_FILE=&quot;mips32_o32_elf_gas.S&quot;</span><br><span class="line">  fi</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>这段是判断应该用什么类型的汇编文件，然后赋值给变量<code>STUDY_CONTEXT_ASM_FILE</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">study_source_file=&quot;\</span><br><span class="line">  study.c \</span><br><span class="line"><span class="meta">  $</span><span class="bash">&#123;STUDY_ASM_DIR&#125;make_<span class="variable">$&#123;STUDY_CONTEXT_ASM_FILE&#125;</span> \</span></span><br><span class="line"><span class="meta">  $</span><span class="bash">&#123;STUDY_ASM_DIR&#125;jump_<span class="variable">$&#123;STUDY_CONTEXT_ASM_FILE&#125;</span></span></span><br><span class="line">&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这段是把我们需要编译的所有文件已字符串的方式存入到变量<code>study_source_file</code>里面。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP_NEW_EXTENSION(study, $study_source_file, $ext_shared, ,, cxx)</span><br></pre></td></tr></table></figure>
+
+<p>这段是声明这个扩展的名称、需要的源文件名、此扩展的编译形式。其中<code>$ext_shared</code>代表此扩展是动态库，使用<code>cxx</code>的原因是，我们的这个扩展使用<code>C++</code>来编写。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">PHP_ADD_INCLUDE([$</span><span class="bash">ext_srcdir])</span></span><br><span class="line"><span class="meta">PHP_ADD_INCLUDE([$</span><span class="bash">ext_srcdir/include])</span></span><br></pre></td></tr></table></figure>
+
+<p>这段是用来添加额外的包含头文件的目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP_INSTALL_HEADERS([ext/study], [*.h config.h include/*.h thirdparty/*.h])</span><br></pre></td></tr></table></figure>
+
+<p>这段是把我们的<code>study</code>扩展目录里面的<code>*.h</code>、<code>config.h</code>、<code>include/*.h</code>、<code>thirdparty/*.h</code>复制到：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php-config --include-dir</span><br></pre></td></tr></table></figure>
+
+<p>下的<code>ext/study</code>里面。这个是在执行<code>make install</code>的时候会进行复制。我们待会会看到。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP_REQUIRE_CXX()</span><br></pre></td></tr></table></figure>
+
+<p>因为，我们使用了<code>C++</code>，所以我们需要指明一下。（没有这句会编译出错）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CXXFLAGS=&quot;$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations&quot;</span><br><span class="line">CXXFLAGS=&quot;$CXXFLAGS -std=c++11&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这段是指定编译<code>C++</code>时候，用到的编译选项。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">PHP_ADD_BUILD_DIR($</span><span class="bash">ext_builddir/thirdparty/boost)</span></span><br><span class="line"><span class="meta">PHP_ADD_BUILD_DIR($</span><span class="bash">ext_builddir/thirdparty/boost/asm)</span></span><br></pre></td></tr></table></figure>
+
+<p>这段是指定这个扩展需要被编译到的文件的目录。因为我们需要编译<code>boost</code>提供的代码，所以需要进行指定。</p>
+<p>编写完之后，我们就可以进行编译了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # ./make.sh </span><br></pre></td></tr></table></figure>
+
+<p>（如果无法执行<code>make.sh</code>脚本，需要设置它为可执行）</p>
+<p>然后，会看到以下输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">----------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">Build complete.</span><br><span class="line">Don&#x27;t forget to run &#x27;make test&#x27;.</span><br><span class="line"></span><br><span class="line">Installing shared extensions:     /usr/local/lib/php/extensions/no-debug-non-zts-20180731/</span><br><span class="line">Installing header files:          /usr/local/include/php/</span><br><span class="line">~/codeDir/cppCode/study # </span><br></pre></td></tr></table></figure>
+
+<p>代表编译成功了。<code>study.so</code>扩展被存放在了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/lib/php/extensions/no-debug-non-zts-20180731/</span><br></pre></td></tr></table></figure>
+
+<p>里面。</p>
+<p>OK，我们现在来看看我们扩展的头文件是否被复制了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # ls /usr/local/include/php/ext/study/</span><br><span class="line">config.h     include      php_study.h  thirdparty</span><br><span class="line">~/codeDir/cppCode/study # </span><br></pre></td></tr></table></figure>
+
+<p>（本文结束）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E7%BC%96%E5%86%99config-m4%E6%96%87%E4%BB%B6/" data-id="ckkj72zt1005zf6vxbrzj8upi" data-title="《PHP扩展开发》--协程(编写config.m4文件)" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/" class="article-date">
+  <time class="dt-published" datetime="2019-05-29T10:38:29.000Z" itemprop="datePublished">2019-05-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/">《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>昨天，有人给<code>Swoole</code>提了一个问题：<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/issues/2601">What is the reason to deprecate <code>Lock</code> in swoole 4.4 ?</a></p>
+<p>然后，峰哥给出了一个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$lock = <span class="keyword">new</span> Swoole\Lock();</span><br><span class="line">$c = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> ($c--) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$lock</span>) </span>&#123;</span><br><span class="line">        $lock-&gt;lock();</span><br><span class="line">        Co::sleep(<span class="number">1</span>);</span><br><span class="line">        $lock-&gt;unlock();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看执行这段代码会有什么影响。（使用<code>4.3.4</code>版本的<code>Swoole</code>）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们会发现：进程一直卡着不退出。实际上，这是死锁导致的，而且是由于同一个线程里面的两个协程去竞争锁导致的。</p>
+<p>我们来调试一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">~&#x2F;codeDir&#x2F;phpCode&#x2F;test # cgdb php</span><br><span class="line">GNU gdb (GDB) 8.2</span><br><span class="line">Copyright (C) 2018 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http:&#x2F;&#x2F;gnu.org&#x2F;licenses&#x2F;gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line">Type &quot;show copying&quot; and &quot;show warranty&quot; for details.</span><br><span class="line">This GDB was configured as &quot;x86_64-alpine-linux-musl&quot;.</span><br><span class="line">Type &quot;show configuration&quot; for configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;gdb&#x2F;bugs&#x2F;&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;gdb&#x2F;documentation&#x2F;&gt;.</span><br><span class="line"></span><br><span class="line">For help, type &quot;help&quot;.</span><br><span class="line">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...</span><br><span class="line">Reading symbols from php...(no debugging symbols found)...done.</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>然后在创建锁以及上锁的地方打断点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b zim_swoole_lock___construct</span><br><span class="line">Breakpoint 1 at 0x7ffff74d3ea0: file &#x2F;root&#x2F;codeDir&#x2F;cCode&#x2F;swoole-src-4.3.4&#x2F;swoole_lock.c, line 88.</span><br><span class="line">(gdb) b zim_swoole_lock_lock</span><br><span class="line">Breakpoint 2 at 0x7ffff74d3ac0: file &#x2F;usr&#x2F;local&#x2F;include&#x2F;php&#x2F;Zend&#x2F;zend_types.h, line 411.</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>我们执行一下程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(gdb) r test.php</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Starting program: &#x2F;usr&#x2F;local&#x2F;bin&#x2F;php test.php</span><br><span class="line"></span><br><span class="line">Breakpoint 1, zim_swoole_lock___construct (execute_data&#x3D;0x7ffff761d110, return_value&#x3D;0x7fffffffb0b0) at &#x2F;root&#x2F;codeDir&#x2F;cCode&#x2F;swoole-src-4.3.4&#x2F;swoole_lock.c:88</span><br><span class="line">warning: Source file is more recent than executable.</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">87</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, __construct)</span></span></span><br><span class="line">88├&gt;&#123;</span><br><span class="line"><span class="number">89</span>│     <span class="keyword">long</span> type = SW_MUTEX;</span><br><span class="line"><span class="number">90</span>│     <span class="keyword">char</span> *filelock;</span><br><span class="line"><span class="number">91</span>│     <span class="keyword">size_t</span> filelock_len = <span class="number">0</span>;</span><br><span class="line"><span class="number">92</span>│     <span class="keyword">int</span> ret;</span><br><span class="line"><span class="number">93</span>│</span><br><span class="line"><span class="number">94</span>│     <span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS(), <span class="string">&quot;|ls&quot;</span>, &amp;type, &amp;filelock, &amp;filelock_len) == FAILURE)</span><br><span class="line"><span class="number">95</span>│     &#123;</span><br><span class="line"><span class="number">96</span>│         RETURN_FALSE;</span><br><span class="line"><span class="number">97</span>│     &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在创建<code>Swoole\Lock</code>的地方触发了断点。</p>
+<p>我们继续运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 2, zim_swoole_lock_lock (execute_data&#x3D;0x7ffff767d130, return_value&#x3D;0x7ffff7040f30) at &#x2F;usr&#x2F;local&#x2F;include&#x2F;php&#x2F;Zend&#x2F;zend_types.h:411</span><br><span class="line">(gdb) n</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">162</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, lock)</span></span></span><br><span class="line">163│ &#123;</span><br><span class="line"><span class="number">164</span>│     swLock *lock = swoole_get_object(getThis());</span><br><span class="line"><span class="number">165</span>├───&gt; SW_LOCK_CHECK_RETURN(lock-&gt;lock(lock));</span><br><span class="line"><span class="number">166</span>│ &#125;</span><br></pre></td></tr></table></figure>
+
+<p>协程1停在了即将获取锁的地方。我们来看看此时的线程<code>id</code>是多少：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) thread</span><br><span class="line">[Current thread is 1 (process 39810)]</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>OK，此时协程1在线程1里面。我们在协程<code>sleep</code>的地方打一个断点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b swoole::Coroutine::sleep</span><br><span class="line">Breakpoint 3 at 0x7ffff74579d0 (2 locations)</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>我们继续执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 3, 0x00007ffff74579d0 in swoole::Coroutine::sleep(double)@plt () from &#x2F;usr&#x2F;local&#x2F;lib&#x2F;php&#x2F;extensions&#x2F;no-debug-non-zts-20180731&#x2F;swoole.so</span><br><span class="line">(gdb) n</span><br><span class="line">Single stepping until exit from function _ZN6swoole9Coroutine5sleepEd@plt,</span><br><span class="line">which has no line number information.</span><br><span class="line"></span><br><span class="line">Breakpoint 3, swoole::Coroutine::sleep (sec&#x3D;1) at &#x2F;root&#x2F;codeDir&#x2F;cCode&#x2F;swoole-src-4.3.4&#x2F;include&#x2F;coroutine.h:145</span><br><span class="line">(gdb) n</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">652</span>│ <span class="function"><span class="keyword">int</span> <span class="title">Coroutine::sleep</span><span class="params">(<span class="keyword">double</span> sec)</span></span></span><br><span class="line">653│ &#123;</span><br><span class="line"><span class="number">654</span>│     Coroutine* co = Coroutine::get_current_safe();</span><br><span class="line"><span class="number">655</span>├───&gt; <span class="keyword">if</span> (swTimer_add(&amp;SwooleG.timer, (<span class="keyword">long</span>) (sec * <span class="number">1000</span>), <span class="number">0</span>, co, sleep_timeout) == <span class="literal">NULL</span>)</span><br><span class="line"><span class="number">656</span>│     &#123;</span><br><span class="line"><span class="number">657</span>│         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="number">658</span>│     &#125;</span><br><span class="line"><span class="number">659</span>│     co-&gt;yield();</span><br><span class="line"><span class="number">660</span>│     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">661</span>│ &#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，协程1即将被<code>yield</code>出去。我们再看看所处的线程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) thread</span><br><span class="line">[Current thread is 1 (process 39810)]</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>此时协程1还是处于线程1里面。</p>
+<p>我们继续执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 2, zim_swoole_lock_lock (execute_data&#x3D;0x7ffff767f130, return_value&#x3D;0x7ffff6e3ff30) at &#x2F;usr&#x2F;local&#x2F;include&#x2F;php&#x2F;Zend&#x2F;zend_types.h:411</span><br><span class="line">(gdb) n</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>此时，已经切换到了协程2，轮到第2个协程获取锁：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">162</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, lock)</span></span></span><br><span class="line">163│ &#123;</span><br><span class="line"><span class="number">164</span>│     swLock *lock = swoole_get_object(getThis());</span><br><span class="line"><span class="number">165</span>├───&gt; SW_LOCK_CHECK_RETURN(lock-&gt;lock(lock));</span><br><span class="line"><span class="number">166</span>│ &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们看看协程2现在所处的线程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) thread</span><br><span class="line">[Current thread is 1 (process 39810)]</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
+
+<p>发现，协程2也处于线程1里面。</p>
+<p>我们继续执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(gdb) n</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">162</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, lock)</span></span></span><br><span class="line">163│ &#123;</span><br><span class="line"><span class="number">164</span>│     swLock *lock = swoole_get_object(getThis());</span><br><span class="line"><span class="number">165</span>├───&gt; SW_LOCK_CHECK_RETURN(lock-&gt;lock(lock));</span><br><span class="line"><span class="number">166</span>│ &#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现，此时协程2卡住。整个进程/线程也卡住了。</p>
+<p>原因如下：</p>
+<p>协程1一直没有释放锁，本质上会导致线程1一直占有锁。此时协程2去获取锁，本质上是线程1再去获取锁，是获取不到的。因为锁没有被释放掉，从而导致线程1挂起。导致线程1一直无法释放锁，从而造成了死锁。从而，所有的协程都无法继续执行任务。</p>
+<p>那么，现如今的Swoole有没有避免死锁的办法呢？其实是可以的，代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$lock = <span class="keyword">new</span> Swoole\Lock();</span><br><span class="line">$c = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> ($c--) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$lock</span>) </span>&#123;</span><br><span class="line">        $lock-&gt;trylock();</span><br><span class="line">        Co::sleep(<span class="number">1</span>);</span><br><span class="line">        $lock-&gt;unlock();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只要不让线程阻塞起来就可以了。</p>
+<p>但是，这样做终究是不好的，会浪费CPU。因为如果协程1需要一段时间释放锁，那么协程2每次执行的时候，都会做无用的<code>trylock</code>工作。</p>
+<p>这个问题归根结底是<code>Swoole</code>的协程是跑在同一个线程里面的。</p>
+<p>我个人认为，<code>Swoole</code>后期会增加协程锁。当协程获取不到锁的时候，不是去阻塞整个线程，而是<code>yield</code>这个协程。因为<code>Swoole</code>现在支持抢占式的协程调度，所以，协程的竞争问题是肯定要解决的。除非我们编写的代码不会导致协程之间竞争共享资源。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/" data-id="ckkj72zt30063f6vx67rr56mx" data-title="《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《PHP扩展开发》-RETURN_*的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2019-05-28T10:54:33.000Z" itemprop="datePublished">2019-05-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/">《PHP扩展开发》--RETURN_*宏的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>以<code>RETURN_FALSE</code>宏为例，我们展开后得到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RETURN_FALSE  					&#123; RETVAL_FALSE; return; &#125;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RETVAL_FALSE  					ZVAL_FALSE(return_value)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZVAL_FALSE(z) do &#123;				\</span></span><br><span class="line">		Z_TYPE_INFO_P(z) = IS_FALSE;	\</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>所以，<code>RETURN_FALSE</code>的作用就是把<code>return_value</code>这个扩展函数的返回值设置为<code>false</code>，然后再执行<code>C</code>语言的<code>return;</code>，从而跳出扩展函数。所以，<code>RETURN_FALSE</code>后面是不需要分号结尾的。（当然，写了也没事）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="ckkj72zsz005qf6vxg70rfcs0" data-title="《PHP扩展开发》--RETURN_*宏的使用" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《就是要你懂Swoole》-虚拟机中断" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/" class="article-date">
+  <time class="dt-published" datetime="2019-05-27T06:09:29.000Z" itemprop="datePublished">2019-05-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/">《就是要你懂Swoole》--虚拟机中断</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这篇文章是讲解<code>PHP7</code>虚拟机中断的用法，理解这篇文章之后就可以更好的理解<code>Swoole</code>在CPU密集型的情况下协程的调度原理。</p>
+<p>Swoole之前尝试了多种方法来处理CPU密集型环境下协程的切换问题。分别是Hook for循环，使用<code>PHP</code>的<code>declare(ticks=N)</code>语法。因为种种原因，<code>Swoole</code>现在使用了虚拟机中断的方法来切换一直占用<code>CPU</code>的协程。具体原因可以查看PHP最近的<code>Issue</code>以及<code>PR</code>，里面写的很清楚了。</p>
+<p>好的，我们现在来感受一下虚拟机中断的用法。</p>
+<p>首先，我们实现一个扩展函数，它的作用是开启对虚拟机中断的使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(start_interrupt) &#123;</span><br><span class="line">	init();</span><br><span class="line">	create_scheduler_thread();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>init的实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	orig_interrupt_function = zend_interrupt_function;</span><br><span class="line">	zend_interrupt_function = new_interrupt_function;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的核心是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_interrupt_function = new_interrupt_function;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，我们需要实现<code>zend_interrupt_function</code>。<code>zend_interrupt_function</code>的作用是在虚拟机中断发生的时候，会去执行的函数。并且，<code>zend_interrupt_function</code>是<code>PHP</code>内核定义的一个函数指针。</p>
+<p>（我们这篇文章不多讲<code>orig_interrupt_function = zend_interrupt_function;</code>，我们假设没有其他扩展实现了<code>zend_interrupt_function</code>）</p>
+<p><code>new_interrupt_function</code>的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">new_interrupt_function</span><span class="params">(zend_execute_data *execute_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">		php_printf(<span class="string">&quot;yield coroutine\n&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (orig_interrupt_function)</span><br><span class="line">    &#123;</span><br><span class="line">        orig_interrupt_function(execute_data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，我们的这个函数<code>&#39;模拟&#39;</code>了<code>yield</code>协程的过程。OK，我们接着看<code>create_scheduler_thread</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create_scheduler_thread</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> pidt;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pthread_create(&amp;pidt, <span class="literal">NULL</span>, (<span class="keyword">void</span> * (*)(<span class="keyword">void</span> *)) schedule, <span class="literal">NULL</span>) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        php_printf(<span class="string">&quot;pthread_create[PHPCoroutine Scheduler] failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数的作用是创建一个线程，这个线程的执行体是<code>schedule</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">schedule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        EG(vm_interrupt) = <span class="number">1</span>;</span><br><span class="line">        usleep(<span class="number">5000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而这个<code>schedule</code>线程我们可以认为它是一个负责调用的一个线程。它设置<code>EG(vm_interrupt)</code>的值为1。设置完之后，当虚拟机检查到这个值为1的时候，就会去执行<code>new_interrupt_function</code>函数，从而实现了<code>yield</code>协程。</p>
+<p>每次触发完虚拟机中断后，虚拟机会把<code>EG(vm_interrupt)</code>设置为0。因此，这里需要循环的去设置<code>EG(vm_interrupt)</code>的值为1。为什么这里需要使用<code>usleep</code>呢？因为中断不是每分每秒都在进行的，所以可以挂起这个线程，让其他线程跑。</p>
+<p>好的，我们来写一段<code>PHP</code>脚本来测试一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">start_interrupt();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;1\n&quot;</span>;</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php interrupt.php </span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">......</span><br><span class="line">^C</span><br><span class="line">~/codeDir/phpCode/test # </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/" data-id="ckkj72zt40067f6vxebny1gcz" data-title="《就是要你懂Swoole》--虚拟机中断" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《PHP扩展开发》-return-value的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2019-05-25T07:31:40.000Z" itemprop="datePublished">2019-05-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/">《PHP扩展开发》--return_value的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在PHP扩展中编写函数的时候，如果我们要从PHP扩展返回值给PHP脚本，可以使用<code>return_value</code>来做到。例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(hello_world) &#123;</span><br><span class="line">    ZVAL_STRINGL(return_value, <span class="string">&quot;hello world!&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;hello world!&quot;</span>));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZVAL_STRINGL(z, s, l) do &#123;				\</span></span><br><span class="line">		ZVAL_NEW_STR(z, zend_string_init(s, l, <span class="number">0</span>));		\</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline zend_string *<span class="title">zend_string_init</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">size_t</span> len, <span class="keyword">int</span> persistent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	zend_string *ret = zend_string_alloc(len, persistent);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">memcpy</span>(ZSTR_VAL(ret), str, len);</span><br><span class="line">	ZSTR_VAL(ret)[len] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZSTR_VAL(zstr)  (zstr)-&gt;val</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZVAL_NEW_STR(z, s) do &#123;					\</span></span><br><span class="line">		zval *__z = (z);						\</span><br><span class="line">		zend_string *__s = (s);					\</span><br><span class="line">		Z_STR_P(__z) = __s;						\</span><br><span class="line">		Z_TYPE_INFO_P(__z) = IS_STRING_EX;		\</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>zend_string_init</code>的作用就是从堆中分配一块内存给<code>ret</code>。然后把字符串<code>hello world!</code>以及字符串的长度保存在<code>ret</code>里面，然后，返回包含<code>hello world!</code>字符串的地址。</p>
+<p><code>ZVAL_NEW_STR(z, s)</code>的作用是让<code>z</code>指向<code>s</code>，也就是说，此时的<code>return_value</code>里面的<code>value.str</code>指向了<code>zend_string_init</code>返回的包含了<code>hello world!</code>字符串的<code>zend_string</code>。</p>
+<p>所以说，通过<code>return_value</code>可以找到字符串<code>hello world!</code>。</p>
+<p>一个问题是这个<code>return_value</code>是哪里来的？</p>
+<p>我们展开<code>PHP_FUNCTION</code>可以看到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_FUNCTION			ZEND_FUNCTION</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_FUNCTION(name)				ZEND_NAMED_FUNCTION(ZEND_FN(name))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_FN(name) zif_##name</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_NAMED_FUNCTION(name)		void name(INTERNAL_FUNCTION_PARAMETERS)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INTERNAL_FUNCTION_PARAMETERS zend_execute_data *execute_data, zval *return_value</span></span><br></pre></td></tr></table></figure>
+
+<p>因此，我们对<code>PHP_FUNCTION(hello_world)</code>进行展开的话，可以得到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zif_hello_world(zend_execute_data *execute_data, zval *return_value)</span><br></pre></td></tr></table></figure>
+
+<p>所以，我们可以在使用了<code>PHP_FUNCTION</code>宏里面使用<code>return_value</code>。我们往<code>return_value</code>里面填充值的话，<code>PHP</code>脚本就可以得到返回值了。</p>
+<p>因此，我们执行如下脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$ret = hello_world();</span><br><span class="line">var_dump($ret);</span><br></pre></td></tr></table></figure>
+
+<p>就可以打印出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php study.php </span><br><span class="line">string(12) &quot;hello world!&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="ckkj72zt0005vf6vxbwdn778f" data-title="《PHP扩展开发》--return_value的使用" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《就是要你懂Swoole》-使用Client的时候需要注意的地方" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/10/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E4%BD%BF%E7%94%A8Client%E7%9A%84%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E5%9C%B0%E6%96%B9/" class="article-date">
+  <time class="dt-published" datetime="2019-05-10T02:52:46.000Z" itemprop="datePublished">2019-05-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/10/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E4%BD%BF%E7%94%A8Client%E7%9A%84%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E5%9C%B0%E6%96%B9/">《就是要你懂Swoole》—使用Swoole\Client的时候需要注意的地方</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今早看Swoole修复了一个创建<code>Swoole\Client</code>的bug，我记得之前是没有的，应该是用C++重构Swoole的时候出现的。Issue在这里<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/issues/2568">#2568</a>，修复在这里 [<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/commit/e9fb220a1e835b967d643d88398d3d28246ea45a">e9fb220</a>]。</p>
+<p>原来的代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (cli-&gt;async)</span><br><span class="line">    &#123;</span><br><span class="line">        client_callback *cb = (client_callback *) swoole_get_property(getThis(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (!cb)</span><br><span class="line">        &#123;</span><br><span class="line">            swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no event callback function&quot;</span>);</span><br><span class="line">            RETURN_FALSE;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (swSocket_is_stream(cli-&gt;type))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (!cb-&gt;cache_onConnect.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onConnect&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!cb-&gt;cache_onError.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onError&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!cb-&gt;cache_onClose.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onClose&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            cli-&gt;onConnect = client_onConnect;</span><br><span class="line">            cli-&gt;onClose = client_onClose;</span><br><span class="line">            cli-&gt;onError = client_onError;</span><br><span class="line">            cli-&gt;onReceive = client_onReceive;</span><br><span class="line">            cli-&gt;reactor_fdtype = PHP_SWOOLE_FD_STREAM_CLIENT;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onBufferFull.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onBufferFull = client_onBufferFull;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onBufferEmpty.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onBufferEmpty = client_onBufferEmpty;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (!cb || !cb-&gt;cache_onReceive.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onReceive&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onConnect.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onConnect = client_onConnect;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onClose.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onClose = client_onClose;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onError.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onError = client_onError;</span><br><span class="line">            &#125;</span><br><span class="line">            cli-&gt;onReceive = client_onReceive;</span><br><span class="line">            cli-&gt;reactor_fdtype = PHP_SWOOLE_FD_DGRAM_CLIENT;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        zval *zobject = getThis();</span><br><span class="line">        cli-&gt;object = zobject;</span><br><span class="line">        sw_copy_to_stack(cli-&gt;object, cb-&gt;_object);</span><br><span class="line">        Z_TRY_ADDREF_P(zobject);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (cli-&gt;async)</span><br><span class="line">    &#123;</span><br><span class="line">        client_callback *cb = (client_callback *) swoole_get_property(getThis(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (!cb)</span><br><span class="line">        &#123;</span><br><span class="line">            swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no event callback function&quot;</span>);</span><br><span class="line">            RETURN_FALSE;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!cb-&gt;cache_onReceive.function_handler)</span><br><span class="line">        &#123;</span><br><span class="line">            swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onReceive&#x27; callback function&quot;</span>);</span><br><span class="line">            RETURN_FALSE;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (swSocket_is_stream(cli-&gt;type))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (!cb-&gt;cache_onConnect.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onConnect&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!cb-&gt;cache_onError.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onError&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!cb-&gt;cache_onClose.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                swoole_php_fatal_error(E_ERROR, <span class="string">&quot;no &#x27;onClose&#x27; callback function&quot;</span>);</span><br><span class="line">                RETURN_FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">            cli-&gt;onConnect = client_onConnect;</span><br><span class="line">            cli-&gt;onClose = client_onClose;</span><br><span class="line">            cli-&gt;onError = client_onError;</span><br><span class="line">            cli-&gt;onReceive = client_onReceive;</span><br><span class="line">            cli-&gt;reactor_fdtype = PHP_SWOOLE_FD_STREAM_CLIENT;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onBufferFull.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onBufferFull = client_onBufferFull;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onBufferEmpty.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onBufferEmpty = client_onBufferEmpty;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onConnect.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onConnect = client_onConnect;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onClose.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onClose = client_onClose;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cb-&gt;cache_onError.function_handler)</span><br><span class="line">            &#123;</span><br><span class="line">                cli-&gt;onError = client_onError;</span><br><span class="line">            &#125;</span><br><span class="line">            cli-&gt;onReceive = client_onReceive;</span><br><span class="line">            cli-&gt;reactor_fdtype = PHP_SWOOLE_FD_DGRAM_CLIENT;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        zval *zobject = getThis();</span><br><span class="line">        cli-&gt;object = zobject;</span><br><span class="line">        sw_copy_to_stack(cli-&gt;object, cb-&gt;_object);</span><br><span class="line">        Z_TRY_ADDREF_P(zobject);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>之前是如果<code>socket</code>不是<code>stream</code>类型的时候才会判断是否定义了<code>onReceive</code>回调函数。现在把对是否定义了<code>onReceive</code>的判断放在了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (swSocket_is_stream(cli-&gt;type))</span><br></pre></td></tr></table></figure>
+
+<p>的上面，因此就变成了无论是不是<code>stream</code>类型的，都需要定义<code>onReceive</code>回调函数。</p>
+<p>另外，<code>Swoole</code>创建的<code>Client</code>如果是<code>Stream</code>类型的，那么必须实现<code>onConnect</code>、<code>onReceive</code>、<code>onError</code>、<code>onClose</code>回调函数函数。如果不是<code>Stream</code>类型的，则可以不实现。当然，实现了这些回调函数也是可以的。从最近的一次修复来看。必须实现<code>onReceive</code>回调函数。（以上是在调用<code>client-&gt;connect</code>的时候进行判断的）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/10/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E4%BD%BF%E7%94%A8Client%E7%9A%84%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E5%9C%B0%E6%96%B9/" data-id="ckkj72zt30065f6vxeabz86a9" data-title="《就是要你懂Swoole》—使用Swoole\Client的时候需要注意的地方" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-《就是要你懂Swoole》-package-eof的一个小细节" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/09/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-package-eof%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E7%BB%86%E8%8A%82/" class="article-date">
+  <time class="dt-published" datetime="2019-05-09T01:29:11.000Z" itemprop="datePublished">2019-05-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/09/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-package-eof%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E7%BB%86%E8%8A%82/">《就是要你懂Swoole》--package_eof的一个小细节</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>有的同学在开启了<code>Swoole\Server</code>的<code>package_eof</code>的时候，发现并没有生效。<code>Server</code>端的代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> Swoole\Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line"></span><br><span class="line">$serv-&gt;set(<span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">4</span>,</span><br><span class="line">    <span class="string">&#x27;package_eof&#x27;</span> =&gt; <span class="string">&quot;\r\n\r\n&quot;</span>,</span><br><span class="line">    <span class="string">&#x27;open_eof_check&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">));</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client:Connect.\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd, $reactor_id, $data</span>) </span>&#123;</span><br><span class="line">    $serv-&gt;send($fd, <span class="string">&#x27;Swoole: &#x27;</span>.$data);</span><br><span class="line">    $serv-&gt;close($fd);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client: Close.\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p><code>Client</code>端的代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$client = <span class="keyword">new</span> Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;connect&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli</span>) </span>&#123;</span><br><span class="line">    $cli-&gt;send(<span class="string">&#x27;hello world\r\n\r\n&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;receive&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli, $data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Receive: <span class="subst">$data</span>&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;error&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;error\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;close&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Connection close\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们打开两个终端，分别启动<code>Server</code>和<code>Client</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php server.php </span><br><span class="line">Client:Connect.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php client.php </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>讲道理来说，<code>client</code>连接上<code>server</code>之后，是会给<code>server</code>发生字符串<code>&#39;hello world\r\n\r\n&#39;</code>的，但是看样子<code>server</code>好像并没有解析出这个字符串对吧。</p>
+<p>问题出在了<code>server</code>端的<code>package_eof</code>的值用的是双引号，而<code>client</code>发送给<code>server</code>的字符串用的是单引号。而PHP在单引号和双引号中解析<code>\r\n\r\n</code>是不一样的（至少在字符串的长度来说都是不同的）。所以我们需要统一一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$client = <span class="keyword">new</span> Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;connect&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli</span>) </span>&#123;</span><br><span class="line">    $cli-&gt;send(<span class="string">&quot;hello world\r\n\r\n&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;receive&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli, $data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Receive: <span class="subst">$data</span>&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;error&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;error\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;on(<span class="string">&quot;close&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">swoole_client $cli</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Connection close\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$client-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php client.php </span><br><span class="line">Receive: Swoole: hello world</span><br><span class="line"></span><br><span class="line">Connection close</span><br><span class="line">~/codeDir/phpCode/test # </span><br></pre></td></tr></table></figure>
+
+<p>此时，<code>server</code>就可以解析出这个<code>\r\n\r\n</code>了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/09/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-package-eof%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E7%BB%86%E8%8A%82/" data-id="ckkj72zt20060f6vx26zqel3k" data-title="《就是要你懂Swoole》--package_eof的一个小细节" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

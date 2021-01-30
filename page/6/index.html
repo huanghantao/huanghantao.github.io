@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="比PHP多一些">
+<meta property="og:type" content="website">
+<meta property="og:title" content="codinghuang的个人博客">
+<meta property="og:url" content="http://huanghantao.github.io/page/6/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="比PHP多一些">
+<meta property="og:locale">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Swoole内核中和连接关闭有关的各种标志位" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/" class="article-date">
+  <time class="dt-published" datetime="2020-08-11T02:37:05.000Z" itemprop="datePublished">2020-08-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/">Swoole内核中和连接关闭有关的各种标志位</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们来总结一下<code>Swoole</code>内核中和连接关闭有关的各种标志位。</p>
+<p>在<code>swoole::Connection</code>结构里面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Connection</span> &#123;</span></span><br><span class="line">    <span class="comment">//--------------------------------------------------------------</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * server is actively close the connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> close_actively;</span><br><span class="line">    <span class="keyword">uint8_t</span> closed;</span><br><span class="line">    <span class="keyword">uint8_t</span> close_queued;</span><br><span class="line">    <span class="keyword">uint8_t</span> closing;</span><br><span class="line">    <span class="keyword">uint8_t</span> close_reset;</span><br><span class="line">    <span class="keyword">uint8_t</span> peer_closed;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * protected connection, cannot be closed by heartbeat thread.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> protect;</span><br><span class="line">    <span class="comment">//--------------------------------------------------------------</span></span><br><span class="line">    <span class="keyword">uint8_t</span> close_notify;</span><br><span class="line">    <span class="keyword">uint8_t</span> close_force;</span><br><span class="line">    <span class="comment">//--------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * received time with last data</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">time_t</span> last_time;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> SW_BUFFER_RECV_TIME</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * received time(microseconds) with last data</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">double</span> last_time_usec;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其中，</p>
+<p><code>close_actively</code>代表服务器主动关闭了连接。</p>
+<p><code>closing</code>代表服务器将要调用<code>onClose</code>回调函数（但还未调用）。</p>
+<p><code>closed</code>代表服务器已经调用完了<code>onClose</code>回调函数。</p>
+<p><code>close_queued</code>代表关闭连接的事件已经在排队了，一旦服务器要发送给客户端的数据发送完了，就会关闭对应的连接。这个东西是挂在对应的<code>socket</code>的<code>out_buffer</code>上的<code>chunk</code>上面。</p>
+<p><code>close_reset</code>代表要暴力关闭连接，不会等待<code>send_buffer</code>的数据发送完之后关闭连接，所以这种关闭模式会产生<code>RST</code>分节。</p>
+<p><code>peer_closed</code>代表客户端主动关闭了连接。</p>
+<p><code>protect</code>用来设置客户端连接为保护状态，不被心跳线程切断。</p>
+<p><code>close_notify</code>心跳线程设置这个标志位，用来通知<code>reactor</code>线程关闭连接。</p>
+<p><code>close_force</code>当<code>reactor</code>线程从管道里面收到<code>SW_SERVER_EVENT_CLOSE_FORCE</code>类型的数据的时候，<code>reactor</code>线程会去设置这个标志位。</p>
+<p><code>last_time</code>代表这个连接最后一次收到数据的时间，单位是毫秒。</p>
+<p><code>last_time_usec</code>代表这个连接最后一次收到数据的时间，单位是微秒。</p>
+<p>理解这些标志位，对于处理一些连接泄漏的问题，会非常的有帮助。一旦某个进程连接泄漏了，我们可以<code>attach</code>进这个进程里面，然后选一个泄漏的<code>Connection</code>，看看这些标志位哪些是不正常的，就可以大概找到泄漏的原因。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/" data-id="ckkj72zs6003qf6vx36qh2i1z" data-title="Swoole内核中和连接关闭有关的各种标志位" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP是如何找到扩展的安装目录的" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/" class="article-date">
+  <time class="dt-published" datetime="2020-08-11T01:40:02.000Z" itemprop="datePublished">2020-08-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/">PHP是如何找到扩展的安装目录的</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>有小伙伴可能会疑问，自己没有在<code>php.ini</code>文件里面配置<code>extension_dir</code>，那么<code>PHP</code>它是如何找到扩展的安装目录的呢？</p>
+<p>实际上，我们在编译<code>PHP</code>的时候，这个时候就决定了扩展的安装目录。并且，这个路径在<code>php-src/main/build-defs.h</code>里面可以找到，例如，在我的机器上面，就是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_EXTENSION_DIR       <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/lib/php/extensions/debug-zts-20190128&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>除了这个之外，还有很多其他的在编译<code>PHP</code>的时候就写入头文件的内容，例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">| Copyright (c) The PHP Group                                          |</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">| This source file is subject to version 3.01 of the PHP license,      |</span></span><br><span class="line"><span class="comment">| that is bundled with this package in the file LICENSE, and is        |</span></span><br><span class="line"><span class="comment">| available through the world-wide-web at the following url:           |</span></span><br><span class="line"><span class="comment">| http://www.php.net/license/3_01.txt                                  |</span></span><br><span class="line"><span class="comment">| If you did not receive a copy of the PHP license and are unable to   |</span></span><br><span class="line"><span class="comment">| obtain it through the world-wide-web, please send a note to          |</span></span><br><span class="line"><span class="comment">| license@php.net so we can mail you a copy immediately.               |</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">| Author: Stig Sæther Bakken &lt;ssb@php.net&gt;                             |</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIGURE_COMMAND <span class="meta-string">&quot; &#x27;./configure&#x27;  &#x27;--disable-all&#x27; &#x27;--prefix=/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr&#x27; &#x27;--with-config-file-path=/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc&#x27; &#x27;--with-config-file-scan-dir=/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc/php.d&#x27; &#x27;--enable-debug&#x27; &#x27;--enable-zts&#x27; &#x27;--with-ffi&#x27;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_CFLAGS <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_LFLAGS     <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_LIBS       <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_TYPE       <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_OCI8_DIR            <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_OCI8_ORACLE_VERSION     <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_PROG_SENDMAIL   <span class="meta-string">&quot;/usr/sbin/sendmail&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PEAR_INSTALLDIR         <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_INCLUDE_PATH    <span class="meta-string">&quot;.:&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_EXTENSION_DIR       <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/lib/php/extensions/debug-zts-20190128&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_PREFIX              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_BINDIR              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/bin&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SBINDIR             <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/sbin&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_MANDIR              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/php/man&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_LIBDIR              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/lib/php&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_DATADIR             <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/share/php&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SYSCONFDIR          <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/etc&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_LOCALSTATEDIR       <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/var&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_CONFIG_FILE_PATH    <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_CONFIG_FILE_SCAN_DIR    <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc/php.d&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SHLIB_SUFFIX        <span class="meta-string">&quot;so&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SHLIB_EXT_PREFIX    <span class="meta-string">&quot;&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，<code>PHP_EXTENSION_DIR</code>的命名规范如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;install-dir&gt;/lib/php/extensions/&lt;debug-or-not&gt;-&lt;zts-or-not&gt;-ZEND_MODULE_API_NO</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>&lt;install-dir&gt;</code>就是我们的<code>PHP_PREFIX</code>了。<code>&lt;debug-or-not&gt;</code>代表是否开启<code>PHP</code>的<code>debug</code>模式，我们可以在编译的时候指定<code>--enable-debug</code>。<code>&lt;zts-or-not&gt;</code>代表是否开启<code>zts</code>，<code>PHP8</code>中，可以通过指定<code>--enable-zts</code>来开启它。<code>ZEND_MODULE_API_NO</code>是一个可以表示<code>PHP</code>版本的数字，大概是由<code>年/月/日</code>组成。</p>
+<p>正是因为<code>PHP_EXTENSION_DIR</code>的目录有多个在编译期间决定的变量，所以我们要注意，在编译扩展的时候，<code>PHP</code>版本要是一致的，要不然<code>PHP</code>找不到编译的扩展。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/" data-id="ckkj72zrw0038f6vxb9ex2o5e" data-title="PHP是如何找到扩展的安装目录的" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-在PHP的run-tests测试里面保持closing-tag" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/" class="article-date">
+  <time class="dt-published" datetime="2020-08-10T02:01:12.000Z" itemprop="datePublished">2020-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/">在PHP的run-tests测试里面保持closing tag</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这里的测试指的是<code>PHP</code>底层的测试，例如一些扩展呀啥的测试，而不是<code>PHPUnit</code>之类的测试。</p>
+<p>我们尽可能的保留<code>PHP</code>的<code>closing tag</code>，即<code>?&gt;</code>。例如我们应该这么写：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">--FILE--</span><br><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"> var_dump(<span class="keyword">new</span> <span class="class"><span class="keyword">class</span></span>&#123;&#125;);</span><br><span class="line"> <span class="meta">?&gt;</span></span><br><span class="line"> --EXPECTF--</span><br><span class="line"> object(class@%s)#%d (0) &#123;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>而不是：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">--FILE--</span><br><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"> var_dump(<span class="keyword">new</span> <span class="class"><span class="keyword">class</span></span>&#123;&#125;);</span><br><span class="line"> --EXPECTF--</span><br><span class="line"> object(class@%s)#%d (0) &#123;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>详细的可以看<code>php-src</code>的<a target="_blank" rel="noopener" href="https://github.com/php/php-src/pull/5958">这个pr</a>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/" data-id="ckkj72ztz0092f6vx2l1r3k1r" data-title="在PHP的run-tests测试里面保持closing tag" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-zend-read-property的rv参数作用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2020-08-09T13:54:46.000Z" itemprop="datePublished">2020-08-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/">zend_read_property的rv参数作用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于的PHP版本为7.3.12</p>
+</blockquote>
+<p>我们在开发<code>PHP</code>扩展的时候，经常会要去读取对象的属性，一般来说就是使用<code>zend_read_property</code>这个函数来完成。这个函数的原型如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API zval *<span class="title">zend_read_property</span><span class="params">(zend_class_entry *scope, zval *object, <span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">size_t</span> name_length, zend_bool silent, zval *rv)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数的返回值很容易理解，就是这个属性对应的<code>value</code>值。那么，最后一个参数<code>zval *rv</code>有什么用呢？</p>
+<p>这个参数是给动态属性来用的。我们知道，当访问一个<code>PHP</code>对象的动态属性的时候，是会去调用这个对象的<code>__get</code>魔术方法。而动态属性它的内存是不在<code>zend_object</code>上面的，它是通过<code>__get</code>魔术方法来得到的。而普通的属性它的内存是在<code>zend_object</code>上面的，所以，当我们去访问普通的属性的时候，可以直接返回一个<code>zval</code>。</p>
+<p>既然访问动态属性是通过调用<code>__get</code>魔术方法来实现的，那么，类似于<code>zend_call_method</code>一样，我们需要去设置<code>zend_fcall_info::retval</code>。当函数调用结束的时候，返回值就会存放在这个<code>zval</code>中。这样，我们就可以取到动态属性的值了。</p>
+<p>核心的代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zend_std_call_getter</span><span class="params">(zend_object *zobj, zend_string *prop_name, zval *retval)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_class_entry *ce = zobj-&gt;ce;</span><br><span class="line">    zend_class_entry *orig_fake_scope = EG(fake_scope);</span><br><span class="line">    zend_fcall_info fci;</span><br><span class="line">    zend_fcall_info_cache fcic;</span><br><span class="line">    zval member;</span><br><span class="line"></span><br><span class="line">    EG(fake_scope) = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* __get handler is called with one argument:</span></span><br><span class="line"><span class="comment">        property name</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    it should return whether the call was successful or not</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    ZVAL_STR(&amp;member, prop_name);</span><br><span class="line"></span><br><span class="line">    fci.size = <span class="keyword">sizeof</span>(fci);</span><br><span class="line">    fci.object = zobj;</span><br><span class="line">    fci.retval = retval;</span><br><span class="line">    fci.param_count = <span class="number">1</span>;</span><br><span class="line">    fci.params = &amp;member;</span><br><span class="line">    fci.no_separation = <span class="number">1</span>;</span><br><span class="line">    ZVAL_UNDEF(&amp;fci.function_name); <span class="comment">/* Unused */</span></span><br><span class="line"></span><br><span class="line">    fcic.function_handler = ce-&gt;__get;</span><br><span class="line">    fcic.called_scope = ce;</span><br><span class="line">    fcic.object = zobj;</span><br><span class="line"></span><br><span class="line">    zend_call_function(&amp;fci, &amp;fcic);</span><br><span class="line"></span><br><span class="line">    EG(fake_scope) = orig_fake_scope;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当访问<code>PHP</code>对象的动态属性的时候，就会去调用这个函数。而这个函数的<code>retval</code>就是我们<code>zend_read_property</code>的<code>rv</code>参数。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/" data-id="ckkj72zsx005mf6vxcanz8kj0" data-title="zend_read_property的rv参数作用" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP在-get魔术方法中进行Swoole协程切换的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2020-08-09T08:57:51.000Z" itemprop="datePublished">2020-08-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/">PHP在__get魔术方法中进行Swoole协程切换的问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们有如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($i=<span class="number">0</span>; $i &lt; <span class="number">2</span>; $i++) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">        $foo-&gt;aaa;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::$aaa in /root/codeDir/phpCode/swoole/coroutine/get/get.php on line <span class="number">18</span></span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::$aaa in /root/codeDir/phpCode/swoole/coroutine/get/get.php on line <span class="number">18</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们会发现，这里会有警告，说是使用了没有定义的属性。</p>
+<p>为了理解这个问题，我们可以先来了解一下<code>__get</code>这个魔术方法。首先是这么一段代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var_dump($name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，因为<code>aaa</code>这个属性是类<code>Foo</code>的动态属性，所以默认会去调用<code>Foo</code>类的<code>__get</code>魔术方法，并且，传递给魔术方法的参数就是这个动态属性的名字。</p>
+<p>好的，我们现在再来写一段代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;$name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 9</span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 9</span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，当我们在<code>__get</code>魔术方法里面去读取动态属性<code>aaa</code>的时候，报的错误和我们在<code>__get</code>方法中进行协程切换是一模一样的。我们可以来理解一下为什么<code>PHP</code>要这么警告？</p>
+<p>如果不这么警告的话，那么我们在<code>__get</code>函数里面读取动态属性<code>aaa</code>是不是又会继续调用<code>__get</code>魔术方法呢？那么这就会导致无限的递归了。所以<code>PHP</code>是禁止这种行为的。</p>
+<p>那么，<code>PHP</code>底层是如何做到这种限制的呢？我们引用<a target="_blank" rel="noopener" href="https://github.com/pangudashu/php7-internal/blob/40645cfe087b373c80738881911ae3b178818f11/3/zend_object.md">《PHP7内核剖析》</a>的内容来解释一下：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Note: 如果类存在 get () 方法，则在实例化对象分配属性内存 (即:properties_table) 时会多分配一个 zval，类型为 HashTable，每次调用 get ($var) 时会把输入的 $var 名称存入这个哈希表，这样做的目的是防止循环调用，举个例子：</span><br><span class="line"></span><br><span class="line">public function __get($var) &#123; return $this-&gt;$var; &#125;</span><br><span class="line"></span><br><span class="line">这种情况是调用 get () 时又访问了一个不存在的属性，也就是会在 get () 方法中递归调用，如果不对请求的 $var 作判断则将一直递归下去，所以在调用 get () 前首先会判断当前 $var 是不是已经在 get () 中了，如果是则不会再调用 get ()，否则会把 $var 作为 key 插入那个 HashTable，然后将哈希值设置为：*guard |= IN_ISSET，调用完 get () 再把哈希值设置为：*guard &amp;= ~IN_ISSET。</span><br><span class="line"></span><br><span class="line">这个 HashTable 不仅仅是给 get () 用的，其它魔术方法也会用到，所以其哈希值类型是 zend_long，不同的魔术方法占不同的 bit 位；其次，并不是所有的对象都会额外分配这个 HashTable，在对象创建时会根据 zend_class_entry.ce_flags 是否包含 ZEND_ACC_USE_GUARDS 确定是否分配，在类编译时如果发现定义了 get()、set()、unset ()、__isset () 方法则会将 ce_flags 打上这个掩码。</span><br></pre></td></tr></table></figure>
+
+<p>所以，总结起来就是，当调用了<code>__get</code>时，会对这个动态属性做一个<code>IN_ISSET</code>标记，直到结束了这次<code>__get</code>调用，才会取消这个<code>IN_ISSET</code>标记。如果在有<code>IN_ISSET</code>的时候，再次对这个动态属性进行访问，那么就会报这个警告了。</p>
+<p>所以，如下写法就是可以的了：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var_dump($name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>因为我们是在退出第一次<code>__get</code>魔术方法调用之后再次访问动态属性<code>aaa</code>的，这个时候<code>IN_ISSET</code>标记已经没了。</p>
+<p>好的，我们现在来修改一下之前的协程切换的代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">    $foo-&gt;aaa;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">    $foo-&gt;aaa;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样或许会更加直观一点。首先，当第一个协程读取动态属性<code>aaa</code>的时候，对象<code>$foo</code>第一次调用了<code>__get</code>魔术方法。然后，因为<code>Coroutine::sleep</code>，协程被挂起了，<code>__get</code>魔术方法还没有退出，此时<code>IN_ISSET</code>标记还在。这个时候，轮到第二个协程进行动态属性<code>aaa</code>的读取，此时，因为<code>IN_ISSET</code>还在，所以此时访问动态属性<code>aaa</code>就是禁止的了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 21</span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 21</span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现报错的地方是第<code>21</code>行，是第二个协程报出的警告。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72zrn002mf6vxf2dwgxmz" data-title="PHP在__get魔术方法中进行Swoole协程切换的问题" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-KeepAlive和心跳检查" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/" class="article-date">
+  <time class="dt-published" datetime="2020-08-07T09:09:26.000Z" itemprop="datePublished">2020-08-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/">KeepAlive和心跳检查</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>做长连接的服务，我们经常要去判断连接是否在线。那么我们怎么去判断连接是否在线呢？</p>
+<p>首先，我们需要去明确连接是否在线的含义：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 连接之间因为网络等问题无法发送数据了，我们可以认为不在线了</span><br><span class="line">2. 连接之间很长一段时间没有发送数据了，我们可以认为不在线了</span><br></pre></td></tr></table></figure>
+
+<p>针对第一种情况，我们可以使用操作系统提供的<code>KeepAlive</code>机制来检测连接之间是否可以发送数据。</p>
+<p>针对第二种情况，我们可以通过心跳检查来判断某一段时间内，连接上是否有数据发送。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/" data-id="ckkj72zqs000rf6vx1yze4y2u" data-title="KeepAlive和心跳检查" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-HTTP-trailer需要注意的点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" class="article-date">
+  <time class="dt-published" datetime="2020-07-31T15:36:03.000Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/">HTTP trailer需要注意的点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><code>HTTP trailer</code>的例子如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span>: text/plain</span><br><span class="line"><span class="attribute">Transfer-Encoding</span>: chunked</span><br><span class="line"><span class="attribute">Trailer</span>: Expires</span><br><span class="line"></span><br><span class="line"><span class="attribute">7\r\n</span></span><br><span class="line"><span class="attribute">Mozilla\r\n</span></span><br><span class="line"><span class="attribute">9\r\n</span></span><br><span class="line"><span class="attribute">Developer\r\n</span></span><br><span class="line"><span class="attribute">7\r\n</span></span><br><span class="line"><span class="attribute">Network\r\n</span></span><br><span class="line"><span class="attribute">0\r\n</span></span><br><span class="line"><span class="attribute">Expires</span>: Wed, 21 Oct 2015 07:28:00 GMT\r\n</span><br><span class="line">\r\n</span><br></pre></td></tr></table></figure>
+
+<p><code>HTTP trailer</code>有如下需要注意的点：</p>
+<ol>
+<li><p><code>Transfer-Encoding</code>得是<code>chunked</code></p>
+</li>
+<li><p>最后一个<code>chunk</code>是<code>0\r\n</code>，只有<code>Transfer-Encoding: chunked</code>而没有<code>Trailer</code>的最后一个<code>chunk</code>是<code>0\r\n\r\n</code></p>
+</li>
+<li><p><code>trailer</code>的内容得在发完所有的<code>http body</code>之后附加</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" data-id="ckkj72zqp000lf6vxffkv2jv2" data-title="HTTP trailer需要注意的点" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP中的zend-string-release和zend-string-release-ex" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" class="article-date">
+  <time class="dt-published" datetime="2020-07-29T04:37:39.000Z" itemprop="datePublished">2020-07-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/">PHP中的zend_string_release和zend_string_release_ex</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在<code>PHP</code>中，释放<code>zend_string</code>可以使用<code>zend_string_release</code>或者<code>zend_string_release_ex</code>。那什么时候应该用<code>zend_string_release</code>，什么时候应该用<code>zend_string_release_ex</code>呢？一句话总结就是，如果我们不确定这个<code>zend_string</code>是不是<code>persistent</code>方式分配的内存，那么就用<code>zend_string_release</code>，如果我们确定这个<code>zend_string</code>是不是以<code>persistent</code>方式分配的内存，那么就使用<code>zend_string_release_ex</code>，因为<code>zend_string_release_ex</code>可以稍微提升性能。我们来看一下这两个函数。</p>
+<p>首先是<code>zend_string_release</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> pefree(ptr, persistent)  ((persistent)?free(ptr):efree(ptr))</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline <span class="keyword">void</span> <span class="title">zend_string_release</span><span class="params">(zend_string *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ZSTR_IS_INTERNED(s)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (GC_DELREF(s) == <span class="number">0</span>) &#123;</span><br><span class="line">            pefree(s, GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数做的事情比较简单，先对<code>zend_string</code>的引用计数减一，如果引用计数变为了<code>0</code>，那么就会真正的去调用<code>pefree</code>释放内存。除此之外，这里还需要判断<code>zend_string</code>的分配方式，如果是<code>persistent</code>方式分配的，那么调用<code>free</code>，否则调用<code>efree</code>。</p>
+<p>我们再来看看<code>zend_string_release_ex</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline <span class="keyword">void</span> <span class="title">zend_string_release_ex</span><span class="params">(zend_string *s, <span class="keyword">int</span> persistent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ZSTR_IS_INTERNED(s)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (GC_DELREF(s) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">                ZEND_ASSERT(GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">                <span class="built_in">free</span>(s);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ZEND_ASSERT(!(GC_FLAGS(s) &amp; IS_STR_PERSISTENT));</span><br><span class="line">                efree(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>他做的事情也比较简单，先对<code>zend_string</code>的引用计数减一，如果引用计数变为了<code>0</code>，那么判断<code>persistent</code>再决定调用哪一个<code>free</code>。乍眼一看，似乎<code>zend_string_release_ex</code>做的事情比<code>zend_string_release</code>还多，多了一个断言，为啥性能就会更好呢？因为这个<code>ZEND_ASSERT</code>在<code>PHP</code>的非<code>debug</code>模式下，是不会执行的。并且，如果对<code>persistent</code>进行硬编码，编译器会对<code>zend_string_release_ex</code>进行优化：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">    ZEND_ASSERT(GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    ZEND_ASSERT(!(GC_FLAGS(s) &amp; IS_STR_PERSISTENT));</span><br><span class="line">    efree(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，在编译的时候，就已经知道要走哪一个分支了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" data-id="ckkj72zrb001rf6vx2hcqdb0f" data-title="PHP中的zend_string_release和zend_string_release_ex" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP使用json-encode正确的处理浮点数负零的情况" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" class="article-date">
+  <time class="dt-published" datetime="2020-07-28T16:27:24.000Z" itemprop="datePublished">2020-07-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/">PHP使用json_encode正确的处理浮点数负零的情况</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>例如这段代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$array = [<span class="number">-0.0</span>, <span class="number">0.0</span>];</span><br><span class="line">var_dump($array);</span><br><span class="line">$json = json_encode($array);</span><br><span class="line">var_dump($json);</span><br><span class="line">$array = json_decode($json);</span><br><span class="line">var_dump($array);</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span>(<span class="number">6</span>) <span class="string">&quot;[-0,0]&quot;</span></span><br><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">int</span>(<span class="number">0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">int</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，先<code>json_encode</code>再<code>json_decode</code>是不能够还原的。而且<code>value</code>也从<code>float</code>变成了<code>int</code>。这是因为我们在<code>json_encode</code>没有去保留<code>ZERO FRACTION</code>。所以，正确的做法应该是这样的：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$array = [<span class="number">-0.0</span>, <span class="number">0.0</span>];</span><br><span class="line">var_dump($array);</span><br><span class="line">$json = json_encode($array, JSON_PRESERVE_ZERO_FRACTION);</span><br><span class="line">var_dump($json);</span><br><span class="line">$array = json_decode($json);</span><br><span class="line">var_dump($array);</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span>(<span class="number">10</span>) <span class="string">&quot;[-0.0,0.0]&quot;</span></span><br><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在<code>encode</code>的时候加上<code>JSON_PRESERVE_ZERO_FRACTION</code>，就会让得到的<code>json</code>字符串保留浮点数的<code>.0</code>，这样在<code>decode</code>的时候，就可以顺利的还原了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" data-id="ckkj72zrc001tf6vxf1sq9v67" data-title="PHP使用json_encode正确的处理浮点数负零的情况" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP使用递归迭代器来遍历指定目录下的指定文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" class="article-date">
+  <time class="dt-published" datetime="2020-07-17T10:59:56.000Z" itemprop="datePublished">2020-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/">PHP使用递归迭代器来遍历指定目录下的指定文件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>目录结构如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator  tree</span><br><span class="line">.</span><br><span class="line">├── dir1</span><br><span class="line">│   ├── dir11</span><br><span class="line">│   │   ├── file11.js</span><br><span class="line">│   │   └── file11.php</span><br><span class="line">│   ├── file1.php</span><br><span class="line">│   └── file1.py</span><br><span class="line">├── dir2</span><br><span class="line">│   ├── file2.css</span><br><span class="line">│   └── file2.php</span><br><span class="line">└── iterator.php</span><br><span class="line"></span><br><span class="line">3 directories, 7 files</span><br><span class="line"> hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator </span><br></pre></td></tr></table></figure>
+
+<p>测试代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$files = <span class="keyword">new</span> <span class="built_in">RecursiveIteratorIterator</span>(<span class="keyword">new</span> <span class="built_in">RecursiveDirectoryIterator</span>(<span class="keyword">__DIR__</span>));</span><br><span class="line">$files = <span class="keyword">new</span> <span class="built_in">RegexIterator</span>($files, <span class="string">&#x27;/\.php$/&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> ($files <span class="keyword">as</span> $file) &#123;</span><br><span class="line">    <span class="comment">/** <span class="doctag">@var</span> SplFileInfo $file */</span></span><br><span class="line">    var_dump($file);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator  php iterator.php</span><br><span class="line">object(SplFileInfo)<span class="comment">#7 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(66) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir2/file2.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(9) <span class="string">&quot;file2.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#10 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(66) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir1/file1.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(9) <span class="string">&quot;file1.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#7 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(73) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir1/dir11/file11.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(10) <span class="string">&quot;file11.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#10 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(64) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/iterator.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(12) <span class="string">&quot;iterator.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator </span><br></pre></td></tr></table></figure>
+
+<p>用起来还是比较舒服的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" data-id="ckkj72zrd001vf6vxdv51ftj0" data-title="PHP使用递归迭代器来遍历指定目录下的指定文件" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

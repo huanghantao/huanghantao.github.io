@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>网络编程第二讲-TCP关闭连接的常见问题 | codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="TCP关闭的过程（四次握手）12341、客户端 发送FIN包给 服务端，此时客户端处于FIN_WAIT1状态2、服务端 发送ACK包给 客户端，此时服务器处于CLOSE_WAIT状态，并且客户端在等待ACK包的时候，处于FIN_WAIT2状态3、服务端 发送FIN包给 客户端，此时服务端处于LAST_ACK状态4、客户端 发送ACK包给 服务端，此时客户端处于TIME_WAIT状态  第一次握手细">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络编程第二讲-TCP关闭连接的常见问题">
+<meta property="og:url" content="http://huanghantao.github.io/2019/08/22/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%AC%E4%BA%8C%E8%AE%B2-TCP%E5%85%B3%E9%97%AD%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="TCP关闭的过程（四次握手）12341、客户端 发送FIN包给 服务端，此时客户端处于FIN_WAIT1状态2、服务端 发送ACK包给 客户端，此时服务器处于CLOSE_WAIT状态，并且客户端在等待ACK包的时候，处于FIN_WAIT2状态3、服务端 发送FIN包给 客户端，此时服务端处于LAST_ACK状态4、客户端 发送ACK包给 服务端，此时客户端处于TIME_WAIT状态  第一次握手细">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-08-22T06:21:36.000Z">
+<meta property="article:modified_time" content="2021-01-30T04:04:11.100Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Swoole">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-网络编程第二讲-TCP关闭连接的常见问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/08/22/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%AC%E4%BA%8C%E8%AE%B2-TCP%E5%85%B3%E9%97%AD%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2019-08-22T06:21:36.000Z" itemprop="datePublished">2019-08-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      网络编程第二讲-TCP关闭连接的常见问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="TCP关闭的过程（四次握手）"><a href="#TCP关闭的过程（四次握手）" class="headerlink" title="TCP关闭的过程（四次握手）"></a>TCP关闭的过程（四次握手）</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、客户端 发送FIN包给 服务端，此时客户端处于FIN_WAIT1状态</span><br><span class="line">2、服务端 发送ACK包给 客户端，此时服务器处于CLOSE_WAIT状态，并且客户端在等待ACK包的时候，处于FIN_WAIT2状态</span><br><span class="line">3、服务端 发送FIN包给 客户端，此时服务端处于LAST_ACK状态</span><br><span class="line">4、客户端 发送ACK包给 服务端，此时客户端处于TIME_WAIT状态</span><br></pre></td></tr></table></figure>
+
+<h2 id="第一次握手细节"><a href="#第一次握手细节" class="headerlink" title="第一次握手细节"></a>第一次握手细节</h2><p>客户端在应用层调用<code>close</code>方法时，操作系统底层会放送<code>FIN</code>包给服务端，此时客户端处于<code>FIN_WAIT1</code>状态。然后当服务端收到了<code>FIN</code>包之后，服务端在应用层的表现是调用<code>recv</code>方法得到的返回值是<code>0</code>，代表客户端关闭了连接。在<code>Swoole</code>中的表现是会触发<code>OnClose</code>回调函数。然后我们可以在<code>OnClose</code>回调函数里面写一些清除用户信息的代码。</p>
+<h2 id="第二次握手细节"><a href="#第二次握手细节" class="headerlink" title="第二次握手细节"></a>第二次握手细节</h2><p>服务端发送<code>ACK</code>包给客户端，此时服务端处于<code>CLOSE_WAIT</code>状态。顾名思义，就是服务端也要去调用<code>close</code>函数，才能把这个连接彻底的关闭（因为<code>TCP</code>是一个全双工的协议，客户端可以给服务端发，服务端也可以给客户端发）。所以这段等待的状态就叫做<code>CLOSE_WAIT</code>。</p>
+<h2 id="第三次握手细节"><a href="#第三次握手细节" class="headerlink" title="第三次握手细节"></a>第三次握手细节</h2><p>服务端应用层调用<code>close</code>函数，操作系统底层发送<code>FIN</code>包给客户端，此时服务端处于<code>LAST_ACK</code>状态。顾名思义，服务端需要去等待客户端发来的<code>ACK</code>。</p>
+<h2 id="第四次握手细节"><a href="#第四次握手细节" class="headerlink" title="第四次握手细节"></a>第四次握手细节</h2><p>客户端发送<code>ACK</code>包给服务端，此时客户端处于<code>TIME_WAIT</code>状态，而<code>TIME_WAIT</code>状态的时间长达<code>1</code>分钟。服务端收到了<code>ACK</code>包之后，整个<code>TCP</code>连接的生命周期就算结束了。</p>
+<h2 id="TIME-WAIT状态"><a href="#TIME-WAIT状态" class="headerlink" title="TIME_WAIT状态"></a>TIME_WAIT状态</h2><h3 id="为什么要有TIME-WAIT状态"><a href="#为什么要有TIME-WAIT状态" class="headerlink" title="为什么要有TIME_WAIT状态"></a>为什么要有TIME_WAIT状态</h3><p>那么，这里客户端在发送<code>ACK</code>包之后为什么需要处于一个<code>TIME_WAIT</code>状态，而不是立马结束了呢？（我们知道，如果连接处于<code>TIME_WAIT</code>状态的话，一般情况下是不可以重新使用同一个<code>IP</code>和端口的。这在一些情况下就会给我们造成不愉快。）</p>
+<p>因为服务端可能会没有收到客户端发来的<code>ACK</code>包。如果，服务端没有收到<code>ACK</code>包，那么服务端会重发一个<code>FIN</code>包给客户端，如果没有<code>TIME_WAIT</code>状态，那么客户端就会丢失服务端重传的<code>FIN</code>包。而客户端发送<code>ACK</code>包以及服务端重传<code>FIN</code>包的时间，就是<code>TIME_WAIT</code>的时长。如果在这个时长（<code>1</code>分钟）里面，客户端没有收到服务端重传的<code>FIN</code>包，那么客户端就认为服务端收到了<code>ACK</code>包，可以结束<code>TIME_WAIT</code>状态了。</p>
+<h3 id="为什么TIME-WAIT状态持续1分钟"><a href="#为什么TIME-WAIT状态持续1分钟" class="headerlink" title="为什么TIME_WAIT状态持续1分钟"></a>为什么TIME_WAIT状态持续1分钟</h3><p>那么，为什么<code>TIME_WAIT</code>的时长是<code>1</code>分钟之久呢？</p>
+<p>因为一个<code>IP</code>存活的时间是<code>1</code>分钟，为了防止下一个连接收到之前连接的数据包。</p>
+<p>如果客户端在发送完<code>ACK</code>包之后，立马结束掉。但是，紧接着又重新使用了同一个<code>IP</code>和端口，那么很有可能就会收到上一个连接发来的数据。（因为由于网络的原因，服务端发送的数据包到达客户端可能会有一些延迟）。收到上一个连接的包，这显然是我们不希望看到的。</p>
+<p>所以，客户端在发送<code>ACK</code>包之后，会去处于一个<code>TIME_WAIT</code>状态，等待<code>1</code>分钟。而这<code>1</code>分钟内，一般情况下，客户端是不可以立马重用同一个<code>IP</code>和端口的。这样，就避免了客户端起了第二个连接，却收到了之前的连接的包。因为<code>1</code>分钟结束后，之前连接的包已经不存在了。</p>
+<h3 id="Cannot-assign-requested-address"><a href="#Cannot-assign-requested-address" class="headerlink" title="Cannot assign requested address"></a>Cannot assign requested address</h3><p>这个问题是针对客户端随机选取一个端口的时候，发现没有端口可用会报这个错误，即所谓的端口用光了。</p>
+<p>如果我们客户端并发连接数很大，而每个连接最后都处于<code>TIME_WAIT</code>状态，那么我们机器的端口迟早会被用完，因为我们的机器端口数量是有限的。</p>
+<p>所以，端口用光的根本原因是有大量处于<code>TIME_WAIT</code>状态的连接。</p>
+<p>而<code>PHP</code>传统的<code>FPM</code>模式下，会比较常见这种问题，因为客户端每次请求结束，我们服务的连接数据库的连接也会断开。而一旦并发量大了上来，就会出现端口不够的情况了。</p>
+<h3 id="Address-already-in-use"><a href="#Address-already-in-use" class="headerlink" title="Address already in use"></a>Address already in use</h3><p><code>Address already in use</code>是我们自己决定使用某个端口，发现它被占用的时候会报这个问题。与<code>Cannot assign requested address</code>是有区别的，因为<code>Cannot assign requested address</code>是系统帮我们随机选择一个端口，发现没有端口可以选择了，才会报<code>Cannot assign requested address</code>的问题，即所谓的端口用光了。</p>
+<p>可以通过<code>SO_RESUADDR</code>来解决。</p>
+<h2 id="CLOSE-WAIT状态"><a href="#CLOSE-WAIT状态" class="headerlink" title="CLOSE_WAIT状态"></a>CLOSE_WAIT状态</h2><p>如果我们被动关闭的一方没有调用<code>close</code>函数，那么被动关闭方就会处于<code>close_wait</code>状态。</p>
+<p><code>Swoole</code>服务器在触发完<code>OnClose</code>回调函数之后，维护连接的那个进程会自动的帮我们执行<code>close</code>函数。所以，就很少会见到<code>CLOSE_WAIT</code>状态。</p>
+<p>但是，如果我们在<code>OnClose</code>回调函数里面阻塞了或者说在<code>OnReceive</code>里面阻塞了（只要主动关闭方关闭了连接，被动关闭方的<code>OnClose</code>回调函数无法顺利执行完或者没有被执行），那就会出现<code>CLOSE_WAIT</code>状态。</p>
+<p>举个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$server = <span class="keyword">new</span> \Swoole\Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, SWOOLE_PROCESS);</span><br><span class="line"></span><br><span class="line">$server-&gt;set([</span><br><span class="line">    <span class="string">&#x27;work_num&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$server, $fd</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$server, $fd, $reactor_id, $data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sleep(<span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>此时服务器在<code>OnClose</code>回调函数里面阻塞了，导致这个函数无法正常结束，导致<code>Swoole</code>底层无法在<code>OnClose</code>回调函数结束之后，自动帮我们执行<code>close</code>函数（本质上，是<code>worker</code>进程无法通知主进程去<code>close</code>）。</p>
+<p>客户端代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$client = <span class="keyword">new</span> \Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);</span><br><span class="line">$client-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$client-&gt;close();</span><br></pre></td></tr></table></figure>
+
+<p>这里，客户端连接完服务器之后，主动关闭了连接。</p>
+<p>执行服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php server.php </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行客户端：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php client.php </span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>然后查看网络状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # netstat -antp</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.1:9501          0.0.0.0:*               LISTEN      23308/php</span><br><span class="line">tcp        0      0 127.0.0.11:37569        0.0.0.0:*               LISTEN      -</span><br><span class="line">tcp        0      0 127.0.0.1:54004         127.0.0.1:9501          FIN_WAIT2   -</span><br><span class="line">tcp        0      0 127.0.0.1:9501          127.0.0.1:54004         CLOSE_WAIT  23308/php</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcp        0      0 127.0.0.1:9501          127.0.0.1:54004         CLOSE_WAIT  23308/php</span><br></pre></td></tr></table></figure>
+
+<p>此时，服务端这边的状态是<code>CLOSE_WAIT</code>。因为服务端没有发生<code>FIN</code>包，所以客户端这边处于<code>FIN_WAIT2</code>状态。</p>
+<p>我们过一段时间，例如<code>2</code>分钟再次查看网络状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # netstat -antp</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.1:9501          0.0.0.0:*               LISTEN      23308/php</span><br><span class="line">tcp        0      0 127.0.0.11:37569        0.0.0.0:*               LISTEN      -</span><br><span class="line">tcp        0      0 127.0.0.1:9501          127.0.0.1:54004         CLOSE_WAIT  23308/php</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现服务端这边还是处于<code>CLOSE_WAIT</code>状态，一直没有消失。这个就叫做<strong>连接泄漏</strong>。</p>
+<p>我们再换一种测试方法，我们在<code>OnClose</code>回调函数里面执行<code>die</code>，或者抛出异常，或者有致命错误导致<code>worker</code>进程直接结束了，此时<code>Swoole</code>底层也无法帮我们执行<code>close</code>方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$server = <span class="keyword">new</span> \Swoole\Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, SWOOLE_PROCESS);</span><br><span class="line"></span><br><span class="line">$server-&gt;set([</span><br><span class="line">    <span class="string">&#x27;work_num&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$server, $fd</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$server, $fd, $reactor_id, $data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">die</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>我们重新启动服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php server.php </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后，我们确认下网络状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # netstat -antp</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.1:9501          0.0.0.0:*               LISTEN      26276/php</span><br><span class="line">tcp        0      0 127.0.0.11:37569        0.0.0.0:*               LISTEN      -</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>此时服务端处于<code>LISTEN</code>状态。</p>
+<p>然后，我们执行刚才的客户端代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php client.php </span><br></pre></td></tr></table></figure>
+
+<p>此时，服务端报错：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php server.php </span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Swoole\ExitException: swoole exit in /root/codeDir/phpCode/hyperf-skeleton/server.php:19</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="meta">#</span><span class="bash">0 &#123;main&#125;</span></span><br><span class="line">  thrown in /root/codeDir/phpCode/hyperf-skeleton/server.php on line 19</span><br><span class="line">[2019-08-22 08:08:54 *26286.0]	ERROR	php_swoole_server_rshutdown (ERRNO 503): Fatal error: Uncaught Swoole\ExitException: swoole exit in /root/codeDir/phpCode/hyperf-skeleton/server.php:19</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="meta">#</span><span class="bash">0 &#123;main&#125;</span></span><br><span class="line">  thrown in /root/codeDir/phpCode/hyperf-skeleton/server.php on line 19</span><br><span class="line">[2019-08-22 08:08:54 $26277.0]	WARNING	swManager_check_exit_status: worker#0[pid=26286] abnormal exit, status=255, signal=0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后，我们查看一下网络状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # netstat -antp</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.1:9501          0.0.0.0:*               LISTEN      26276/php</span><br><span class="line">tcp        0      0 127.0.0.11:37569        0.0.0.0:*               LISTEN      -</span><br><span class="line">tcp        0      0 127.0.0.1:54006         127.0.0.1:9501          FIN_WAIT2   -</span><br><span class="line">tcp        0      0 127.0.0.1:9501          127.0.0.1:54006         CLOSE_WAIT  26276/php</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>此时，服务端这边处于<code>CLOSE_WAIT</code>状态，成功的导致了连接泄漏。</p>
+<p>这是我们<code>Swoole</code>的服务器处于<code>SWOOLE_PROCESS</code>模式下会出现的问题。但是，<code>SWOOLE_BASE</code>模式下不会出现这个问题。</p>
+<p>因为<code>SWOOLE_PROCESS</code>模式下连接是和<code>master</code>进程里面建立的，而<code>SWOOLE_BASE</code>模式下连接是和<code>worker</code>进程直接建立的，<code>worker</code>进程结束之后，操作系统底层会自动发一个<code>FIN</code>包给客户端。</p>
+<p>我们来测试一下，服务端的代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$server = <span class="keyword">new</span> \Swoole\Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, SWOOLE_BASE);</span><br><span class="line"></span><br><span class="line">$server-&gt;set([</span><br><span class="line">    <span class="string">&#x27;work_num&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$server, $fd</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$server, $fd, $reactor_id, $data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">die</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>然后重新启动服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php server.php </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>此时确认网络状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # netstat -antp</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.1:9501          0.0.0.0:*               LISTEN      30174/php</span><br><span class="line">tcp        0      0 127.0.0.11:37569        0.0.0.0:*               LISTEN      -</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>服务端的连接处于<code>LISTEN</code>状态。</p>
+<p>然后启动客户端：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php client.php </span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>然后查看网络状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.11:37569        0.0.0.0:*               LISTEN      -</span><br><span class="line">tcp        0      0 127.0.0.1:54008         127.0.0.1:9501          TIME_WAIT   -</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>此时，服务器端的状态没了，因此没出现<code>CLOSE_TIME</code>状态。因为服务端发送了<code>FIN</code>包，所以客户端这边不再是<code>FIN_WAIT2</code>状态，而是<code>TIME_WAIT</code>状态了。</p>
+<p>我们看看服务器端的输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/hyperf-skeleton # php server.php </span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Swoole\ExitException: swoole exit in /root/codeDir/phpCode/hyperf-skeleton/server.php:19</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="meta">#</span><span class="bash">0 &#123;main&#125;</span></span><br><span class="line">  thrown in /root/codeDir/phpCode/hyperf-skeleton/server.php on line 19</span><br><span class="line">[2019-08-22 08:19:27 *30174.0]	ERROR	php_swoole_server_rshutdown (ERRNO 503): Fatal error: Uncaught Swoole\ExitException: swoole exit in /root/codeDir/phpCode/hyperf-skeleton/server.php:19</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="meta">#</span><span class="bash">0 &#123;main&#125;</span></span><br><span class="line">  thrown in /root/codeDir/phpCode/hyperf-skeleton/server.php on line 19</span><br><span class="line">~/codeDir/phpCode/hyperf-skeleton # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现，报错之后，<code>Swoole</code>服务器直接退出了。</p>
+<p>同理，在<code>SWOOLE_BASE</code>模式下，因为连接的<code>accept</code>是在<code>Worker</code>进程里面进行的，所以<code>worker</code>进程一旦业务逻辑里面出现了阻塞，那么<code>backlog</code>就很容易塞满。但是<code>SWOOLE_PROCESS</code>模式下，因为<code>accept</code>是在主进程进行的，所以，如果我们在<code>worker</code>进程里面阻塞了，是不会影响到<code>backlog</code>的。这也是为什么<code>Swoole</code>会把连接的处理和业务逻辑的处理分成多个进程来处理。</p>
+<p>（我们要清楚的知道，常用的事件回调函数是在主进程里面调用的还是<code>worker</code>进程里面调用的）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/08/22/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%AC%E4%BA%8C%E8%AE%B2-TCP%E5%85%B3%E9%97%AD%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" data-id="ckkj72zux00bif6vx7s6rez9l" data-title="网络编程第二讲-TCP关闭连接的常见问题" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/23/Linux%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AC%AC%E4%B8%80%E8%AE%B2-Shell%E8%A7%A3%E9%87%8A%E5%99%A8%E7%94%A8%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux基础知识第一讲-Shell解释器用法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/22/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%AC%E4%B8%80%E8%AE%B2-Swoole%E4%B8%8ETCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">网络编程第一讲-Swoole与TCP三次握手</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -77,6 +77,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Swoole创建多个Process的时候报错打开太多文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/" class="article-date">
+  <time class="dt-published" datetime="2020-08-12T09:16:02.000Z" itemprop="datePublished">2020-08-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/">Swoole创建多个Process的时候报错打开太多文件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>例如如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$files = <span class="keyword">array</span>(&lt;URLs of over <span class="number">500</span> files&gt;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>($files <span class="keyword">as</span> $file) &#123;</span><br><span class="line">    $processes[$file] = <span class="keyword">new</span> \Swoole\Process(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$file</span>) </span>&#123;</span><br><span class="line">        $data = file_get_contents($file);</span><br><span class="line">        file_put_contents(<span class="string">&quot;dir/path/to/new/file.abc&quot;</span>, $data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $processes[$data]-&gt;start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可能会报如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WARNING swPipeUnsock_create(:83): socketpair() failed, Error: Too many open files[24]</span><br></pre></td></tr></table></figure>
+
+<p>这是因为<code>Swoole</code>在<code>new Process</code>的时候，默认会创建一对管道，这样就会消耗两个<code>fd</code>（每创建一个进程，都会消耗两个<code>fd</code>）。如果创建的<code>Process</code>过多的话，就会出现“打开文件过多的错误”。</p>
+<p>解决这个问题的方法有两个。</p>
+<p>第一，我们配置<code>ulimit -n</code>，调大最大打开文件的上限。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ulimit</span> -n 100000</span><br></pre></td></tr></table></figure>
+
+<p>第二，因为我们这个程序并没有涉及到进程间的通信，所以完全可以不创建这<code>pipe</code>。此时，我们只需要设置<code>new Process</code>的第三个参数为<code>0</code>即可。例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Swoole\Process($fn, <span class="literal">false</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/" data-id="ckkj72zs9003vf6vx9p8mdjx4" data-title="Swoole创建多个Process的时候报错打开太多文件" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Swoole内核中和连接关闭有关的各种标志位" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/" class="article-date">
@@ -570,56 +623,6 @@
 
 
   
-    <article id="post-PHP使用递归迭代器来遍历指定目录下的指定文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" class="article-date">
-  <time class="dt-published" datetime="2020-07-17T10:59:56.000Z" itemprop="datePublished">2020-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/">PHP使用递归迭代器来遍历指定目录下的指定文件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>目录结构如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator  tree</span><br><span class="line">.</span><br><span class="line">├── dir1</span><br><span class="line">│   ├── dir11</span><br><span class="line">│   │   ├── file11.js</span><br><span class="line">│   │   └── file11.php</span><br><span class="line">│   ├── file1.php</span><br><span class="line">│   └── file1.py</span><br><span class="line">├── dir2</span><br><span class="line">│   ├── file2.css</span><br><span class="line">│   └── file2.php</span><br><span class="line">└── iterator.php</span><br><span class="line"></span><br><span class="line">3 directories, 7 files</span><br><span class="line"> hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator </span><br></pre></td></tr></table></figure>
-
-<p>测试代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$files = <span class="keyword">new</span> <span class="built_in">RecursiveIteratorIterator</span>(<span class="keyword">new</span> <span class="built_in">RecursiveDirectoryIterator</span>(<span class="keyword">__DIR__</span>));</span><br><span class="line">$files = <span class="keyword">new</span> <span class="built_in">RegexIterator</span>($files, <span class="string">&#x27;/\.php$/&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> ($files <span class="keyword">as</span> $file) &#123;</span><br><span class="line">    <span class="comment">/** <span class="doctag">@var</span> SplFileInfo $file */</span></span><br><span class="line">    var_dump($file);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator  php iterator.php</span><br><span class="line">object(SplFileInfo)<span class="comment">#7 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(66) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir2/file2.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(9) <span class="string">&quot;file2.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#10 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(66) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir1/file1.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(9) <span class="string">&quot;file1.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#7 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(73) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir1/dir11/file11.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(10) <span class="string">&quot;file11.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#10 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(64) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/iterator.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(12) <span class="string">&quot;iterator.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator </span><br></pre></td></tr></table></figure>
-
-<p>用起来还是比较舒服的。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" data-id="ckkj72zrd001vf6vxdv51ftj0" data-title="PHP使用递归迭代器来遍历指定目录下的指定文件" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -648,7 +651,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
     </div>
   </div>
 
@@ -670,6 +673,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
@@ -683,10 +690,6 @@
         
           <li>
             <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
           </li>
         
       </ul>

@@ -77,6 +77,126 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP的emalloc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/23/PHP%E7%9A%84emalloc/" class="article-date">
+  <time class="dt-published" datetime="2019-09-23T12:49:12.000Z" itemprop="datePublished">2019-09-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/23/PHP%E7%9A%84emalloc/">PHP的emalloc</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这篇文章，我们来实战操作一下扩展的内存管理，感受一下内存泄漏，加深对<code>PHP</code>内存管理的理解。</p>
+<p>首先，创建扩展目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext # ./ext_skel --extname=memory</span><br></pre></td></tr></table></figure>
+
+<p>然后进入目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext # cd memory/</span><br></pre></td></tr></table></figure>
+
+<p>替换文件<code>config.m4</code>为如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE(memory, whether to enable memory support,</span><br><span class="line">Make sure that the comment is aligned:</span><br><span class="line">[  --enable-memory           Enable memory support])</span><br><span class="line"></span><br><span class="line">if test &quot;$PHP_MEMORY&quot; != &quot;no&quot;; then</span><br><span class="line">  PHP_NEW_EXTENSION(memory, memory.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>然后编辑文件<code>memory.c</code>里面的<code>PHP_FUNCTION(confirm_memory_compiled)</code>方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(confirm_memory_compiled)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">void</span> *foo = <span class="built_in">malloc</span>(<span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里，我们定义了一个<code>PHP</code>函数<code>confirm_memory_compiled</code>。它做的事情很简单，就是从堆中申请一块<code>2M</code>的内存，并且没有主动释放。</p>
+<p>接着，编译、安装扩展：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # phpize ; ./configure</span><br><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # make ; make install</span><br></pre></td></tr></table></figure>
+
+<p>然后把扩展加入配置文件里面：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">extension</span>=memory.so</span><br></pre></td></tr></table></figure>
+
+<p>然后确认是否安装扩展成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # php --ri memory</span><br><span class="line"></span><br><span class="line">memory</span><br><span class="line"></span><br><span class="line">memory support =&gt; enabled</span><br><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory #</span><br></pre></td></tr></table></figure>
+
+<p>然后编写测试脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">confirm_memory_compiled();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # php memory.php</span><br><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory #</span><br></pre></td></tr></table></figure>
+
+<p>没有报错，说明我们的脚本正常执行了。</p>
+<p>接着，我们启动一个<code>PHP</code>自带的服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # php -S 127.0.0.1:80 -t ./</span><br><span class="line">PHP 7.3.5 Development Server started at Mon Sep 23 13:08:13 2019</span><br><span class="line">Listening on http://127.0.0.1:80</span><br><span class="line">Document root is /root/codeDir/cCode/php-7.1.0/ext/memory</span><br><span class="line">Press Ctrl-C to quit.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后，另起一个终端，执行<code>top</code>命令，用来观察<code>PHP</code>进程的内存使用情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">35247 root      20   0   27.8m  14.7m   0.0   0.7   0:00.02 S  `- php -S 127.0.0.1:80 -t ./</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在启动服务器的时候，<code>PHP</code>占用了<code>27.8M</code>的内存。</p>
+<p>我们请求一次我们的服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # curl 127.0.0.1/memory.php</span><br></pre></td></tr></table></figure>
+
+<p>然后查看<code>PHP</code>占的内存：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">13713 root      20   0   29.8m  14.9m   0.0   0.7   0:00.01 S  `- php -S 127.0.0.1:80 -t ./</span><br></pre></td></tr></table></figure>
+
+<p>我们发现<code>PHP</code>多占了<code>2M</code>的内存。</p>
+<p>我们再请求一次：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # curl 127.0.0.1/memory.php</span><br></pre></td></tr></table></figure>
+
+<p>然后再次查看<code>PHP</code>占的内存：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">13713 root      20   0   31.8m  15.0m   0.0   0.8   0:00.03 S  `- php -S 127.0.0.1:80 -t ./</span><br></pre></td></tr></table></figure>
+
+<p>我们发现<code>PHP</code>又多占了<code>2M</code>的内存。</p>
+<p>所以说，如果我们在一次请求的生命周期通过<code>malloc</code>分配了内存，但是没有释放，那么就会造成<code>PHP</code><strong>整个</strong>生命周期的内存泄漏。</p>
+<p>我们修改扩展函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(confirm_memory_compiled)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">void</span> *foo = emalloc(<span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，重新编译、安装扩展：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # make clean ; make ; make install</span><br></pre></td></tr></table></figure>
+
+<p>重新启动服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cCode/php-7.1.0/ext/memory # php -S 127.0.0.1:80 -t ./</span><br><span class="line">PHP 7.3.5 Development Server started at Mon Sep 23 14:27:22 2019</span><br><span class="line">Listening on http://127.0.0.1:80</span><br><span class="line">Document root is /root/codeDir/cCode/php-7.1.0/ext/memory</span><br><span class="line">Press Ctrl-C to quit.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>此时，<code>PHP</code>进程占用的内存：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">14470 root      20   0   27.8m  14.6m   0.0   0.7   0:00.01 S  `- php -S 127.0.0.1:80 -t ./</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们请求一次服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # curl 127.0.0.1/memory.php</span><br></pre></td></tr></table></figure>
+
+<p>查看<code>PHP</code>内存占用情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">14470 root      20   0   27.8m  15.2m   0.0   0.8   0:00.02 S  `- php -S 127.0.0.1:80 -t ./</span><br></pre></td></tr></table></figure>
+
+<p>发现，没有增长。</p>
+<p>再次请求服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/study # curl 127.0.0.1/memory.php</span><br></pre></td></tr></table></figure>
+
+<p>再次查看<code>PHP</code>内存占用情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">14470 root      20   0   27.8m  15.2m   0.7   0.8   0:00.03 S  `- php -S 127.0.0.1:80 -t ./</span><br></pre></td></tr></table></figure>
+
+<p>发现还是没有增长。</p>
+<p>所以说，如果我们在一次请求的生命周期中通过<code>emalloc</code>分配了内存，但是没有释放，那么在<code>PHP</code><strong>整个</strong>生命周期是不会造成内存泄漏的。因为在请求结束的时候，<code>PHP</code>会自动帮我们释放掉这些内存。但是，在一次请求中，如果一直不自己释放内存，那么这次请求很可能会内存不够，导致<code>PHP</code>进程挂掉。</p>
+<p>以上对<code>malloc</code>和<code>emalloc</code>的分析适用于<code>FPM</code>模式。但是对于<code>Swoole</code>这类扩展，接管了<code>PHP</code>的请求生命周期，所有对<code>Swoole</code>的请求都是在同一个请求生命周期里面，并且，这个请求生命周期一直不会结束。所以，就算我们使用了<code>emalloc</code>这类内存管理器，如果没有主动释放，也是会造成内存泄漏的，因为此时<code>PHP</code>的请求生命周期不会结束，因此<code>PHP</code>不会自己帮我们去释放这些内存。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/09/23/PHP%E7%9A%84emalloc/" data-id="ckkj72zrx003cf6vxe1n71t8b" data-title="PHP的emalloc" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Swoole-协程Channel实现原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/09/20/Swoole-%E5%8D%8F%E7%A8%8BChannel%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="article-date">
@@ -925,79 +1045,6 @@
 
 
   
-    <article id="post-通过postgresql完成递归查询" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/08/26/%E9%80%9A%E8%BF%87postgresql%E5%AE%8C%E6%88%90%E9%80%92%E5%BD%92%E6%9F%A5%E8%AF%A2/" class="article-date">
-  <time class="dt-published" datetime="2019-08-26T07:37:48.000Z" itemprop="datePublished">2019-08-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/08/26/%E9%80%9A%E8%BF%87postgresql%E5%AE%8C%E6%88%90%E9%80%92%E5%BD%92%E6%9F%A5%E8%AF%A2/">通过postgresql完成递归查询</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们业务里有一张表存储的是图关系结构，今天，我们需要查询出和某个节点有联系的所有节点。图是有向图。</p>
-<p>业务抽象出的表结构很简单：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> tests(</span><br><span class="line">   <span class="keyword">id</span> <span class="built_in">serial</span> <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">   point1 <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">   point2 <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line"></span><br><span class="line">   primary <span class="keyword">key</span>(<span class="keyword">id</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>其中，我们定义<code>point1</code>是起始点，<code>point2</code>是终点。举个例子：<code>(1, 2)</code>代表从<code>1</code>节点到<code>2</code>节点。</p>
-<p>然后我们模拟一些测试数据：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">insert into tests (point1, point2) values(1, 4),</span><br><span class="line">(1, 5),</span><br><span class="line">(4, 6),</span><br><span class="line">(5, 6),</span><br><span class="line">(2, 5),</span><br><span class="line">(2, 7),</span><br><span class="line">(7, 8),</span><br><span class="line">(3, 9);</span><br></pre></td></tr></table></figure>
-
-<p>这些节点对应的图如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">           1                            2                                      3</span><br><span class="line">           +                            +                                      +</span><br><span class="line">           |                            |                                      |</span><br><span class="line">+----------+--------+                   |                                      |</span><br><span class="line">|                   |                   |                                      |</span><br><span class="line">|                   |                   |                                      |</span><br><span class="line">|                   |                   |                                      |</span><br><span class="line">v                   v                   |                                      |</span><br><span class="line">4                   5&lt;------------------+----------&gt;7            9&lt;------------+</span><br><span class="line">+                   +                               +</span><br><span class="line">+---------&gt;6&lt;-------+                         8&lt;----+</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，我这里产生了<code>9</code>个节点，<code>8</code>条边。</p>
-<p>如果我想查询节点<code>1</code>有联系的其他节点，那么可以通过如下<code>SQL</code>语句查出来：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">WITH RECURSIVE results AS</span><br><span class="line">(</span><br><span class="line">  SELECT</span><br><span class="line">    id,</span><br><span class="line">    point1,</span><br><span class="line">    point2</span><br><span class="line">  FROM  tests</span><br><span class="line">  WHERE point1 = 1</span><br><span class="line">  UNION ALL</span><br><span class="line">  SELECT</span><br><span class="line">    origin.id,</span><br><span class="line">    origin.point1,</span><br><span class="line">    origin.point2</span><br><span class="line">  FROM results</span><br><span class="line">  JOIN tests origin</span><br><span class="line">  ON results.point2 = origin.point1</span><br><span class="line">)</span><br><span class="line">SELECT</span><br><span class="line">  id,</span><br><span class="line">  point1,</span><br><span class="line">  point2</span><br><span class="line">FROM results;</span><br></pre></td></tr></table></figure>
-
-<p>其中，</p>
-<p><code>WITH</code>被称为通用表表达式(<code>Common Table Expressions</code>)，作用是把复杂查询语句拆分成多个简单的部分。用法比较简单，大家可以搜一下这个的用法。</p>
-<p><code>RECURSIVE</code>修饰符来引入它自己，从而实现递归。</p>
-<p><code>WITH RECURSIVE</code>语句包含了非递归部分：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line"><span class="keyword">id</span>,</span><br><span class="line">point1,</span><br><span class="line">point2</span><br><span class="line"><span class="keyword">FROM</span>  tests</span><br><span class="line"><span class="keyword">WHERE</span> point1 = <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>和递归部分：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">origin.id,</span><br><span class="line">origin.point1,</span><br><span class="line">origin.point2</span><br><span class="line"><span class="keyword">FROM</span> results</span><br><span class="line"><span class="keyword">JOIN</span> tests origin</span><br><span class="line"><span class="keyword">ON</span> results.point2 = origin.point1</span><br></pre></td></tr></table></figure>
-
-<p>然后<code>UNION ALL</code>用来结合这两部分的结果，最终得到我们的图：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">postgres=<span class="comment"># WITH RECURSIVE results AS (   SELECT     id,     point1,     point2   FROM  tests   WHERE point1 = 1   UNION ALL   SELECT     origin.id,     origin.point1,     origin.point2   FROM results   JOIN tests origin   ON results.point2 = origin.point1 ) SELECT   id,   point1,   point2 FROM results;</span></span><br><span class="line"></span><br><span class="line"> id | point1 | point2</span><br><span class="line"><span class="comment">----+--------+--------</span></span><br><span class="line">  1 |      1 |      4</span><br><span class="line">  2 |      1 |      5</span><br><span class="line">  3 |      4 |      6</span><br><span class="line">  4 |      5 |      6</span><br><span class="line">(4 rows)</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们也可以根据有向图的反方向进行搜索，<code>SQL</code>语句如下：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span> <span class="keyword">RECURSIVE</span> results <span class="keyword">AS</span></span><br><span class="line">(</span><br><span class="line">  <span class="keyword">SELECT</span></span><br><span class="line">    <span class="keyword">id</span>,</span><br><span class="line">    point1,</span><br><span class="line">    point2</span><br><span class="line">  <span class="keyword">FROM</span>  tests</span><br><span class="line">  <span class="keyword">WHERE</span> point2 = <span class="number">6</span></span><br><span class="line">  <span class="keyword">UNION</span> <span class="keyword">ALL</span></span><br><span class="line">  <span class="keyword">SELECT</span></span><br><span class="line">    origin.id,</span><br><span class="line">    origin.point1,</span><br><span class="line">    origin.point2</span><br><span class="line">  <span class="keyword">FROM</span> results</span><br><span class="line">  <span class="keyword">JOIN</span> tests origin</span><br><span class="line">  <span class="keyword">ON</span> origin.point2 = results.point1</span><br><span class="line">)</span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  <span class="keyword">id</span>,</span><br><span class="line">  point2,</span><br><span class="line">  point1</span><br><span class="line"><span class="keyword">FROM</span> results;</span><br></pre></td></tr></table></figure>
-
-<p>这样我们就会得到图：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">postgres=<span class="comment"># WITH RECURSIVE results AS (   SELECT     id,     point1,     point2   FROM  tests   WHERE point2 = 6   UNION ALL   SELECT     origin.id,     origin.point1,     origin.point2   FROM results   JOIN tests origin   ON origin.point2 = results.point1 ) SELECT   id,   point2,   point1 FROM results;</span></span><br><span class="line"></span><br><span class="line"> id | point2 | point1</span><br><span class="line"><span class="comment">----+--------+--------</span></span><br><span class="line">  3 |      6 |      4</span><br><span class="line">  4 |      6 |      5</span><br><span class="line">  1 |      4 |      1</span><br><span class="line">  2 |      5 |      1</span><br><span class="line">  5 |      5 |      2</span><br><span class="line">(5 rows)</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/08/26/%E9%80%9A%E8%BF%87postgresql%E5%AE%8C%E6%88%90%E9%80%92%E5%BD%92%E6%9F%A5%E8%AF%A2/" data-id="ckkj72zv700cef6vxc1gv3p9d" data-title="通过postgresql完成递归查询" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1026,7 +1073,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
     </div>
   </div>
 
@@ -1048,6 +1095,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
@@ -1061,10 +1112,6 @@
         
           <li>
             <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
           </li>
         
       </ul>

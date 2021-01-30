@@ -77,6 +77,104 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-初识redis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/30/%E5%88%9D%E8%AF%86redis/" class="article-date">
+  <time class="dt-published" datetime="2017-12-30T12:00:01.000Z" itemprop="datePublished">2017-12-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/30/%E5%88%9D%E8%AF%86redis/">初识Redis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Redis这个技术我很久之前就已经听过了，一直想要尝试一下，但是那时候我还是一个很菜很菜的新手，看不懂，在大学里面也没有人带我，只能自学了，各种谷歌、百度。很累但很有成就感，自学能力得到锻炼……</p>
+<p>没关系，今天我学了一下这个东西，主要是我想要实现一个秒杀系统。里面需要用到这个技术，所以临时学了一下这个技术。我只说一说我想说的地方，其他那些概念呀、用法呀之类的我就不说了。而且我所提到的Redis都指的是Redis服务器而不是Redis客户端。（Redis客户端没啥好讲的，各种实现都有。Redis服务器才是关键）</p>
+<p>Redis是一个数据结构服务器。怎么说呢？它的数据类型有字符串(String)，哈希(Map)，列表(List)，集合(Sets)和有序集合(Sorted Sets)等类型。</p>
+<p>而且Redis是直接把数据保存在内存中的。Redis不像我们平常使用的那些数据库，例如MySQL，它是把数据存在磁盘上的。我们在这里可以简单的对比一下Redis和MySQL：</p>
+<p>Redis：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/1.PNG"></p>
+<p>MySQL：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/2.PNG"></p>
+<p>我们点开那个data目录：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/3.PNG"></p>
+<p>这里，每一个文件夹都对应了一个数据库：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/4.PNG"></p>
+<p>从目录结构我们就可以很直观的看出，Redis非常的轻量。而且它的目录里面大多只是一些配置文件和可执行文件。所以它没有花费大量的力气在运行的时候，让数据在内存和磁盘之间移动。真是因为对磁盘的操作少，所以<strong>效率是非常的高的</strong>。</p>
+<p>说到这里，大家可能就会有一个疑问：Redis服务器被关闭的时候，那些原来的数据不就丢失了吗？额，这个问题我之后讲一下Redis是如何处理的。</p>
+<p>然后呢，我说一说Redis另一个吸引我的地方：<strong>发布订阅</strong>功能。</p>
+<p>为什么去这么一个名字呢？因为这个功能很符合我们现实生活。例如，许多人订阅了一个打王者荣耀的美女主播的频道。那么，当这个美女主播某个时间点要开始直播了，那么她就会发布一些消息告诉那些订阅了的人，本宝宝要开始打王者农药了、今天我用的英雄是阿珂。然后所有订阅了这个频道的人都会收到这两条消息。OK，我们来模拟一下这个过程：</p>
+<p>首先</p>
+<p>假设美女主播创建一个频道叫做 wangzherongyao。然后有三个人去订阅这个频道：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/5.PNG"></p>
+<p>这个时候，美女主播发布了一条消息：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/6.PNG"></p>
+<p>（打不粗中文啊，别介意……）</p>
+<p>此时，那三个人就会受到这条消息：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/7.PNG"></p>
+<p>注意，在这里美女主播和订阅了的人都属于Redis客户端。负责处理这些消息的是Redis服务器，Redis服务器负责把美女主播发送的这条消息广播给那三个人。那么在底层实现上面，就是Redis服务器读取美女主播连接这个socket文件描述符上的数据，然后往其他三个连接到这个服务器的表示连接的socket文件描述符里面写入这条消息（遍历一遍，然后分别推送）。</p>
+<p>OK，然后我再说一说Redis服务器的基于事件的epoll模型。我再菜鸟教程上面看到了这么一句话：<strong>Redis 在网络事件处理上采用的是非阻塞多路复用模型</strong>。嗯，我简单的说一下为什么要采用非阻塞多路复用模型。首先，Redis服务器是基于epoll模型的，然后我猜它是设置成了边沿触发。那么为什么设置成了边沿触发就要把表示连接的socket文件描述符设置为非阻塞的呢？我先说说边沿触发的特点吧：如果某个文件描述符上面有事件没有处理的话，那么下次就不会返回这个文件描述符了（所以边沿触发的效率还是很高的，不会无脑返回我们不想处理的文件描述符）。那么，如果我们想要处理完这个文件描述符上面的数据，就需要去循环的处理完这些数据，直到不能再处理这个文件描述符了。所以我们需要设置为非阻塞的。OK，我再说一说为什么要循环的处理这个文件描述符：如果我们这次不处理完这个文件描述符，例如文件描述符本来可以读取‘a’、’b’、’c’三个字符，我们却只读了’a’、’b’，还剩字符’c’没有读，那么由于我们设置的是边沿触发，所以下次就不会返回这个文件描述符了，而是有其他数据往这个文件描述符里面写入时，才会返回这个文件描述符，而此时字符’c’还留在这个文件描述符里面。OK，当这个文件描述符里面又写入了’d’、’e’两个字符，另一端又可以读取这个文件描述符里面的内容了。但是它会先读出上次那个没有读完的字符’c’。然后才可能读取另外两个字符’d’、’e’。试想一下，如果是一个聊天系统，这肯定是无法接受的。</p>
+<p>OK，在最后，我用PHP来举例使用一下Redis吧，顺便回答一下上面那个问题。</p>
+<p>首先是PHP代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//连接本地的 Redis 服务</span></span><br><span class="line">$redis = <span class="keyword">new</span> Redis();</span><br><span class="line">$redis-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">6379</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Connection to server sucessfully\n&quot;</span>;</span><br><span class="line"><span class="comment">//存储数据到列表中</span></span><br><span class="line">$redis-&gt;lpush(<span class="string">&quot;hehe&quot;</span>, <span class="string">&quot;Redis&quot;</span>);</span><br><span class="line">$redis-&gt;lpush(<span class="string">&quot;hehe&quot;</span>, <span class="string">&quot;Mongodb&quot;</span>);</span><br><span class="line">$redis-&gt;lpush(<span class="string">&quot;hehe&quot;</span>, <span class="string">&quot;Mysql&quot;</span>);</span><br><span class="line"><span class="comment">// 获取存储的数据并输出</span></span><br><span class="line">$arList = $redis-&gt;lrange(<span class="string">&quot;hehe&quot;</span>, <span class="number">0</span> ,<span class="number">100</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Stored string in redis\n&quot;</span>;</span><br><span class="line">var_dump($arList);</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/8.PNG"></p>
+<p>OK，我们知道，对于PHP的这个Cli SAPI，它的生命周期就是一次脚本的执行。所以，这个进程所使用的内存在进程结束的时候，就会被操作系统所回收。</p>
+<p>好的，我们再次执行一下这个PHP脚本看看结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/9.PNG"></p>
+<p>咦，很神奇吧，上次的那些结果还在耶。到这里，我们<strong>或许</strong>可以得出那些内存的分配实际上不是由PHP进程来管理的，可能是由Redis服务器这个进程来管理的。客户端需要什么数据，则请求服务器，由服务器来传回。这与数组很不一样，我们对比一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a = <span class="keyword">array</span>(</span><br><span class="line"><span class="string">&#x27;key1&#x27;</span> =&gt; <span class="string">&#x27;value1&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;key2&#x27;</span> =&gt; <span class="string">&#x27;value2&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;key3&#x27;</span> =&gt; <span class="string">&#x27;value3&#x27;</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/10.PNG"></p>
+<p>我们再次执行以下这个脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/11.PNG"></p>
+<p>依然还是只有那三个元素。所以，同样是保存在内存中的，但是对数据的处理方式却不同。这也很好理解为什么。</p>
+<p>OK，我们这次把Redis服务器给关了：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/12.PNG"></p>
+<p>然后再次执行原来那个和Redis有关PHP脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/13.PNG"></p>
+<p>发现连接不上Redis服务器。嗯嗯，Redis服务器没有开启，我们重新开启一下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/14.PNG"></p>
+<p>我们再次执行PHP脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/15.PNG"></p>
+<p>呵呵，这就很奇怪了对吧。不是说好了把数据存放在内存中的吗……欺骗咱们的感情。我开始想，难不成是操作系统拷贝了用户空间的数据？但是这明显不可能啊，操作系统又不可能只为Redis服务器服务，成百上千的服务需要操作系统来配合完成，所以这不可能。然后我就猜想是不是最终保存在了其他地方，或者是把这些东西都写成了日志，就像MySQL事务中保证持久性的那个重写日志一样……</p>
+<p>果然，网上搜到了一个答案。这个文件就类似于重写日志：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/16.PNG"></p>
+<p>额，大概就是这样了的吧。今天学了2个小时的Redis，想法就这样了，有时间读一本讲解Redis原理的书籍。明天写一写秒杀系统。</p>
+<p>happy ending……</p>
+<p>对了，那个美女主播叫<strong>LD-Un倪</strong>。</p>
+<p>加油。给自己十年时间……</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%88%9D%E8%AF%86Redis/17.jpg"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/30/%E5%88%9D%E8%AF%86redis/" data-id="ckkj72ztu008if6vxc72v0p32" data-title="初识Redis" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP内核剖析-二-数据类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/12/29/PHP%E5%86%85%E6%A0%B8%E5%89%96%E6%9E%90-%E4%BA%8C-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="article-date">
@@ -679,212 +777,6 @@
 
 
   
-    <article id="post-说一说C++多态" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/11/03/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/" class="article-date">
-  <time class="dt-published" datetime="2017-11-03T10:56:57.000Z" itemprop="datePublished">2017-11-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/11/03/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/">说一说C++多态</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>何为多态？我们简单的说一下，<strong>在面向对象语言中，接口的多种不同的实现方式即为多态</strong>。在C++中，多态分为<strong>静态多态</strong>和<strong>动态多态</strong>。怎么理解这两种多态呢？下面，我们通过实践，来理解一下。</p>
-<h2 id="静态多态"><a href="#静态多态" class="headerlink" title="静态多态"></a>静态多态</h2><p>静态多态是通过函数的重载来实现的。</p>
-<p>首先，我给出一段代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">foo</span><span class="params">(<span class="keyword">double</span> d)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the first foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the second foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	foo(<span class="number">666.666</span>);</span><br><span class="line">    foo(<span class="number">666</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行一下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ test.cpp</span><br><span class="line">./a</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/1.png"></p>
-<p>OK，在这里，我们可以看到，我们调用了两次函数。这两次调用的函数都是同一个名字的，只是参数的类型有所不同（第一个是浮点型的，第二个是整型的）。但是，却调用了不同的函数。可以说，这操作还是挺骚的。</p>
-<p>好的，现在让我们来看看为什么可以实现这种骚操作。</p>
-<p>怎么看呢？我们来看看生成的那个可执行文件里面有什么蹊跷吧：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat a.exe</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/2.png"></p>
-<p>为什么看不了呢？可能因为<code>a.exe</code>是二进制文件的缘故吧，<code>cat</code>命令看不了，会乱码。</p>
-<p>OK，我们换一种方式，使用<code>nm</code>命令看看：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm a.exe</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/3.png"></p>
-<p>nice，可以看了，我们接下来去锁定一下那两个同名的函数，使用<code>grep</code>命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm a.exe | grep foo</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/4.png"></p>
-<p>看到了没，在符号表中（图片中的那个T表示位于代码区的符号），那两个<code>foo</code>的表示形式是有所不同的，前面的<code>_Z3foo</code>是一样的，但是后面的一个字母是不同的，一个是<code>d</code>（表示的含义是double），一个是<code>i</code>（表示的含义是int）。也就是说，实际上我们的这两个函数是可以这样写的：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> _Z3food(<span class="keyword">double</span> d) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the first foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> _Z3fooi(<span class="keyword">int</span> a)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;I am the second foo()&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	_Z3food(<span class="number">666.666</span>);</span><br><span class="line">    _Z3fooi(<span class="number">666</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/5.PNG"></p>
-<p>奶思，效果是一样的。</p>
-<p>细心的小伙伴们可能发现了，返回值的类型<code>char</code>并没有在<code>_Z3food</code>和<code>_Z3fooi</code>这两个符号中体现出来。所以，这就是为什么<strong>重载</strong>只能是通过函数的形参列表的不同加以区分而不能通过返回值的类型加以区分的原因了。</p>
-<p>综上所述，静态多态是在编译阶段就确定了要执行哪个函数。</p>
-<h2 id="动态多态"><a href="#动态多态" class="headerlink" title="动态多态"></a>动态多态</h2><p>动态多态是通过虚函数来实现的。</p>
-<p>首先，我给出一段代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span> :</span> <span class="keyword">public</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">size_t</span> age;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">    Animal dargon;</span><br><span class="line">    Animal dog;</span><br><span class="line">    </span><br><span class="line">    Base* pBase = &amp;dargon;</span><br><span class="line">    Base&amp; pRe = dog;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//通过基类的指针指向派生类对象来实现动态多态</span></span><br><span class="line">    pBase-&gt;sleep();</span><br><span class="line">    <span class="comment">//通过基类的引用指向派生类对象来实现动态多态</span></span><br><span class="line">    pRe.sleep();</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/6.PNG"></p>
-<p>又是骚操作，指针类型是基类的，执行的却是子类的函数。</p>
-<p>好的，现在让我们来看看为什么可以实现这种骚操作。</p>
-<p>我们这次从汇编的代码来看看为什么可以有这样的骚操作：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ -S test.cpp</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/7.png"></p>
-<p>我们现在就针对这个汇编代码来研究一番。</p>
-<h3 id="虚函数表"><a href="#虚函数表" class="headerlink" title="虚函数表"></a>虚函数表</h3><p>首先，我们来先看一看文件中一个叫做<code>_ZTV4Base</code>的东西：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/8.png"></p>
-<p>这是什么呢？我们可以通过<code>c++filt</code>命令来转换：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZTV4Base</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/9.PNG"></p>
-<p>翻译过来就是<strong>Base的虚函数表</strong>。</p>
-<p>OK，那这个虚函数表里面有什么东西呢？从图片中我们可以看到有：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.quad   0</span><br><span class="line">.quad   _ZTI4Base</span><br><span class="line">.quad   _ZN4Base5sleepEv</span><br><span class="line">.quad   _ZN4Base3eatEv</span><br><span class="line">.quad   _ZN4Base3runEv</span><br><span class="line">.globl  _ZTS6Animal</span><br><span class="line">.section        .rdata$_ZTS6Animal,&quot;dr&quot;</span><br><span class="line">.linkonce same_size</span><br></pre></td></tr></table></figure>
-
-<p>其中，它的第一项是0，第二项_ZIT4Base是关于Base的类型信息，这与typeid有关。我们不讨论它们。现在让我们来看看后面的几项。和刚才的方法一样，我们使用<code>c++filt</code>命令来分别查看它们：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4Base5sleepEv</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/10.PNG"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4Base3eatEv</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/11.PNG"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4Base3runEv</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/12.PNG"></p>
-<p>可以看出，在这个虚函数表中，前三项刚好是按照类中定义顺序的那些三个虚函数。</p>
-<p>我们继续看后面的：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZTS6Animal</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/13.PNG"></p>
-<p>这个和_ZTI4Base那项一样是个数据符号，我们不讨论这一项。</p>
-<p>类似的，我们来查看一下Animal的虚函数表：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/14.PNG"></p>
-<p>OK，这张图片和上面的差不多，我们类推出在Animal虚函数表中，有<code>Animal::sleep</code>、<code>Animal::eat</code>、<code>Animal::run</code>这三个函数。</p>
-<p>那么，还是没有解决“为什么指针类型是基类的，执行的却是子类的函数”这个问题。</p>
-<h3 id="类对象中，有指向虚函数表的指针"><a href="#类对象中，有指向虚函数表的指针" class="headerlink" title="类对象中，有指向虚函数表的指针"></a>类对象中，有指向虚函数表的指针</h3><p>我们继续看汇编代码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/15.PNG"></p>
-<p>我们来看看，<code>_ZN4BaseC2Ev</code>是啥：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c++filt _ZN4BaseC2Ev</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/16.PNG"></p>
-<p>发现它是<code>Base</code>类的构造函数。</p>
-<p>我们来看看构造函数所做的工作是什么。我们在图片中可以看到这个：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/17.PNG"></p>
-<p>这个不是上面出现的那个虚函数表吗？</p>
-<p>实际上<code>16+$_ZTV4Base </code>就是Base类的虚函数表在内存中的地址。这也就是说，构造函数把虚表的地址给了一个变量，而这个变量，用来指向内存中Base类的虚函数表。因此，我们可以大胆的猜测一下，对应的C++代码是：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>-&gt;vtable = &amp;Base_vtable;</span><br></pre></td></tr></table></figure>
-
-<p>类似的，我们来看看Animal类的构造函数做了什么：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/18.PNG"></p>
-<p>我们在这张图片里面可以看到这个：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/19.PNG"></p>
-<p>第一句是：<code>call    _ZN4BaseC2Ev</code>。了解汇编的同学一定知道这句话的意思是<strong>子程序调用指令</strong>。 也就是说，在执行Animal类的构造函数的时候，还执行了Base类的构造函数。</p>
-<p>OK，继续看，后面的两句和Base类的构造函数所做的工作差不多，即把Animal类的虚函数表的地址给一个变量。因此，我们可以大胆的猜测一下，对应的C++代码是：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>-&gt;vtable = &amp;Animal_vtable;</span><br></pre></td></tr></table></figure>
-
-<p>OK，也就是说，<strong>因为虚函数的存在，使得类中多了一个指针变量来保存类的虚函数表的地址</strong>。</p>
-<p>我们来测试一下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">    Base base;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(base) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/30.PNG"></p>
-<p>为什么这里会打印出1而不是保存sleep函数地址所需要的内存大小呢？</p>
-<p>因为，函数的地址只与类型相关，而与类型的实例无关，编译器不会因为这个sleep函数而在实例内添加任何额外的信息。</p>
-<p>那么为什么会打印出1呢？明明在类中没有定义任何变量呀。这是因为当我们声明该类型的实例的时候，它必须在内存中占有一定的空间，否则无法使用这些实例。（至于需要多少内存空间，由编译器决定。我这个编译器是分配1个字节的内存单元）</p>
-<p>OK，现在，我们把sleep声明为虚函数：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">    Base base;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(base) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/31.PNG"></p>
-<p>奶思，符合我们的预期。说明编译器为我们增加了一个指针变量。</p>
-<p>虽然知道了这些，但是还是没有解决为什么执行的是子类的函数。</p>
-<p>我们继续……</p>
-<h3 id="动态绑定"><a href="#动态绑定" class="headerlink" title="动态绑定"></a>动态绑定</h3><p>我们继续来看汇编代码。以下是主函数部分：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/20.PNG"></p>
-<p>我们来回顾一下，进入主函数以后，执行的第一条C++语句：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Animal dargon;</span><br></pre></td></tr></table></figure>
-
-<p>对应的汇编代码是：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/21.PNG"></p>
-<p>前面两句：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leaq    -32(%rbp), %rax</span><br><span class="line">movq    %rax, %rcx</span><br></pre></td></tr></table></figure>
-
-<p>其实是先移动栈指针，给变量dargon在栈上分配内存。变量dargon的首地址是 rbp - 32。</p>
-<p>第三句是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call    _ZN6AnimalC1Ev</span><br></pre></td></tr></table></figure>
-
-<p>也就是执行了Animal类的构造函数。这个很容易理解，当使用静态方法：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">classA object;</span><br></pre></td></tr></table></figure>
-
-<p>定义了一个类对象的时候，会调用构造函数。</p>
-<p>OK，接下来看看C++的第二条语句：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Animal dog;</span><br></pre></td></tr></table></figure>
-
-<p>我们来看看对应的汇编代码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/22.PNG"></p>
-<p>和上面类似的，栈指针移动，为变量dog分配内存，然后，再调用Animal类的构造函数。变量dog的首地址是 rbp - 48。</p>
-<p>OK，我们接下来看看C++的第三条语句：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Base* pBase = &amp;dargon;</span><br></pre></td></tr></table></figure>
-
-<p>对应的汇编代码为：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/23.PNG"></p>
-<p>因为我们什么分析了，变量dargon的首地址是 rbp - 32 ，所以，两句汇编的含义就是把：dargon变量的地址指针变量pBase。</p>
-<p>我们继续看C++的第四条语句：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Base&amp; pRe = dog;</span><br></pre></td></tr></table></figure>
-
-<p>对应的汇编代码为：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/24.PNG"></p>
-<p>这句话和上面的类似。</p>
-<p>我们继续看C++的第5和第6条语句：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pBase-&gt;sleep();</span><br><span class="line">pRe.sleep();</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/29.PNG"></p>
-<p>实现了动态多态的效果。</p>
-<p>同理，后面的汇编代码也实现了动态多态：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/26.PNG"></p>
-<h3 id="再次测试"><a href="#再次测试" class="headerlink" title="再次测试"></a>再次测试</h3><p>通过什么的分析，我们大致可以得出如下关于虚函数表的图：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/27.jpg"></p>
-<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Base run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span> :</span> <span class="keyword">public</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">size_t</span> age;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal sleep&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal eat&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Animal run&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    定义一个函数指针类型，类型为 void () (Animal * )；</span></span><br><span class="line"><span class="comment">    用于指向虚函数sleep，eat，run；</span></span><br><span class="line"><span class="comment">    这里之所以多出一个Animal * 参数是因为c++类的非静态成员函数，</span></span><br><span class="line"><span class="comment">    编译器会默认在参数列表开头加入指向类指针的参数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(* pFun)</span><span class="params">(Animal * animal)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">    Animal dargon;</span><br><span class="line">    Animal dog;</span><br><span class="line">    </span><br><span class="line">    Base* pBase = &amp;dargon;</span><br><span class="line">    Base&amp; pRe = dog;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//通过基类的指针指向派生类对象来实现动态多态</span></span><br><span class="line">    pBase-&gt;sleep();</span><br><span class="line">    <span class="comment">//通过基类的引用指向派生类对象来实现动态多态</span></span><br><span class="line">    pRe.sleep();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        取出Animal的虚表指针.</span></span><br><span class="line"><span class="comment">        (size_t *)&amp;dargon =&gt; dargon起始地址转换为size_t *</span></span><br><span class="line"><span class="comment">        *(size_t *)&amp;dargon =&gt; dargon起始地址开始取sizeof(size_t)个字节解析成size_t(虚表指针的值)</span></span><br><span class="line"><span class="comment">        (size_t *)*(size_t *)&amp;dargon =&gt; 把这个值转换成size_t *类型</span></span><br><span class="line"><span class="comment">    </span></span><br><span class="line"><span class="comment">        size_t在32位机是4个字节，在64位机是8个字节，指针变量的大小和size_t的大小是一致的。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">size_t</span>* vptable_dargon = (<span class="keyword">size_t</span>*)*(<span class="keyword">size_t</span>*)&amp;dargon;</span><br><span class="line">    <span class="keyword">size_t</span>* vptable_dog = (<span class="keyword">size_t</span>*)*(<span class="keyword">size_t</span>*)&amp;dog;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;size_t size = &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(<span class="keyword">size_t</span>) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//一个类公用一个虚表指针</span></span><br><span class="line">    <span class="keyword">if</span> (vptable_dog == vptable_dargon)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;vptable value is equal&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//遍历虚表指针</span></span><br><span class="line">    <span class="keyword">while</span> (*vptable_dargon)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//取出每个虚表函数</span></span><br><span class="line">        pFun fun = (pFun)(*vptable_dargon);</span><br><span class="line">        <span class="comment">//调用每个虚表函数</span></span><br><span class="line">        fun(&amp;dargon);</span><br><span class="line">        vptable_dargon++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/28.PNG"></p>
-<p>OK，和图片的猜想一致。</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/11/03/%E8%AF%B4%E4%B8%80%E8%AF%B4C++%E5%A4%9A%E6%80%81/" data-id="ckkj72zv300bxf6vxb9fv93hr" data-title="说一说C++多态" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -913,7 +805,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
     </div>
   </div>
 
@@ -935,6 +827,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
@@ -948,10 +844,6 @@
         
           <li>
             <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
           </li>
         
       </ul>

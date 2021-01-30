@@ -77,6 +77,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP内核pemalloc的persistent硬编码为1，我们该如何去进行释放" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/06/06/PHP%E5%86%85%E6%A0%B8pemalloc%E7%9A%84persistent%E7%A1%AC%E7%BC%96%E7%A0%81%E4%B8%BA1%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%A6%82%E4%BD%95%E5%8E%BB%E8%BF%9B%E8%A1%8C%E9%87%8A%E6%94%BE/" class="article-date">
+  <time class="dt-published" datetime="2020-06-06T07:49:51.000Z" itemprop="datePublished">2020-06-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/06/06/PHP%E5%86%85%E6%A0%B8pemalloc%E7%9A%84persistent%E7%A1%AC%E7%BC%96%E7%A0%81%E4%B8%BA1%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%A6%82%E4%BD%95%E5%8E%BB%E8%BF%9B%E8%A1%8C%E9%87%8A%E6%94%BE/">PHP内核pemalloc的persistent硬编码为1，我们该如何去进行释放</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>举个例子，在<code>PHP</code>内核初始化<code>interned string</code>的时候，<code>PHP</code>内核使用的是<code>pemalloc</code>，并且<code>persistent</code>设置为了<code>1</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API <span class="keyword">void</span> <span class="title">zend_interned_strings_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 省略其他代码</span></span><br><span class="line">	<span class="comment">/* known strings */</span></span><br><span class="line">	zend_known_strings = pemalloc(<span class="keyword">sizeof</span>(zend_string*) * ((<span class="keyword">sizeof</span>(known_strings) / <span class="keyword">sizeof</span>(known_strings[<span class="number">0</span>]) - <span class="number">1</span>)), <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; (<span class="keyword">sizeof</span>(known_strings) / <span class="keyword">sizeof</span>(known_strings[<span class="number">0</span>])) - <span class="number">1</span>; i++) &#123;</span><br><span class="line">		str = zend_string_init(known_strings[i], <span class="built_in">strlen</span>(known_strings[i]), <span class="number">1</span>);</span><br><span class="line">		zend_known_strings[i] = zend_new_interned_string_permanent(str);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们看到<code>zend_known_strings</code>这个地方是通过<code>pemalloc</code>来分配内存的，并且<code>persistent</code>设置为<code>1</code>了。但是释放的时候，我们发现用的是<code>free</code>，而不是<code>pefree</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API <span class="keyword">void</span> <span class="title">zend_interned_strings_dtor</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	zend_hash_destroy(&amp;interned_strings_permanent);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">free</span>(zend_known_strings);</span><br><span class="line">	zend_known_strings = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，当<code>persistent</code>为<code>1</code>的时候，<code>pemalloc</code>就是<code>malloc</code>。所以，这里可以用<code>free</code>来进行释放。但是，当时我觉得，为了对应<code>pemalloc</code>，释放的时候用<code>pefree</code>会更好一点。于是我改成了<code>pefree(zend_known_strings, 1)</code>，但是，<code>nikic</code>给我的解释如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">通常，只有在动态传递persistent时才使用pefree()。</span><br><span class="line"></span><br><span class="line">我们有时使用pemalloc(x, 1)和硬编码的persistent&#x3D;1，但这是有原因的:pemalloc(x, 1)是一个“可靠的分配器”，永远不会返回NULL。因此，它与malloc(x)不同。</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看一下<code>pemalloc</code>会做什么：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> pemalloc(size, persistent) ((persistent)?__zend_malloc(size):emalloc(size))</span></span><br><span class="line"></span><br><span class="line">ZEND_API <span class="keyword">void</span> * __zend_malloc(<span class="keyword">size_t</span> len)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">void</span> *tmp = <span class="built_in">malloc</span>(len);</span><br><span class="line">	<span class="keyword">if</span> (EXPECTED(tmp || !len)) &#123;</span><br><span class="line">		<span class="keyword">return</span> tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	zend_out_of_memory();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> ZEND_COLD ZEND_NORETURN <span class="keyword">void</span> <span class="title">zend_out_of_memory</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Out of memory\n&quot;</span>);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，当<code>pemalloc</code>的<code>persistent</code>为<code>1</code>的时候，实际上还是调用的<code>malloc</code>，但是会去判断是否成功的分配到了内存，如果没有分配到内存，直接退出进程。所以，我们可以认为，<code>pemalloc</code>的返回值一定不是<code>NULL</code>，如果是<code>NULL</code>，直接退出进程。</p>
+<p>所以，我们可以得出一个结论，如果我们确定了内存一定是通过<code>malloc</code>分配的，那么，我们可以直接使用<code>free</code>来释放内存（用不用<code>pefree</code>都无所谓了）；但是如果不能够确定是不是<code>malloc</code>来分配的，那么，我们应该使用<code>pefree</code>来释放内存（此时<code>persistent</code>应该是一个变量，而不是硬编码）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/06/06/PHP%E5%86%85%E6%A0%B8pemalloc%E7%9A%84persistent%E7%A1%AC%E7%BC%96%E7%A0%81%E4%B8%BA1%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%A6%82%E4%BD%95%E5%8E%BB%E8%BF%9B%E8%A1%8C%E9%87%8A%E6%94%BE/" data-id="ckkj72zrf0020f6vx87kt2h7c" data-title="PHP内核pemalloc的persistent硬编码为1，我们该如何去进行释放" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-为什么内置的Swoole-library要在PHP的请求初始化阶段被执行" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/06/06/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%85%E7%BD%AE%E7%9A%84Swoole-library%E8%A6%81%E5%9C%A8PHP%E7%9A%84%E8%AF%B7%E6%B1%82%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5%E8%A2%AB%E6%89%A7%E8%A1%8C/" class="article-date">
@@ -919,88 +973,6 @@
 
 
   
-    <article id="post-如何在PHP脚本将要退出前执行代码" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/02/22/%E5%A6%82%E4%BD%95%E5%9C%A8PHP%E8%84%9A%E6%9C%AC%E5%B0%86%E8%A6%81%E9%80%80%E5%87%BA%E5%89%8D%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81/" class="article-date">
-  <time class="dt-published" datetime="2020-02-22T02:59:21.000Z" itemprop="datePublished">2020-02-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/02/22/%E5%A6%82%E4%BD%95%E5%9C%A8PHP%E8%84%9A%E6%9C%AC%E5%B0%86%E8%A6%81%E9%80%80%E5%87%BA%E5%89%8D%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81/">如何在PHP脚本将要退出前执行代码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>这篇文章，我们来介绍下如何通过<code>PHP</code>扩展在<code>PHP</code>脚本将要退出前执行代码。我们可以看一段<code>Swoole</code>的协程代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">2</span>);</span><br><span class="line">        var_dump(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">2</span>);</span><br><span class="line">        var_dump(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    var_dump(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">var_dump(<span class="string">&quot;4&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string(1) &quot;3&quot;</span><br><span class="line">string(1) &quot;4&quot;</span><br><span class="line">string(1) &quot;1&quot;</span><br><span class="line">string(1) &quot;2&quot;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，在打印<code>4</code>之后，<code>PHP</code>脚本算是执行完了，这个时候，<code>PHP</code>进程也快要退出了。那为什么还会打印出<code>1</code>和<code>2</code>呢？</p>
-<p>因为<code>PHP</code>是一门解释性语言，虽然<code>PHP</code>脚本的代码跑完了，但是<code>PHP</code>命令解释器还没有跑完，自然可以让<code>PHP</code>代码继续跑。所以，实际上，这个代码会这样：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Event</span>;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">2</span>);</span><br><span class="line">        var_dump(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">2</span>);</span><br><span class="line">        var_dump(<span class="string">&quot;2&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    var_dump(<span class="string">&quot;3&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">var_dump(<span class="string">&quot;4&quot;</span>);</span><br><span class="line"></span><br><span class="line">Event::wait();</span><br></pre></td></tr></table></figure>
-
-<p>在脚本的最后会调用<code>Event::wait()</code>来等待事件的结束。（而这里的事件就是定时器的事件）</p>
-<p>好的，我们现在通过一个小<code>demo</code>来实现这个功能。</p>
-<p>首先，我们需要创建<code>PHP</code>扩展的基础骨架。通过<code>ext_skel</code>工具生成：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@64fa874bf7d4 ext]# php ext_skel.php --ext register</span><br></pre></td></tr></table></figure>
-
-<p>然后进入<code>register</code>目录：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@64fa874bf7d4 ext]# cd register/</span><br></pre></td></tr></table></figure>
-
-<p>替换<code>config.m4</code>为如下内容：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE(register, whether to enable register support,</span><br><span class="line">Make sure that the comment is aligned:</span><br><span class="line">[  --enable-register           Enable register support])</span><br><span class="line">​</span><br><span class="line">if test &quot;$PHP_REGISTER&quot; != &quot;no&quot;; then</span><br><span class="line">  PHP_NEW_EXTENSION(register, register.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们创建和编写测试脚本：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@64fa874bf7d4 register]# touch test.php</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    var_dump(<span class="string">&quot;codinghuang&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段脚本只定义了一个<code>test</code>函数，并没有调用。现在我们的任务就是去调用它。</p>
-<p>我们开始编写<code>PHP</code>扩展。在文件<code>register.c</code>的<code>PHP_RINIT_FUNCTION</code>里面注册<code>test</code>函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ext/standard/basic_functions.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;zend_API.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">PHP_RINIT_FUNCTION(<span class="keyword">register</span>)</span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(ZTS) &amp;&amp; defined(COMPILE_DL_REGISTER)</span></span><br><span class="line">	ZEND_TSRMLS_CACHE_UPDATE();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	php_shutdown_function_entry shutdown_function_entry;</span><br><span class="line">    shutdown_function_entry.arg_count = <span class="number">1</span>;</span><br><span class="line">    shutdown_function_entry.arguments = (zval *) safe_emalloc(<span class="keyword">sizeof</span>(zval), <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">    ZVAL_STRING(&amp;shutdown_function_entry.arguments[<span class="number">0</span>], <span class="string">&quot;test&quot;</span>);</span><br><span class="line">    register_user_shutdown_function(<span class="string">&quot;test&quot;</span>, ZSTR_LEN(Z_STR(shutdown_function_entry.arguments[<span class="number">0</span>])), &amp;shutdown_function_entry);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里，我们首先对<code>php_shutdown_function_entry</code>结构进行初始化，<code>php_shutdown_function_entry.arguments</code>的第一个位置填函数的名字。<code>shutdown_function_entry.arg_count</code>填写1，因为函数名字也算做是<code>arguments</code>。初始化完<code>php_shutdown_function_entry</code>之后，我们调用<code>register_user_shutdown_function</code>函数即可注册<code>test</code>函数了。这样，就会在<code>php</code>请求<code>shutdown</code>阶段调用我们注册的函数了。</p>
-<p>然后编译、安装扩展：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@64fa874bf7d4 register]# phpize &amp;&amp; ./configure &amp;&amp; make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-
-<p>然后把扩展在<code>php.ini</code>文件里面进行开启：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; Enable zlib extension module</span></span><br><span class="line"><span class="attr">extension</span>=register.so</span><br></pre></td></tr></table></figure>
-
-<p>然后执行脚本：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@64fa874bf7d4 register]# php test.php</span><br><span class="line">string(11) &quot;codinghuang&quot;</span><br><span class="line">[root@64fa874bf7d4 register]#</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，成功的调用了<code>test</code>函数。</p>
-<p>这让我想起了我之前面试腾讯的时候，有一道题目，说是如何在每一个<code>PHP</code>函数调用之前，都执行一段代码。这个问题以后补上。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/02/22/%E5%A6%82%E4%BD%95%E5%9C%A8PHP%E8%84%9A%E6%9C%AC%E5%B0%86%E8%A6%81%E9%80%80%E5%87%BA%E5%89%8D%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81/" data-id="ckkj72zu3009hf6vx71uv43ot" data-title="如何在PHP脚本将要退出前执行代码" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1029,7 +1001,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
     </div>
   </div>
 
@@ -1051,6 +1023,10 @@
       <ul>
         
           <li>
+            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
@@ -1064,10 +1040,6 @@
         
           <li>
             <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
           </li>
         
       </ul>

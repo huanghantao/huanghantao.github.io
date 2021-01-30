@@ -77,6 +77,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-并行和并发" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/09/22/%E5%B9%B6%E8%A1%8C%E5%92%8C%E5%B9%B6%E5%8F%91/" class="article-date">
+  <time class="dt-published" datetime="2017-09-22T04:39:45.000Z" itemprop="datePublished">2017-09-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/09/22/%E5%B9%B6%E8%A1%8C%E5%92%8C%E5%B9%B6%E5%8F%91/">并行和并发</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>来自：<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/202abfcb7b96">http://www.jianshu.com/p/202abfcb7b96</a></p>
+<h2 id="总体概念"><a href="#总体概念" class="headerlink" title="总体概念"></a>总体概念</h2><h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><p>在单核 CPU 系统中，系统调度在某一时刻只能让一个进程运行，虽然这种调度机制有多种形式（大多数是时间片轮巡为主），但无论如何，<strong>要通过不断切换需要运行的进程让其运行的方式叫并发</strong></p>
+<h2 id="并行"><a href="#并行" class="headerlink" title="并行"></a>并行</h2><p><strong>在多核 CPU 系统中</strong>，可以让两个以上的进程<strong>同时</strong>运行在<strong>不同的物理核心</strong>上，这种运行的方式就是并行</p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><ul>
+<li>并发在<strong>微观上不是同时执行</strong>的，只是把时间分成若干段，使多个进程快速交替的执行，因为 <strong>CPU 计算速度很快，从宏观上看，好像这些进程都在同一个时间点执行</strong></li>
+<li><strong>并行是真正的细粒度上的同时进行</strong>：既<strong>同一时间点上同时运行着多个进程</strong></li>
+</ul>
+<h2 id="多进程"><a href="#多进程" class="headerlink" title="多进程"></a>多进程</h2><p>多进程操作系统，指的是<strong>各种进程之间切换执行</strong></p>
+<h2 id="超线程技术"><a href="#超线程技术" class="headerlink" title="超线程技术"></a>超线程技术</h2><p>通过采用特殊的硬件指令，可以把<strong>一个物理内核</strong>模拟成<strong>两个逻辑内核</strong>，在单处理器中实现<strong>线程级</strong>的<strong>并行计算</strong>，从而实现在单处理器上模拟双处理器的效能。但它并不象两个真正的 CPU 那样，每个 CPU 都具有独立的资源。<strong>当两个线程都同时需要某一个资源时，其中一个要暂时停止，并让出资源，直到这些资源闲置后才能继续。因此超线程的性能并不等于两颗 CPU 的性能</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/09/22/%E5%B9%B6%E8%A1%8C%E5%92%8C%E5%B9%B6%E5%8F%91/" data-id="ckkj72zua009yf6vx9f1jhyyd" data-title="并行和并发" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-用C写一个服务器吧（二）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/09/21/%E7%94%A8C%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
@@ -677,69 +726,6 @@ Explanation:
 
 
   
-    <article id="post-使用swoole来建立一个简单的客户端和服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/08/06/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
-  <time class="dt-published" datetime="2017-08-06T05:07:49.000Z" itemprop="datePublished">2017-08-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/08/06/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/">使用swoole来建立一个简单的客户端和服务器(接入图灵机器人)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们来用swoole这个php扩展实现一个简单的客户端和服务器，并且让它们进行简单的交流</p>
-<p>首先，我们先来实现客户端(命名为：client.php)：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$client = <span class="keyword">new</span> swoole_client(SWOOLE_SOCK_TCP);</span><br><span class="line"><span class="keyword">if</span> (!$client-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, <span class="number">-1</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="string">&quot;connect failed. Error: <span class="subst">&#123;$client-&gt;errCode&#125;</span>\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fwrite(STDOUT, <span class="string">&#x27;Enter the message you want to send, and you can enter the no to quit it &#x27;</span>.<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">	fwrite(STDOUT, <span class="string">&#x27;client: &#x27;</span>);  </span><br><span class="line">	$info = fgets(STDIN);</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">&#x27;no&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $info) &#123;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	$client-&gt;send($info);</span><br><span class="line">	$recive = $client-&gt;recv();</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;server: &#x27;</span>.$recive.<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">$client-&gt;close();</span><br></pre></td></tr></table></figure>
-
-<p>然后，再来实现一个简单的服务器(命名为：server.php)：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$server = <span class="keyword">new</span> swoole_server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, SWOOLE_BASE, SWOOLE_SOCK_TCP);</span><br><span class="line">$server-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$server, $fd, $from_id, $data</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="string">&#x27;what is your name&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $data) &#123;</span><br><span class="line">		$server-&gt;send($fd, <span class="string">&#x27;My name is huanghantao&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">elseif</span>(<span class="string">&#x27;where are you from&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $data) &#123;</span><br><span class="line">		$server-&gt;send($fd, <span class="string">&#x27;I am from China&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">elseif</span>(<span class="string">&#x27;how old are you&#x27;</span>.<span class="string">&quot;\n&quot;</span> === $data) &#123;</span><br><span class="line">		$server-&gt;send($fd, <span class="string">&#x27;I am 20&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		$apiKey = <span class="string">&quot;7e97323fbb5b4c5691bc7f1ff5231b20&quot;</span>; </span><br><span class="line">		$apiURL = <span class="string">&quot;http://www.tuling123.com/openapi/api?key=KEY&amp;info=INFO&quot;</span>; </span><br><span class="line">		<span class="comment">// 设置报文头, 构建请求报文 </span></span><br><span class="line">		header(<span class="string">&quot;Content-type: text/html; charset=utf-8&quot;</span>); </span><br><span class="line">		$reqInfo = $data; </span><br><span class="line">		$url = str_replace(<span class="string">&quot;INFO&quot;</span>, $reqInfo, str_replace(<span class="string">&quot;KEY&quot;</span>, $apiKey, $apiURL)); </span><br><span class="line"></span><br><span class="line">		$res = json_decode(file_get_contents($url), <span class="literal">true</span>);</span><br><span class="line">		$server-&gt;send($fd, $res[<span class="string">&#x27;text&#x27;</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;start();</span><br></pre></td></tr></table></figure>
-
-<p>接下来，进入这两个文件所在的目录</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/1.PNG"></p>
-<p>然后再执行这server.php文件来启动服务器：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php server.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/2.PNG"></p>
-<p>此时，就开始监听换回地址127.0.0.1的9501端口</p>
-<p>接着，我们执行client.php这个文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php client.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/3.PNG"></p>
-<p>这样，客户端和服务器就建立了一个TCP网络连接</p>
-<p>现在，我们就可以在客户端和服务器进行通信了，现在我们来试一试，很好玩的：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/4.PNG"></p>
-<p>最后，我们输入no来让客户端主动断开与服务器的连接</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/5.PNG"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/08/06/%E4%BD%BF%E7%94%A8swoole%E6%9D%A5%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72ztr0086f6vx2x7lfqme" data-title="使用swoole来建立一个简单的客户端和服务器(接入图灵机器人)" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -768,7 +754,7 @@ Explanation:
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.54px;">C</a> <a href="/tags/C/" style="font-size: 16.92px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15.38px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.54px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.77px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.77px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.77px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.69px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.77px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.77px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.69px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.85px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.31px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.77px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.23px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.77px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.77px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.31px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.77px;">nginx</a> <a href="/tags/php/" style="font-size: 16.15px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 16.15px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.77px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.31px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 16.15px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.85px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.77px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 13.08px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.38px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.46px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.62px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.77px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.77px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.77px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
     </div>
   </div>
 
@@ -790,6 +776,10 @@ Explanation:
       <ul>
         
           <li>
+            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
+          </li>
+        
+          <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
@@ -803,10 +793,6 @@ Explanation:
         
           <li>
             <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
           </li>
         
       </ul>

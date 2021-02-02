@@ -77,6 +77,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP8编译lex编译不过的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2020-07-01T11:48:46.000Z" itemprop="datePublished">2020-07-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/">PHP8编译lex编译不过的问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于的php-src commit为：915abeb6995bad124c325c69b8c44de65da36879</p>
+</blockquote>
+<p>由于我经常需要去拉<code>php-src</code>的<code>master</code>分支代码的代码，然后时不时需要重新编译<code>php</code>，然后出了一个这个问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Zend/zend_language_scanner.l:309:15 error conflicting types <span class="keyword">for</span> <span class="string">&#x27;zend_lex_tstring&#x27;</span></span><br><span class="line">    ZEND_API int zend_lex_tstring(zval *zv, zend_lexer_ident_ref ident_ref)</span><br><span class="line"></span><br><span class="line">In file included from Zend/zend_language_scanner.l:40:0:</span><br><span class="line">php-src/Zend/zend_language_scanner.h:81:14: note: previous declaration of <span class="string">&#x27;zend_lex_tstring&#x27;</span> was here</span><br><span class="line">    ZEND_API int zend_lex_tstring(zval *zv, zend_lexer_ident_ref ident_ref)</span><br></pre></td></tr></table></figure>
+
+<p>这个问题是因为在<code>php-src</code>下面跑<code>make clean</code>无法清理完所有编译出来的东西（包括词法分析器编译出来的<code>.c</code>文件），所以，我们这里跑完<code>make clean</code>后需要自己手动去删除这些没删干净的东西（例如<code>zend_language_scanner.c</code>）。如何判断要删除哪些呢？也很简单，只要这个文件没有加入到<code>git</code>仓库，我们就可以删除。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72zr7001kf6vx4xls1s0h" data-title="PHP8编译lex编译不过的问题" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-使用gcov测试C语言代码覆盖率" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/06/29/%E4%BD%BF%E7%94%A8gcov%E6%B5%8B%E8%AF%95C%E8%AF%AD%E8%A8%80%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87/" class="article-date">
@@ -703,53 +750,6 @@
 
 
   
-    <article id="post-Swoole自定义进程与混合端口服务的配合思路" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/06/07/Swoole%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B%E4%B8%8E%E6%B7%B7%E5%90%88%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%85%8D%E5%90%88%E6%80%9D%E8%B7%AF/" class="article-date">
-  <time class="dt-published" datetime="2020-06-07T09:44:43.000Z" itemprop="datePublished">2020-06-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/06/07/Swoole%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B%E4%B8%8E%E6%B7%B7%E5%90%88%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%85%8D%E5%90%88%E6%80%9D%E8%B7%AF/">Swoole自定义进程与混合端口服务的配合思路</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>举一个很常见的场景，我们要实现一个监控服务，当这个服务监控到了数据变化的时候，需要通知订阅了监控的那些客户端。但是，这些客户端可能是<code>TCP</code>客户端，也可能是<code>Websocket</code>客户端。那么，我们可以做如下的设计。</p>
-<p>首先，我们需要一个自定义进程来作为我们的监控进程。</p>
-<p>然后，服务器需要支持<code>TCP</code>和<code>Websocket</code>协议。</p>
-<p>然后，当监控进程监控到了数据变化的时候，需要把这些数据发送给<code>Worker</code>进程。</p>
-<p>最后，<code>Worker</code>进程把收到的数据推送给<code>TCP</code>和<code>Websocket</code>客户端。</p>
-<p>我们通过伪代码来进行实现：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$websocketServer = <span class="keyword">new</span> Swoole\WebSocket\Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line"></span><br><span class="line">$websocketServer-&gt;on(<span class="string">&#x27;PipeMessage&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Swoole\Server $server, <span class="keyword">int</span> $srcWorkerID, <span class="keyword">string</span> $data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">foreach</span> ($websocketSubscribe <span class="keyword">as</span> $key =&gt; $fd) &#123;</span><br><span class="line">        $server-&gt;push($fd, $data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">foreach</span> ($websocketSubscribe <span class="keyword">as</span> $key =&gt; $fd) &#123;</span><br><span class="line">        $server-&gt;send($fd, pack(<span class="string">&#x27;N&#x27;</span>, strlen($data)) . $data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$websocketServer-&gt;on(<span class="string">&#x27;Message&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Swoole\WebSocket\Server $server, Swoole\WebSocket\Frame $frame</span>) </span>&#123;</span><br><span class="line">    $websocketSubscribe[] = $frame-&gt;fd;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/**<span class="doctag">@var</span> Swoole\Server */</span></span><br><span class="line">$tcpServer = $websocketServer-&gt;addlistener(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9502</span>, SWOOLE_SOCK_TCP);</span><br><span class="line"></span><br><span class="line">$tcpServer-&gt;on(<span class="string">&#x27;Receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Swoole\Server $server, <span class="keyword">int</span> $fd, <span class="keyword">int</span> $reactorID, <span class="keyword">string</span> $data</span>) </span>&#123;</span><br><span class="line">    $tcpSubscribe[] = $fd;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$process = <span class="keyword">new</span> Swoole\Process(<span class="function"><span class="keyword">function</span> (<span class="params">$process</span>) <span class="title">use</span> (<span class="params">$tcpServer</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        watch(<span class="function"><span class="keyword">function</span> (<span class="params"><span class="keyword">string</span> $data</span>) <span class="title">use</span> (<span class="params">$tcpServer</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; $maxWorkerId; $i++) &#123;</span><br><span class="line">                $tcpServer-&gt;sendMessage($data, $i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$websocketServer-&gt;addProcess($process);</span><br><span class="line"></span><br><span class="line">$websocketServer-&gt;start();</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/06/07/Swoole%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%9B%E7%A8%8B%E4%B8%8E%E6%B7%B7%E5%90%88%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%85%8D%E5%90%88%E6%80%9D%E8%B7%AF/" data-id="ckkj72zsd0048f6vx1ggr0bg9" data-title="Swoole自定义进程与混合端口服务的配合思路" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -787,7 +787,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -798,6 +798,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+          </li>
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
@@ -813,10 +817,6 @@
         
           <li>
             <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
           </li>
         
       </ul>

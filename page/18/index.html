@@ -77,6 +77,105 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-SQL注入" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/" class="article-date">
+  <time class="dt-published" datetime="2018-02-26T07:21:50.000Z" itemprop="datePublished">2018-02-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/">SQL注入</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>大家应该都听说过SQL注入吧，但是，网络上的例子貌似都是一些<strong>代码片段</strong>，如果一个新手想要自己尝试一下SQL注入来直观的感受一下SQL注入的危害，显得很无助。我刚学习这方面知识的时候也苦苦找不到这样的代码。最近在知乎上看到很多人都提关于SQL注入的问题，于是，打算写一篇这样的博客。</p>
+<p>直接上代码：</p>
+<p>先创建数据表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE IF NOT EXISTS &#96;users&#96;(</span><br><span class="line">   &#96;id&#96; INT UNSIGNED AUTO_INCREMENT,</span><br><span class="line">   &#96;username&#96; varchar(200) NOT NULL,</span><br><span class="line">   &#96;password&#96; CHAR(32) NOT NULL,</span><br><span class="line">   PRIMARY KEY ( &#96;id&#96; )</span><br><span class="line">)ENGINE &#x3D; InnoDB DEFAULT CHARSET &#x3D; utf8;</span><br><span class="line"></span><br><span class="line">INSERT INTO &#96;users&#96; (&#96;id&#96;, &#96;username&#96;, &#96;password&#96;) VALUES</span><br><span class="line">(1, &#39;admin&#39;, MD5(&#39;admin&#39;)),</span><br><span class="line">(2, &#39;huanghantao&#39;, MD5(&#39;huanghantao&#39;));</span><br></pre></td></tr></table></figure>
+
+<p>下面是结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/1.png"></p>
+<p>（密码是结果md5函数加密的）</p>
+<p>然后是PHP脚本处理登录逻辑的代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$servername = <span class="string">&quot;localhost&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 创建连接</span></span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($servername, $username, $password, $dbname);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 检测连接</span></span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;连接失败: &quot;</span> . $conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$username = <span class="string">&quot;admin&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;admin&quot;</span>;</span><br><span class="line">$sql = <span class="string">&quot;SELECT * FROM users where username = &#x27;&quot;</span> . $username . <span class="string">&quot;&#x27; AND password = &#x27;&quot;</span> . md5($password) . <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">$result_obj = $conn-&gt;query($sql);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($result_obj-&gt;num_rows) &#123;</span><br><span class="line">	<span class="keyword">while</span>($row = $result_obj-&gt;fetch_assoc()) &#123;</span><br><span class="line">		var_dump($row);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OK，程序大概就是这样了，</p>
+<p>现在我们执行上面这段PHP脚本：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/2.png"></p>
+<p>嗯，符合我们的预期。（因为用户名和密码都正确，所以打印出了用户的结果）</p>
+<p>好的，接下来开始我们的表演：</p>
+<p>我们修改一下PHP脚本的username变量：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;admin&#x27; --&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;密码随便写&quot;</span>; <span class="comment">// 没错，你写中文也行</span></span><br></pre></td></tr></table></figure>
+
+<p>完整代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$servername = <span class="string">&quot;localhost&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 创建连接</span></span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($servername, $username, $password, $dbname);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 检测连接</span></span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;连接失败: &quot;</span> . $conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$username = <span class="string">&quot;admin&#x27; --&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br><span class="line">$sql = <span class="string">&quot;SELECT * FROM users where username = &#x27;&quot;</span> . $username . <span class="string">&quot;&#x27; AND password = &#x27;&quot;</span> . md5($password) . <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">$result_obj = $conn-&gt;query($sql);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($result_obj-&gt;num_rows) &#123;</span><br><span class="line">	<span class="keyword">while</span>($row = $result_obj-&gt;fetch_assoc()) &#123;</span><br><span class="line">		var_dump($row);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们执行代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/3.png"></p>
+<p>说的是<code>$result_obj</code>变量不是一个对象，所以没有属性。好的，我们打印一下<code>$result_obj</code>看看它究竟是什么：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var_dump($result_obj);</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/4.png"></p>
+<p>原来返回的是一个boolean类型的变量。说明我们的SQL语句没有执行成功。这就是很坑的一个地方了，网络上的文章大多数是草草的告诉我们，在表单填写类似这样的东西就可以了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin&#39; --</span><br></pre></td></tr></table></figure>
+
+<p>即加个单引号 <code>&#39;</code>，加两个 <code>-</code>。实际上，或许你得再加点东西。</p>
+<p>我们修改下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;admin&#x27; -- // &quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说再加两个<code>/</code>。</p>
+<p>好的，我们执行一下代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/5.png"></p>
+<p>怎么样，就算我们不知道密码，只要我们知道这个用户的用户名，就可以登录到这个用户的页面对吧。</p>
+<p>好的，接下来，我们再试试，即使没有用户名和密码，我们也可以得到所有用户的用户名和密码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;&#x27; or 1 -- // &quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>执行后的结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/6.png"></p>
+<p>很可怕对吧。</p>
+<p>至于这两段代码中的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">admin&#39; --</span><br><span class="line">和</span><br><span class="line">&#39; or 1 --</span><br></pre></td></tr></table></figure>
+
+<p>什么意思，网上的文章已经讲烂了，就不多说了。</p>
+<p>通过什么的操作，我们可以发现，那个单引号<code>&#39;</code>特别捣蛋对吧，所以，我们修改下代码，对单引号进行转义：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;&#x27; or 1 -- // &quot;</span>;</span><br><span class="line">$username = addslashes($username);</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>执行后的结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/7.png"></p>
+<p>可以看到，并没有打印出用户信息，所以这个函数阻挡了此次攻击。原因如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/8.png"></p>
+<p><code>or</code>前面的单引号被转义了。</p>
+<p>但是，并不建议通过<code>addslashes</code>对单引号转义的方式来阻挡这种类型的SQL注入。因为**addslashes对有些特殊字符后跟上’（单引号）并不会加把这个’变成/‘**。</p>
+<p>这也是为什么很多人建议使用PDO来对数据库进行操作的原因了。</p>
+<p>好的，文章到这里结束了，希望对大家有所帮助。文中的代码都可以复制后直接使用，希望可以减少大家踩坑的时间。</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/02/26/SQL%E6%B3%A8%E5%85%A5/" data-id="ckkj72zry003ff6vx727p1aeo" data-title="SQL注入" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2018年寒假总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/" class="article-date">
@@ -733,52 +832,6 @@
 
 
   
-    <article id="post-秒杀系统" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/01/01/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" class="article-date">
-  <time class="dt-published" datetime="2018-01-01T07:21:23.000Z" itemprop="datePublished">2018-01-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/01/01/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/">秒杀系统</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>这两天在GitHub上面找了一个比较小型的秒杀系统的源码读了读，1000多行代码，收获很多。前辈他没有使用PHP框架，所以我学习了如何用原生的PHP代码来实现一个小型的MVC框架、一个很微型的模板引擎的功能，目录结构特别清晰。</p>
-<p>简单的说一说什么是秒杀系统吧。顾名思义，秒杀系统是在最后几秒，用户需要kill掉这个商品，也就是购买。那么，我们就需要解释一下为什么会存在这么一个场景呢？首先，这个东西很有用或者很贵现在打折，那么人们肯定就会去买这个商品对吧。那么为什么大家会一直守在页面前，等待最后几秒然后下单呢？而不是活动开始一段时间之后再来购买？原因是这件商品<strong>有限</strong>，<strong>数量不多</strong>。那么大家当然就会一直坚守到最后几秒抢购。这样一来，就有很多人都在等待，然后抢购。所以就导致了一个问题：在短时间内，许多客户端会请求服务器，那么可以想象一下并发量有多大。</p>
-<p>那么即使请求量多了，服务器也还是需要尽可能快的处理完这些请求对吧。那么很有可能需要使用到多进程的模型。那么使用多进程的模型可能会导致一个什么问题呢？我举一个例子哈。假设在同一个时刻Nginx服务器同时接收到两个购买的请求然后通过FastCGI把请求给了PHP应用程序，PHP分别处理这两个请求。首先在PHP代码里面需要先查找一下数据库中库存是否还够。我们假设库存只有一个了。那么PHP脚本首先为第一个用户的请求查询一下数据库，这个时候，PHP脚本再为第二个用户的请求查询一下数据库。OK，假设数据库是多进程的，它开了两个进程去查询库存，第一个进程先查了一下，发现库存是1个，大于0，说明还可以卖。然后，数据库第一个进程时间片到了，第二个进程也查了一下库存，发现是1个，大于0，说明也还可以卖。之后，两个查询都返回给了PHP脚本的那两个进程，说还可以卖。然后两个PHP进程都对数据库请求一次更新操作，导致库存变为了-1。</p>
-<p>很显然，上面的结果是不如意的。我们本来只能再卖一个的，却卖了两个。可以想象一下，上面还只是两个用户请求，如果千千万万的用户同时发起请求，而系统做得又不够好，那么超卖（即超出库存数量还在卖）就会特别严重。这显然不是我们想要的结果。</p>
-<p>额，对于上面的多进程问题，如果我们可以很好的做好同步操作，理论上是可以解决超卖问题。</p>
-<p>好的，说到这里，大家大概对秒杀系统有了一个简单的认识吧。接下来我们看一看两种简单的秒杀系统：基于Redis和Mysql的事务和锁。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/01/01/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" data-id="ckkj72zus00b7f6vxbtq0guib" data-title="秒杀系统" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -816,7 +869,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -827,6 +880,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+          </li>
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
@@ -842,10 +899,6 @@
         
           <li>
             <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
           </li>
         
       </ul>

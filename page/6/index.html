@@ -77,6 +77,72 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Xdebug单步调试原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/" class="article-date">
+  <time class="dt-published" datetime="2020-08-12T14:22:07.000Z" itemprop="datePublished">2020-08-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/">Xdebug单步调试原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这篇文章，我们来分析一下<code>Xdebug</code>单步调试的原理。</p>
+<p>一句话总结起来就是，<code>Xdebug</code>利用<code>ZEND_EXT_STMT</code>这个<code>opcode</code>来实现了单步调试的功能。</p>
+<p>那么，<code>ZEND_EXT_STMT</code>这个<code>opcode</code>是什么呢？大概可以这么理解，在执行一条语句之前，会执行<code>ZEND_EXT_STMT</code>这个<code>opcode</code>，这个<code>opcode</code>不会对代码的执行结果造成影响，但是它可以帮助我们来实现调试器的功能。</p>
+<p>举个例子，有如下的<code>PHP</code>代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">$b = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">$c = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p>那么，它对应的<code>opcode</code>为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 <span class="built_in">test</span>]<span class="comment"># phpdbg test.php</span></span><br><span class="line">[Welcome to phpdbg, the interactive PHP debugger, v0.5.0]</span><br><span class="line">To get <span class="built_in">help</span> using phpdbg <span class="built_in">type</span> <span class="string">&quot;help&quot;</span> and press enter</span><br><span class="line">[Please report bugs to &lt;http://bugs.php.net/report.php&gt;]</span><br><span class="line">[Successful compilation of /root/codeDir/phpCode/swoole/<span class="built_in">test</span>/test.php]</span><br><span class="line">prompt&gt; b main</span><br><span class="line">[Breakpoint <span class="comment">#0 added at main]</span></span><br><span class="line">prompt&gt; r</span><br><span class="line">[Breakpoint <span class="comment">#0 in main() at /root/codeDir/phpCode/swoole/test/test.php:3, hits: 1]</span></span><br><span class="line">&gt;00003: <span class="variable">$a</span> = 1;</span><br><span class="line"> 00004:</span><br><span class="line"> 00005: <span class="variable">$b</span> = 2;</span><br><span class="line">prompt&gt; p</span><br><span class="line">[Stack <span class="keyword">in</span> /root/codeDir/phpCode/swoole/<span class="built_in">test</span>/test.php (7 ops)]</span><br><span class="line">L1-8 &#123;main&#125;() /root/codeDir/phpCode/swoole/<span class="built_in">test</span>/test.php - 0x7f607d0693c0 + 7 ops</span><br><span class="line"> L3    <span class="comment">#0     EXT_STMT</span></span><br><span class="line"> L3    <span class="comment">#1     ASSIGN                  $a                   1</span></span><br><span class="line"> L5    <span class="comment">#2     EXT_STMT</span></span><br><span class="line"> L5    <span class="comment">#3     ASSIGN                  $b                   2</span></span><br><span class="line"> L7    <span class="comment">#4     EXT_STMT</span></span><br><span class="line"> L7    <span class="comment">#5     ASSIGN                  $c                   3</span></span><br><span class="line"> L8    <span class="comment">#6     RETURN&lt;-1&gt;              1</span></span><br><span class="line">prompt&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>L1-8</code>表示的是行数。我们发现，在执行每一条功能性的<code>opcode</code>的时候，都会先执行一条<code>ZEND_EXT_STMT</code>。</p>
+<p>如果你没有开启<code>Xdebug</code>，大概率是看不到这个<code>EXT_STMT</code>的。也就是说，<code>Xdebug</code>做了某些手脚，使得生成的<code>opcode</code>里面包含了<code>EXT_STMT</code>。我们可以来看一看在哪个地方对生成的<code>opcode</code>进行了修改。</p>
+<p>首先，我们得看一下<code>PHP</code>内核是如何为生成的<code>oparray</code>插入<code>EXT_STMT</code>的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zend_do_extended_stmt</span><span class="params">(<span class="keyword">void</span>)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_op *opline;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(CG(compiler_options) &amp; ZEND_COMPILE_EXTENDED_STMT)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    opline = get_next_op();</span><br><span class="line"></span><br><span class="line">    opline-&gt;opcode = ZEND_EXT_STMT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>zend_do_extended_stmt</code>这个函数来实现的。我们看到，只有当<code>CG(compiler_options)</code>开启了<code>ZEND_COMPILE_EXTENDED_STMT</code>标志，才会为<code>oparray</code>插入<code>EXT_STMT opcode</code>。</p>
+<p>然后，我们发现，<code>Xdebug</code>里面，就有添加<code>ZEND_COMPILE_EXTENDED_STMT</code>标志的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PHP_RINIT_FUNCTION(xdebug)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Only enabled extended info when it is not disabled */</span></span><br><span class="line">    CG(compiler_options) = CG(compiler_options) | ZEND_COMPILE_EXTENDED_STMT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你把这一行代码注释掉，那么生成的<code>opcode</code>就不会带有<code>EXT_STMT</code>了，并且<code>Xdebug</code>的单步调试功能会失效。</p>
+<p><code>OK</code>，介绍完了<code>ZEND_EXT_STMT</code>之后，我们来看一看他对应的<code>handler</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL <span class="title">ZEND_EXT_STMT_SPEC_HANDLER</span><span class="params">(ZEND_OPCODE_HANDLER_ARGS)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    USE_OPLINE</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!EG(no_extensions)) &#123;</span><br><span class="line">        SAVE_OPLINE();</span><br><span class="line">        zend_llist_apply_with_argument(&amp;zend_extensions, (<span class="keyword">llist_apply_with_arg_func_t</span>) zend_extension_statement_handler, execute_data);</span><br><span class="line">        ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();</span><br><span class="line">    &#125;</span><br><span class="line">    ZEND_VM_NEXT_OPCODE();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，这个函数会去调用<code>zend_extensions</code>的<code>zend_extension_statement_handler</code>函数。而这个函数实际上就是<code>xdebug_statement_call</code>，它在<code>zend_extension_entry</code>里面被注册了。</p>
+<p><code>xdebug_statement_call</code>这个函数做的事情就是<strong>阻塞</strong>读取客户端发来的命令。</p>
+<p>所以，在客户端发来命令之前，是不会执行<code>ZEND_EXT_STMT</code>后面的语句的。这就给了我们一种单步调试的感觉了。</p>
+<p>明白了这个原理之后，我们完全可以自己写一个调试器了，有时间我写一个<code>demo</code>出来给大家分享下。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/" data-id="ckkj72zsg004gf6vxbmafcwbq" data-title="Xdebug单步调试原理" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Swoole创建多个Process的时候报错打开太多文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/" class="article-date">
@@ -570,59 +636,6 @@
 
 
   
-    <article id="post-PHP使用json-encode正确的处理浮点数负零的情况" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" class="article-date">
-  <time class="dt-published" datetime="2020-07-28T16:27:24.000Z" itemprop="datePublished">2020-07-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/">PHP使用json_encode正确的处理浮点数负零的情况</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>例如这段代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$array = [<span class="number">-0.0</span>, <span class="number">0.0</span>];</span><br><span class="line">var_dump($array);</span><br><span class="line">$json = json_encode($array);</span><br><span class="line">var_dump($json);</span><br><span class="line">$array = json_decode($json);</span><br><span class="line">var_dump($array);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span>(<span class="number">6</span>) <span class="string">&quot;[-0,0]&quot;</span></span><br><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">int</span>(<span class="number">0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">int</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，先<code>json_encode</code>再<code>json_decode</code>是不能够还原的。而且<code>value</code>也从<code>float</code>变成了<code>int</code>。这是因为我们在<code>json_encode</code>没有去保留<code>ZERO FRACTION</code>。所以，正确的做法应该是这样的：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$array = [<span class="number">-0.0</span>, <span class="number">0.0</span>];</span><br><span class="line">var_dump($array);</span><br><span class="line">$json = json_encode($array, JSON_PRESERVE_ZERO_FRACTION);</span><br><span class="line">var_dump($json);</span><br><span class="line">$array = json_decode($json);</span><br><span class="line">var_dump($array);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span>(<span class="number">10</span>) <span class="string">&quot;[-0.0,0.0]&quot;</span></span><br><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们在<code>encode</code>的时候加上<code>JSON_PRESERVE_ZERO_FRACTION</code>，就会让得到的<code>json</code>字符串保留浮点数的<code>.0</code>，这样在<code>decode</code>的时候，就可以顺利的还原了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" data-id="ckkj72zrc001tf6vxf1sq9v67" data-title="PHP使用json_encode正确的处理浮点数负零的情况" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -660,7 +673,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -671,6 +684,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+          </li>
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
@@ -686,10 +703,6 @@
         
           <li>
             <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
-          </li>
-        
-          <li>
-            <a href="/2020/11/24/Swoole-native-curl%E5%8D%8F%E7%A8%8B%E5%8C%96%E6%80%9D%E8%B7%AF/">Swoole native curl协程化思路</a>
           </li>
         
       </ul>

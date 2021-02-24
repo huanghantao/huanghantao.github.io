@@ -40,7 +40,7 @@ int main()
 }
 ```
 
-大概说说这段代码做的事情。首先创建一个子进程，父进程调用`wait`函数等待子进程退出。子进程调用`execv`创建一个新的进程，并且在很短的时间内执行`ls`命令。最后，父进程等待`1s`后退出。
+大概说说这段代码做的事情。首先创建一个子进程，父进程调用`wait`函数等待子进程退出。子进程调用`execv`创建一个新的进程，并且在很短的时间内执行`ls`命令。子进程退出后，父进程跟着退出了。
 
 所以，输出结果如下：
 
@@ -228,3 +228,21 @@ exit_group(0)                           = ?
 ```
 
 我们发现，父进程收到了两次`SIGCHLD`信号，说明子进程执行完`ls`命令之后退出了。
+
+那么，这里子进程暂停的原理是什么呢？在`ptrace_event`这个函数里面：
+
+```cpp
+static inline void ptrace_event(int event, unsigned long message)
+{
+    if (unlikely(ptrace_event_enabled(current, event))) {
+        current->ptrace_message = message;
+        ptrace_notify((event << 8) | SIGTRAP);
+    } else if (event == PTRACE_EVENT_EXEC) {
+        /* legacy EXEC report via SIGTRAP */
+        if ((current->ptrace & (PT_PTRACED|PT_SEIZED)) == PT_PTRACED)
+            send_sig(SIGTRAP, current, 0);
+    }
+}
+```
+
+我们发现，如果是`exec`的话，就会发一个`SIGTRAP`信号给当前进程。

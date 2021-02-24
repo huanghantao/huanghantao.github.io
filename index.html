@@ -77,6 +77,90 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP中的if语句和switch语句生成的opcode对比" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="article-date">
+  <time class="dt-published" datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们有如下测试脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$variable = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($variable == <span class="number">1</span>) &#123;</span><br><span class="line">    var_dump($variable);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ($variable == <span class="number">2</span>) &#123;</span><br><span class="line">    var_dump($variable);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ($variable == <span class="number">3</span>) &#123;</span><br><span class="line">    var_dump($variable);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var_dump(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<p>生成的<code>opcodes</code>如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[Stack <span class="keyword">in</span> /root/codeDir/phpCode/<span class="built_in">test</span>/test.php (22 ops)]</span><br><span class="line">L1-14 &#123;main&#125;() /root/codeDir/phpCode/<span class="built_in">test</span>/test.php - 0x7fdcaca80000 + 22 ops</span><br><span class="line"> L3    <span class="comment">#0     ASSIGN                  $variable            1</span></span><br><span class="line"> L5    <span class="comment">#1     IS_EQUAL                $variable            1</span></span><br><span class="line"> L5    <span class="comment">#2     JMPZ                    ~1                   J7</span></span><br><span class="line"> L6    <span class="comment">#3     INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L6    <span class="comment">#4     SEND_VAR                $variable            1</span></span><br><span class="line"> L6    <span class="comment">#5     DO_ICALL</span></span><br><span class="line"> L6    <span class="comment">#6     JMP                     J18</span></span><br><span class="line"> L7    <span class="comment">#7     IS_EQUAL                $variable            2</span></span><br><span class="line"> L7    <span class="comment">#8     JMPZ                    ~3                   J13</span></span><br><span class="line"> L8    <span class="comment">#9     INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L8    <span class="comment">#10    SEND_VAR                $variable            1</span></span><br><span class="line"> L8    <span class="comment">#11    DO_ICALL</span></span><br><span class="line"> L8    <span class="comment">#12    JMP                     J18</span></span><br><span class="line"> L9    <span class="comment">#13    IS_EQUAL                $variable            3</span></span><br><span class="line"> L9    <span class="comment">#14    JMPZ                    ~5                   J18</span></span><br><span class="line"> L10   <span class="comment">#15    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L10   <span class="comment">#16    SEND_VAR                $variable            1</span></span><br><span class="line"> L10   <span class="comment">#17    DO_ICALL</span></span><br><span class="line"> L13   <span class="comment">#18    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L13   <span class="comment">#19    SEND_VAL                4                    1</span></span><br><span class="line"> L13   <span class="comment">#20    DO_ICALL</span></span><br><span class="line"> L14   <span class="comment">#21    RETURN&lt;-1&gt;              1</span></span><br><span class="line">prompt&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看<code>PHP</code>代码分别对应的<code>opcodes</code>（我没有完全按照基本块来划分，只是简单的按照代码结构来划分）：</p>
+<p>第一段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$variable = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">L3    <span class="comment">#0     ASSIGN                  $variable            1</span></span><br></pre></td></tr></table></figure>
+
+<p>第二段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ($variable == <span class="number">1</span>) &#123;</span><br><span class="line">    var_dump($variable);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">L5    <span class="comment">#1     IS_EQUAL                $variable            1</span></span><br><span class="line">L5    <span class="comment">#2     JMPZ                    ~1                   J7</span></span><br><span class="line">L6    <span class="comment">#3     INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L6    <span class="comment">#4     SEND_VAR                $variable            1</span></span><br><span class="line">L6    <span class="comment">#5     DO_ICALL</span></span><br><span class="line">L6    <span class="comment">#6     JMP                     J18</span></span><br></pre></td></tr></table></figure>
+
+<p>第三段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ($variable == <span class="number">2</span>) &#123;</span><br><span class="line">    var_dump($variable);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">L7    <span class="comment">#7     IS_EQUAL                $variable            2</span></span><br><span class="line">L7    <span class="comment">#8     JMPZ                    ~3                   J13</span></span><br><span class="line">L8    <span class="comment">#9     INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L8    <span class="comment">#10    SEND_VAR                $variable            1</span></span><br><span class="line">L8    <span class="comment">#11    DO_ICALL</span></span><br><span class="line">L8    <span class="comment">#12    JMP                     J18</span></span><br></pre></td></tr></table></figure>
+
+<p>第四段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> ($variable == <span class="number">3</span>) &#123;</span><br><span class="line">    var_dump($variable);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">L9    <span class="comment">#13    IS_EQUAL                $variable            3</span></span><br><span class="line">L9    <span class="comment">#14    JMPZ                    ~5                   J18</span></span><br><span class="line">L10   <span class="comment">#15    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L10   <span class="comment">#16    SEND_VAR                $variable            1</span></span><br><span class="line">L10   <span class="comment">#17    DO_ICALL</span></span><br></pre></td></tr></table></figure>
+
+<p>第五段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var_dump(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">L13   <span class="comment">#18    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L13   <span class="comment">#19    SEND_VAL                4                    1</span></span><br><span class="line">L13   <span class="comment">#20    DO_ICALL</span></span><br><span class="line">L14   <span class="comment">#21    RETURN&lt;-1&gt;              1</span></span><br></pre></td></tr></table></figure>
+
+<p>我们会发现，这里的<code>IS_EQUAL ... JMPZ</code>是分布在每一个块里面的。</p>
+<p>我们翻译成对应的<code>switch</code>语句：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$variable = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">switch</span> ($variable) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        var_dump($variable);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        var_dump($variable);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        var_dump($variable);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">var_dump(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>opcodes</code>如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[Stack <span class="keyword">in</span> /root/codeDir/phpCode/<span class="built_in">test</span>/test.php (24 ops)]</span><br><span class="line">L1-15 &#123;main&#125;() /root/codeDir/phpCode/<span class="built_in">test</span>/test.php - 0x7f7780480000 + 24 ops</span><br><span class="line"> L3    <span class="comment">#0     ASSIGN                  $variable            1</span></span><br><span class="line"> L5    <span class="comment">#1     IS_EQUAL                $variable            1</span></span><br><span class="line"> L5    <span class="comment">#2     JMPNZ                   ~1                   J8</span></span><br><span class="line"> L8    <span class="comment">#3     IS_EQUAL                $variable            2</span></span><br><span class="line"> L8    <span class="comment">#4     JMPNZ                   ~1                   J12</span></span><br><span class="line"> L11   <span class="comment">#5     IS_EQUAL                $variable            3</span></span><br><span class="line"> L11   <span class="comment">#6     JMPNZ                   ~1                   J16</span></span><br><span class="line"> L11   <span class="comment">#7     JMP                     J20</span></span><br><span class="line"> L6    <span class="comment">#8     INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L6    <span class="comment">#9     SEND_VAR                $variable            1</span></span><br><span class="line"> L6    <span class="comment">#10    DO_ICALL</span></span><br><span class="line"> L7    <span class="comment">#11    JMP                     J20</span></span><br><span class="line"> L9    <span class="comment">#12    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L9    <span class="comment">#13    SEND_VAR                $variable            1</span></span><br><span class="line"> L9    <span class="comment">#14    DO_ICALL</span></span><br><span class="line"> L10   <span class="comment">#15    JMP                     J20</span></span><br><span class="line"> L12   <span class="comment">#16    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L12   <span class="comment">#17    SEND_VAR                $variable            1</span></span><br><span class="line"> L12   <span class="comment">#18    DO_ICALL</span></span><br><span class="line"> L13   <span class="comment">#19    JMP                     J20</span></span><br><span class="line"> L15   <span class="comment">#20    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line"> L15   <span class="comment">#21    SEND_VAL                4                    1</span></span><br><span class="line"> L15   <span class="comment">#22    DO_ICALL</span></span><br><span class="line"> L15   <span class="comment">#23    RETURN&lt;-1&gt;              1</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以稍微划分一下。</p>
+<p>第一段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$variable = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">L3    <span class="comment">#0     ASSIGN                  $variable            1</span></span><br></pre></td></tr></table></figure>
+
+<p>第二段，所有的<code>switch ... case</code>组成一段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> ... <span class="keyword">case</span></span><br><span class="line"></span><br><span class="line">L5    <span class="comment">#1     IS_EQUAL                $variable            1</span></span><br><span class="line">L5    <span class="comment">#2     JMPNZ                   ~1                   J8</span></span><br><span class="line">L8    <span class="comment">#3     IS_EQUAL                $variable            2</span></span><br><span class="line">L8    <span class="comment">#4     JMPNZ                   ~1                   J12</span></span><br><span class="line">L11   <span class="comment">#5     IS_EQUAL                $variable            3</span></span><br><span class="line">L11   <span class="comment">#6     JMPNZ                   ~1                   J16</span></span><br><span class="line">L11   <span class="comment">#7     JMP                     J20</span></span><br></pre></td></tr></table></figure>
+
+<p>第三段，我们可以把所有<code>case</code>里面的语句组成一段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">L6    <span class="comment">#8     INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L6    <span class="comment">#9     SEND_VAR                $variable            1</span></span><br><span class="line">L6    <span class="comment">#10    DO_ICALL</span></span><br><span class="line">L7    <span class="comment">#11    JMP                     J20</span></span><br><span class="line">L9    <span class="comment">#12    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L9    <span class="comment">#13    SEND_VAR                $variable            1</span></span><br><span class="line">L9    <span class="comment">#14    DO_ICALL</span></span><br><span class="line">L10   <span class="comment">#15    JMP                     J20</span></span><br><span class="line">L12   <span class="comment">#16    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L12   <span class="comment">#17    SEND_VAR                $variable            1</span></span><br><span class="line">L12   <span class="comment">#18    DO_ICALL</span></span><br><span class="line">L13   <span class="comment">#19    JMP                     J20</span></span><br></pre></td></tr></table></figure>
+
+<p>第四段：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var_dump(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">L15   <span class="comment">#20    INIT_FCALL&lt;1&gt;           96                   &quot;var_dump&quot;</span></span><br><span class="line">L15   <span class="comment">#21    SEND_VAL                4                    1</span></span><br><span class="line">L15   <span class="comment">#22    DO_ICALL</span></span><br><span class="line">L15   <span class="comment">#23    RETURN&lt;-1&gt;              1</span></span><br></pre></td></tr></table></figure>
+
+<p>我们会发现，<code>switch ... case</code>有一种<code>map</code>的感觉。无论有多少个<code>case</code>，我们这里都可以把<code>switch ... case</code>和<code>case</code>里面的语句划分成两部分。但是，如果是<code>if ... else</code>的话，随着分支的增加，段的数目也会跟着增加（再次提醒，我没有按照基本块来划分，因为按照基本块来划分，每一个<code>case</code>里面的语句都算一个基本块）。</p>
+<p>那么，为什么我不把第一个脚本的代码里面的<code>if ... else</code>也划成一大段呢？因为我们会发现，如果我们划成一大段，<code>JMP</code>会在这一个大段里面跳来跳去。所以，我们也会发现，实际上，<code>switch ... case</code>是把<code>if ... else</code>的跳转关系集中放到了一块，而<code>if ... else</code>的跳转关系放在了每一个小段里面。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" data-id="ckliui7lb0000x9vxcipoc6yi" data-title="PHP中的if语句和switch语句生成的opcode对比" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-ptrace使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="article-date">
@@ -588,55 +672,6 @@
 
 
   
-    <article id="post-什么是好的中间表示" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/11/18/%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%BD%E7%9A%84%E4%B8%AD%E9%97%B4%E8%A1%A8%E7%A4%BA/" class="article-date">
-  <time class="dt-published" datetime="2020-11-18T05:05:44.000Z" itemprop="datePublished">2020-11-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/11/18/%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%BD%E7%9A%84%E4%B8%AD%E9%97%B4%E8%A1%A8%E7%A4%BA/">什么是好的中间表示</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>摘抄自虎书</p>
-</blockquote>
-<ol>
-<li>它必须便于语义分析阶段生成它</li>
-<li>对于希望支持的所有目标机，它必须便于转变成真实的机器语言</li>
-<li>便于对中间表示进行重写，因为后面可能会对中间表示进行优化</li>
-</ol>
-<p>抽象语法中的复杂部分并不总是能正好与机器可以执行的复杂指令相对应。因此，中间表示中的个体成分应该<strong>只描述特别简单的事情</strong>：如单个取、存、加法或指令跳转等操作。这样，抽象语法中的任何复杂部分都可以用一组恰当的抽象机器指令来表示，而这些抽象机器指令则能形成“真正的”机器指令。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/11/18/%E4%BB%80%E4%B9%88%E6%98%AF%E5%A5%BD%E7%9A%84%E4%B8%AD%E9%97%B4%E8%A1%A8%E7%A4%BA/" data-id="ckkj72ztk007of6vxgk529al6" data-title="什么是好的中间表示" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -687,6 +722,10 @@
       <ul>
         
           <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
           </li>
         
@@ -700,10 +739,6 @@
         
           <li>
             <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
           </li>
         
       </ul>

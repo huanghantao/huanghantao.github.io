@@ -77,6 +77,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP8通过ZPP宏获取zend_class_entry" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/" class="article-date">
+  <time class="dt-published" datetime="2020-07-01T13:12:03.000Z" itemprop="datePublished">2020-07-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/">PHP8通过ZPP宏获取zend_class_entry</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于的<code>commit</code>为：e93d20ad7ebc1075ef1248a663935ee5ea69f1cd</p>
+</blockquote>
+<p>昨天（2020-6-30），有一个宏被加入到了<code>PHP8</code>里面，用来快速获取一个类名字或者对象的<code>zend_class_entry</code>结构，在<code>PHP7</code>里面，如果我们要去获取类，我们必须得这么做：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">zval *arg;</span><br><span class="line">zend_class_entry *ce = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">zend_parse_parameters(ZEND_NUM_ARGS(), <span class="string">&quot;z&quot;</span>, &amp;arg)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (Z_TYPE_P(arg) == IS_OBJECT) &#123;</span><br><span class="line">    ce = Z_OBJ_P(arg)-&gt;ce;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (Z_TYPE_P(arg) == IS_STRING) &#123;</span><br><span class="line">    ce = zend_lookup_class(Z_STR_P(arg));</span><br><span class="line">&#125;</span><br><span class="line">RETURN_STR_COPY(ce-&gt;name);</span><br></pre></td></tr></table></figure>
+
+<p>现在，有了<code>Z_PARAM_CLASS_NAME_OR_OBJ</code>宏，我们可以非常方便的去实现这个操作：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ZEND_PARSE_PARAMETERS_START(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    Z_PARAM_CLASS_NAME_OR_OBJ(ce)</span><br><span class="line">ZEND_PARSE_PARAMETERS_END();</span><br><span class="line"></span><br><span class="line">RETURN_STR_COPY(ce-&gt;name);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/" data-id="ckkj72zr9001nf6vxfhamfthx" data-title="PHP8通过ZPP宏获取zend_class_entry" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP8编译lex编译不过的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/07/01/PHP8%E7%BC%96%E8%AF%91lex%E7%BC%96%E8%AF%91%E4%B8%8D%E8%BF%87%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
@@ -696,60 +744,6 @@
 
 
   
-    <article id="post-CPU的分支预测" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/06/08/CPU%E7%9A%84%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/" class="article-date">
-  <time class="dt-published" datetime="2020-06-08T08:17:55.000Z" itemprop="datePublished">2020-06-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/06/08/CPU%E7%9A%84%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/">CPU的分支预测</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们在<code>Swoole</code>源码里面会看到很多的<code>likely</code>和<code>unlikely</code>宏，例如在创建协程的时候，有如下代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> cid = PHPCoroutine::create(&amp;fci_cache, fci.param_count, fci.params);</span><br><span class="line"><span class="keyword">if</span> (sw_likely(cid &gt; <span class="number">0</span>))</span><br><span class="line">&#123;</span><br><span class="line">    RETURN_LONG(cid);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    RETURN_FALSE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里，<code>Swoole</code>调用<code>PHPCoroutine::create</code>来创建协程，并且返回了协程的<code>id</code>。然后，接着是对<code>cid</code>使用了宏<code>likely</code>。这个用法是为了提升<code>CPU</code>指令缓存的命中率。</p>
-<p><code>CPU</code>缓存是几块离<code>CPU</code>近的存储空间。<code>CPU</code>通常分为三级缓存（不是代表只有三块缓存，而是等级有三类）。我们可以通过一下命令来查看<code>CPU</code>缓存的大小：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@bceb11389603 <span class="built_in">test</span>]<span class="comment"># lscpu | grep cache</span></span><br><span class="line">L1d cache:             32K</span><br><span class="line">L1i cache:             32K</span><br><span class="line">L2 cache:              256K</span><br><span class="line">L3 cache:              4096K</span><br><span class="line">[root@bceb11389603 <span class="built_in">test</span>]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看出，我的机器上有四块<code>CPU</code>缓存，其中有两块<code>L1</code>缓存，大小是<code>32K</code>；一块<code>L2</code>缓存，大小是<code>256KB</code>；一块<code>L3</code>缓存，大小是<code>4096KB</code>。</p>
-<p>我们发现，<code>L3</code>缓存要比<code>L1</code>、<code>L2</code>级缓存大很多，因为现在的<code>CPU</code>都是多核的，每个核都有自己的<code>L1</code>、<code>L2</code>级缓存，但<code>L3</code>级缓存却是同一颗<code>CPU</code>上所有核心共享的。程序执行时，会先将内存中的数据载入到共享的<code>L3</code>级缓存中，再进入每颗核心独有的<code>L2</code>级缓存，最后进入最快的<code>L1</code>级缓存，最后才会被<code>CPU</code>的核使用。</p>
-<p>那么为什么有两个<code>L1</code>级缓存呢？因为<code>CPU</code>核会对指令与数据进行区分。指令会放在<code>L1</code>级<strong>指令</strong>缓存中，而指令所需要的数据放在<code>L1</code>级<strong>数据</strong>缓存中。</p>
-<p>所以，我们前面所说的<code>likely</code>核<code>unlikely</code>实际上就是为了提升指令缓存的命中率。而<code>likely</code>和<code>unlikely</code>宏是编译器为我们提供的显式预测分支概率的工具。实际上，<code>CPU</code>自身的条件预测已经非常准了，仅当我们确定<code>CPU</code>条件预测不准，且我们能够知晓实际概率时，才需要加入这两个宏。</p>
-<blockquote>
-<p>如果我们需要查看指令缓存的命中率，我们可以通过perf这个工具来查看</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/06/08/CPU%E7%9A%84%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B/" data-id="ckkj72zqn000if6vx3thifot3" data-title="CPU的分支预测" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -800,6 +794,10 @@
       <ul>
         
           <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
           </li>
         
@@ -813,10 +811,6 @@
         
           <li>
             <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
           </li>
         
       </ul>

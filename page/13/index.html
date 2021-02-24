@@ -77,6 +77,82 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Swoole服务器支持的最大连接数是多少" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/06/23/Swoole%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%94%AF%E6%8C%81%E7%9A%84%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%98%AF%E5%A4%9A%E5%B0%91/" class="article-date">
+  <time class="dt-published" datetime="2019-06-22T16:26:33.000Z" itemprop="datePublished">2019-06-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/06/23/Swoole%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%94%AF%E6%8C%81%E7%9A%84%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%98%AF%E5%A4%9A%E5%B0%91/">Swoole服务器支持的最大连接数是多少</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>前些日子，有人给<code>Swoole</code>提出了一个<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/issues/2638">Issue</a>，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">number of maximum connection we can use with swoole?</span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line">i want to know how many is the maximum connection per second that swoole can support</span><br><span class="line">we want use this framework for real-time game server and it is very important to know max number support connection&#x2F;second for swoole framework.</span><br><span class="line">thank you</span><br></pre></td></tr></table></figure>
+
+<p>峰哥回复如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">It depends on the value of your system ulimit -n and your settings. The maximum limit is 1 million.</span><br><span class="line"></span><br><span class="line">ulimit -n 100000</span><br><span class="line">$server &#x3D; new Swoole\Server;</span><br><span class="line"></span><br><span class="line">$server-&gt;set([&quot;max_connection&quot; &#x3D;&gt; 100000]);</span><br></pre></td></tr></table></figure>
+
+<p>说的是取决于我们设置的<code>ulimit -n</code>的值以及我们给<code>server</code>配置的值。我们来测试一下：</p>
+<p>服务器代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="comment">// co_long_tcp_server.php </span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> Swoole\Server(<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">9501</span>);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Swoole\Server $serv, $fd, $from_id, $data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $serv-&gt;send($fd, $data . $data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>我们启动服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php co_long_tcp_server.php </span><br></pre></td></tr></table></figure>
+
+<p>然后，我们来看看我们的<code>ulimit -n</code>的值：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test/swoole # ulimit -a</span><br><span class="line">-f: file size (blocks)             unlimited</span><br><span class="line">-t: cpu time (seconds)             unlimited</span><br><span class="line">-d: data seg size (kb)             unlimited</span><br><span class="line">-s: stack size (kb)                8192</span><br><span class="line">-c: core file size (blocks)        0</span><br><span class="line">-m: resident set size (kb)         unlimited</span><br><span class="line">-l: locked memory (kb)             82000</span><br><span class="line">-p: processes                      unlimited</span><br><span class="line">-n: file descriptors               1048576</span><br><span class="line">-v: address space (kb)             unlimited</span><br><span class="line">-w: locks                          unlimited</span><br><span class="line">-e: scheduling priority            0</span><br><span class="line">-r: real-time priority             0</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，我们最大可以打开的文件个数是<code>1048576</code>。我们修改这个值：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test/swoole # ulimit -n 100</span><br><span class="line">~/codeDir/phpCode/test/swoole # ulimit -a</span><br><span class="line">-f: file size (blocks)             unlimited</span><br><span class="line">-t: cpu time (seconds)             unlimited</span><br><span class="line">-d: data seg size (kb)             unlimited</span><br><span class="line">-s: stack size (kb)                8192</span><br><span class="line">-c: core file size (blocks)        0</span><br><span class="line">-m: resident set size (kb)         unlimited</span><br><span class="line">-l: locked memory (kb)             82000</span><br><span class="line">-p: processes                      unlimited</span><br><span class="line">-n: file descriptors               100</span><br><span class="line">-v: address space (kb)             unlimited</span><br><span class="line">-w: locks                          unlimited</span><br><span class="line">-e: scheduling priority            0</span><br><span class="line">-r: real-time priority             0</span><br><span class="line">~/codeDir/phpCode/test/swoole # </span><br></pre></td></tr></table></figure>
+
+<p>此时，我们最大可以打开的文件个数是<code>100</code>个。好的，我们来进行测试。我使用我正在贡献的一个压测脚本来进行测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/swoole-src/benchmark # php co_run.php -s tcp://127.0.0.1 -c 100 </span><br><span class="line">============================================================</span><br><span class="line">Swoole Version          4.4.0-alpha</span><br><span class="line">============================================================</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Warning: Swoole\Coroutine\Client::connect(): new Socket() failed, Error: No file descriptors available[24] in /root/codeDir/cppCode/swoole-src/benchmark/co_run.php on line 249</span><br><span class="line"></span><br><span class="line">Warning: Swoole\Coroutine\Client::connect(): new Socket() failed, Error: No file descriptors available[24] in /root/codeDir/cppCode/swoole-src/benchmark/co_run.php on line 249</span><br><span class="line"></span><br><span class="line">Warning: Swoole\Coroutine\Client::connect(): new Socket() failed, Error: No file descriptors available[24] in /root/codeDir/cppCode/swoole-src/benchmark/co_run.php on line 249</span><br><span class="line"></span><br><span class="line">Warning: Swoole\Coroutine\Client::connect(): new Socket() failed, Error: No file descriptors available[24] in /root/codeDir/cppCode/swoole-src/benchmark/co_run.php on line 249</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Concurrency Level:      100</span><br><span class="line">Time taken for tests:   0.7476 seconds</span><br><span class="line">Complete requests:      10,000</span><br><span class="line">Failed requests:        400</span><br><span class="line">Connect failed:         0</span><br><span class="line">Total send:             9,830,400 bytes</span><br><span class="line">Total reveive:          19,660,800 bytes</span><br><span class="line">Requests per second:    12841.091492777</span><br><span class="line">Connection time:        0.0091 seconds</span><br><span class="line"></span><br><span class="line">~/codeDir/cppCode/swoole-src/benchmark # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现，此时报错了，说是没有可用的文件描述符。并且后面跟了一个错误码<code>24</code>，它对应如下含义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Too many open files</span><br></pre></td></tr></table></figure>
+
+<p>为什么我们设置了最多打开<code>100</code>个文件，但是却无法维持<code>100</code>个客户端的连接呢？因为<code>Swoole</code>除了需要打开用于维持连接的套接字以外，还需要打开一些其他的文件，例如<code>epoll fd</code>等等。所以，我们设置<code>ulimit -n</code>为<code>100</code>不代表我们就可以维持<code>100</code>个连接。实际上要比<code>100</code>低。我们再次调低客户端连接的个数：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/swoole-src/benchmark # php co_run.php -s tcp://127.0.0.1 -c 80 -v</span><br><span class="line">============================================================</span><br><span class="line">Swoole Version          4.4.0-alpha</span><br><span class="line">============================================================</span><br><span class="line"></span><br><span class="line">Completed 1000 requests</span><br><span class="line">Completed 2000 requests</span><br><span class="line">Completed 3000 requests</span><br><span class="line">Completed 4000 requests</span><br><span class="line">Completed 5000 requests</span><br><span class="line">Completed 6000 requests</span><br><span class="line">Completed 7000 requests</span><br><span class="line">Completed 8000 requests</span><br><span class="line">Completed 9000 requests</span><br><span class="line">Completed 10000 requests</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Concurrency Level:      80</span><br><span class="line">Time taken for tests:   0.451 seconds</span><br><span class="line">Complete requests:      10,000</span><br><span class="line">Failed requests:        0</span><br><span class="line">Connect failed:         0</span><br><span class="line">Total send:             10,240,000 bytes</span><br><span class="line">Total reveive:          20,480,000 bytes</span><br><span class="line">Requests per second:    22172.949002217</span><br><span class="line">Connection time:        0.0071 seconds</span><br><span class="line"></span><br><span class="line">~/codeDir/cppCode/swoole-src/benchmark # </span><br></pre></td></tr></table></figure>
+
+<p>我们发现，维持<code>80</code>个连接是可以的。</p>
+<p>好的，我们设置回<code>ulimit -n</code>的值之后，修改一下服务器脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> Swoole\Server(<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">9501</span>);</span><br><span class="line">$serv-&gt;set([<span class="string">&quot;max_connection&quot;</span> =&gt; <span class="number">100</span>]);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Swoole\Server $serv, $fd, $from_id, $data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $serv-&gt;send($fd, $data . $data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>设置最大连接为<code>100</code>。然后进行测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/cppCode/swoole-src/benchmark # php co_run.php -s tcp://127.0.0.1  -c 100 -v</span><br><span class="line">============================================================</span><br><span class="line">Swoole Version          4.4.0-alpha</span><br><span class="line">============================================================</span><br><span class="line"></span><br><span class="line">Completed 1000 requests</span><br><span class="line">Completed 2000 requests</span><br><span class="line">Completed 3000 requests</span><br><span class="line">Completed 4000 requests</span><br><span class="line">Completed 5000 requests</span><br><span class="line">Completed 6000 requests</span><br><span class="line">Completed 7000 requests</span><br><span class="line">Completed 8000 requests</span><br><span class="line">Completed 9000 requests</span><br><span class="line">Completed 10000 requests</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Concurrency Level:      100</span><br><span class="line">Time taken for tests:   0.5277 seconds</span><br><span class="line">Complete requests:      10,000</span><br><span class="line">Failed requests:        0</span><br><span class="line">Connect failed:         0</span><br><span class="line">Total send:             10,240,000 bytes</span><br><span class="line">Total reveive:          20,480,000 bytes</span><br><span class="line">Requests per second:    18950.161076369</span><br><span class="line">Connection time:        0.0105 seconds</span><br><span class="line"></span><br><span class="line">~/codeDir/cppCode/swoole-src/benchmark # </span><br></pre></td></tr></table></figure>
+
+<p>发现，维持<code>100</code>个连接是没问题的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/06/23/Swoole%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%94%AF%E6%8C%81%E7%9A%84%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%98%AF%E5%A4%9A%E5%B0%91/" data-id="ckkj72zsb0042f6vxfvz9c21g" data-title="Swoole服务器支持的最大连接数是多少" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-golang-migrate命令行的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/06/17/golang-migrate%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
@@ -735,76 +811,6 @@
 
 
   
-    <article id="post-《PHP扩展开发》-return-value的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
-  <time class="dt-published" datetime="2019-05-25T07:31:40.000Z" itemprop="datePublished">2019-05-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/">《PHP扩展开发》--return_value的使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在PHP扩展中编写函数的时候，如果我们要从PHP扩展返回值给PHP脚本，可以使用<code>return_value</code>来做到。例如：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(hello_world) &#123;</span><br><span class="line">    ZVAL_STRINGL(return_value, <span class="string">&quot;hello world!&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;hello world!&quot;</span>));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZVAL_STRINGL(z, s, l) do &#123;				\</span></span><br><span class="line">		ZVAL_NEW_STR(z, zend_string_init(s, l, <span class="number">0</span>));		\</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline zend_string *<span class="title">zend_string_init</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">size_t</span> len, <span class="keyword">int</span> persistent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	zend_string *ret = zend_string_alloc(len, persistent);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">memcpy</span>(ZSTR_VAL(ret), str, len);</span><br><span class="line">	ZSTR_VAL(ret)[len] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZSTR_VAL(zstr)  (zstr)-&gt;val</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZVAL_NEW_STR(z, s) do &#123;					\</span></span><br><span class="line">		zval *__z = (z);						\</span><br><span class="line">		zend_string *__s = (s);					\</span><br><span class="line">		Z_STR_P(__z) = __s;						\</span><br><span class="line">		Z_TYPE_INFO_P(__z) = IS_STRING_EX;		\</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>zend_string_init</code>的作用就是从堆中分配一块内存给<code>ret</code>。然后把字符串<code>hello world!</code>以及字符串的长度保存在<code>ret</code>里面，然后，返回包含<code>hello world!</code>字符串的地址。</p>
-<p><code>ZVAL_NEW_STR(z, s)</code>的作用是让<code>z</code>指向<code>s</code>，也就是说，此时的<code>return_value</code>里面的<code>value.str</code>指向了<code>zend_string_init</code>返回的包含了<code>hello world!</code>字符串的<code>zend_string</code>。</p>
-<p>所以说，通过<code>return_value</code>可以找到字符串<code>hello world!</code>。</p>
-<p>一个问题是这个<code>return_value</code>是哪里来的？</p>
-<p>我们展开<code>PHP_FUNCTION</code>可以看到：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_FUNCTION			ZEND_FUNCTION</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_FUNCTION(name)				ZEND_NAMED_FUNCTION(ZEND_FN(name))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_FN(name) zif_##name</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_NAMED_FUNCTION(name)		void name(INTERNAL_FUNCTION_PARAMETERS)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INTERNAL_FUNCTION_PARAMETERS zend_execute_data *execute_data, zval *return_value</span></span><br></pre></td></tr></table></figure>
-
-<p>因此，我们对<code>PHP_FUNCTION(hello_world)</code>进行展开的话，可以得到：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zif_hello_world(zend_execute_data *execute_data, zval *return_value)</span><br></pre></td></tr></table></figure>
-
-<p>所以，我们可以在使用了<code>PHP_FUNCTION</code>宏里面使用<code>return_value</code>。我们往<code>return_value</code>里面填充值的话，<code>PHP</code>脚本就可以得到返回值了。</p>
-<p>因此，我们执行如下脚本：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$ret = hello_world();</span><br><span class="line">var_dump($ret);</span><br></pre></td></tr></table></figure>
-
-<p>就可以打印出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php study.php </span><br><span class="line">string(12) &quot;hello world!&quot;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="ckkj72zt0005vf6vxbwdn778f" data-title="《PHP扩展开发》--return_value的使用" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -855,6 +861,10 @@
       <ul>
         
           <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
           </li>
         
@@ -868,10 +878,6 @@
         
           <li>
             <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
           </li>
         
       </ul>

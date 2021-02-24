@@ -77,6 +77,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP中的zend-string-release和zend-string-release-ex" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" class="article-date">
+  <time class="dt-published" datetime="2020-07-29T04:37:39.000Z" itemprop="datePublished">2020-07-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/">PHP中的zend_string_release和zend_string_release_ex</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在<code>PHP</code>中，释放<code>zend_string</code>可以使用<code>zend_string_release</code>或者<code>zend_string_release_ex</code>。那什么时候应该用<code>zend_string_release</code>，什么时候应该用<code>zend_string_release_ex</code>呢？一句话总结就是，如果我们不确定这个<code>zend_string</code>是不是<code>persistent</code>方式分配的内存，那么就用<code>zend_string_release</code>，如果我们确定这个<code>zend_string</code>是不是以<code>persistent</code>方式分配的内存，那么就使用<code>zend_string_release_ex</code>，因为<code>zend_string_release_ex</code>可以稍微提升性能。我们来看一下这两个函数。</p>
+<p>首先是<code>zend_string_release</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> pefree(ptr, persistent)  ((persistent)?free(ptr):efree(ptr))</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline <span class="keyword">void</span> <span class="title">zend_string_release</span><span class="params">(zend_string *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ZSTR_IS_INTERNED(s)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (GC_DELREF(s) == <span class="number">0</span>) &#123;</span><br><span class="line">            pefree(s, GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数做的事情比较简单，先对<code>zend_string</code>的引用计数减一，如果引用计数变为了<code>0</code>，那么就会真正的去调用<code>pefree</code>释放内存。除此之外，这里还需要判断<code>zend_string</code>的分配方式，如果是<code>persistent</code>方式分配的，那么调用<code>free</code>，否则调用<code>efree</code>。</p>
+<p>我们再来看看<code>zend_string_release_ex</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline <span class="keyword">void</span> <span class="title">zend_string_release_ex</span><span class="params">(zend_string *s, <span class="keyword">int</span> persistent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ZSTR_IS_INTERNED(s)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (GC_DELREF(s) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">                ZEND_ASSERT(GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">                <span class="built_in">free</span>(s);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ZEND_ASSERT(!(GC_FLAGS(s) &amp; IS_STR_PERSISTENT));</span><br><span class="line">                efree(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>他做的事情也比较简单，先对<code>zend_string</code>的引用计数减一，如果引用计数变为了<code>0</code>，那么判断<code>persistent</code>再决定调用哪一个<code>free</code>。乍眼一看，似乎<code>zend_string_release_ex</code>做的事情比<code>zend_string_release</code>还多，多了一个断言，为啥性能就会更好呢？因为这个<code>ZEND_ASSERT</code>在<code>PHP</code>的非<code>debug</code>模式下，是不会执行的。并且，如果对<code>persistent</code>进行硬编码，编译器会对<code>zend_string_release_ex</code>进行优化：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">    ZEND_ASSERT(GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    ZEND_ASSERT(!(GC_FLAGS(s) &amp; IS_STR_PERSISTENT));</span><br><span class="line">    efree(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，在编译的时候，就已经知道要走哪一个分支了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" data-id="ckkj72zrb001rf6vx2hcqdb0f" data-title="PHP中的zend_string_release和zend_string_release_ex" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP使用json-encode正确的处理浮点数负零的情况" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" class="article-date">
@@ -598,54 +650,6 @@
 
 
   
-    <article id="post-PHP8通过ZPP宏获取zend_class_entry" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/" class="article-date">
-  <time class="dt-published" datetime="2020-07-01T13:12:03.000Z" itemprop="datePublished">2020-07-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/">PHP8通过ZPP宏获取zend_class_entry</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文基于的<code>commit</code>为：e93d20ad7ebc1075ef1248a663935ee5ea69f1cd</p>
-</blockquote>
-<p>昨天（2020-6-30），有一个宏被加入到了<code>PHP8</code>里面，用来快速获取一个类名字或者对象的<code>zend_class_entry</code>结构，在<code>PHP7</code>里面，如果我们要去获取类，我们必须得这么做：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">zval *arg;</span><br><span class="line">zend_class_entry *ce = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">zend_parse_parameters(ZEND_NUM_ARGS(), <span class="string">&quot;z&quot;</span>, &amp;arg)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (Z_TYPE_P(arg) == IS_OBJECT) &#123;</span><br><span class="line">    ce = Z_OBJ_P(arg)-&gt;ce;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (Z_TYPE_P(arg) == IS_STRING) &#123;</span><br><span class="line">    ce = zend_lookup_class(Z_STR_P(arg));</span><br><span class="line">&#125;</span><br><span class="line">RETURN_STR_COPY(ce-&gt;name);</span><br></pre></td></tr></table></figure>
-
-<p>现在，有了<code>Z_PARAM_CLASS_NAME_OR_OBJ</code>宏，我们可以非常方便的去实现这个操作：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ZEND_PARSE_PARAMETERS_START(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    Z_PARAM_CLASS_NAME_OR_OBJ(ce)</span><br><span class="line">ZEND_PARSE_PARAMETERS_END();</span><br><span class="line"></span><br><span class="line">RETURN_STR_COPY(ce-&gt;name);</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/01/PHP8%E9%80%9A%E8%BF%87ZPP%E5%AE%8F%E8%8E%B7%E5%8F%96zend_class_entry/" data-id="ckkj72zr9001nf6vxfhamfthx" data-title="PHP8通过ZPP宏获取zend_class_entry" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -696,6 +700,10 @@
       <ul>
         
           <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
           </li>
         
@@ -709,10 +717,6 @@
         
           <li>
             <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
           </li>
         
       </ul>

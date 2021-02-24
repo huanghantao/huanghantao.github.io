@@ -77,6 +77,89 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-聊一聊协程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/" class="article-date">
+  <time class="dt-published" datetime="2018-03-11T15:08:44.000Z" itemprop="datePublished">2018-03-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/">聊一聊协程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>hello！我发现博客搭建在GitHub上面有点点麻烦，换电脑了，写起博客来够呛的。</p>
+<p>首先说说协程是什么吧（后面的内容都是以Go语言实现的来说，不同语言实现的可能不同。我们给Go语言的协程取了一个名字，叫做<strong>goroutine</strong>）。</p>
+<p>首先，我们说协程是一个<strong>轻量级的线程</strong>。为什么说是线程呢？因为协程它的一些作用和线程很像。比如说，从客户端来了一个请求，那么我的服务器就可以去创建一个线程来处理这个请求。协程也是类似的，可以并发的去处理一些任务。</p>
+<p>但是为什么又说它是轻量级的呢？因为我们可以去开很多个协程是没问题的，比如开1000个协程来做处理任务。但是如果我们去开1000个线程，就会对系统的性能有影响。</p>
+<p>而且协程它是非抢占式多任务处理，由协程主动交出控制权。</p>
+<p>线程在任何时候都有可能被操作系统切换。哪怕是一条语句执行到一半，也可能会被切换掉。然后操作系统在某个时候又把这个线程切换回来，继续那条语句。而协程不一样，我什么时候想交出对CPU的控制权，什么时候不想，是由协程内部决定的。正是因为这个非抢占式，才能做到轻量级。而抢占式的话，就要处理最坏的情况：我去抢的话，人家的事情正好做到一半，那么要存更多的上下文信息。而非抢占式只需要处理其中切换的几个点就行了。这样对资源的消耗就会小一点。</p>
+<p>还有一点就是协程是编译器/解释器/虚拟机层面的多任务。它不是操作系统层面的一个多任务。在Go语言中，可以看成是编译器级别的多任务，编译器会把我们的<code>go func</code>（后面会解释这个 go func）来解释为一个协程。具体在执行上，Go语言会有一个调度器来调度我们的协程。我们操作系统本身有一个调度器，Go语言里面有它自己的调度器来调度我们轻量级的线程，即协程。</p>
+<p>OK，现在我们来实际操作一下协程，感受一把。</p>
+<p>代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">	<span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">	fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">			time.Sleep(delay)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> x &lt; <span class="number">2</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> x</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> fib(x<span class="number">-1</span>) + fib(x<span class="number">-2</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/1.gif"></p>
+<p>其中，这个动画效果是<code>spinner</code>这个函数导致的，而我们的这个<code>fib</code>是原来计算斐波那契数列的。很明显，这两个函数不是你先我后地执行的，而是并发执行的。因为，如果这两个函数是你先我后执行的，那么因为<code>spinner</code>函数是无限循环，所以<code>fib</code>函数是不可能会得到执行的，也就不会得到数列的值。</p>
+<p>那么，这段代码是如何做到并发的执行的呢？看上去就是在main函数里面调用了两个函数而已啊。仔细看看，不难发现，在调用函数<code>spinner</code>的时候，前面加了go这个关键字。这是因为加了go关键字，所以就相当于<strong>创建了一个协程</strong>。当一个程序启动时，其主函数即在一个单独的goroutine中运行，我们叫它main goroutine。</p>
+<p>OK，知道了上面的这些知识后，我们来说一下spinner协程是如何结束无限循环的。首先一点就是，<strong>当main 协程退出时，这个程序的其他协程都会退出</strong>。所以，在spinner无限循环的情况下，一定是因为main 协程退出了。否则这个循环的过程不会结束。</p>
+<p>我们可以简单的来测试一下，我在main 函数的末尾写一个无限循环：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">	<span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">	fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">			time.Sleep(delay)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		a := <span class="number">1</span></span><br><span class="line">		a++</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/2.gif"></p>
+<p>可以看到，spinner协程一直没有结束。</p>
+<p>OK，我们前面也说了，协程可以自己来控制是否要切换，现在我们在做个测试吧：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> func1()</span><br><span class="line">    func2()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	runtime.Gosched()</span><br><span class="line">	fmt.Println(<span class="string">&quot;func1&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func2</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func2&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/3.png"></p>
+<p>可以看出，在执行func1这个协程的时候，我们使用了<code>runtime.Gosched()</code>来交出控制权，从而停止了func1协程的执行。然后看到，main协程打印出了字符串“func2”。但是我们发现没有打印出字符串“func1”对吧。这个也很好解释：字符串“func1”还没来得及打印，main协程就已经退出了，所以func1协程还没打印出字符串“func1”就已经退出了。</p>
+<p>那么是不是说因为<code>runtime.Gosched()</code>的作用，func1协程被切换为了main协程呢（即，和函数调用一样func1和main两个协程并不是并发执行的）？我们来做个实验：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> func1()</span><br><span class="line">    func2()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 1&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		a := <span class="number">1</span></span><br><span class="line">		a++</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 2&quot;</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func2</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func2&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/4.png"></p>
+<p>可以看到，我使用<code>go func1()</code>开了一个func1协程。然后main继续执行，打印出字符串“func2”，然后main结束。但是我们这次还是没有看到字符串“func1 1”被打印出来。所以，还是有可能两个协程是顺序执行的对吧。所以，我们这次让main协程慢一点退出，给func1协程一点表现的机会看看。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> func1()</span><br><span class="line">    func2()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 1&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		a := <span class="number">1</span></span><br><span class="line">		a++</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 2&quot;</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func2</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func2&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/5.png"></p>
+<p>可以看出，在func2循环的时候，func1协程在运行。并且因为func1中有一个无限循环，但是func1并没有交出控制权，进程却退出了，说明func2函数的循环执行完了，导致main函数结束。所以func1协程也退出了。</p>
+<p>因此，我们可以看出，main协程和func1协程是并发执行的。并不是函数调用那样同步的，即不是你先我后的顺序。也就是说：上面的<code>runtime.Gosched()</code>并不是去调用main协程，因为main协程本来就在执行。所以<code>runtime.Gosched()</code>只是去交出控制权，让调度器可以把其他协程调度进来。</p>
+<p>好的，接下来，我们开1000个协程试试吧：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> func1()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		i := <span class="number">1</span></span><br><span class="line">		i++</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们通过 <code>top</code>命令来看看结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/6.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/" data-id="ckkj72zv000bpf6vx94nyd3jm" data-title="聊一聊协程" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-SQL注入" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/" class="article-date">
@@ -750,88 +833,6 @@
 
 
   
-    <article id="post-nginx-fpm-出现502问题的一个可能原因" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/01/03/nginx-fpm-%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/" class="article-date">
-  <time class="dt-published" datetime="2018-01-03T08:05:09.000Z" itemprop="datePublished">2018-01-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/01/03/nginx-fpm-%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/">nginx(fpm)出现502问题的一个可能原因</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>为什么要重新配nginx呢？因为我一直以来都是用lnmp一键安装包，那时候看到配置就害怕。虽然省去了很多配置的问题，对新手比较友好，但是随着学习的深入，迟早是要分开来用的，不能老用一键安装包。碰巧今天测试秒杀系统的时候，模拟了5000个客户端去请求数据库，不知道怎么搞的就把MySQL搞坏了，也不知道怎么解决，索性卸了数据库。也把Nginx卸了，分开来安装……</p>
-<p>我前几天在Windows上面分开来安装过。比较顺利，但是今天在Linux上面因为一个坑折腾了很久……</p>
-<p>我简单说一下。首先看Nginx配置文件的关键部分：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/1.PNG"></p>
-<p>我配置完了之后，写了一个简单的php脚本进行测试，打开网页，显示了nginx自带的error页面：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/2.PNG"></p>
-<p>遇到这种问题怎么解决呢？我们不是复制里面的英文，然后谷歌、百度（这是我刚开始学习编程的做法）。我们一般是按下<code>F12</code>（我当前用的是UC浏览器，不同浏览器快捷键可能有所不同，谷歌也是<code>F12</code>），或者鼠标右键，选择检查，会弹出这个东西：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/3.PNG"></p>
-<p>我们点击那个被我圈出来的英文：</p>
-<p>然后再点击下面被我圈出来的东西：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/4.PNG"></p>
-<p>得到如下图片：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/5.PNG"></p>
-<p>我们会发现，在上面这张图片中有一个叫做：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Status Code:502 Bad Gateway (from disk cache)</span><br></pre></td></tr></table></figure>
-
-<p>的东西</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/6.PNG"></p>
-<p>状态码为502，而且说网关出了问题。我们分析一下，这个网关可能是什么？我们知道PHP有一个SAPI叫做FPM，翻译过来就是<code>FastCGI进程管理</code>，那么CGI是什么呢？翻译过来就是通用网关接口（当初有一个技术官面试我的时候，让我解释了一下这个东西，小伙伴们一定要理解这个东西，这个东西关键，很多时候就是因为这个东西导致<strong>网站</strong>运行不起来）。</p>
-<p>我们到了这一步，可以测试一下，HTML页面可以访问吗？</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/11.PNG"></p>
-<p>OK，到这里，我们大致可以猜测一下是FPM某方面出了问题，缩小了出错的范围。</p>
-<p>这个时候，我们就可以带着问题去谷歌和百度了。我百度出来的解决方案很多，大多数是什么FPM开的进程数量太少啊、资源耗尽了啊。这些配置我都有尝试过，但是都无法解决我的502问题。我也想：只有我一个人访问，怎么可能会是FPM开的进程数量太少、更不可能耗尽资源了。</p>
-<p>我们继续回到第一张图片的Nginx的配置；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">location ~ \.php$ &#123;</span><br><span class="line">            root           &#x2F;home&#x2F;wwwroot&#x2F;default;</span><br><span class="line">            fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">            fastcgi_index  index.php;</span><br><span class="line">            fastcgi_param  SCRIPT_FILENAME  &#x2F;home&#x2F;wwwroot&#x2F;default$fastcgi_script_name;</span><br><span class="line">            include        fastcgi_params;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们来看一看哪些和FPM有关。第一个是网站的根目录，肯定是和FPM无关的。接下来是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fastcgi_pass  127.0.0.1:9000;</span><br></pre></td></tr></table></figure>
-
-<p>这个东西是和FPM有关的，意思是告诉Nginx把客户端的请求发送给FPM，也就是找到FPM对吧。我想了一下，问题也是可能出在这里，因为Nginx找不到的话，也是无法把请求给FPM的。所以我去看了看FPM的配置，看看它监听哪个端口：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/7.PNG"></p>
-<p>我们发现，它和Nginx的不一致，php这边监听的是sock文件然而nginx那边设置的是9000端口。我们把它修改一下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/8.PNG"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen &#x3D; 127.0.0.1:9000</span><br></pre></td></tr></table></figure>
-
-<p>然后，问题就得到了解决：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/9.PNG"></p>
-<p>然后下面这个地方也没有红色了：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%28fpm%29%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/10.PNG"></p>
-<p>好的，这篇博客到这里差不多要结束了。相信大家也有收获吧。这篇博客不仅仅是教大家如何复制粘贴的去胡乱解决问题，而是与大家分享一下我一般是如何解决一个问题的。缩小范围，缩小谷歌、百度的范围，精确问题的所在，问题一般都可以解决。而且，大家也知道了FPM有<strong>两种监听方式</strong>、静态页面是不需要经过FPM的。</p>
-<p>最后，在多说一句，基础知识很重要，如果你不知道FPM是什么，你不知道Nginx扮演什么角色，你不懂一点网络编程的知识，这个问题也够我们折腾了。</p>
-<p>一个希望成为大牛的大三菜鸡……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/01/03/nginx-fpm-%E5%87%BA%E7%8E%B0502%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%B8%AA%E5%8F%AF%E8%83%BD%E5%8E%9F%E5%9B%A0/" data-id="ckkj72zss0057f6vxhy90gurq" data-title="nginx(fpm)出现502问题的一个可能原因" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -882,6 +883,10 @@
       <ul>
         
           <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
           </li>
         
@@ -895,10 +900,6 @@
         
           <li>
             <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
           </li>
         
       </ul>

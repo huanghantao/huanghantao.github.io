@@ -77,6 +77,100 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2017暑假学习总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" class="article-date">
+  <time class="dt-published" datetime="2017-08-28T08:49:41.000Z" itemprop="datePublished">2017-08-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">2017暑假学习总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>很快，两个多月的暑假就过去了。针对这个暑假所学习的东西，做个简单的总结。</p>
+<p>说实话，很意外，我会选择走技术这条路而不是学术这条路，因为我去年暑假还在家里刷着高数竞赛书籍，大概…..3本吧。曾经的我，是个想要考清华的研究生的好孩子，每天刷着题库，现在想想都很有劲，是我最怀念的一段学习经历了。但是，意外的，我接触了 Web ，我被它迷上了。我开始坚持写代码，感觉这是不是更有成就感？（说实话，我大一除了老师布置的实验，我没有敲过任何一行代码，所以C语言只考了80多分）</p>
+<p>不扯了，进入主题咯。</p>
+<p>感觉暑假在业务上面所学的技术不是很多，更多的是偏向了底层的东西。因为在将近一年的编程中，我花了半年左右去学习了一个网站该如何去写。但是，久而久之，会发现，在学校里，是接触不到那些经典的项目的，大多数都是写重复的代码，处理业务逻辑。随着我对计算机的技术的认识慢慢的提高，我时常在想：这些技术是怎么写出来的？我对这门技术是否真正的理解了？由表及里？显然，我并没有做到，我只是停留在用的层面上。然后我又在想：如果这门技术没有人维护了，或者出现了更优秀的技术，我该怎么办？难道又是马不停蹄的去找教程快速入门？</p>
+<p>不知道是在暑假的哪一天，我突然想通了：<strong>就算我再精通这门技术，也始终是别人的。我需要重点学习的是计算机的本质，这是不轻易改变的。</strong></p>
+<p>于是，我从暑假开始减少了对Web技术的学习，转而学习计算机基础</p>
+<p>在这个暑假，我看了一些书籍，不是很多，但是收获很大。这些知识让我明白了以前在学习 Web 的时候，为什么要这样做。现在，让我来总结一下我暑假所学到的东西</p>
+<h3 id="1、Vue-js"><a href="#1、Vue-js" class="headerlink" title="1、Vue.js"></a>1、Vue.js</h3><p>这个<code>js</code>框架主要是由国人所开发的（可以看 github 上贡献者的提交），其思想就是<strong>数据驱动、组件系统</strong>。</p>
+<p>说一说数据驱动，指的是通过数据的改变，来改变视图层。举一个例子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-show</span>=<span class="string">&quot;isShow&quot;</span>&gt;</span></span><br><span class="line">	我在这里</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--other code--&gt;</span></span><br><span class="line">data() &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    isShow: &quot;false&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，我们是看不到<code>&lt;p&gt;</code>标签的，但是，我们可以在程序执行的过程中来动态的改变<code>isShow</code>的值为<code>true</code>，从而让<code>&lt;p&gt;</code>标签显示出来。这里通过<code>isShow</code>来改变<code>&lt;p&gt;</code>标签的方式就是<strong>数据驱动</strong></p>
+<p>而组件系统其实就是代码复用的思想，把一样的部分，我写成一个组件，到时候在需要这个组件的时候，我引入进去就行了（当然，这只是简单的使用。组件之间还需要传递它们的数据）</p>
+<p>所以说，通过学习了<code>vue.js</code>这个框架，我学习到了这两个重要的思想</p>
+<p>附上我学习这个框架后做的一个项目：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/huanghantao/hchat">https://github.com/huanghantao/hchat</a></p>
+<p>这是一个仿造手机qq界面的一个 Web app 项目</p>
+<h3 id="2、《图解TCP-IP》"><a href="#2、《图解TCP-IP》" class="headerlink" title="2、《图解TCP/IP》"></a>2、《图解TCP/IP》</h3><p>这是一本我入门TCP/IP的书籍</p>
+<p>你知道吗？在我没有学习这本书的时候，我竟然不知道<strong>端口号</strong>是什么！！实际上端口号用来<strong>识别同一台计算机中进行通信的不同应用程序</strong>。因此，它也被称为<strong>程序地址</strong>。</p>
+<p>曾经的我还以为加一个数字80在<code>localhost</code>后面是很厉害的事情。现在想想是多么的愚蠢，大多数情况下根本就没必要加，Web服务器的默认端口号就是80。可见基础的重要性，丢失了基础是多么可怕的一件事情。</p>
+<p>还有就是，当初在学习使用<code>github</code>的时候，那个公钥和密钥不是很理解，只知道它是一个钥匙。现在明白了，这个实际上是采取了一个非对称的加密算法，公钥是可以给别人看的，密钥是自己保留着的</p>
+<p>关于TCP/IP，最核心的就是那个四层模型。</p>
+<h4 id="哪四层？"><a href="#哪四层？" class="headerlink" title="哪四层？"></a>哪四层？</h4><p>应用层、传输层、网络层、网络接口层（由上往下）</p>
+<p>对于应用层，搞Web的人是必须要知道的</p>
+<p>对于传输层和网络层（特别是TCP、UDP、IP这三个协议），对于追求高的人是必须要理解的</p>
+<h4 id="为什么要分层？"><a href="#为什么要分层？" class="headerlink" title="为什么要分层？"></a>为什么要分层？</h4><p>因为<strong>分层可以将每个分层独立使用，即时系统中某些分成发生变化，也不会波及整个系统</strong></p>
+<h3 id="3、《Linux就该这么学》"><a href="#3、《Linux就该这么学》" class="headerlink" title="3、《Linux就该这么学》"></a>3、《Linux就该这么学》</h3><p>这是我快速入门Linux的书籍（之所以没有选择《鸟哥的私房菜》是因为太厚了，没有看的欲望）。这本书告诉了我如何使用一些命令。最重要的一点就是，在Linux的世界里，<strong>一切皆文件</strong>（甚至网卡也是文件）</p>
+<h3 id="4、《C-Primer-Plus》"><a href="#4、《C-Primer-Plus》" class="headerlink" title="4、《C Primer Plus》"></a>4、《C Primer Plus》</h3><p>快速复习了一遍，为后面的Linux网络编程做准备</p>
+<h3 id="5、Swoole"><a href="#5、Swoole" class="headerlink" title="5、Swoole"></a>5、Swoole</h3><p>这个东西主要是由韩天峰开发的一个PHP的异步、并行、高性能网络通信引擎，使用纯C语言编写（不得不佩服峰总的能力，也为他对PHP所做的贡献点赞）</p>
+<p>我没有把文档全部学完，因为一些基础还不够扎实，不想浪费时间，所以只学了<code>Server</code>、<code>Client</code>、<code>Process</code>、<code>HttpServer</code>、<code>WebSocket</code>的部分</p>
+<p>学完了这些，按照官网的例子，为我上面的那个项目写了一个群聊的功能，超级开心</p>
+<h3 id="6、《TCP-IP详解卷1：协议》"><a href="#6、《TCP-IP详解卷1：协议》" class="headerlink" title="6、《TCP-IP详解卷1：协议》"></a>6、《TCP-IP详解卷1：协议》</h3><p>因为看了《图解TCP/IP》感觉不够，所以看了一下这本书</p>
+<h3 id="7、《图解Http》"><a href="#7、《图解Http》" class="headerlink" title="7、《图解Http》"></a>7、《图解Http》</h3><p>HTTP协议属于TCP/IP协议族中的应用层部分</p>
+<p>看完这本书对曾经不理解的HTTPS和HTTP的关系有了一个大致的了解：通常，HTTP 直接和 TCP 通信。当使用 SSL 时，则演变成先和SSL 通信，再由 SSL 和 TCP 通信了。简言之，所谓 HTTPS，其实就是<strong>身披 SSL 协议这层外壳的 HTTP</strong>，并<strong>不是一种新的协议</strong></p>
+<p>也了解了一些<strong>状态码</strong>，这样在浏览器中查看的时候，也可以对症下药了</p>
+<p>明白了正向代理和反向代理：正向代理我们是知道要和哪个代理服务器进行通信的，与我们使用的客户端处于一个逻辑中。而反向代理则和服务器处于一个逻辑中，客户端是直接和反向代理服务器进行通信的，而反向代理起到了一个<strong>分发请求</strong>的作用</p>
+<h3 id="8、Laravel框架"><a href="#8、Laravel框架" class="headerlink" title="8、Laravel框架"></a>8、Laravel框架</h3><p>学习这个框架花了我5天，算是花我时间很久的一件事</p>
+<p>这个框架给我的感觉就是写代码很爽，写一个项目非常快。（但是对数据库的请求是不是会比较多？我没有研究源码，但是给我的感觉有点）</p>
+<p>花了3天撸了一个小项目：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/huanghantao/phpcom-app">https://github.com/huanghantao/phpcom-app</a></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193444.png"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193546.jpg"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193709.jpg"></p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/QQ%E5%9B%BE%E7%89%8720170828193819.png"></p>
+<h3 id="9、《Linux高性能服务器编程》"><a href="#9、《Linux高性能服务器编程》" class="headerlink" title="9、《Linux高性能服务器编程》"></a>9、《Linux高性能服务器编程》</h3><p>说实话，这本书花了我最久时间去学习了</p>
+<p>我在暑假学完了Linux的时候，立马去看这本书。但是，当我面对那奇奇怪怪的七层网络模型的时候，我放弃了（我是先学Linux再学TCP/IP协议的）。所以我先看了一遍《图解TCP/IP》，然后再来看这本，感觉轻松了好多</p>
+<p>这本书是关于Linux网络编程方面的书，偏底层一些，学习了这个，对于服务器有了更深的了解了</p>
+<h3 id="10、《Modern-PHP》"><a href="#10、《Modern-PHP》" class="headerlink" title="10、《Modern PHP》"></a>10、《Modern PHP》</h3><p>这本书，让我的PHP代码更加的规范了，更加理解了<code>Trait</code>（性状）。也让我明白了，框架并不是必须的，因为<code>composer</code>这个类似于<code>npm</code>的依赖管理器，我们可以轻松的管理组件。将精力放在核心业务上，避免重复造轮子    </p>
+<h3 id="11、《C专家编程》"><a href="#11、《C专家编程》" class="headerlink" title="11、《C专家编程》"></a>11、《C专家编程》</h3><p>这本书主要是讲解了指针和数组。分析了它们什么时候是相同的，什么时候是不同的。学完这本书我至少知道了：<strong>指针和数组是两码事</strong></p>
+<h3 id="12、《Linux网络编程》"><a href="#12、《Linux网络编程》" class="headerlink" title="12、《Linux网络编程》"></a>12、《Linux网络编程》</h3><p>这本书其实和《Linux高性能服务器编程》这本书有很多地方是类似的，但是比《Linux高性能服务器编程》基础一些，代码会比《Linux高性能服务器编程》这本书多，比《Linux高性能服务器编程》适合入门Linux网络编程</p>
+<p>学习完了这本书，我知道怎么实现<strong>并发</strong>了。写一个简单的服务器还是可以的</p>
+<h3 id="13、其它"><a href="#13、其它" class="headerlink" title="13、其它"></a>13、其它</h3><p>其他的也就是一些零零散散的技术文章了，主要是了解PHP的一些偏底层的知识。比如一个很经典的问题：在什么情况下，单引号的性能好？或者是双引号的性能好。答案是：在任何情况下，单引号都比双引号要好（不知道我有没有理解对鸟哥的文章）</p>
+<h3 id="14、下一步"><a href="#14、下一步" class="headerlink" title="14、下一步"></a>14、下一步</h3><p>下学期就是大三了，即将面临找实习的难题。希望我付出的终有所得。</p>
+<p>下一步，就是我的算法之旅了，不仅仅是为了笔试，而是成为一个写出优秀代码的程序员的必经之路</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" data-id="ckkj72zq90001f6vxdi2k4y82" data-title="2017暑假学习总结" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-使用signal系统调用处理进程接收到的信号" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/08/26/%E4%BD%BF%E7%94%A8signal%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%A4%84%E7%90%86%E8%BF%9B%E7%A8%8B%E6%8E%A5%E6%94%B6%E5%88%B0%E7%9A%84%E4%BF%A1%E5%8F%B7/" class="article-date">
@@ -547,61 +641,6 @@
 
 
   
-    <article id="post-什么是HTML实体" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/" class="article-date">
-  <time class="dt-published" datetime="2017-06-21T09:43:21.000Z" itemprop="datePublished">2017-06-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/">什么是HTML实体</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>有些字符，例如左尖括号和右尖括号是不允许在html文本中使用的，要在html中显示这些字符，我们必须使用html实体，那么，如何使用html实体呢？在html里面，我们如果要在浏览器中之间显示<br>，而不是换行的话，我们可以有如下写法：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&amp;lt;</span>br<span class="symbol">&amp;gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>这里的&amp; lt;在浏览器会输出左尖括号，&amp; gt;会输出右尖括号</p>
-<p>此时，你会在浏览器里面真正的看到这个<br>标签，这个标签是没有任何实际含义的</p>
-<p>如果你在HTML文件里面直接写：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>你会发现，浏览器里面是看不到任何字符，因为，这里的<br>是有含义的，也就是“换行”</p>
-<p>现在，你应该对实体有了一定的了解。我现在大概解释一下你的博客的那个问题</p>
-<p>首先，你要明白你为什么要使用wangeditor那个插件。原因就是，你可以获取到你写的文字的html实体。如果你直接在textarea里面写文字的话，你是不能够提取实体的，这样当你去获取那些文字的时候，你就丢失了那些标签，也就意味着你在下次修改文章的时候，你原来的那些换行呀，分段呀，给文字加粗呀，这些东西都不会显示在你面前，而显示在你面前的是一篇黑压压的字，他们没有任何格式</p>
-<p>但是，如果你使用了那个插件获取了HTML实体的话，你就可以得到那些标签，这时候，你就把这些HTML实体（也就是那些标签）连同你写的文章一起存入数据库中。当你下次修改文章的时候，你可以从你的数据库中获取到带有html实体的文章。但是，我前面说了，实体是没有任何实际意义的，它是会直接显示在你眼前的。而你是不想要实体显示在你眼前的，所以，需要对实体转化，转化为标签</p>
-<p>记住，你在数据库里面存放的一定不是标签，否则，在页面上是不会显示标签的。你在数据库中的标签一定是以实体的形式存在的也就是下面这种类似的形式；</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&amp;lt;</span>br<span class="symbol">&amp;gt;</span></span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/" data-id="ckkj72ztj007mf6vxe79w38qm" data-title="什么是HTML实体" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -652,6 +691,10 @@
       <ul>
         
           <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
           </li>
         
@@ -665,10 +708,6 @@
         
           <li>
             <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/16/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E5%8E%BB%E6%A3%80%E6%9F%A5%E4%BE%9D%E8%B5%96%E7%9A%84C-%E5%BA%93%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/">PHP扩展如何去检查依赖的C++库是否存在</a>
           </li>
         
       </ul>

@@ -77,6 +77,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-一个循环把整数反转" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/08/31/%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E6%8A%8A%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" class="article-date">
+  <time class="dt-published" datetime="2017-08-31T06:29:41.000Z" itemprop="datePublished">2017-08-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/08/31/%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E6%8A%8A%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">整数反转</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>反转一个数字的问题还是很常见的问题，这里介绍一种简单的方法（关键是<strong>取余数、取整数</strong>）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;  </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">reserver_int</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> m = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (n) &#123;  </span><br><span class="line">        m = m * <span class="number">10</span> + n % <span class="number">10</span>;  </span><br><span class="line">        n /= <span class="number">10</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> num;</span><br><span class="line">	<span class="built_in">cin</span>&gt;&gt;num; </span><br><span class="line">    <span class="keyword">int</span> the_reserver_int = reserver_int(num);</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;the_reserver_int;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>让我们来看看<code>reserver_int</code>这个函数的<code>while</code>部分</p>
+<p>这个循环里面模拟的一个过程可以简单的表述成：<strong>每次取原来的数字的末尾，然后再拼接到新的数字的末尾</strong></p>
+<p>知道这个思路之后就很简单了，取一个数字的末尾a，就要用到<code>%</code>运算符，而把一个数字a拼接到一个数字b的末尾就是把这个数字b乘以10，再和a相加</p>
+<p>然后就是<strong>循环的条件也是关键的地方</strong>，那么什么时候要结束呢？</p>
+<p>很简单，当原来的那个数字的末尾全部被取下来了，也就不需要循环了。而<strong>表示取下一个数字的方法就是除以10</strong></p>
+<h3 id="让字符数组和整型数组做一个映射"><a href="#让字符数组和整型数组做一个映射" class="headerlink" title="让字符数组和整型数组做一个映射"></a>让字符数组和整型数组做一个映射</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/08/31/%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E6%8A%8A%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" data-id="ckkj72ztc006zf6vx5ln43p1p" data-title="整数反转" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-2017暑假学习总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/08/28/2017%E6%9A%91%E5%81%87%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" class="article-date">
@@ -592,55 +640,6 @@
 
 
   
-    <article id="post-通过局域网来让手机访问本地的vue项目" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/" class="article-date">
-  <time class="dt-published" datetime="2017-06-22T12:54:02.000Z" itemprop="datePublished">2017-06-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/">通过局域网来让手机访问本地的vue.js项目</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>相信大家在用vue.js写WebApp的时候，都想用手机来访问本地的vue.js项目，但是一般人想到的都是先把文件上传到托管的服务器里面（例如：阿里云、腾讯云等等），然后在通过服务器的ip来访问。这种方法可以是可以，但是非常耗时间，最快的方法还是通过局域网来让手机访问本地的vue.js项目。</p>
-<p>那么如何通过局域网来访问呢？下面介绍一种方法。</p>
-<h3 id="一、先让手机和电脑连上同一个局域网"><a href="#一、先让手机和电脑连上同一个局域网" class="headerlink" title="一、先让手机和电脑连上同一个局域网"></a>一、先让手机和电脑连上同一个局域网</h3><p>首先，我们让电脑连上无线网，然后再用电脑给手机开网络共享，然后手机连上电脑发出的共享网络</p>
-<h3 id="二、查看ip"><a href="#二、查看ip" class="headerlink" title="二、查看ip"></a>二、查看ip</h3><p>在百度里面直接输入ip即可查看（分别用手机和电脑查看，一般来说查到的ip是一样的）</p>
-<h3 id="三、把电脑的防火墙先关闭"><a href="#三、把电脑的防火墙先关闭" class="headerlink" title="三、把电脑的防火墙先关闭"></a>三、把电脑的防火墙先关闭</h3><h3 id="四、开启你电脑本地的vue-js项目"><a href="#四、开启你电脑本地的vue-js项目" class="headerlink" title="四、开启你电脑本地的vue.js项目"></a>四、开启你电脑本地的vue.js项目</h3><p>此时你得到了端口号（应该是8080）</p>
-<h3 id="五、使用手机访问你的项目"><a href="#五、使用手机访问你的项目" class="headerlink" title="五、使用手机访问你的项目"></a>五、使用手机访问你的项目</h3><p>你需要在手机的浏览器里面输入你刚才查到的Ip，例如：120.203.28.43</p>
-<p>然后在加上刚才的端口号（例如：8080）</p>
-<p>也就是通过：<code>120.203.28.43:8080</code>即可访问你的项目了</p>
-<p><strong>注意用完了之后要开启防火墙哦</strong></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/" data-id="ckkj72zv800chf6vxfuoe88r8" data-title="通过局域网来让手机访问本地的vue.js项目" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -678,7 +677,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -689,6 +688,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+          </li>
         
           <li>
             <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
@@ -704,10 +707,6 @@
         
           <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
           </li>
         
       </ul>

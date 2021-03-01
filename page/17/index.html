@@ -77,6 +77,205 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-手把手教你使用JWT" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/" class="article-date">
+  <time class="dt-published" datetime="2018-08-29T11:01:17.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/">手把手教你使用JWT</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>实习期间比较忙，好久没有写博客了，今天做完了项目来写一写。</p>
+<p>这篇博客介绍的东西是JWT（json web token的简称）。用户通过JWT，就可以登录到我们的系统。OK，接下来让菜鸡我来给小伙伴们演示一下，以PHP的Laravel框架为例子，并且通过jwt-auth这个库来进行演示。这个库的官方文档<a target="_blank" rel="noopener" href="https://jwt-auth.readthedocs.io/en/develop/">这这里</a>。</p>
+<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><p>为了能够跑我们的项目，我们需要一个可以跑Laravel项目的环境，这里我就直接使用一个可以跑Laravel项目的Docker镜像，小伙伴们可以自己去找比较流行的镜像。</p>
+<p>我这里Laravel框架的版本是5.6的，大家也尽量使用5.6的版本，和我的保持一致。</p>
+<p>（注：如果小伙伴们自己的电脑已经可以跑Laravel项目了，<strong>准备环境</strong>这一步就可以省略了）</p>
+<h2 id="准备一个空的Laravel项目"><a href="#准备一个空的Laravel项目" class="headerlink" title="准备一个空的Laravel项目"></a>准备一个空的Laravel项目</h2><p>准备一个空的Laravel项目，项目名字叫做<strong>jwt-test</strong>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo composer create-project --prefer-dist laravel/laravel jwt-test</span><br></pre></td></tr></table></figure>
+
+<h2 id="准备jwt-auth库"><a href="#准备jwt-auth库" class="headerlink" title="准备jwt-auth库"></a>准备jwt-auth库</h2><p>安装jwt-auth这个库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo composer require tymon/jwt-auth</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们打开jwt-test项目下的composer.json文件，找到如下地方：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/1.png"></p>
+<p>然后把</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;tymon/jwt-auth&quot;: &quot;^0.5.12&quot;</span><br></pre></td></tr></table></figure>
+
+<p>换成</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;tymon/jwt-auth&quot;: &quot;^1.0.0-rc.2&quot;</span><br></pre></td></tr></table></figure>
+
+<p>（注意，一定要记得改这里的版本，要不然后面的发布配置会出问题）</p>
+<p>然后在命令行中执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo composer update</span><br></pre></td></tr></table></figure>
+
+<p>然后再发布配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan vendor:publish --provider=&quot;Tymon\JWTAuth\Providers\LaravelServiceProvider&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/2.png"></p>
+<p>此时，会在<code>jwt-test/config</code>目录下多出一个文件<code>jwt.php</code>（这个文件保存了一些和jwt有关的默认配置信息），并且，我们执行<code>php artisan</code>命令的时候，也会多出一个命令：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/3.png"></p>
+<p>然后生成密钥：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo php artisan jwt:secret</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/5.png"></p>
+<p>此时，在<code>jwt-test/.env</code>文件中会有这个密钥：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/6.png"></p>
+<p>（注：我后面会解释这个密钥是用来干嘛的）</p>
+<p>然后，我们修改一下Laravel框架默认给我们生成的User.php文件的内容：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Tymon</span>\<span class="title">JWTAuth</span>\<span class="title">Contracts</span>\<span class="title">JWTSubject</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Notifications</span>\<span class="title">Notifiable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Foundation</span>\<span class="title">Auth</span>\<span class="title">User</span> <span class="title">as</span> <span class="title">Authenticatable</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">Authenticatable</span> <span class="keyword">implements</span> <span class="title">JWTSubject</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">Notifiable</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The attributes that are mass assignable.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> $fillable = [</span><br><span class="line">        <span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;password&#x27;</span>,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The attributes that should be hidden for arrays.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> $hidden = [</span><br><span class="line">        <span class="string">&#x27;password&#x27;</span>, <span class="string">&#x27;remember_token&#x27;</span>,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the identifier that will be stored in the subject claim of the JWT.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJWTIdentifier</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;getKey();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Return a key value array, containing any custom claims to be added to the JWT.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJWTCustomClaims</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> [];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后，我们再修改一下<code>jwt-test/config/auth.php</code>文件里面的内容：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;defaults&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;guard&#x27;</span> =&gt; <span class="string">&#x27;web&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;passwords&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>改成</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;defaults&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;guard&#x27;</span> =&gt; <span class="string">&#x27;api&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;passwords&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>然后</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;api&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;driver&#x27;</span> =&gt; <span class="string">&#x27;token&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;provider&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>改成</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;api&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;driver&#x27;</span> =&gt; <span class="string">&#x27;jwt&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;provider&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<h2 id="模拟用户数据"><a href="#模拟用户数据" class="headerlink" title="模拟用户数据"></a>模拟用户数据</h2><p>因为Laravel框架为我们准备好了一张users表的迁移表，所以我们就不创建新的users迁移表了。我们直接在框架提供的迁移表上进行修改。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">up</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Schema::create(<span class="string">&#x27;users&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Blueprint $table</span>) </span>&#123;</span><br><span class="line">        $table-&gt;increments(<span class="string">&#x27;id&#x27;</span>);</span><br><span class="line">        $table-&gt;string(<span class="string">&#x27;username&#x27;</span>);</span><br><span class="line">        $table-&gt;string(<span class="string">&#x27;password&#x27;</span>);</span><br><span class="line">        $table-&gt;timestamps();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/7.png"></p>
+<p>然后<code>jwt-test/User.php</code>文件我们也修改一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> $fillable = [</span><br><span class="line">    <span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;password&#x27;</span>,</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/8.png"></p>
+<p>然后<code>database/UserFactory.php</code>文件我们也修改一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$factory-&gt;define(App\User::class, <span class="function"><span class="keyword">function</span> (<span class="params">Faker $faker</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [</span><br><span class="line">        <span class="string">&#x27;username&#x27;</span> =&gt; $faker-&gt;name,</span><br><span class="line">        <span class="string">&#x27;password&#x27;</span> =&gt; bcrypt(<span class="string">&#x27;123456&#x27;</span>), <span class="comment">// 123456</span></span><br><span class="line">    ];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/9.png"></p>
+<p>然后，我们在<code>.env</code>文件中配置一下我们的数据库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DB_DATABASE&#x3D;jwt</span><br><span class="line">DB_USERNAME&#x3D;USERNAME</span><br><span class="line">DB_PASSWORD&#x3D;PASSWORD</span><br></pre></td></tr></table></figure>
+
+<p>（注意：这里的DB_USERNAME和DB_PASSWORD根据小伙伴们的自身情况填写）</p>
+<p>然后，我们用MySQL客户端连接上MySQL服务器，创建一个数据库，命名为<code>jwt</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database jwt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/10.png"></p>
+<p>然后，我们在jwt-test项目的根目录下执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan migrate</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/11.png"></p>
+<p>然后，我们通过tinker来模拟出用户：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">php artisan tinker</span><br><span class="line">Factory(App\User::class, 3)-&gt;create();</span><br></pre></td></tr></table></figure>
+
+<p>这样，在数据表users就有3个用户了，他们的明文密码都是<code>123456</code>。</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/12.png"></p>
+<h2 id="编写登录接口"><a href="#编写登录接口" class="headerlink" title="编写登录接口"></a>编写登录接口</h2><p>现在用户有了，我们需要开始编写接口了。首先，我们先定义一个登录接口，这个接口在用户登录成功的时候，返回一个token给客户端。</p>
+<p>我们在<code>routes/api.php</code>中做如下定义：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Route::group([<span class="string">&#x27;prefix&#x27;</span>=&gt;<span class="string">&#x27;user&#x27;</span>], <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">    Route::post(<span class="string">&#x27;login&#x27;</span>, <span class="string">&#x27;UserController@login&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们创建对应的<code>UserController</code>控制器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo php artisan make:controller UserController</span><br></pre></td></tr></table></figure>
+
+<p>我们在这个控制器里面编写<code>login</code>方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">login</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $credentials = request([<span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;password&#x27;</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (! $token = auth()-&gt;attempt($credentials)) &#123;</span><br><span class="line">        <span class="keyword">return</span> response()-&gt;json([<span class="string">&#x27;error&#x27;</span> =&gt; <span class="string">&#x27;Unauthorized&#x27;</span>], <span class="number">401</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">        <span class="string">&#x27;token&#x27;</span> =&gt; $token,</span><br><span class="line">    ]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写完之后，我们通过postman来测试这个接口：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/29.png"></p>
+<p>（注意：图中的https是因为我制作的这个docker容器里面使用了证书，所以用了https协议，如果大家是http协议的话，那么把https改成http协议即可）</p>
+<p>然后，我们在postman中填写用户名和密码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/14.png"></p>
+<p>（这个是刚才我们模拟出来的第一个用户）</p>
+<p>然后，我们点击右边蓝色的按钮<code>Send</code>：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/15.png"></p>
+<p>这个字符串就是jwt。</p>
+<p>好了，接下来，我们编写新的接口。我们在<code>routes/api.php</code>文件中定义一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Route::group([<span class="string">&#x27;prefix&#x27;</span>=&gt;<span class="string">&#x27;user&#x27;</span>], <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">    Route::post(<span class="string">&#x27;login&#x27;</span>, <span class="string">&#x27;UserController@login&#x27;</span>);</span><br><span class="line">    Route::post(<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;UserController@hello&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们编写这个接口对应的hello方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">        <span class="string">&#x27;info&#x27;</span> =&gt; <span class="string">&#x27;hello&#x27;</span>,</span><br><span class="line">    ]); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们增加了一个接口：<code>/api/user/hello</code>，但是，我们又不希望没有登录的用户访问这个接口。那么，我们该怎么做呢？</p>
+<p>我们可以编写一个中间件，专门用来检测用户是否登录了，这个中间件就叫做jwt吧。以下是中间件编写的过程。</p>
+<p>在jwt-test项目的根目录下执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan make:middleware Jwt</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/16.png"></p>
+<p>执行完之后，会在<code>app/Http/Middleware</code>目录下创建一个<code>Jwt.php</code>文件。</p>
+<p>然后，我们在<code>Jwt.php</code>文件里面写入如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>\<span class="title">Http</span>\<span class="title">Middleware</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Jwt</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Handle an incoming request.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>  \Illuminate\Http\Request  $request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>  \Closure  $next</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">$request, <span class="built_in">Closure</span> $next</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (auth()-&gt;user() == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">                <span class="string">&#x27;code&#x27;</span> =&gt; <span class="number">1001</span>,</span><br><span class="line">                <span class="string">&#x27;info&#x27;</span> =&gt; <span class="string">&#x27;Not logged in&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;body&#x27;</span> =&gt; []</span><br><span class="line">            ]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> $next($request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编写完中间件之后，我们需要注册这个中间件。</p>
+<p>在<code>app/Http/Kernel.php</code>文件中的<code>$routeMiddleware</code>变量加入上面所写的中间件：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;jwt&#x27;</span> =&gt; \App\Http\Middleware\Jwt::class,</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/17.png"></p>
+<p>注册完jwt中间件之后，我们就可以使用这个jwt中间件了，我们在UserController控制器中使用。</p>
+<p>在UserController中的构造函数里面这样写：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;middleware(<span class="string">&#x27;jwt&#x27;</span>, [<span class="string">&#x27;except&#x27;</span> =&gt; [<span class="string">&#x27;login&#x27;</span>]]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它代表的意思就是除了login方法外，其他的方法都需要经过中间件。OK，我们现在来测试以下我们的那个hello接口。</p>
+<p>首先，我们得进行登录，因此，需要先访问login接口得到一个token字符串：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/18.png"></p>
+<p>我们拿着这个token字符串去访问hello接口：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/19.png"></p>
+<p>那么，如果我们的这个token是错误的，会有什么现象呢？我们来试试：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/20.png"></p>
+<p>我们把正确的那个token的最后一个字符Q删除了时候，得到了用户未登录的信息。为什么？因为你的token是错误的，所以说明用户没有登录过。</p>
+<p>博客写到这里，大家应该就知道如何使用jwt了吧。</p>
+<p>小伙伴们可能会想，这个token到底是个啥呢？别急，我们对这个token串进行base64解码。我们随便找一个可以进行base64解码的网站：</p>
+<p>我们把jwt中第一个<code>.</code>前面的字符串都删掉（包括这个<code>.</code>），然后再把第二个<code>.</code>后面的字符串都删掉（包括这个<code>.</code>）：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/21.png"></p>
+<p>然后再点击解密：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/22.png"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;iss&quot;</span>: <span class="string">&quot;https://localhost/api/user/login&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;iat&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;exp&quot;</span>: <span class="number">1535561234</span>,</span><br><span class="line">  <span class="attr">&quot;nbf&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;jti&quot;</span>: <span class="string">&quot;kjNhwJ7KESuX2AGR&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;sub&quot;</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="attr">&quot;prv&quot;</span>: <span class="string">&quot;87e0af1ef9fd15812fdec97153a14e0b047546aa&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，sub对应的1就指的是用户的id。这个token默认保存的用户信息就是用户的id值。</p>
+<p>那么为什么我要删除掉两个<code>.</code>号前面和后面的字符串呢？因为我想重点说一下这两个东西。我们单独解码一下第一个<code>.</code>号的内容：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/23.png"></p>
+<p>我们点击解密：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/24.png"></p>
+<p>typ代表这是一个jwt字符串、alg代表使用了哈希算法hash256。那么，这个哈希算法用在了什么地方呢？</p>
+<p>我们第二个<code>.</code>后面的字符串就用到了。</p>
+<p>我们对第二个点后面的内容进行解码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/25.png"></p>
+<p>我们点击解密：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/26.png"></p>
+<p>这个就是一个签名。</p>
+<p>那么这个签名是怎么来的呢？就是通过<code>hash256</code>算法得来的。</p>
+<p>OK，那么又有小伙伴们会问了。那我是不是就可以伪造出其他用户的token啦！！因为我可以先用自己的账号进行一个登录，登录完之后，我对第一部分字符串进行解码，知道了用的是什么hash算法。然后，我再解码第二部分的字符串，得到了：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;iss&quot;</span>: <span class="string">&quot;https://localhost/api/user/login&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;iat&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;exp&quot;</span>: <span class="number">1535561234</span>,</span><br><span class="line">  <span class="attr">&quot;nbf&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;jti&quot;</span>: <span class="string">&quot;kjNhwJ7KESuX2AGR&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;sub&quot;</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="attr">&quot;prv&quot;</span>: <span class="string">&quot;87e0af1ef9fd15812fdec97153a14e0b047546aa&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我就去修改sub的值，改成其他用户的，去构造一个新的字符串，这样总会构造出一个正确的jwt吧。</p>
+<p>如果没有第三部分的字符串（即签名部分），理论上来说是可以的。但是，有了签名，就很难构造了。因为，这个签名的得来用到了我们之前生成的那个密钥。因为密钥是服务器才知道的，所以，构造者除非是得到了这个密钥，要不然想要构造出jwt，是比较难的。</p>
+<p>OK，那么这个jwt是存放在哪里的呢？如果小伙伴们阅读jwt-auth的源码就会发现，其实它是存放在Laravel框架的<code>jwt-test/storage/</code>里面。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/" data-id="ckkj72zud00a8f6vxbv3vgmv7" data-title="手把手教你使用JWT" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-《就是要你懂swoole》-Server（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
@@ -811,77 +1010,6 @@
 
 
   
-    <article id="post-对于php-的-sleep理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" class="article-date">
-  <time class="dt-published" datetime="2018-03-31T02:07:10.000Z" itemprop="datePublished">2018-03-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/">对于php 的 sleep理解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天知乎上有人邀请我回答一个问题，问题挺好的。这里分享下。</p>
-<p>问题描述是这样的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">比如 我现在有一个方法: a 调用方法:b</span><br><span class="line">b里面是sleep </span><br><span class="line">1分钟之后</span><br><span class="line">向数据库插入一条数据</span><br><span class="line"></span><br><span class="line">用户x在1点的时候 访问了方法a</span><br><span class="line"></span><br><span class="line">用户y在1点0分30秒的时候 访问了方法a</span><br><span class="line"></span><br><span class="line">请问:最终 到1点1分30秒的时候 ，数据库会插入一条数据 ？ 还是两条数据？</span><br><span class="line"></span><br><span class="line">为什么</span><br></pre></td></tr></table></figure>
-
-<p>我的答案：</p>
-<p>谢邀</p>
-<p>我通过代码来对你讲解吧。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> date(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>, time());</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line">sleep(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> date(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>, time());</span><br></pre></td></tr></table></figure>
-
-<p>然后我打开两个页面，同时去请求我的脚本。</p>
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9%E4%BA%8Ephp%20%E7%9A%84%20sleep%E7%90%86%E8%A7%A3/1.png"></p>
-<p>看到没？这两次请求都有对应的输出对吧（相当于向数据库里面插入信息）。</p>
-<p><strong>重点来了</strong></p>
-<p>我明明是同时请求浏览器的，为什么第二次请求被处理的时间是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2018-03-31 01:07:35</span><br></pre></td></tr></table></figure>
-
-<p>好像是第一次请求被处理完之后结束的时间对吧。</p>
-<p>为什么？因为我只开了一个PHP的worker进程：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9%E4%BA%8Ephp%20%E7%9A%84%20sleep%E7%90%86%E8%A7%A3/2.png"></p>
-<p>这意味着什么呢？</p>
-<p>因为第一次请求导致了worker进程被挂起了（因为sleep的原因，worker进程处于阻塞态）。所以，此时的worker进程不能去处理客户端的连接。因此，必须等到了第一次请求被处理完了，才可以处理第二次请求。于是第二次请求它被处理的时间是第一次请求被处理完的结束时间。</p>
-<p>那么，既然worker进程阻塞了，为什么可以处理实际上在<code>2018-03-31 01:07:05</code>就发来的第二次请求呢（第二次请求和第一次请求是同时发起的）？原因是有Web服务，例如我这里的Nginx。它会去<strong>保持</strong>Nginx于客户端的连接。所以第二次请求可以推迟到<code>2018-03-31 01:07:35</code>再被处理。其实，如果你把我上面代码的sleep时间设置更久一点，例如：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sleep(<span class="number">60</span>);</span><br></pre></td></tr></table></figure>
-
-<p>你会发现，第二次请求很可能会得到一个404状态。</p>
-<p>好的，说了这么多，现在回到你的问题。</p>
-<p>你是让用户x在1点的时候去请求PHP脚本。然后这时候调用了sleep方法对吧（sleep一分钟）。根据上面我的讲解，worker进程需要等到1点1分才可以去处理用户y实际在1点0分30秒的时候就发来的请求。然后，在1点1分的时候，worker因为sleep而在此被阻塞。直到1点2分才被唤醒，从阻塞态再到就绪态然后才处于可执行状态。然后才可以插入第二条数据。也就是说，到了1点2分的时候，数据库里面才会有第二条数据。</p>
-<p>所以，<strong>在1点1分30秒的时候，数据库里面只有一条数据</strong>。</p>
-<p>但是，我前面的结论都是在单个worker进程的基础上得到的。如果你的worker进程有多个，假设2个好吧。那么第一个worker进程因为第一次请求在1点钟被阻塞了（直到1点1分第1个worker进程才会被唤醒，然后插入数据）。OK，之后时间到了1点0分30秒，第二个请求发来了，因为第一个worker此时还是处于阻塞态，所以第二个worker进程会去处理这个请求。同样的，第二个worker进程在1点0分30秒被阻塞了（直到1点1分30秒第二个worker进程才会被唤醒，然后插入第二条数据）。因此，最终在1点1分30秒的时候，数据库里面是有两条数据的。</p>
-<p>所以在1点1分30秒的时候，数据库里面有几条记录，看情况。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" data-id="ckkj72zu8009rf6vxb8wecc2h" data-title="对于php 的 sleep理解" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -919,7 +1047,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -930,6 +1058,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+          </li>
         
           <li>
             <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
@@ -945,10 +1077,6 @@
         
           <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
           </li>
         
       </ul>

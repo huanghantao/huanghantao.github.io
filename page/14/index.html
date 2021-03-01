@@ -77,6 +77,80 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-《就是要你懂Swoole》-虚拟机中断" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/" class="article-date">
+  <time class="dt-published" datetime="2019-05-27T06:09:29.000Z" itemprop="datePublished">2019-05-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/">《就是要你懂Swoole》--虚拟机中断</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这篇文章是讲解<code>PHP7</code>虚拟机中断的用法，理解这篇文章之后就可以更好的理解<code>Swoole</code>在CPU密集型的情况下协程的调度原理。</p>
+<p>Swoole之前尝试了多种方法来处理CPU密集型环境下协程的切换问题。分别是Hook for循环，使用<code>PHP</code>的<code>declare(ticks=N)</code>语法。因为种种原因，<code>Swoole</code>现在使用了虚拟机中断的方法来切换一直占用<code>CPU</code>的协程。具体原因可以查看PHP最近的<code>Issue</code>以及<code>PR</code>，里面写的很清楚了。</p>
+<p>好的，我们现在来感受一下虚拟机中断的用法。</p>
+<p>首先，我们实现一个扩展函数，它的作用是开启对虚拟机中断的使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(start_interrupt) &#123;</span><br><span class="line">	init();</span><br><span class="line">	create_scheduler_thread();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>init的实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	orig_interrupt_function = zend_interrupt_function;</span><br><span class="line">	zend_interrupt_function = new_interrupt_function;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的核心是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_interrupt_function = new_interrupt_function;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，我们需要实现<code>zend_interrupt_function</code>。<code>zend_interrupt_function</code>的作用是在虚拟机中断发生的时候，会去执行的函数。并且，<code>zend_interrupt_function</code>是<code>PHP</code>内核定义的一个函数指针。</p>
+<p>（我们这篇文章不多讲<code>orig_interrupt_function = zend_interrupt_function;</code>，我们假设没有其他扩展实现了<code>zend_interrupt_function</code>）</p>
+<p><code>new_interrupt_function</code>的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">new_interrupt_function</span><span class="params">(zend_execute_data *execute_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">		php_printf(<span class="string">&quot;yield coroutine\n&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (orig_interrupt_function)</span><br><span class="line">    &#123;</span><br><span class="line">        orig_interrupt_function(execute_data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，我们的这个函数<code>&#39;模拟&#39;</code>了<code>yield</code>协程的过程。OK，我们接着看<code>create_scheduler_thread</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create_scheduler_thread</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> pidt;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pthread_create(&amp;pidt, <span class="literal">NULL</span>, (<span class="keyword">void</span> * (*)(<span class="keyword">void</span> *)) schedule, <span class="literal">NULL</span>) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        php_printf(<span class="string">&quot;pthread_create[PHPCoroutine Scheduler] failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数的作用是创建一个线程，这个线程的执行体是<code>schedule</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">schedule</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        EG(vm_interrupt) = <span class="number">1</span>;</span><br><span class="line">        usleep(<span class="number">5000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而这个<code>schedule</code>线程我们可以认为它是一个负责调用的一个线程。它设置<code>EG(vm_interrupt)</code>的值为1。设置完之后，当虚拟机检查到这个值为1的时候，就会去执行<code>new_interrupt_function</code>函数，从而实现了<code>yield</code>协程。</p>
+<p>每次触发完虚拟机中断后，虚拟机会把<code>EG(vm_interrupt)</code>设置为0。因此，这里需要循环的去设置<code>EG(vm_interrupt)</code>的值为1。为什么这里需要使用<code>usleep</code>呢？因为中断不是每分每秒都在进行的，所以可以挂起这个线程，让其他线程跑。</p>
+<p>好的，我们来写一段<code>PHP</code>脚本来测试一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">start_interrupt();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;1\n&quot;</span>;</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php interrupt.php </span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">yeild coroutine</span><br><span class="line">1</span><br><span class="line">......</span><br><span class="line">^C</span><br><span class="line">~/codeDir/phpCode/test # </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/" data-id="ckkj72zt40067f6vxebny1gcz" data-title="《就是要你懂Swoole》--虚拟机中断" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-《PHP扩展开发》-return-value的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
@@ -1084,71 +1158,6 @@
 
 
   
-    <article id="post-协程局部存储的一个简单设计" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/04/01/%E5%8D%8F%E7%A8%8B%E5%B1%80%E9%83%A8%E5%AD%98%E5%82%A8%E7%9A%84%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E8%AE%BE%E8%AE%A1/" class="article-date">
-  <time class="dt-published" datetime="2019-04-01T08:41:12.000Z" itemprop="datePublished">2019-04-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/04/01/%E5%8D%8F%E7%A8%8B%E5%B1%80%E9%83%A8%E5%AD%98%E5%82%A8%E7%9A%84%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E8%AE%BE%E8%AE%A1/">协程局部存储的一个简单设计</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>1、协程局部存储键值</p>
-<p>需要一种数据结构来存储key值（用来判断协程局部存储空间的使用情况，used或者unsed）：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">co_specific</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> used;</span><br><span class="line">    <span class="keyword">void</span> (*destructor)(<span class="keyword">void</span>*);</span><br><span class="line">&#125; <span class="keyword">specific_t</span>;</span><br></pre></td></tr></table></figure>
-
-<p>有一个全局的指针<code>co_specific</code>指向一个<code>specific_t</code>数组。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    key1[key1] ---  key2[key2]</span><br><span class="line">    key2[key2] ---  key3[key3]</span><br><span class="line">    key3[key3] ---  key4[key4]</span><br></pre></td></tr></table></figure>
-
-<p><code>co_specific_num</code>变量用来记录<code>specific_t</code>数组的长度。</p>
-<p>2、协程自身有一块内存用来存放data</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">co_struct</span> &#123;</span></span><br><span class="line">  	<span class="comment">//other attributes</span></span><br><span class="line">    <span class="keyword">void</span> **specific;</span><br><span class="line">    <span class="keyword">int</span> spec_num;</span><br><span class="line">    <span class="comment">//other attributes</span></span><br><span class="line">&#125; <span class="keyword">co_t</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>specific</code>数组里面存放了一些指针，这些指针指向协程私有的数据。</p>
-<p><code>specific_t</code>和<code>specific</code>数组是有所对应的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    key1[key1] -.-&gt;  data1_ptr[data1_ptr]</span><br><span class="line">    key2[key2]  -.-&gt;  data2_ptr[data2_ptr]</span><br><span class="line">    key3[key3]  -.-&gt;   data3_ptr[data3_ptr] </span><br><span class="line">    key4[key4]  -.-&gt;   data4_ptr[data4_ptr]</span><br><span class="line">    key1[key1] ---  key2[key2] </span><br><span class="line">    key2[key2] ---  key3[key3]</span><br><span class="line">    key3[key3] ---  key4[key4]</span><br><span class="line">    data1_ptr[data1_ptr] --- data2_ptr[data2_ptr]</span><br><span class="line">    data2_ptr[data2_ptr] --- data3_ptr[data3_ptr]</span><br><span class="line">    data3_ptr[data3_ptr] --- data4_ptr[data4_ptr]</span><br><span class="line">    data1_ptr[data1_ptr] --&gt; data1[data1]</span><br><span class="line">    data2_ptr[data2_ptr] --&gt; data2[data2]</span><br><span class="line">    data3_ptr[data3_ptr] --&gt; data3[data3]</span><br><span class="line">    data4_ptr[data4_ptr] --&gt; data4[data4]</span><br></pre></td></tr></table></figure>
-
-<p>3、算法</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">co_key_create</span><span class="params">(<span class="keyword">void</span> (*destructor)(<span class="keyword">void</span>*))</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">specific_t</span> *specific = co_specific;</span><br><span class="line">    <span class="keyword">specific_t</span> *specific_end = specific + co_specific_num;</span><br><span class="line">    <span class="keyword">int</span> old_num = co_specific_num;</span><br><span class="line">    <span class="keyword">while</span>(specific &lt; specific_end) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!specific-&gt;used) &#123;</span><br><span class="line">            specific-&gt;used = <span class="number">1</span>;</span><br><span class="line">            specific-&gt;destructor = destructor;</span><br><span class="line">            <span class="keyword">return</span> specific - co_specific;</span><br><span class="line">        &#125;</span><br><span class="line">        specific++;</span><br><span class="line">    &#125;</span><br><span class="line">    co_specific_num += <span class="number">16</span>;</span><br><span class="line">    co_specific = <span class="built_in">realloc</span>(co_specific, co_specific_num * <span class="keyword">sizeof</span>(<span class="keyword">specific_t</span>));</span><br><span class="line">    <span class="built_in">memset</span>(co_specific + old_num, <span class="number">0</span>, <span class="number">16</span> * <span class="keyword">sizeof</span>(<span class="keyword">specific_t</span>));</span><br><span class="line">    co_specific[old_num].used = <span class="number">1</span>;</span><br><span class="line">    co_specific[old_num].destructor = destructor;</span><br><span class="line">    <span class="keyword">return</span> old_num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">co_key_delete</span><span class="params">(<span class="keyword">int</span> key)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(unlikely(key &lt; <span class="number">0</span>) || </span><br><span class="line">        co_specific_num &lt;= key ||</span><br><span class="line">        !co_specific[key].used) &#123;</span><br><span class="line">        <span class="keyword">return</span> EINVAL;</span><br><span class="line">    &#125;</span><br><span class="line">    co_specific[key].used = <span class="number">0</span>;</span><br><span class="line">    co_specific[key].destructor = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">co_setspecific</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">const</span> <span class="keyword">void</span> *value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(unlikely(key &lt; <span class="number">0</span>) || </span><br><span class="line">        co_specific_num &lt;= key ||</span><br><span class="line">        !co_specific[key].used) &#123;</span><br><span class="line">        <span class="keyword">return</span> EINVAL;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(current-&gt;spec_num &lt;= key) &#123;</span><br><span class="line">        current-&gt;specific = <span class="built_in">realloc</span>(current-&gt;specific, co_specific_num*<span class="keyword">sizeof</span>(<span class="keyword">void</span> *));</span><br><span class="line">        <span class="built_in">memset</span>(current-&gt;specific + current-&gt;spec_num, <span class="number">0</span>, (co_specific_num-current-&gt;spec_num)*<span class="keyword">sizeof</span>(<span class="keyword">void</span> *));</span><br><span class="line">        current-&gt;spec_num = co_specific_num;</span><br><span class="line">    &#125;</span><br><span class="line">    current-&gt;specific[key] = (<span class="keyword">void</span> *)value;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">co_getspecific</span><span class="params">(<span class="keyword">int</span> key)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(unlikely(key &lt; <span class="number">0</span>) || </span><br><span class="line">        co_specific_num &lt;= key ||</span><br><span class="line">        !co_specific[key].used) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(current-&gt;spec_num &lt;= key)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> current-&gt;specific[key];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>代码来自<a target="_blank" rel="noopener" href="https://github.com/duanery/coroutine">这里</a>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/04/01/%E5%8D%8F%E7%A8%8B%E5%B1%80%E9%83%A8%E5%AD%98%E5%82%A8%E7%9A%84%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E8%AE%BE%E8%AE%A1/" data-id="ckkj72ztv008nf6vx81d1ho6m" data-title="协程局部存储的一个简单设计" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1186,7 +1195,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -1197,6 +1206,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+          </li>
         
           <li>
             <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
@@ -1212,10 +1225,6 @@
         
           <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
           </li>
         
       </ul>

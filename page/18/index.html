@@ -77,6 +77,77 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-对于php-的-sleep理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2018-03-31T02:07:10.000Z" itemprop="datePublished">2018-03-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/">对于php 的 sleep理解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天知乎上有人邀请我回答一个问题，问题挺好的。这里分享下。</p>
+<p>问题描述是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">比如 我现在有一个方法: a 调用方法:b</span><br><span class="line">b里面是sleep </span><br><span class="line">1分钟之后</span><br><span class="line">向数据库插入一条数据</span><br><span class="line"></span><br><span class="line">用户x在1点的时候 访问了方法a</span><br><span class="line"></span><br><span class="line">用户y在1点0分30秒的时候 访问了方法a</span><br><span class="line"></span><br><span class="line">请问:最终 到1点1分30秒的时候 ，数据库会插入一条数据 ？ 还是两条数据？</span><br><span class="line"></span><br><span class="line">为什么</span><br></pre></td></tr></table></figure>
+
+<p>我的答案：</p>
+<p>谢邀</p>
+<p>我通过代码来对你讲解吧。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> date(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>, time());</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line">sleep(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> date(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>, time());</span><br></pre></td></tr></table></figure>
+
+<p>然后我打开两个页面，同时去请求我的脚本。</p>
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9%E4%BA%8Ephp%20%E7%9A%84%20sleep%E7%90%86%E8%A7%A3/1.png"></p>
+<p>看到没？这两次请求都有对应的输出对吧（相当于向数据库里面插入信息）。</p>
+<p><strong>重点来了</strong></p>
+<p>我明明是同时请求浏览器的，为什么第二次请求被处理的时间是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2018-03-31 01:07:35</span><br></pre></td></tr></table></figure>
+
+<p>好像是第一次请求被处理完之后结束的时间对吧。</p>
+<p>为什么？因为我只开了一个PHP的worker进程：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9%E4%BA%8Ephp%20%E7%9A%84%20sleep%E7%90%86%E8%A7%A3/2.png"></p>
+<p>这意味着什么呢？</p>
+<p>因为第一次请求导致了worker进程被挂起了（因为sleep的原因，worker进程处于阻塞态）。所以，此时的worker进程不能去处理客户端的连接。因此，必须等到了第一次请求被处理完了，才可以处理第二次请求。于是第二次请求它被处理的时间是第一次请求被处理完的结束时间。</p>
+<p>那么，既然worker进程阻塞了，为什么可以处理实际上在<code>2018-03-31 01:07:05</code>就发来的第二次请求呢（第二次请求和第一次请求是同时发起的）？原因是有Web服务，例如我这里的Nginx。它会去<strong>保持</strong>Nginx于客户端的连接。所以第二次请求可以推迟到<code>2018-03-31 01:07:35</code>再被处理。其实，如果你把我上面代码的sleep时间设置更久一点，例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sleep(<span class="number">60</span>);</span><br></pre></td></tr></table></figure>
+
+<p>你会发现，第二次请求很可能会得到一个404状态。</p>
+<p>好的，说了这么多，现在回到你的问题。</p>
+<p>你是让用户x在1点的时候去请求PHP脚本。然后这时候调用了sleep方法对吧（sleep一分钟）。根据上面我的讲解，worker进程需要等到1点1分才可以去处理用户y实际在1点0分30秒的时候就发来的请求。然后，在1点1分的时候，worker因为sleep而在此被阻塞。直到1点2分才被唤醒，从阻塞态再到就绪态然后才处于可执行状态。然后才可以插入第二条数据。也就是说，到了1点2分的时候，数据库里面才会有第二条数据。</p>
+<p>所以，<strong>在1点1分30秒的时候，数据库里面只有一条数据</strong>。</p>
+<p>但是，我前面的结论都是在单个worker进程的基础上得到的。如果你的worker进程有多个，假设2个好吧。那么第一个worker进程因为第一次请求在1点钟被阻塞了（直到1点1分第1个worker进程才会被唤醒，然后插入数据）。OK，之后时间到了1点0分30秒，第二个请求发来了，因为第一个worker此时还是处于阻塞态，所以第二个worker进程会去处理这个请求。同样的，第二个worker进程在1点0分30秒被阻塞了（直到1点1分30秒第二个worker进程才会被唤醒，然后插入第二条数据）。因此，最终在1点1分30秒的时候，数据库里面是有两条数据的。</p>
+<p>所以在1点1分30秒的时候，数据库里面有几条记录，看情况。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" data-id="ckkj72zu8009rf6vxb8wecc2h" data-title="对于php 的 sleep理解" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-聊一聊协程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/" class="article-date">
@@ -696,143 +767,6 @@
 
 
   
-    <article id="post-PHP命名空间" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/01/05/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/" class="article-date">
-  <time class="dt-published" datetime="2018-01-05T06:13:49.000Z" itemprop="datePublished">2018-01-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/01/05/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/">PHP命名空间</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>这篇文章是关于PHP<strong>命名空间</strong>的一些使用方法的介绍。命名空间的概念我就不多说了，随便百度一下就好了。</p>
-<p>直接上代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>很多博客可能会千篇一律的写一段这样的代码。然后再接着写：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
-
-<p>然后问大家输出什么结果，其实这样很没意思，至少我是这么觉得。这样学习是很不对的。</p>
-<p>emmm，先看一下结果吧：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/1.PNG"></p>
-<p>现在我给大家介绍一个常量：<code>__NAMESPACE__</code>。这个常量保存了当前区域所处的命名空间。有了这个东西，就不用猜测了，一切都很明显。我们来测试一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们执行这段代码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/2.PNG"></p>
-<p>说明<code>namespace School\Teacher;</code>和<code>namespace School\Parent;</code>之间的代码是属于命名空间<code>School\Teacher</code>的。OK，我们继续测试：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br></pre></td></tr></table></figure>
-
-<p>我们执行一下这段代码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/3.PNG"></p>
-<p>说明在<code>namespace School\Parent;</code>之后的区域都属于命名空间<code>School\Parent</code>的。</p>
-<p>好的，到了这一步，我们就明白为什么在上面实例化<code>Person</code>类的时候，是输出<code>I am Parent</code>了吧。</p>
-<p>但是，这两个类名都是同样的呀，PHP它是如何区分的呢？这里我还不确定，但是我猜测底层为我们加上了命名空间前缀。（先保留这个问题，等我看了源码之后，再来回答）</p>
-<p>OK，那如果我非要在<code>School\Parent</code>命名空间中实例化<code>School\Teacher</code>命名空间中的Person呢？我们来做个测试一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $obj = <span class="keyword">new</span> School\Teacher\Person();</span><br><span class="line">    var_dump($obj);</span><br></pre></td></tr></table></figure>
-
-<p>这样会报错：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/4.PNG"></p>
-<p>我们可以看到，它是在<code>School\Parent</code>的命名空间下去寻找命名空间<code>School\Teacher</code>中的<code>Person</code>类。那么这是不是很像我们平常接触的目录的相对路径？所以我们需要修改一下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$obj = <span class="keyword">new</span> \School\Teacher\Person();</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/5.PNG"></p>
-<p>那么这种写法是不是很像绝对路径？这说明了一个问题，命名空间应该是有一个<code>根</code>。 </p>
-<p>大家会不会觉得<code>new</code>后面跟了很长的一段东西，OK，我们把它改简单一点。这时候我们可以使用<code>use</code>关键字：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
-
-<p>我们看看结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/6.PNG"></p>
-<p>我们发现和上面的结果不一样对吧，这次我们实例化的是<code>School\Parent</code>命名空间中的<code>Person</code>类。很奇怪啊，上面我明明使用了：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br></pre></td></tr></table></figure>
-
-<p>语句啊，为什么还是在<code>School\Parent</code>命名空间中搜索<code>Person</code>类呢？很多初学者如果不去仔细分析的话，很可能会有这样的疑问。</p>
-<p>我们修改一下代码，打印一下命名空间：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/7.PNG"></p>
-<p>这说明了<code>use School\Teacher;</code>并不是使后面的命名空间变为<code>School\Teacher</code>。这下知道上面为什么是实例化<code>School\Parent</code>命名空间下的<code>Person</code>类了吧。</p>
-<p>那么<code>use</code>到底是什么作用呢？OK，其实它是起到了一个简写的作用。也就是说，我们可以用<code>use School\Teacher;</code>中最后的那个<code>Teacher</code>代替<code>\School\Teacher</code>（注意不是代替<code>School\Teacher</code>，通过我们上面的实验可以验证这一点）。</p>
-<p>OK，知道了这个之后，我们再次修改一下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Teacher\Person();</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/8.PNG"></p>
-<p>OK，果然是这样的对吧。</p>
-<p>如果还是不信的话，我再次修改一下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/9.PNG"></p>
-<p>说的是不能够<code>use School\Teacher\Person as Person</code>。有人会问后面的<code>as Person</code>是什么鬼？其实<code>as Person</code>的意思是用<code>Person</code>来代替<code>\School\Teacher\Person</code>。但是我们在代码里面没有使用<code>as Person</code>呀？我个人觉得是因为它默认会取<code>use School\Teacher\Person</code>中的最后一个（即Person）来<code>as</code>。我们可以测试一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span> <span class="title">as</span> <span class="title">Person</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
-
-<p>得到如下结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/10.PNG"></p>
-<p>一样的报错对吧。</p>
-<p>OK，既然它说不能够<code>as Person</code>的话，那我就换一个呗：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span> <span class="title">as</span> <span class="title">Teacher</span>;</span><br><span class="line">var_dump(<span class="keyword">__NAMESPACE__</span>);</span><br><span class="line"><span class="keyword">new</span> Teacher();</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/11.PNG"></p>
-<p>这样的结果可以证明我说的<code>use</code>的作用了吧。</p>
-<p>接下来简单演示一下多个文件中如何使用<code>use</code>（用过Laravel、ThinkPHP框架的人一定知道），我发现很多博客都没有讲这一点，导致一些新手容易产生一个幻觉。</p>
-<p>首先，我建立两个文件：<code>Parent.php</code>和<code>Teacher.php</code>。</p>
-<p>我们还是使用上面的代码但是，把这两个类分别写在这两个文件里面：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// Teacher.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Teacher</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Teacher&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// Parent.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">School</span>\<span class="title">Parent</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;I am Parent&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后我们在<code>test.php</code>文件里面分别去实例化这两个类：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">School</span>\<span class="title">Teacher</span>\<span class="title">Person</span> <span class="title">as</span> <span class="title">Teacher</span>;</span><br><span class="line">    <span class="keyword">new</span> Teacher();</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/12.PNG"></p>
-<p>咦，我们使用别人写的框架的时候，不是可以做类似跨文件的操作吗？（反正当初菜鸡博主尝试过，以为是可以的。然而框架欺骗了我的感情）</p>
-<p>其实小伙伴们被框架给迷惑了，PHP至少现在还不支持这种骚操作。（我也觉的不要这样子，代码很容易混乱的）</p>
-<p>框架的真实情况可能是这样的，把这两个类文件在一个入口文件里面引入，然后才能进行这样的操作。例如，菜鸡博主最近在开发一个框架，就有类似的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	应用（项目）的入口文件index.php</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">include</span> <span class="string">&#x27;HHTCore/Common/bootstrap.php&#x27;</span>;</span><br><span class="line">    <span class="keyword">include</span> <span class="string">&#x27;HHTCore/Controller/Controller.php&#x27;</span>; <span class="comment">// 注意这个地方引入了一个文件</span></span><br><span class="line"></span><br><span class="line">    $app = <span class="keyword">isset</span>($_GET[<span class="string">&#x27;app&#x27;</span>]) ? $_GET[<span class="string">&#x27;app&#x27;</span>] : <span class="string">&#x27;Home&#x27;</span>; <span class="comment">// 默认的应用是Home</span></span><br><span class="line">    $controller = <span class="keyword">isset</span>($_GET[<span class="string">&#x27;c&#x27;</span>]) ? $_GET[<span class="string">&#x27;c&#x27;</span>] : <span class="string">&#x27;Index&#x27;</span>; <span class="comment">// 默认的控制器是Home目录下的IndexController</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* some code */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is_file($file)) &#123;</span><br><span class="line">    	<span class="keyword">include</span> $file; <span class="comment">// 这里又引入了一个文件</span></span><br><span class="line">    	$controller = <span class="string">&#x27;\APP\Home\Controller\\&#x27;</span> . $controller;</span><br><span class="line"></span><br><span class="line">    	$appClassObject = <span class="keyword">new</span> $controller();</span><br><span class="line">    	$appClassObject-&gt;$action();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="keyword">echo</span> <span class="string">&#x27;error&#x27;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后，又有两个文件：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// Controller.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">HHTCore</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">$view = <span class="string">&#x27;&#x27;</span>, $data = []</span>) </span>&#123;</span><br><span class="line">            var_dump(dirname(<span class="keyword">__FILE__</span>));</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">// IndexController.php</span></span><br><span class="line">    <span class="keyword">namespace</span> <span class="title">APP</span>\<span class="title">Home</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">use</span> <span class="title">HHTCore</span>\<span class="title">Controller</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">IndexController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    		<span class="keyword">$this</span>-&gt;render();</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>看起来我在<code>IndexController.php</code>里面使用了<code>use HHTCore\Controller\Controller;</code>之后，就可以直接使用类<code>Controller</code>了。然而不是的，我们在上面的<code>Teacher.php</code>和<code>Parent.php</code>做过实验。真实情况是，我们每次访问我们的Web项目，都是要从那个入口文件<code>index.php</code>里面去访问的，所以每次都会去引入那两个文件（其中后面的那个文件是根据URL动态变化的），因此，就会出现我们上面的错觉。</p>
-<p>这篇博客就和大家分享到这里吧。</p>
-<p>我希望我的每一篇博客都用心去写。</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/01/05/PHP%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4/" data-id="ckkj72zrm002jf6vx26mr8zgx" data-title="PHP命名空间" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -870,7 +804,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
     </div>
   </div>
 
@@ -881,6 +815,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+          </li>
         
           <li>
             <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
@@ -896,10 +834,6 @@
         
           <li>
             <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/PHP%E6%89%A9%E5%B1%95%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E7%9A%84%E5%90%8D%E5%AD%97/">PHP扩展如何获取私有属性的名字</a>
           </li>
         
       </ul>

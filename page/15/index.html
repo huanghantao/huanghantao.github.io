@@ -77,6 +77,62 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP7中到底可不可以-调用对象的非静态方法？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/" class="article-date">
+  <time class="dt-published" datetime="2019-04-01T13:58:49.000Z" itemprop="datePublished">2019-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/">PHP7中到底可不可以通过::来调用对象的非静态方法？</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>直接上代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;hello world\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$obj = <span class="keyword">new</span> Test();</span><br><span class="line">$obj::say();</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<p>奇怪，不是说好的<code>::</code>是用来调用类的静态方法的吗？为啥还可以调用类的非静态方法？</p>
+<p>实际上，用<code>::</code>访问类的非静态方法不符合语法，只不过PHP默认没有开始对应的报错提示。</p>
+<p>我们修改PHP的配置，增加如下配置：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// error_reporting = E_ALL | E_STRICT</span></span><br><span class="line"><span class="comment">// display_errors = On</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;hello world\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;error_reporting&#x27;</span>, E_ALL | E_STRICT);</span><br><span class="line">ini_set(<span class="string">&#x27;display_errors&#x27;</span>, <span class="string">&#x27;on&#x27;</span>);</span><br><span class="line"></span><br><span class="line">$obj = <span class="keyword">new</span> Test();</span><br><span class="line">$obj::say();</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line"></span><br><span class="line">Deprecated: Non-static method Test::say() should not be called statically in /root/codeDir/phpCode/test/test.php on line 15</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<p>可以发现报错了对吧。</p>
+<p>所以，<strong>在开发环境，应该设置最严格的报错的级别，生产环境，可以适当降低报错级别</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/" data-id="ckkj72zr2001bf6vxah98e5x0" data-title="PHP7中到底可不可以通过::来调用对象的非静态方法？" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-协程局部存储的一个简单设计" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/04/01/%E5%8D%8F%E7%A8%8B%E5%B1%80%E9%83%A8%E5%AD%98%E5%82%A8%E7%9A%84%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E8%AE%BE%E8%AE%A1/" class="article-date">
@@ -692,58 +748,6 @@
 
 
   
-    <article id="post-tinyswoole中的worker进程如何数据返回给指定的reactor线程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/" class="article-date">
-  <time class="dt-published" datetime="2019-01-07T04:52:03.000Z" itemprop="datePublished">2019-01-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/">tinyswoole中的worker进程如何把数据返回给指定的reactor线程?</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们的tinyswoole的<code>[1.1.0-beta]</code>版本看似完成了worker进程与reactor线程的通信，但是如果细心分析的话会发现，这里完成的实际上是worker进程与master进程的通信。为什么这么说呢？因为，worker进程返回给master进程的数据不是给指定的reactor线程的，很可能其他的reactor线程也会读取到worker进程返回给master进程的数据。</p>
-<p>举个例子，假设我们的reactor线程有3个，worker进程有4个。</p>
-<p>master线程把connfd交给reactor线程的算法是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sub_reactor = &amp;(serv-&gt;reactor_threads[connfd % serv-&gt;reactor_num].reactor);</span><br></pre></td></tr></table></figure>
-
-<p>也就是connfd对reactor线程的个数取模。</p>
-<p>reactor线程把数据交给worker进程的算法是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">worker_id = tswev-&gt;fd % TSwooleG.serv-&gt;process_pool-&gt;workers_num;</span><br></pre></td></tr></table></figure>
-
-<p>也就是connfd对worker进程的个数取模。</p>
-<p>OK，假设有一个connfd是1，那么，reactor线程1处理这个连接，并且把connfd1这个连接发来的数据传给worker进程1。假设还有一个connfd是5，那么reactor线程2处理这个连接，并且把connfd5这个连接发来的数据传给进程1。</p>
-<p>可以看出，reactor线程1和reactor线程2都有可能与worker进程1进行通信，也就意味着，reactor线程1可能与connfd5对应的客户端通信，reactor线程2可能与connfd1对应的客户端进行通信。虽然这样子我们的程序还可以跑，但是似乎违背了我们最初的设计—每个reactor线程维持自己的那个connfd连接即可。所以，这个问题我们需要解决掉。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/" data-id="ckkj72zsu005ef6vxftnecgg5" data-title="tinyswoole中的worker进程如何把数据返回给指定的reactor线程?" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -794,6 +798,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
           </li>
         
@@ -807,10 +815,6 @@
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
       </ul>

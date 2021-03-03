@@ -77,6 +77,50 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-《PHP扩展开发》-RETURN_*的使用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2019-05-28T10:54:33.000Z" itemprop="datePublished">2019-05-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/">《PHP扩展开发》--RETURN_*宏的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>以<code>RETURN_FALSE</code>宏为例，我们展开后得到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RETURN_FALSE  					&#123; RETVAL_FALSE; return; &#125;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RETVAL_FALSE  					ZVAL_FALSE(return_value)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZVAL_FALSE(z) do &#123;				\</span></span><br><span class="line">		Z_TYPE_INFO_P(z) = IS_FALSE;	\</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>所以，<code>RETURN_FALSE</code>的作用就是把<code>return_value</code>这个扩展函数的返回值设置为<code>false</code>，然后再执行<code>C</code>语言的<code>return;</code>，从而跳出扩展函数。所以，<code>RETURN_FALSE</code>后面是不需要分号结尾的。（当然，写了也没事）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="ckkj72zsz005qf6vxg70rfcs0" data-title="《PHP扩展开发》--RETURN_*宏的使用" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-《就是要你懂Swoole》-虚拟机中断" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/" class="article-date">
@@ -1102,62 +1146,6 @@
 
 
   
-    <article id="post-PHP7中到底可不可以-调用对象的非静态方法？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/" class="article-date">
-  <time class="dt-published" datetime="2019-04-01T13:58:49.000Z" itemprop="datePublished">2019-04-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/">PHP7中到底可不可以通过::来调用对象的非静态方法？</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>直接上代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;hello world\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$obj = <span class="keyword">new</span> Test();</span><br><span class="line">$obj::say();</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
-
-<p>奇怪，不是说好的<code>::</code>是用来调用类的静态方法的吗？为啥还可以调用类的非静态方法？</p>
-<p>实际上，用<code>::</code>访问类的非静态方法不符合语法，只不过PHP默认没有开始对应的报错提示。</p>
-<p>我们修改PHP的配置，增加如下配置：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// error_reporting = E_ALL | E_STRICT</span></span><br><span class="line"><span class="comment">// display_errors = On</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;hello world\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;error_reporting&#x27;</span>, E_ALL | E_STRICT);</span><br><span class="line">ini_set(<span class="string">&#x27;display_errors&#x27;</span>, <span class="string">&#x27;on&#x27;</span>);</span><br><span class="line"></span><br><span class="line">$obj = <span class="keyword">new</span> Test();</span><br><span class="line">$obj::say();</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line"></span><br><span class="line">Deprecated: Non-static method Test::say() should not be called statically in /root/codeDir/phpCode/test/test.php on line 15</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
-
-<p>可以发现报错了对吧。</p>
-<p>所以，<strong>在开发环境，应该设置最严格的报错的级别，生产环境，可以适当降低报错级别</strong>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/" data-id="ckkj72zr2001bf6vxah98e5x0" data-title="PHP7中到底可不可以通过::来调用对象的非静态方法？" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1208,6 +1196,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
           </li>
         
@@ -1221,10 +1213,6 @@
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
       </ul>

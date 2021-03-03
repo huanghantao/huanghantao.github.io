@@ -77,6 +77,118 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP8注解源码分析（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/06/11/PHP8%E6%B3%A8%E8%A7%A3%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2020-06-11T08:54:57.000Z" itemprop="datePublished">2020-06-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/06/11/PHP8%E6%B3%A8%E8%A7%A3%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/">PHP8注解源码分析（一）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本篇文章基于的PHP commit为：217f6e16d625abd9ce2ae1ae92421f77945649df</p>
+</blockquote>
+<p>我们的测试脚本如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">&lt;&lt;Bean(<span class="number">1</span>, <span class="number">2</span>)&gt;&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，我们需要关注的第一个函数是<code>zend_register_attribute_ce</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zend_register_attribute_ce</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	zend_hash_init(&amp;internal_validators, <span class="number">8</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	zend_class_entry ce;</span><br><span class="line"></span><br><span class="line">	INIT_CLASS_ENTRY(ce, <span class="string">&quot;PhpAttribute&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">	zend_ce_php_attribute = zend_register_internal_class(&amp;ce);</span><br><span class="line">	zend_ce_php_attribute-&gt;ce_flags |= ZEND_ACC_FINAL;</span><br><span class="line"></span><br><span class="line">	zend_compiler_attribute_register(zend_ce_php_attribute, zend_attribute_validate_phpattribute);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数会在<code>PHP</code>模块初始化的阶段被调用，用来注册<code>PHP</code>内部类<code>PhpAttribute</code>。这个类非常的有用，类似于<a target="_blank" rel="noopener" href="https://github.com/doctrine/annotations">民间版注解</a>的<code>@Annotation</code>，可以用来定义一个注解类。</p>
+<p><code>OK</code>，我们来看看<code>zend_register_attribute_ce</code>这个函数，其中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_hash_init(&amp;internal_validators, <span class="number">8</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>用来初始化注解的验证器，比如说，限制这个注解只能够用在类上面。目前，验证器是空的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">INIT_CLASS_ENTRY(ce, <span class="string">&quot;PhpAttribute&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">zend_ce_php_attribute = zend_register_internal_class(&amp;ce);</span><br><span class="line">zend_ce_php_attribute-&gt;ce_flags |= ZEND_ACC_FINAL;</span><br></pre></td></tr></table></figure>
+
+<p>用来定义一个<code>PhpAttribute</code>类，并且这个类是<code>final</code>的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">zend_compiler_attribute_register(zend_ce_php_attribute, zend_attribute_validate_phpattribute);</span><br><span class="line"></span><br><span class="line"><span class="function">ZEND_API <span class="keyword">void</span> <span class="title">zend_compiler_attribute_register</span><span class="params">(zend_class_entry *ce, zend_attributes_internal_validator validator)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (ce-&gt;type != ZEND_INTERNAL_CLASS) &#123;</span><br><span class="line">		zend_error_noreturn(E_ERROR, <span class="string">&quot;Only internal classes can be registered as compiler attribute&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	zend_string *lcname = zend_string_tolower_ex(ce-&gt;name, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	zend_hash_update_ptr(&amp;internal_validators, lcname, validator);</span><br><span class="line">	zend_string_release(lcname);</span><br><span class="line"></span><br><span class="line">	zend_add_class_attribute(ce, zend_ce_php_attribute-&gt;name, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，<code>zend_compiler_attribute_register</code>主要做两件事情，第一件事情是把<code>zend_attribute_validate_phpattribute</code>这个验证器添加到<code>internal_validators</code>这个哈希表里面。</p>
+<p>第二件事情是把<code>PhpAttribute</code>注解的名字添加到<code>zend_ce_php_attribute-&gt;attributes</code>里面。</p>
+<p>这样，<code>PhpAttribute</code>这个类算是创建完了。</p>
+<p>接下来，就开始编译我们的这个<code>PHP</code>脚本了。在编译的过程中，一个很重要的函数是<code>zend_compile_attributes</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zend_compile_attributes</span><span class="params">(HashTable **attributes, zend_ast *ast, <span class="keyword">uint32_t</span> offset, <span class="keyword">int</span> target)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	zend_ast_list *<span class="built_in">list</span> = zend_ast_get_list(ast);</span><br><span class="line">	<span class="keyword">uint32_t</span> i, j;</span><br><span class="line"></span><br><span class="line">	ZEND_ASSERT(ast-&gt;kind == ZEND_AST_ATTRIBUTE_LIST);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="built_in">list</span>-&gt;children; i++) &#123;</span><br><span class="line">		zend_ast *el = <span class="built_in">list</span>-&gt;child[i];</span><br><span class="line">		zend_string *name = zend_resolve_class_name_ast(el-&gt;child[<span class="number">0</span>]);</span><br><span class="line">		zend_ast_list *args = el-&gt;child[<span class="number">1</span>] ? zend_ast_get_list(el-&gt;child[<span class="number">1</span>]) : <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">		zend_attribute *attr = zend_add_attribute(attributes, <span class="number">0</span>, offset, name, args ? args-&gt;children : <span class="number">0</span>);</span><br><span class="line">		zend_string_release(name);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Populate arguments</span></span><br><span class="line">		<span class="keyword">if</span> (args) &#123;</span><br><span class="line">			ZEND_ASSERT(args-&gt;kind == ZEND_AST_ARG_LIST);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; args-&gt;children; j++) &#123;</span><br><span class="line">				zend_const_expr_to_zval(&amp;attr-&gt;argv[j], args-&gt;child[j]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Validate internal attribute</span></span><br><span class="line">		zend_attributes_internal_validator validator = zend_attribute_get_validator(attr-&gt;lcname);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (validator != <span class="literal">NULL</span>) &#123;</span><br><span class="line">			validator(attr, target);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译的这个<code>ast</code>节点它是<code>ZEND_AST_ATTRIBUTE_LIST</code>类型的<code>list</code>节点。可以看出，这实际上就开始编译我们的<code>Bean</code>注解了。</p>
+<p>首先，这个<code>list</code>节点的第一个子节点<code>el-&gt;child[0]</code>是<code>ZEND_AST_ZVAL</code>类型的节点，里面保存了一个字符串，而这个字符串就是我们注解的名字<code>Bean</code>。并且，我们发现，这个字符串是通过函数<code>zend_resolve_class_name_ast</code>来解析的，说明这个注解的名字必须符合<code>PHP</code>类名的命名规范。</p>
+<p>然后，这个<code>list</code>节点的第二个节点<code>el-&gt;child[1]</code>是<code>ZEND_AST_ARG_LIST</code>类型的<code>list</code>节点。我们可以很容易的知道，实际上就对应了<code>Bean(1, 2)</code>中的<code>1</code>和<code>2</code>，这两个都是<code>ZEND_AST_ZVAL</code>类型的节点。</p>
+<p>在获取到<code>args</code>之后，调用了以下函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_attribute *attr = zend_add_attribute(attributes, <span class="number">0</span>, offset, name, args ? args-&gt;children : <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>(其中，<code>attributes</code>是我们定义的<code>Foo</code>类的<code>attributes</code>哈希表)</p>
+<p>我们来看看这个<code>zend_add_attribute</code>函数会做些什么事情：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API zend_attribute *<span class="title">zend_add_attribute</span><span class="params">(HashTable **attributes, zend_bool persistent, <span class="keyword">uint32_t</span> offset, zend_string *name, <span class="keyword">uint32_t</span> argc)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (*attributes == <span class="literal">NULL</span>) &#123;</span><br><span class="line">		*attributes = pemalloc(<span class="keyword">sizeof</span>(HashTable), persistent);</span><br><span class="line">		zend_hash_init(*attributes, <span class="number">8</span>, <span class="literal">NULL</span>, persistent ? attr_pfree : attr_free, persistent);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	zend_attribute *attr = pemalloc(ZEND_ATTRIBUTE_SIZE(argc), persistent);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (persistent == ((GC_FLAGS(name) &amp; IS_STR_PERSISTENT) != <span class="number">0</span>)) &#123;</span><br><span class="line">		attr-&gt;name = zend_string_copy(name);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		attr-&gt;name = zend_string_dup(name, persistent);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	attr-&gt;lcname = zend_string_tolower_ex(attr-&gt;name, persistent);</span><br><span class="line">	attr-&gt;offset = offset;</span><br><span class="line">	attr-&gt;argc = argc;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Initialize arguments to avoid partial initialization in case of fatal errors. */</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = <span class="number">0</span>; i &lt; argc; i++) &#123;</span><br><span class="line">		ZVAL_UNDEF(&amp;attr-&gt;argv[i]);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	zend_hash_next_index_insert_ptr(*attributes, attr);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> attr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (*attributes == <span class="literal">NULL</span>) &#123;</span><br><span class="line">	*attributes = pemalloc(<span class="keyword">sizeof</span>(HashTable), persistent);</span><br><span class="line">	zend_hash_init(*attributes, <span class="number">8</span>, <span class="literal">NULL</span>, persistent ? attr_pfree : attr_free, persistent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用来判断<code>Foo</code>类的<code>attributes</code>哈希表是否分配了内存，没有分配的话，就分配一下。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_attribute *attr = pemalloc(ZEND_ATTRIBUTE_SIZE(argc), persistent);</span><br></pre></td></tr></table></figure>
+
+<p>用来分配一个<code>zend_attribute</code>的内存。我们看一下<code>ZEND_ATTRIBUTE_SIZE</code>这个宏：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZEND_ATTRIBUTE_SIZE(argc) (sizeof(zend_attribute) + sizeof(zval) * (argc) - sizeof(zval))</span></span><br></pre></td></tr></table></figure>
+
+<p>首先是求<code>zend_attribute</code>结构体的大小，然后再为分配<code>argc - 1</code>个<code>zval</code>的内存空间。为什么还要分配<code>argc - 1</code>个<code>zval</code>的内存空间呢？我们来看看<code>zend_attribute</code>这个结构体：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">zend_attribute</span> &#123;</span></span><br><span class="line">	zend_string *name;</span><br><span class="line">	zend_string *lcname;</span><br><span class="line">	<span class="comment">/* Parameter offsets start at 1, everything else uses 0. */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> offset;</span><br><span class="line">	<span class="keyword">uint32_t</span> argc;</span><br><span class="line">	zval argv[<span class="number">1</span>];</span><br><span class="line">&#125; zend_attribute;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，这个结构体最后一个成员是<code>zval argv[1]</code>，所以，我们发现，这个实际上是一个柔性数组。所以，我们需要为<code>argv</code>额外分配内存。而<code>argc</code>的大小就是<code>2</code>。因为我们需要保存<code>1</code>和<code>2</code>两个值。</p>
+<p>分配完了<code>zend_attribute</code>内存之后，就开始使用<code>zend_attribute</code>了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">attr-&gt;name = zend_string_copy(name);</span><br></pre></td></tr></table></figure>
+
+<p>保存注解原始的名字，也就是<code>Bean</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">attr-&gt;lcname = zend_string_tolower_ex(attr-&gt;name, persistent);</span><br></pre></td></tr></table></figure>
+
+<p>保存注解的小写名字，也就是<code>bean</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">attr-&gt;argc = argc;</span><br></pre></td></tr></table></figure>
+
+<p>保存注解参数的个数，这里是<code>2</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zend_hash_next_index_insert_ptr(*attributes, attr);</span><br></pre></td></tr></table></figure>
+
+<p>最后，把<code>zend_attribute</code>插入<code>Foo</code>类的<code>attributes</code>哈希表。通过这个操作，我们可以知道，同一个类的注解可以有多个，因为底层使用数组保存的注解信息。</p>
+<p>我们继续回到<code>zend_compile_attributes</code>函数里面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; args-&gt;children; j++) &#123;</span><br><span class="line">	zend_const_expr_to_zval(&amp;attr-&gt;argv[j], args-&gt;child[j]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>计算注解的两个参数的值，然后保存到对应的<code>argv</code>里面。</p>
+<p>到此位置，我们已经编译完成了注解的语法树。接着，就是验证这个注解是否合法了：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Validate internal attribute</span></span><br><span class="line">zend_attributes_internal_validator validator = zend_attribute_get_validator(attr-&gt;lcname);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (validator != <span class="literal">NULL</span>) &#123;</span><br><span class="line">	validator(attr, target);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，总结一下编译注解后的结果：</p>
+<blockquote>
+<p>把注解名字和参数保存在一个zend_attribute的结构体里面，然后再把这个zend_attribute插入到对应的类结构体对象的attributes里面。这样，我们后续只要拿到了类的结构体指针，我们就可以拿到我们注解的内容，包括注解的名字和注解的参数。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/06/11/PHP8%E6%B3%A8%E8%A7%A3%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zr8001lf6vxha0o20az" data-title="PHP8注解源码分析（一）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP8注解实战" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/06/09/PHP8%E6%B3%A8%E8%A7%A3%E5%AE%9E%E6%88%98/" class="article-date">
@@ -636,175 +748,6 @@
 
 
   
-    <article id="post-Swoole-PHP协程入口函数实战分析（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/03/21/Swoole-PHP%E5%8D%8F%E7%A8%8B%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2020-03-21T05:31:57.000Z" itemprop="datePublished">2020-03-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/03/21/Swoole-PHP%E5%8D%8F%E7%A8%8B%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/">Swoole PHP协程入口函数实战分析（一）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>本篇文章，我们来实战分析一下<code>Swoole PHP</code>协程入口函数的实现原理以及细节。大家需要准备好一份<code>Swoole</code>源码好和我们一起动手操作，我们使用的<code>PHP</code>版本是<code>7.3.12</code>，<code>Swoole</code>的版本是<code>v4.4.16</code>。</p>
-<p>首先，我们需要明白<code>PHP</code>协程的入口函数是<code>swoole::PHPCoroutine::main_func</code>，也就是说，我们创建的每一个<code>PHP</code>协程，都会从<code>main_func</code>这个函数开始。</p>
-<p>我们现在来逐行分析<code>main_func</code>这个函数。首先，这个函数的参数是<code>void *arg</code>，是一个<code>void</code>类型的指针，从</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php_coro_args *php_arg = (php_coro_args *) arg;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出<code>arg</code>原来的类型是<code>php_coro_args</code>类型的指针，<code>php_coro_args</code>这个结构体对应的成员如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">php_coro_args</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    zend_fcall_info_cache *fci_cache;</span><br><span class="line">    zval *argv;</span><br><span class="line">    <span class="keyword">uint32_t</span> argc;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>可以发现，这三个成员是我们调用一个函数的基础，分别对应了函数本体、传递给函数的参数、传递给函数参数的个数。</p>
-<p>在函数的开头，我们看到了<code>BAILOUT</code>这个东西，我们先来看看如果没有这个东西会有什么问题，我们把<code>commit</code>切一下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout ef1db99ecfa475ce34d4be744d1f811fadf566ac</span><br><span class="line"></span><br><span class="line">git reset HEAD~</span><br></pre></td></tr></table></figure>
-
-<p>此时我们可以看到为支持<code>BAILOUT</code>功能而做出的文件改动。</p>
-<p>（现在<code>main_func</code>这个函数名字是旧的名字<code>create_func</code>）</p>
-<p>我们会发现，在<code>create_func</code>函数里面，增加了<code>zend_first_try</code>和<code>zend_catch</code>这个结构。我们很容易的想到这是用来捕获<code>PHP</code>异常的。</p>
-<p>并且增加了<code>swoole::Coroutine::bailout</code>这个函数，这个函数会在<code>zend_catch</code>里面被调用：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_catch &#123;</span><br><span class="line">    Coroutine::bailout([]()&#123; sw_zend_bailout(); &#125;);</span><br><span class="line">&#125; zend_end_try();</span><br></pre></td></tr></table></figure>
-
-<p>我们来看看<code>bailout</code>这个函数做了什么事情：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Coroutine::bailout</span><span class="params">(<span class="keyword">sw_coro_bailout_t</span> func)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!func)</span><br><span class="line">    &#123;</span><br><span class="line">        swError(<span class="string">&quot;bailout without bailout function&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!current)</span><br><span class="line">    &#123;</span><br><span class="line">        func();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Coroutine *co = current;</span><br><span class="line">        <span class="keyword">while</span> (co-&gt;origin)</span><br><span class="line">        &#123;</span><br><span class="line">            co = co-&gt;origin;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// it will jump to main context directly (it also breaks contexts)</span></span><br><span class="line">        on_bailout = func;</span><br><span class="line">        co-&gt;yield();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// expect that never here</span></span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!current)</span><br><span class="line">&#123;</span><br><span class="line">    func();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>表示如果不在协程环境，那么直接执行函数<code>func</code>。如果在协程环境，那么执行：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Coroutine *co = current;</span><br><span class="line"><span class="keyword">while</span> (co-&gt;origin)</span><br><span class="line">&#123;</span><br><span class="line">    co = co-&gt;origin;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// it will jump to main context directly (it also breaks contexts)</span></span><br><span class="line">on_bailout = func;</span><br><span class="line">co-&gt;yield();</span><br></pre></td></tr></table></figure>
-
-<p>表示查找到主协程，然后再把函数<code>on_bailout = func</code>赋值给<code>swoole::Coroutine::on_bailout</code>这个函数指针。</p>
-<p>然后调用<code>co-&gt;yield()</code>切换协程上下文。这个时候，就回到非协程环境了。</p>
-<p>现在，我们来看两个问题，第一个问题是这里的函数<code>func</code>是什么，第二个问题是<code>on_bailout</code>在哪里被调用了。</p>
-<p>首先来看第一个问题。函数<code>func</code>是：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sw_zend_bailout();</span><br></pre></td></tr></table></figure>
-
-<p>对应着：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> sw_zend_bailout() zend_bailout()</span></span><br><span class="line"></span><br><span class="line">BEGIN_EXTERN_C()</span><br><span class="line">ZEND_API ZEND_COLD <span class="keyword">void</span> _zend_bailout(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">uint32_t</span> lineno) <span class="comment">/* &#123;&#123;&#123; */</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!EG(bailout)) &#123;</span><br><span class="line">        zend_output_debug_string(<span class="number">1</span>, <span class="string">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    gc_protect(<span class="number">1</span>);</span><br><span class="line">    CG(unclean_shutdown) = <span class="number">1</span>;</span><br><span class="line">    CG(active_class_entry) = <span class="literal">NULL</span>;</span><br><span class="line">    CG(in_compilation) = <span class="number">0</span>;</span><br><span class="line">    EG(current_execute_data) = <span class="literal">NULL</span>;</span><br><span class="line">    LONGJMP(*EG(bailout), FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* &#125;&#125;&#125; */</span></span><br><span class="line">END_EXTERN_C()</span><br></pre></td></tr></table></figure>
-
-<p><code>zend_bailout</code>函数是用来结束程序运行的。我们重点关注<code>LONGJMP(*EG(bailout), FAILURE)</code>做了什么事情。我们知道在<code>C</code>语言里面，有一对函数<code>setjmp</code>和<code>longjmp</code>，分别用来保存当前程序运行的环境和恢复被保存的环境。</p>
-<p>我们来看看宏<code>LONGJMP</code>展开来是什么东西：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">define</span> LONGJMP(a,b) longjmp(a, b)</span></span><br></pre></td></tr></table></figure>
-
-<p>就是我们的<code>longjmp</code>函数。</p>
-<p>我们可以看一下<code>longjmp</code>这个函数的描述：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Jump to the environment saved in ENV, making the setjmp call there return VAL, or 1 if VAL is 0.</span><br><span class="line"></span><br><span class="line">翻译：跳转到在ENV中保存的环境，使setjmp调用在那里返回VAL，如果VAL为0则返回1。</span><br></pre></td></tr></table></figure>
-
-<p>所以，<code>LONGJMP(*EG(bailout), FAILURE)</code>的意图就比较明显了，程序会跳转到<code>*EG(bailout)</code>上下文中，然后使<code>SETJMP</code>调用在那里返回<code>FAILURE</code>，也就是<code>-1</code>。</p>
-<p>我们再来看第二个问题。<code>on_bailout</code>是在函数<code>swoole::Coroutine::check_end</code>中被调用的：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">check_end</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ctx.is_end())</span><br><span class="line">    &#123;</span><br><span class="line">        close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (unlikely(on_bailout))</span><br><span class="line">    &#123;</span><br><span class="line">        on_bailout();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，当<code>on_bailout</code>这个函数指针不为空的时候，会去调用这个<code>on_bailout</code>，也就是函数<code>sw_zend_bailout</code>。并且，只有当程序逻辑进入了：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_catch &#123;</span><br><span class="line">    Coroutine::bailout([]()&#123; sw_zend_bailout(); &#125;);</span><br><span class="line">&#125; zend_end_try();</span><br></pre></td></tr></table></figure>
-
-<p>的时候（即程序抛出了异常），这个<code>on_bailout</code>指针才不为空。</p>
-<p>现在，我们执行如下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard a0384ea2981125fc9a7e1a68e489ffb5b40ad426</span><br></pre></td></tr></table></figure>
-
-<p>此时，我们的<code>Swoole</code>就处于没有<code>bailout</code>的样子了。我们重新编译、安装扩展后，编写如下测试脚本：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">register_shutdown_function(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;shutdown&#x27;</span> . PHP_EOL;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;execute script&#x27;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>();</span><br></pre></td></tr></table></figure>
-
-<p>我们执行脚本：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@592b0366acbf bailout]<span class="comment"># php error.php</span></span><br><span class="line">execute script</span><br><span class="line">PHP Fatal error:  Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:9</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 9</span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:9</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 9</span><br><span class="line">shutdown</span><br><span class="line">[root@592b0366acbf bailout]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>可以发现，在脚本结束执行后，会调用我们通过<code>register_shutdown_function</code>函数注册的匿名函数，打印出字符串<code>shutdown</code>。</p>
-<p>我们现在修改脚本：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">register_shutdown_function(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;shutdown&#x27;</span> . PHP_EOL;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;execute script&#x27;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>然后执行脚本：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@592b0366acbf bailout]<span class="comment"># php error.php</span></span><br><span class="line">execute script</span><br><span class="line">PHP Fatal error:  Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line">/root/php-7.3.12/main/main.c(1414) : Bailed out without a bailout address!</span><br><span class="line">[root@592b0366acbf bailout]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>可以发现，此时我们通过<code>register_shutdown_function</code>函数注册的匿名函数无法被执行。第二个脚本和第一个脚本的区别就是第二个脚本在<code>PHP</code>协程里面抛出了异常。</p>
-<p>为什么我们<code>PHP</code>协程里面跑出异常会出现这个问题呢？我们需要跟踪一下程序的执行流程。首先，当我们的程序跑出异常的时候，会使得协程入口函数<code>create_func</code>进入如下代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (UNEXPECTED(EG(exception)))</span><br><span class="line">&#123;</span><br><span class="line">    zend_exception_error(EG(exception), E_ERROR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>之后，程序就会调用<code>php_error_cb</code>，在这个函数里面打印出异常信息。</p>
-<p>之后，程序就会执行如下代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (type != E_PARSE) &#123;</span><br><span class="line">    <span class="comment">/* restore memory limit */</span></span><br><span class="line">    zend_set_memory_limit(PG(memory_limit));</span><br><span class="line">    efree(buffer);</span><br><span class="line">    zend_objects_store_mark_destructed(&amp;EG(objects_store));</span><br><span class="line">    zend_bailout();</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，这里调用了<code>zend_bailout</code>函数，我们上面分析了这个函数，它会调用<code>LONGJMP</code>，然后把上下文切换到<code>EG(bailout)</code>。因为这里的<code>EG(bailout)</code>是空指针，所以<code>zend_bailout</code>这个函数自然就会报错了。</p>
-<p>所以，<code>Swoole</code>的解决方案就是，在<code>create_func</code>这个协程入口函数体里面包了一层<code>try ... catch</code>。</p>
-<p>我们切换一下<code>commit</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout ef1db99ecfa475ce34d4be744d1f811fadf566ac</span><br><span class="line"></span><br><span class="line">git reset HEAD~</span><br></pre></td></tr></table></figure>
-
-<p>然后重新编译、安装扩展。</p>
-<p>编写如下测试脚本：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">register_shutdown_function(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;shutdown&#x27;</span> . PHP_EOL;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;execute script&#x27;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>执行脚本：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@592b0366acbf bailout]<span class="comment"># php error.php</span></span><br><span class="line">execute script</span><br><span class="line">PHP Fatal error:  Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line">shutdown</span><br><span class="line">[root@592b0366acbf bailout]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，此时<code>register_shutdown_function</code>注册的匿名函数被执行了。也就是说，程序没有因为我们抛出异常使得<code>php cli</code>提早终止执行了。</p>
-<p>我们现在来跟踪一下程序的执行流程。</p>
-<p>首先，程序会执行<code>zend_first_try</code>，而这个宏会去设置<code>EG(bailout)</code>的地址，这个地址就在<code>create_func</code>里面，并且会保存原来的<code>EG(bailout)</code>地址。</p>
-<p>然后，我们的<code>PHP</code>脚本退出时候，程序会执行到以下代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (UNEXPECTED(EG(exception)))</span><br><span class="line">&#123;</span><br><span class="line">    zend_exception_error(EG(exception), E_ERROR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后程序依然会执行函数<code>php_error_cb</code>来打印出异常信息。</p>
-<p>然后程序会执行函数<code>zend_bailout</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ZEND_API ZEND_COLD <span class="keyword">void</span> _zend_bailout(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">uint32_t</span> lineno) <span class="comment">/* &#123;&#123;&#123; */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!EG(bailout)) &#123;</span><br><span class="line">        zend_output_debug_string(<span class="number">1</span>, <span class="string">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    gc_protect(<span class="number">1</span>);</span><br><span class="line">    CG(unclean_shutdown) = <span class="number">1</span>;</span><br><span class="line">    CG(active_class_entry) = <span class="literal">NULL</span>;</span><br><span class="line">    CG(in_compilation) = <span class="number">0</span>;</span><br><span class="line">    EG(current_execute_data) = <span class="literal">NULL</span>;</span><br><span class="line">    LONGJMP(*EG(bailout), FAILURE);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>因为<code>EG(bailout)</code>不在为空了，所以程序会执行到代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LONGJMP(*EG(bailout), FAILURE)</span><br></pre></td></tr></table></figure>
-
-<p>此时，程序会回到<code>Swoole</code>内核<code>create_func</code>的<code>zend_first_try</code>宏里面。然后进入<code>zend_catch</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_catch &#123;</span><br><span class="line">    Coroutine::bailout([]()&#123; sw_zend_bailout(); &#125;);</span><br><span class="line">&#125; zend_end_try();</span><br></pre></td></tr></table></figure>
-
-<p>然后执行函数<code>swoole::Coroutine::bailout</code>的如下代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    Coroutine *co = current;</span><br><span class="line">    <span class="keyword">while</span> (co-&gt;origin)</span><br><span class="line">    &#123;</span><br><span class="line">        co = co-&gt;origin;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// it will jump to main context directly (it also breaks contexts)</span></span><br><span class="line">    on_bailout = func;</span><br><span class="line">    co-&gt;yield();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>因为，我们现在就处于第一个协程里面，所以<code>co-&gt;origin</code>为<code>nullptr</code>。接着，程序执行代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on_bailout = func;</span><br></pre></td></tr></table></figure>
-
-<p>实际上就是：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on_bailout = sw_zend_bailout;</span><br></pre></td></tr></table></figure>
-
-<p>接着，程序执行<code>co-&gt;yield()</code>，切换上下文，此时，就会到非协程环境。然后程序就执行到了函数<code>swoole::Coroutine::run</code>里面的<code>check_end()</code>这个位置：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">long</span> <span class="title">run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> cid = <span class="keyword">this</span>-&gt;cid;</span><br><span class="line">    origin = current;</span><br><span class="line">    current = <span class="keyword">this</span>;</span><br><span class="line">    ctx.swap_in();</span><br><span class="line">    check_end();</span><br><span class="line">    <span class="keyword">return</span> cid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们前面分析过，<code>check_end</code>这个函数会去调用<code>on_bailout</code>回调函数，也就是<code>sw_zend_bailout</code>。而<code>sw_zend_bailout</code>对应着<code>zend_bailout</code>：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ZEND_API ZEND_COLD <span class="keyword">void</span> _zend_bailout(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">uint32_t</span> lineno) <span class="comment">/* &#123;&#123;&#123; */</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!EG(bailout)) &#123;</span><br><span class="line">        zend_output_debug_string(<span class="number">1</span>, <span class="string">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    gc_protect(<span class="number">1</span>);</span><br><span class="line">    CG(unclean_shutdown) = <span class="number">1</span>;</span><br><span class="line">    CG(active_class_entry) = <span class="literal">NULL</span>;</span><br><span class="line">    CG(in_compilation) = <span class="number">0</span>;</span><br><span class="line">    EG(current_execute_data) = <span class="literal">NULL</span>;</span><br><span class="line">    LONGJMP(*EG(bailout), FAILURE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>此时的<code>EG(bailout)</code>地址已经不再是<code>create_func</code>函数的<code>zend_first_try</code>里面了，而是<code>zend_first_try</code>中的<code>__orig_bailout</code>。</p>
-<p>所以，当程序执行完<code>LONGJMP(*EG(bailout), FAILURE)</code>之后，就会回到<code>php cli</code>的<code>php_execute_script</code>函数的<code>zend_try</code>里面：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zend_try &#123;</span><br><span class="line">    <span class="keyword">char</span> realfile[MAXPATHLEN];</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> PHP_WIN32</span></span><br><span class="line">    <span class="keyword">if</span>(primary_file-&gt;filename) &#123;</span><br><span class="line">        UpdateIniFromRegistry((<span class="keyword">char</span>*)primary_file-&gt;filename);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>接着，<code>php cli</code>程序可以顺利的回到<code>do_cli</code>函数的：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">out:</span><br><span class="line"><span class="keyword">if</span> (request_started) &#123;</span><br><span class="line">    php_request_shutdown((<span class="keyword">void</span> *) <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个位置。</p>
-<p>执行完函数<code>php_request_shutdown</code>之后，我们在<code>PHP</code>脚本里面通过<code>register_shutdown_function</code>函数注册的匿名函数就会被执行。最终，<code>php cli</code>程序正常退出。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>Swoole</code>内核通过<code>zend_first_try</code>保存当前地址到<code>EG(bailout)</code>，使得程序在抛出异常的时候，程序先回到<code>Swoole</code>内核的<code>zend_first_try</code>里面。然后，恢复<code>EG(bailout)</code>为<code>__orig_bailout</code>。最终，使得<code>php cli</code>程序正常退出。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/03/21/Swoole-PHP%E5%8D%8F%E7%A8%8B%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zry003gf6vx2i8k06vq" data-title="Swoole PHP协程入口函数实战分析（一）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -855,6 +798,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
           </li>
         
@@ -868,10 +815,6 @@
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
       </ul>

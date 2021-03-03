@@ -77,6 +77,78 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-OPcache优化opcode" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/10/20/OPcache%E4%BC%98%E5%8C%96opcode/" class="article-date">
+  <time class="dt-published" datetime="2020-10-19T17:29:38.000Z" itemprop="datePublished">2020-10-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/10/20/OPcache%E4%BC%98%E5%8C%96opcode/">OPcache优化opcode</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这篇文章，我们会通过一些例子来介绍一下<code>Opcache</code>对于<code>opcode</code>的一些优化。</p>
+<h2 id="简单的本地优化（pass1）"><a href="#简单的本地优化（pass1）" class="headerlink" title="简单的本地优化（pass1）"></a>简单的本地优化（pass1）</h2><p>这个<code>pass</code>会开启一些简单的优化，例如优化常数条件<code>JMP</code>。</p>
+<p>对应的<code>opcache</code>配置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zend_extension=opcache.so</span><br><span class="line">opcache.enable=1</span><br><span class="line">opcache.enable_cli=1</span><br><span class="line">opcache.opt_debug_level=0x30000</span><br><span class="line">opcache.optimization_level=0x1</span><br></pre></td></tr></table></figure>
+
+<p>我们有如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">foo:</span><br><span class="line">     ; (lines=5, args=0, vars=0, tmps=0)</span><br><span class="line">     ; (before optimizer)</span><br><span class="line">     ; /Users/hantaohuang/codeDir/cCode/php-src/test.php:3-10</span><br><span class="line">0000 JMPZ int(1) 0003</span><br><span class="line">0001 ECHO int(1)</span><br><span class="line">0002 JMP 0004</span><br><span class="line">0003 ECHO int(2)</span><br><span class="line">0004 RETURN null</span><br><span class="line"></span><br><span class="line">foo:</span><br><span class="line">     ; (lines=5, args=0, vars=0, tmps=0)</span><br><span class="line">     ; (after optimizer)</span><br><span class="line">     ; /Users/hantaohuang/codeDir/cCode/php-src/test.php:3-10</span><br><span class="line">0000 NOP</span><br><span class="line">0001 ECHO int(1)</span><br><span class="line">0002 JMP 0004</span><br><span class="line">0003 ECHO int(2)</span><br><span class="line">0004 RETURN null</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，优化前，我们需要执行<code>JMPZ</code>，并且按照条件来执行<code>0003</code>或者<code>0004</code>。但是优化后的代码，我们只需要执行<code>0001</code>和<code>0004</code>即可。我们发现，优化后的代码<code>0002</code>和<code>0003</code>实际上不会被执行，但是却生成了<code>opcode</code>，实际上是因为我们没有开启对应的优化，我们后面会有例子来讲解。</p>
+<h2 id="常数传播优化（pass8）"><a href="#常数传播优化（pass8）" class="headerlink" title="常数传播优化（pass8）"></a>常数传播优化（pass8）</h2><p>对应的<code>opcache</code>配置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zend_extension=opcache.so</span><br><span class="line">opcache.enable=1</span><br><span class="line">opcache.enable_cli=1</span><br><span class="line">opcache.opt_debug_level=0x30000</span><br><span class="line">opcache.optimization_level=0xe0</span><br></pre></td></tr></table></figure>
+
+<p>我们有如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">echo</span> $a + <span class="number">2</span> + <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">foo:</span><br><span class="line">     ; (lines=5, args=0, vars=1, tmps=3)</span><br><span class="line">     ; (before optimizer)</span><br><span class="line">     ; /Users/hantaohuang/codeDir/cCode/php-src/test.php:3-7</span><br><span class="line">     ; <span class="built_in">return</span>  [] RANGE[0..0]</span><br><span class="line">0000 ASSIGN CV0(<span class="variable">$a</span>) int(1)</span><br><span class="line">0001 T2 = ADD CV0(<span class="variable">$a</span>) int(2)</span><br><span class="line">0002 T3 = ADD T2 int(3)</span><br><span class="line">0003 ECHO T3</span><br><span class="line">0004 RETURN null</span><br><span class="line"></span><br><span class="line">foo:</span><br><span class="line">     ; (lines=3, args=0, vars=1, tmps=3)</span><br><span class="line">     ; (after optimizer)</span><br><span class="line">     ; /Users/hantaohuang/codeDir/cCode/php-src/test.php:3-7</span><br><span class="line">0000 CV0(<span class="variable">$a</span>) = QM_ASSIGN int(1)</span><br><span class="line">0001 ECHO string(<span class="string">&quot;6&quot;</span>)</span><br><span class="line">0002 RETURN null</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，因为<code>a</code>是常量<code>1</code>，所以在优化<code>opcode</code>的时候，会直接用<code>1</code>替换掉<code>a</code>。</p>
+<h2 id="死代码消除（pass14）"><a href="#死代码消除（pass14）" class="headerlink" title="死代码消除（pass14）"></a>死代码消除（pass14）</h2><p>对应的<code>opcache</code>配置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zend_extension=opcache.so</span><br><span class="line">opcache.enable=1</span><br><span class="line">opcache.enable_cli=1</span><br><span class="line">opcache.opt_debug_level=0x30000</span><br><span class="line">opcache.optimization_level=0x2061</span><br></pre></td></tr></table></figure>
+
+<p>我们有如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">foo:</span><br><span class="line">     ; (lines=5, args=0, vars=0, tmps=0)</span><br><span class="line">     ; (before optimizer)</span><br><span class="line">     ; /Users/hantaohuang/codeDir/cCode/php-src/test.php:3-10</span><br><span class="line">     ; <span class="built_in">return</span>  [] RANGE[0..0]</span><br><span class="line">0000 JMPZ int(1) 0003</span><br><span class="line">0001 ECHO int(1)</span><br><span class="line">0002 JMP 0004</span><br><span class="line">0003 ECHO int(2)</span><br><span class="line">0004 RETURN null</span><br><span class="line"></span><br><span class="line">foo:</span><br><span class="line">     ; (lines=2, args=0, vars=0, tmps=0)</span><br><span class="line">     ; (after optimizer)</span><br><span class="line">     ; /Users/hantaohuang/codeDir/cCode/php-src/test.php:3-10</span><br><span class="line">0000 ECHO int(1)</span><br><span class="line">0001 RETURN null</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，优化前的<code>0000</code>, <code>0002</code>, <code>0003</code>都被删除了，因为它们不会被执行。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/10/20/OPcache%E4%BC%98%E5%8C%96opcode/" data-id="ckkj72zqz0013f6vx0pcf2204" data-title="OPcache优化opcode" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-为什么类方法中创建Swoole协程之后可以使用$this" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/10/15/%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B1%BB%E6%96%B9%E6%B3%95%E4%B8%AD%E5%88%9B%E5%BB%BASwoole%E5%8D%8F%E7%A8%8B%E4%B9%8B%E5%90%8E%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8$this/" class="article-date">
@@ -782,55 +854,6 @@
 
 
   
-    <article id="post-《手把手教你编写PHP编译器》-开篇" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/09/16/%E3%80%8A%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99PHP%E7%BC%96%E8%AF%91%E5%99%A8%E3%80%8B-%E5%BC%80%E7%AF%87/" class="article-date">
-  <time class="dt-published" datetime="2020-09-15T22:24:18.000Z" itemprop="datePublished">2020-09-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/09/16/%E3%80%8A%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99PHP%E7%BC%96%E8%AF%91%E5%99%A8%E3%80%8B-%E5%BC%80%E7%AF%87/">《手把手教你编写PHP编译器》--开篇</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>从今天开始，我打算写一个全新的教程，手把手去实现一个五脏俱全的<code>PHP</code>，教程风格类似于去年我写的手把手编写<code>PHP</code>协程扩展那样，但是会有一点不同，这个教程可能就不会那么直接上那么多代码了，重点是讲解实现的思路。</p>
-<p>这个编译器语法会尽可能的和<code>PHP</code>保持一致。并且我希望它是一门静态强类型的语言，你可以在定义一个变量的时候，不声明类型，但是我们会进行类型推导。</p>
-<p>教程的知识点我希望和龙书的尽可能吻合，但是也不会和它完全一样，毕竟这本书前面有太多讲解编译器前端的东西了，很多手写解析源代码的，这有一些算法，一旦拿出来讲，估计会起到劝退的效果。这门教程我希望更多的是讲解编译器的后端优化，这一点也和大多数的<code>PHP</code>源码分析教程不同，目前来看，因为<code>PHP</code>的原因，编译器后端的优化除了<code>JIT</code>似乎就没了，而且大多数是去讲解<code>AST</code>生成的。</p>
-<p>至于后端的优化，会讲解原理，但是，真正的去实现的时候，我们不会自己去手写，这太费劲了，我们直接使用<code>LLVM</code>，然后开优化，读<code>IR</code>，来验证优化的思路。所以，这门教程，会讲解<code>LLVM</code>的中间表示。但是我们不会去手写<code>LLVM</code>的<code>IR</code>，而是使用<code>LLVM</code>的<code>API</code>来自动生成中间表示。</p>
-<p>这门教程是使用<code>C++</code>来开发的，构建工具是<code>CMake</code>，编译器前端工具是<code>flex</code>和<code>bison</code>，编译器后端工具是<code>LLVM</code>。</p>
-<p>之前我打算使用<code>PHP</code>来写这门教程。试坑之后，我发现有以下几点问题：</p>
-<p>1、如果直接使用<code>PHP-Parser</code>来生成<code>AST</code>，那么我们实现的语法就会受很大的限制了</p>
-<p>2、<code>PHP</code>对<code>LLVM</code>的绑定没有看到比较好的。我有想过去写扩展对<code>LLVM</code>包一层，但是这工作量太大了。也想过用FFI来直接搞，但是怕PHP的FFI有问题。所以就干脆直接用C++来完成我们的这门教程了。</p>
-<p>我不是一个专门研究编译器的人，这个教程主要是对自己的一个阶段性学习的总结。就和<code>PHP</code>协程扩展开发教程一样，边写边学习，算是对自己这一年的一个总结吧。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/09/16/%E3%80%8A%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99PHP%E7%BC%96%E8%AF%91%E5%99%A8%E3%80%8B-%E5%BC%80%E7%AF%87/" data-id="ckkj72ztb006uf6vx10wn348n" data-title="《手把手教你编写PHP编译器》--开篇" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -881,6 +904,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
           </li>
         
@@ -894,10 +921,6 @@
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
       </ul>

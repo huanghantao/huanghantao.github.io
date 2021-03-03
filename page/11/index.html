@@ -77,6 +77,91 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-深入理解连接池" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/12/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%9E%E6%8E%A5%E6%B1%A0/" class="article-date">
+  <time class="dt-published" datetime="2019-12-09T13:13:23.000Z" itemprop="datePublished">2019-12-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/12/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%9E%E6%8E%A5%E6%B1%A0/">深入理解连接池</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>长连接最大的问题就是连接失效。</p>
+</blockquote>
+<h2 id="redis-mysql等服务器为什么会限制最大连接数"><a href="#redis-mysql等服务器为什么会限制最大连接数" class="headerlink" title="redis/mysql等服务器为什么会限制最大连接数"></a>redis/mysql等服务器为什么会限制最大连接数</h2><h3 id="内核角度，过多的TCP连接非常的不环保"><a href="#内核角度，过多的TCP连接非常的不环保" class="headerlink" title="内核角度，过多的TCP连接非常的不环保"></a>内核角度，过多的TCP连接非常的不环保</h3><p>首先，过多的内存占用，尤其是阻塞的情况下。</p>
+<p>例如如下代码。</p>
+<p>服务器：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> Swoole\Server(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">6666</span>, SWOOLE_BASE);</span><br><span class="line">$serv-&gt;set(<span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">));</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">    var_dump(<span class="string">&quot;Client: Connect <span class="subst">$fd</span>&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd, $reactor_id, $data</span>) </span>&#123;</span><br><span class="line">    var_dump(strlen($data));</span><br><span class="line">    sleep(<span class="number">100000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p>代码很简单，服务器在第一次收到数据的时候，就调用<code>sleep</code>函数阻塞起来。（因为只有一个<code>worker</code>进程，所以后面不会处理客户端发来的其他数据）</p>
+<p>客户端代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>\<span class="title">Socket</span>;</span><br><span class="line"></span><br><span class="line">$socket = <span class="keyword">new</span> Socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$socket</span>) </span>&#123;</span><br><span class="line">    $socket-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">6666</span>);</span><br><span class="line"></span><br><span class="line">    $i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> ($i++ &lt; <span class="number">100000000</span>) &#123;</span><br><span class="line">        var_dump($socket-&gt;send(str_repeat(<span class="string">&quot;1&quot;</span>, <span class="number">1024</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;done\n&quot;</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>代码很简单，就是创建一个协程，然后创建一个客户端，往服务器发送数据。一共发送了<code>100000000 * 1024</code>字节的数据。</p>
+<p>我们先启动服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php server.php</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后再启动客户端：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php client.php</span><br><span class="line"><span class="meta">#</span><span class="bash"> 省略其他的输出</span></span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(617)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，客户端程序会阻塞住。</p>
+<p>我们再来看看服务器端这边的输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php server.php</span><br><span class="line">string(17) &quot;Client: Connect 1&quot;</span><br><span class="line">int(6144)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，服务器读取到了<code>6144</code>字节的数据之后，就没有继续再读取了。（我们发现，服务器端读取到的字节大小不一定是<code>1024</code>，这也说明了<code>TCP</code>是面向字节流的，每次调用<code>send</code>函数，数据不一定就会立马发送过去。同理，服务器端也不会收到数据后就立马读取）</p>
+<p>此时，我们关闭客户端这边的进程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">^C</span><br><span class="line">[root@aaeb2c267d0f test]#</span><br></pre></td></tr></table></figure>
+
+<p>然后查看<code>socket</code>内核缓存区的状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# cat /proc/net/sockstat</span><br><span class="line">sockets: used 177</span><br><span class="line">TCP: inuse 7 orphan 1 tw 0 alloc 15 mem 1211</span><br><span class="line">UDP: inuse 1 mem 2</span><br><span class="line">UDPLITE: inuse 0</span><br><span class="line">RAW: inuse 0</span><br><span class="line">FRAG: inuse 0 memory 0</span><br><span class="line">[root@aaeb2c267d0f test]#</span><br></pre></td></tr></table></figure>
+
+<p>我们发现内核缓冲区是有数据没有被清空的。</p>
+<p>所以我们发现，当服务器进程因为一个<code>socket</code>而被阻塞起来了，那么后续的连接都无法被处理，导致内存占用严重。</p>
+<p>其次，过多的端口占用、fd占用。我们来看一个<code>TCP</code>自连接的问题。</p>
+<p>代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>\<span class="title">Socket</span>;</span><br><span class="line"></span><br><span class="line">$socket = <span class="keyword">new</span> Socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$socket</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">1</span>; $i &lt; <span class="number">65536</span>; $i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> ($socket-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, $i)) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;connected\n&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var_dump($i);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php client.php</span><br><span class="line">connected</span><br><span class="line">int(43991)</span><br><span class="line">[root@aaeb2c267d0f test]#</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，如果我们不限制连接的个数，那么客户端很可能就会耗尽可用的端口。可用的端口范围可以通过如下命令查看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# sysctl -a | grep ip_local_port_range</span><br><span class="line">net.ipv4.ip_local_port_range = 32768    60999</span><br></pre></td></tr></table></figure>
+
+<h4 id="传输效率问题"><a href="#传输效率问题" class="headerlink" title="传输效率问题"></a>传输效率问题</h4><p>因为长连接可以减少<code>TCP</code>三次握手的时间，所以长连接的效率会高于短连接（短连接每次发送数据需要进行三次握手）。</p>
+<p>综上，我们要控制长连接的数量，也就是说在限制了最大连接数的情况下，连接弥足珍贵。那我们确实有那么多进程怎么办，只能尽可能提高利用率，共享连接。</p>
+<h2 id="共享连接池"><a href="#共享连接池" class="headerlink" title="共享连接池"></a>共享连接池</h2><h3 id="多协程共享连接"><a href="#多协程共享连接" class="headerlink" title="多协程共享连接"></a>多协程共享连接</h3><p>当协程需要使用一个连接的时候，可以从<code>Channel</code>里面<code>pop</code>出来一个连接。</p>
+<h3 id="多进程共享连接"><a href="#多进程共享连接" class="headerlink" title="多进程共享连接"></a>多进程共享连接</h3><h3 id="跨机器共享连接"><a href="#跨机器共享连接" class="headerlink" title="跨机器共享连接"></a>跨机器共享连接</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/12/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%9E%E6%8E%A5%E6%B1%A0/" data-id="ckkj72zum00aqf6vx286dacjo" data-title="深入理解连接池" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-php-stream-server源码分析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/11/27/php-stream-server%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="article-date">
@@ -833,149 +918,6 @@
 
 
   
-    <article id="post-gqlgen自定义标量" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/08/30/gqlgen%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E9%87%8F/" class="article-date">
-  <time class="dt-published" datetime="2019-08-30T01:38:19.000Z" itemprop="datePublished">2019-08-30</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/08/30/gqlgen%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E9%87%8F/">gqlgen/graphql自定义标量</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>昨天，我们在使用<code>gqlgen</code>的时候，发现它默认没有<code>int64</code>类型的标量，只有<code>int</code>类型的标量。所以需要自定义一个<code>int64</code>标量。</p>
-<p>先说一下自定义标量的原理吧，这个在文档里面没有去解释，只是给出了一段代码，其他的就要自己去理解了。</p>
-<p>自定义标量的原理就是，前端传递一个字符串，然后<code>gqlgen</code>会自动调用我们实现的解析函数，去解析这个字符串，得到我们想要的类型。</p>
-<p>现在，我们来实战一下。我们初始化项目：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode # mkdir scalars ; cd scalars ; go mod init scalars</span><br><span class="line">go: creating new go.mod: module scalars</span><br><span class="line">~/codeDir/golangCode/scalars # </span><br></pre></td></tr></table></figure>
-
-<p>这里，我们是通过<code>go module</code>这个包依赖管理工具来管理的。</p>
-<p>因为<code>gqlgen</code>是先定义<code>schema</code>的然后再生成代码的，所以，我们需要先定义好我们的<code>schema</code>。我们先创建文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # touch schema.graphql</span><br></pre></td></tr></table></figure>
-
-<p>内容如下：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Article &#123;</span><br><span class="line">  id: ID!</span><br><span class="line">  text: <span class="built_in">String</span>!</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Query &#123;</span><br><span class="line">  article: Article!</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里，我们简单的定义了一个类型<code>Article</code>和一个查询<code>article</code>。</p>
-<p><code>OK</code>，现在我们来生成一下我们的代码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # gqlgen init</span><br><span class="line">Exec &quot;go run ./server/server.go&quot; to start GraphQL server</span><br><span class="line">~/codeDir/golangCode/scalars # tree</span><br><span class="line">.</span><br><span class="line">├── generated.go</span><br><span class="line">├── go.mod</span><br><span class="line">├── go.sum</span><br><span class="line">├── gqlgen.yml</span><br><span class="line">├── models_gen.go</span><br><span class="line">├── resolver.go</span><br><span class="line">├── schema.graphql</span><br><span class="line">└── server</span><br><span class="line">    └── server.go</span><br><span class="line"></span><br><span class="line">1 directory, 8 files</span><br><span class="line">~/codeDir/golangCode/scalars # </span><br></pre></td></tr></table></figure>
-
-<p>我们可以在<code>resolver.go</code>的<code>Article</code>函数里面写我们的查询，这里，我们简单的返回一条记录即可：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *queryResolver)</span> <span class="title">Article</span><span class="params">(ctx context.Context)</span> <span class="params">(*Article, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Article&#123;</span><br><span class="line">		ID:   <span class="string">&quot;1&quot;</span>,</span><br><span class="line">		Text: <span class="string">&quot;I am codinghuang&quot;</span>,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们启动服务器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # go run server/server.go </span><br><span class="line">2019/08/30 02:04:46 connect to http://localhost:8080/ for GraphQL playground</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>然后，我们在浏览器里面做如下请求：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Write your query or mutation here</span><br><span class="line">query &#123;</span><br><span class="line">  article &#123;</span><br><span class="line">    id</span><br><span class="line">    text</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们将会得到如下结果：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;article&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">      <span class="string">&quot;text&quot;</span>: <span class="string">&quot;I am codinghuang&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>现在，我们来给<code>article</code>增加一个查询参数，比如说时间，我们这里假定是<code>int64</code>这个标量。我们修改<code>schema</code>：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scalar Int64</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Article &#123;</span><br><span class="line">  id: ID!</span><br><span class="line">  text: <span class="built_in">String</span>!</span><br><span class="line">  time: Int64!</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Query &#123;</span><br><span class="line">  article (time: Int64): Article!</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们需要去实现这个<code>Int64</code>标量。我们创建一个新的文件，叫做<code>int64.go</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # touch int64.go</span><br></pre></td></tr></table></figure>
-
-<p>内容如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> scalars</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Int64 is int64</span></span><br><span class="line"><span class="keyword">type</span> Int64 <span class="keyword">int64</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// UnmarshalGQL implements the graphql.UnMarshaler interface</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i *Int64)</span> <span class="title">UnmarshalGQL</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MarshalGQL implements the graphql.Marshaler interface</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i Int64)</span> <span class="title">MarshalGQL</span><span class="params">(w io.Writer)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们需要去实现这里的<code>UnmarshalGQL</code>函数和<code>MarshalGQL</code>函数。这里，我们先简单的做个小测试，实现如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> scalars</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Int64 is int64</span></span><br><span class="line"><span class="keyword">type</span> Int64 <span class="keyword">int64</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// UnmarshalGQL implements the graphql.UnMarshaler interface</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i *Int64)</span> <span class="title">UnmarshalGQL</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	*i = <span class="number">10</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MarshalGQL implements the graphql.Marshaler interface</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i Int64)</span> <span class="title">MarshalGQL</span><span class="params">(w io.Writer)</span></span> &#123;</span><br><span class="line">	w.Write([]<span class="keyword">byte</span>(<span class="string">&quot;5&quot;</span>))</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们需要去修改<code>gqlgen.yml</code>文件，指明我们的这个自定义的标量：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .gqlgen.yml example</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Refer to https://gqlgen.com/config/</span></span><br><span class="line"><span class="comment"># for detailed .gqlgen.yml documentation.</span></span><br><span class="line"></span><br><span class="line"><span class="attr">schema:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">schema.graphql</span></span><br><span class="line"><span class="attr">exec:</span></span><br><span class="line">  <span class="attr">filename:</span> <span class="string">generated.go</span></span><br><span class="line"><span class="attr">model:</span></span><br><span class="line">  <span class="attr">filename:</span> <span class="string">models_gen.go</span></span><br><span class="line"><span class="attr">resolver:</span></span><br><span class="line">  <span class="attr">filename:</span> <span class="string">resolver.go</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">Resolver</span></span><br><span class="line"><span class="attr">models:</span></span><br><span class="line">  <span class="attr">Int64:</span></span><br><span class="line">    <span class="attr">model:</span> <span class="string">scalars.Int64</span></span><br></pre></td></tr></table></figure>
-
-<p>然后，我们需要把<code>resolver.go</code>文件删除：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # rm resolver.go </span><br></pre></td></tr></table></figure>
-
-<p>然后重新生成：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # gqlgen</span><br></pre></td></tr></table></figure>
-
-<p>我们会发现，此时<code>Article</code>这个<code>queryResolver</code>多了一个参数<code>time *Int64</code>，注意，这里的<code>Int64</code>是我们<code>scalars</code>包下自定义的那个<code>Int64</code>，而不是<code>golang</code>自带的那个<code>int64</code>。</p>
-<p><code>OK</code>，我们重新写一下这个<code>Article</code>函数：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *queryResolver)</span> <span class="title">Article</span><span class="params">(ctx context.Context, time *Int64)</span> <span class="params">(*Article, error)</span></span> &#123;</span><br><span class="line">	fmt.Println(*time)</span><br><span class="line">	<span class="keyword">return</span> &amp;Article&#123;</span><br><span class="line">		ID:   <span class="string">&quot;1&quot;</span>,</span><br><span class="line">		Text: <span class="string">&quot;I am codinghuang&quot;</span>,</span><br><span class="line">		Time: *time,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们重新启动服务器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # go run server/server.go </span><br><span class="line">2019/08/30 02:23:25 connect to http://localhost:8080/ for GraphQL playground</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>我们发起如下请求，我们传递了一个时间参数<code>&quot;1&quot;</code>：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Write your query or mutation here</span><br><span class="line">query &#123;</span><br><span class="line">  article (time: <span class="string">&quot;1&quot;</span>) &#123;</span><br><span class="line">    id</span><br><span class="line">    text</span><br><span class="line">    time</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>会得到如下的结果：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;article&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">      <span class="string">&quot;text&quot;</span>: <span class="string">&quot;I am codinghuang&quot;</span>,</span><br><span class="line">      <span class="string">&quot;time&quot;</span>: <span class="number">5</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，返回的这个时间<code>5</code>实际上就是我们在<code>int64.go</code>文件里面实现的：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i Int64)</span> <span class="title">MarshalGQL</span><span class="params">(w io.Writer)</span></span> &#123;</span><br><span class="line">	w.Write([]<span class="keyword">byte</span>(<span class="string">&quot;5&quot;</span>))</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，我们<code>w io.Writer</code>里面写了什么内容，就会返回给前端。</p>
-<p>我们再看看终端的输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # go run server/server.go </span><br><span class="line">2019/08/30 02:28:40 connect to http://localhost:8080/ for GraphQL playground</span><br><span class="line">10</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>打印出了<code>10</code>，而不是客户端传递给服务器的<code>1</code>。这个<code>10</code>其实就是我们再<code>int64.go</code>文件里面实现的：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// UnmarshalGQL implements the graphql.UnMarshaler interface</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i *Int64)</span> <span class="title">UnmarshalGQL</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	*i = <span class="number">10</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，我们在<code>*i</code>里面填写的值，可以被<code>Article queryResolver</code>的<code>time *Int64</code>获取到。</p>
-<p><code>OK</code>，那我们如何获取到前端传递过来的<code>time</code>呢？</p>
-<p>我们对<code>int.go</code>里面的<code>UnmarshalGQL</code>函数做如下修改：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// UnmarshalGQL implements the graphql.UnMarshaler interface</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(i *Int64)</span> <span class="title">UnmarshalGQL</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	str, ok := v.(<span class="keyword">string</span>)</span><br><span class="line">	<span class="keyword">if</span> !ok &#123;</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">&quot;time must be string&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	n, err := strconv.ParseInt(str, <span class="number">10</span>, <span class="number">64</span>)</span><br><span class="line"></span><br><span class="line">	*i = Int64(n)</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，前端传递给服务器的参数，我们可以在<code>v interface&#123;&#125;</code>里面获取到。</p>
-<p>然后重新启动服务器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # go run server/server.go </span><br><span class="line">2019/08/30 02:36:26 connect to http://localhost:8080/ for GraphQL playground</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>然后做如下请求：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Write your query or mutation here</span><br><span class="line">query &#123;</span><br><span class="line">  article (time: <span class="number">1</span>) &#123;</span><br><span class="line">    id</span><br><span class="line">    text</span><br><span class="line">    time</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;errors&quot;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&quot;message&quot;</span>: <span class="string">&quot;time must be string&quot;</span>,</span><br><span class="line">      <span class="string">&quot;path&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;article&quot;</span></span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;data&quot;</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>因为我们在<code>UnmarshalGQL</code>里面限定了<code>time</code>必须为<code>string</code>。</p>
-<p>我们修改请求如下：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Write your query or mutation here</span><br><span class="line">query &#123;</span><br><span class="line">  article (time: <span class="string">&quot;100&quot;</span>) &#123;</span><br><span class="line">    id</span><br><span class="line">    text</span><br><span class="line">    time</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;data&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;article&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">      <span class="string">&quot;text&quot;</span>: <span class="string">&quot;I am codinghuang&quot;</span>,</span><br><span class="line">      <span class="string">&quot;time&quot;</span>: <span class="number">5</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我来看看终端的输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/golangCode/scalars # go run server/server.go </span><br><span class="line">2019/08/30 02:36:26 connect to http://localhost:8080/ for GraphQL playground</span><br><span class="line">100</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>说明我们在<code>reoslver</code>里面获取到了客户端传递的这个时间字符串<code>100</code>，并且成功的转换为了我们自定义的<code>Int64</code>类型。</p>
-<p>所以，对于自定义标量，总结下了实际上就是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、先定义好我们的两个解析函数</span><br><span class="line">2、客户端传递一个自定义标量的参数，那么就会调用我们的UnmarshalGQL解析函数，把前端传递过来的值转化为我们自定义的标量类型（至于这里我们需不需要去限定客户端传递过来的是字符串还是整数，看个人情况吧，在我的例子里面，其实不可以不对传递的参数做字符串的要求，完全可以传递一个整数过来）</span><br><span class="line">	然后，resolver就可以通过参数获取到我们在UnmarshalGQL解析函数里面设置的那个值</span><br><span class="line">3、服务器返回给客户端的值，首先会经过MarshalGQL解析函数处理，然后再通过io.Writer写入我们需要返回给前端的值。</span><br><span class="line">4、这一切，gqlgen都会帮我们自动的调用</span><br></pre></td></tr></table></figure>
-
-<p>最后，<code>GraphQL</code>好用。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/08/30/gqlgen%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E9%87%8F/" data-id="ckkj72zsq0053f6vx84xk4vwb" data-title="gqlgen/graphql自定义标量" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1026,6 +968,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
           </li>
         
@@ -1039,10 +985,6 @@
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
       </ul>

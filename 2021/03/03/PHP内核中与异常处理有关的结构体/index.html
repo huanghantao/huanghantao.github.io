@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>PHP内核中与异常处理有关的结构体 | codinghuang的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="本文基于PHP8.0.1  测试脚本如下： 1234567891011&lt;?phpfunction test(array $arr)&amp;#123;&amp;#125;try &amp;#123;    test(10000);&amp;#125; catch (\TypeError $e) &amp;#123;    echo &quot;handle error\n&quot;;&amp;#125;  对应的opcodes如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP内核中与异常处理有关的结构体">
+<meta property="og:url" content="http://huanghantao.github.io/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="本文基于PHP8.0.1  测试脚本如下： 1234567891011&lt;?phpfunction test(array $arr)&amp;#123;&amp;#125;try &amp;#123;    test(10000);&amp;#125; catch (\TypeError $e) &amp;#123;    echo &quot;handle error\n&quot;;&amp;#125;  对应的opcodes如下：">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-03-03T03:59:07.000Z">
+<meta property="article:modified_time" content="2021-03-03T16:59:04.185Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="PHP内核">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">codinghuang的个人博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-PHP内核中与异常处理有关的结构体" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="article-date">
+  <time class="dt-published" datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      PHP内核中与异常处理有关的结构体
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本文基于PHP8.0.1</p>
+</blockquote>
+<p>测试脚本如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"><span class="keyword">array</span> $arr</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    test(<span class="number">10000</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">TypeError</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;handle error\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的<code>opcodes</code>如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[Stack <span class="keyword">in</span> /root/codeDir/phpCode/<span class="built_in">test</span>/test.php (7 ops)]</span><br><span class="line">L1-12 &#123;main&#125;() /root/codeDir/phpCode/<span class="built_in">test</span>/test.php - 0x7f61ca65e3c0 + 7 ops</span><br><span class="line"> L8    <span class="comment">#0     INIT_FCALL&lt;1&gt;           96                   &quot;test&quot;</span></span><br><span class="line"> L8    <span class="comment">#1     SEND_VAL                10000                1</span></span><br><span class="line"> L8    <span class="comment">#2     DO_FCALL</span></span><br><span class="line"> L8    <span class="comment">#3     JMP                     J6</span></span><br><span class="line"> L9    <span class="comment">#4     CATCH&lt;9&gt;                &quot;TypeError&quot;                               $e</span></span><br><span class="line"> L10   <span class="comment">#5     ECHO                    &quot;handle error\n&quot;</span></span><br><span class="line"> L12   <span class="comment">#6     RETURN&lt;-1&gt;              1</span></span><br><span class="line"></span><br><span class="line">[User Function <span class="built_in">test</span> (2 ops)]</span><br><span class="line">L3-5 <span class="built_in">test</span>() /root/codeDir/phpCode/<span class="built_in">test</span>/test.php - 0x7f06cee66000 + 2 ops</span><br><span class="line"> L3    <span class="comment">#0     RECV                    1                                         $arr</span></span><br><span class="line"> L5    <span class="comment">#1     RETURN&lt;-1&gt;              null</span></span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@97043d024896 <span class="built_in">test</span>]<span class="comment"># php test.php</span></span><br><span class="line">handle error</span><br></pre></td></tr></table></figure>
+
+<p>我们来梳理一下流程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">graph-easy &lt;&lt;&lt; <span class="string">&quot;</span></span><br><span class="line"><span class="string">graph &#123; flow: down; &#125;</span></span><br><span class="line"><span class="string">[zend_startup] -&gt; </span></span><br><span class="line"><span class="string">[zend_init_exception_op] -&gt; </span></span><br><span class="line"><span class="string">[ZEND_RECV_SPEC_UNUSED_HANDLER] -&gt; </span></span><br><span class="line"><span class="string">[zend_verify_recv_arg_type_helper_SPEC] -&gt; </span></span><br><span class="line"><span class="string">[zend_throw_error] -&gt; </span></span><br><span class="line"><span class="string">[zend_throw_exception] -&gt; </span></span><br><span class="line"><span class="string">[zend_throw_exception_internal] -&gt; </span></span><br><span class="line"><span class="string">[ZEND_HANDLE_EXCEPTION_SPEC_HANDLER]</span></span><br><span class="line"><span class="string">&quot;</span></span><br><span class="line"></span><br><span class="line">+---------------------------------------+</span><br><span class="line">|             zend_startup              |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|        zend_init_exception_op         |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|     ZEND_RECV_SPEC_UNUSED_HANDLER     |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">| zend_verify_recv_arg_type_helper_SPEC |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|           zend_throw_error            |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|         zend_throw_exception          |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|     zend_throw_exception_internal     |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">                    |</span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|  ZEND_HANDLE_EXCEPTION_SPEC_HANDLER   |</span><br><span class="line">+---------------------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>首先，在<code>zend_startup</code>阶段，初始化<code>PHP</code>的异常处理<code>opline</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zend_init_exception_op</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(EG(exception_op), <span class="number">0</span>, <span class="keyword">sizeof</span>(EG(exception_op)));</span><br><span class="line">    EG(exception_op)[<span class="number">0</span>].opcode = ZEND_HANDLE_EXCEPTION;</span><br><span class="line">    ZEND_VM_SET_OPCODE_HANDLER(EG(exception_op));</span><br><span class="line">    EG(exception_op)[<span class="number">1</span>].opcode = ZEND_HANDLE_EXCEPTION;</span><br><span class="line">    ZEND_VM_SET_OPCODE_HANDLER(EG(exception_op)+<span class="number">1</span>);</span><br><span class="line">    EG(exception_op)[<span class="number">2</span>].opcode = ZEND_HANDLE_EXCEPTION;</span><br><span class="line">    ZEND_VM_SET_OPCODE_HANDLER(EG(exception_op)+<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里，我们可以看到，<code>EG(exception_op)</code>是一个包含<code>3</code>条<code>opline</code>的数组。并且，把<code>3</code>条<code>opline</code>的<code>opcode</code>都设置为了<code>ZEND_HANDLE_EXCEPTION</code>。</p>
+<p>接着，<code>php</code>解释器开始执行我们的测试脚本。当<code>test</code>函数接收参数的时候，调用<code>zend_verify_recv_arg_type_helper_SPEC</code>发现参数不对：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> zend_never_inline ZEND_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL <span class="title">zend_verify_recv_arg_type_helper_SPEC</span><span class="params">(zval *op_1 ZEND_OPCODE_HANDLER_ARGS_DC)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    USE_OPLINE</span><br><span class="line"></span><br><span class="line">    SAVE_OPLINE();</span><br><span class="line">    <span class="keyword">if</span> (UNEXPECTED(!zend_verify_recv_arg_type(EX(func), opline-&gt;op1.num, op_1, CACHE_ADDR(opline-&gt;extended_value)))) &#123;</span><br><span class="line">        HANDLE_EXCEPTION();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ZEND_VM_NEXT_OPCODE();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就会调用<code>zend_throw_error</code>来抛出一个<code>error</code>级别的异常。</p>
+<p>最终，调用<code>zend_throw_exception_internal</code>函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API ZEND_COLD <span class="keyword">void</span> <span class="title">zend_throw_exception_internal</span><span class="params">(zend_object *exception)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (zend_throw_exception_hook) &#123;</span><br><span class="line">        zend_throw_exception_hook(exception);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is_handle_exception_set()) &#123;</span><br><span class="line">        <span class="comment">/* no need to rethrow the exception */</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    EG(opline_before_exception) = EG(current_execute_data)-&gt;opline;</span><br><span class="line">    EG(current_execute_data)-&gt;opline = EG(exception_op);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，这里设置了<code>EG(current_execute_data)-&gt;opline</code>为<code>EG(exception_op)</code>。</p>
+<p>接着，就会执行<code>zend_verify_recv_arg_type_helper_SPEC</code>里面的<code>HANDLE_EXCEPTION()</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HANDLE_EXCEPTION() ZEND_ASSERT(EG(exception)); LOAD_OPLINE(); ZEND_VM_CONTINUE()</span></span><br></pre></td></tr></table></figure>
+
+<p>所以，下一条<code>opline</code>就变成了去执行<code>ZEND_HANDLE_EXCEPTION</code>对应的<code>ZEND_HANDLE_EXCEPTION_SPEC_HANDLER</code>了。而这个<code>handler</code>就是用来处理异常的，例如查找当前作用域上是否有对异常抛出点进行<code>try ... catch ... finally</code>。</p>
+<p>这个<code>handler</code>我们不去细讲，我们主要讲一讲和异常处理有关的结构体，搞明白了结构体里面各各属性的作用，就知道这个<code>handler</code>做了些什么事情了。</p>
+<h2 id="与异常有关的数据结构"><a href="#与异常有关的数据结构" class="headerlink" title="与异常有关的数据结构"></a>与异常有关的数据结构</h2><p><code>zend_object *zend_executor_globals::exception</code>，保留当前异常的信息，例如<code>message</code>、<code>file</code>、<code>lineno</code>等。</p>
+<p><code>zend_op *zend_executor_globals::opline_before_exception</code>，用来回溯异常抛出时候的<code>opline</code>。例如，我们有如下异常回溯关系：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">graph-easy &lt;&lt;&lt; <span class="string">&quot;</span></span><br><span class="line"><span class="string">graph &#123; flow: up; &#125;</span></span><br><span class="line"><span class="string">[ZEND_RECV] -&gt; </span></span><br><span class="line"><span class="string">[DO_FCALL]</span></span><br><span class="line"><span class="string">&quot;</span></span><br><span class="line"></span><br><span class="line">+-----------+</span><br><span class="line">| DO_FCALL  |</span><br><span class="line">+-----------+</span><br><span class="line">    ^</span><br><span class="line">    |</span><br><span class="line">    |</span><br><span class="line">+-----------+</span><br><span class="line">| ZEND_RECV |</span><br><span class="line">+-----------+</span><br></pre></td></tr></table></figure>
+
+<p>那么，<code>opline_before_exception</code>依次是<code>ZEND_RECV</code>和<code>DO_FCALL</code>对应的<code>opline</code>。</p>
+<p>那么，有如下计算：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint32_t</span> throw_op_num = EG(opline_before_exception) - EX(func)-&gt;op_array.opcodes</span><br></pre></td></tr></table></figure>
+
+<p><code>throw_op_num</code>则是抛异常的<code>opline</code>的索引。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">zend_try_catch_element</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> try_op;</span><br><span class="line">    <span class="keyword">uint32_t</span> catch_op;</span><br><span class="line">    <span class="keyword">uint32_t</span> finally_op;</span><br><span class="line">    <span class="keyword">uint32_t</span> finally_end;</span><br><span class="line">&#125; zend_try_catch_element;</span><br></pre></td></tr></table></figure>
+
+<p>这几个字段什么意思呢？假设我们有如下代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"><span class="keyword">array</span> $arr</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    test(<span class="number">10000</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">TypeError</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;handle error\n&quot;</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;finally\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>main</code>函数对应的<code>opcodes</code>如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[Stack <span class="keyword">in</span> /Users/codinghuang/.phpbrew/build/php-8.0.1/test.php (11 ops)]</span><br><span class="line">L1-14 &#123;main&#125;() /Users/codinghuang/.phpbrew/build/php-8.0.1/test.php - 0x108a066f0 + 11 ops</span><br><span class="line"> L8    <span class="comment">#0     INIT_FCALL&lt;1&gt;           96                   &quot;test&quot;</span></span><br><span class="line"> L8    <span class="comment">#1     SEND_VAL                10000                1</span></span><br><span class="line"> L8    <span class="comment">#2     DO_FCALL</span></span><br><span class="line"> L8    <span class="comment">#3     JMP                     J6</span></span><br><span class="line"> L9    <span class="comment">#4     CATCH&lt;9&gt;                &quot;TypeError&quot;                               $e</span></span><br><span class="line"> L10   <span class="comment">#5     ECHO                    &quot;handle error\n&quot;</span></span><br><span class="line"> L11   <span class="comment">#6     FAST_CALL               J8                                        ~0</span></span><br><span class="line"> L11   <span class="comment">#7     JMP                     J10</span></span><br><span class="line"> L12   <span class="comment">#8     ECHO                    &quot;finally\n&quot;</span></span><br><span class="line"> L12   <span class="comment">#9     FAST_RET                ~0</span></span><br><span class="line"> L14   <span class="comment">#10    RETURN&lt;-1&gt;              1</span></span><br></pre></td></tr></table></figure>
+
+<p>那么<code>zend_try_catch_element</code>里面的内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">try_op -&gt; <span class="number">0</span>;</span><br><span class="line">catch_op -&gt; <span class="number">4</span>;</span><br><span class="line">finally_op -&gt; <span class="number">8</span>;</span><br><span class="line">finally_end -&gt; <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>try</code>后面没有跟<code>catch</code>，那么，<code>catch_op</code>为<code>0</code>；如果<code>try</code>后面没有跟<code>finally</code>，那么<code>finally_op</code>为<code>0</code>。</p>
+<p>所以，<code>try_op</code>表示<code>try</code>里面的第一条<code>opline</code>的索引；<code>catch_op</code>表示<code>ZEND_CATCH</code>这条<code>opline</code>的索引；<code>finally_op</code>表示<code>finally</code>里面的第一套<code>opline</code>的索引；<code>finally_end</code>表示<code>ZEND_FAST_RET</code>这条<code>opline</code>的索引。</p>
+<p>我们发现，<code>try_op</code>和<code>finally_op</code>都是表示它们里面的<code>opline</code>的位置，而<code>catch_op</code>却是表示<code>catch</code>这条<code>opline</code>本身的位置。这是因为我们不能给<code>try</code>和<code>finally</code>传参，但是可以给<code>catch</code>传参。例如，不能这么写：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (something) &#123;</span><br><span class="line">    test(<span class="number">10000</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">TypeError</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;handle error\n&quot;</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> (something) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;finally\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，我们发现，这里只有<code>catch</code>生成了<code>ZEND_CATCH</code>，但是却没有<code>ZEND_TRY</code>和<code>ZEND_FINALLY</code>这样的<code>opline</code>。</p>
+<p><code>zend_op_array::last_try_catch</code>表示当前作用域有几组<code>try ... catch ... finally</code>。例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"><span class="keyword">array</span> $arr</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>(<span class="string">&quot;Error Processing Request&quot;</span>, <span class="number">1</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">Exception</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;handle error\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    test(<span class="number">10000</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">TypeError</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;handle error\n&quot;</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;finally\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>main</code>作用域有两组<code>try ... catch</code>，所以<code>zend_op_array::last_try_catch</code>是<code>2</code>。</p>
+<p>有了上面的基础之后，那么<code>ZEND_HANDLE_EXCEPTION_SPEC_HANDLER</code>里面查找<code>zend_try_catch_element</code>的流程就好理解了：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> zend_op *throw_op = EG(opline_before_exception);</span><br><span class="line"><span class="keyword">uint32_t</span> throw_op_num = throw_op - EX(func)-&gt;op_array.opcodes;</span><br><span class="line"><span class="keyword">int</span> i, current_try_catch_offset = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 省略其他代码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Find the innermost try/catch/finally the exception was thrown in */</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; EX(func)-&gt;op_array.last_try_catch; i++) &#123;</span><br><span class="line">    zend_try_catch_element *try_catch = &amp;EX(func)-&gt;op_array.try_catch_array[i];</span><br><span class="line">    <span class="keyword">if</span> (try_catch-&gt;try_op &gt; throw_op_num) &#123;</span><br><span class="line">        <span class="comment">/* further blocks will not be relevant... */</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (throw_op_num &lt; try_catch-&gt;catch_op || throw_op_num &lt; try_catch-&gt;finally_end) &#123;</span><br><span class="line">        current_try_catch_offset = i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码就是通过异常抛出的<code>opline</code>来找到对应的<code>zend_try_catch_element</code>。</p>
+<blockquote>
+<p>因此，异常处理的核心就是，通过改变<code>EG(current_execute_data)-&gt;opline</code>，达到执行<code>ZEND_HANDLE_EXCEPTION_SPEC_HANDLER</code>的目的。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" data-id="ckltoqe2d0000fqvx7qz5dem4" data-title="PHP内核中与异常处理有关的结构体" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Swoole reload_async机制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
+            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+          </li>
+        
+          <li>
+            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 codinghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

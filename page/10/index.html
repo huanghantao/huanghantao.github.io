@@ -77,6 +77,175 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Swoole-PHP协程入口函数实战分析（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/21/Swoole-PHP%E5%8D%8F%E7%A8%8B%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2020-03-21T05:31:57.000Z" itemprop="datePublished">2020-03-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/03/21/Swoole-PHP%E5%8D%8F%E7%A8%8B%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/">Swoole PHP协程入口函数实战分析（一）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>本篇文章，我们来实战分析一下<code>Swoole PHP</code>协程入口函数的实现原理以及细节。大家需要准备好一份<code>Swoole</code>源码好和我们一起动手操作，我们使用的<code>PHP</code>版本是<code>7.3.12</code>，<code>Swoole</code>的版本是<code>v4.4.16</code>。</p>
+<p>首先，我们需要明白<code>PHP</code>协程的入口函数是<code>swoole::PHPCoroutine::main_func</code>，也就是说，我们创建的每一个<code>PHP</code>协程，都会从<code>main_func</code>这个函数开始。</p>
+<p>我们现在来逐行分析<code>main_func</code>这个函数。首先，这个函数的参数是<code>void *arg</code>，是一个<code>void</code>类型的指针，从</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php_coro_args *php_arg = (php_coro_args *) arg;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出<code>arg</code>原来的类型是<code>php_coro_args</code>类型的指针，<code>php_coro_args</code>这个结构体对应的成员如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">php_coro_args</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    zend_fcall_info_cache *fci_cache;</span><br><span class="line">    zval *argv;</span><br><span class="line">    <span class="keyword">uint32_t</span> argc;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，这三个成员是我们调用一个函数的基础，分别对应了函数本体、传递给函数的参数、传递给函数参数的个数。</p>
+<p>在函数的开头，我们看到了<code>BAILOUT</code>这个东西，我们先来看看如果没有这个东西会有什么问题，我们把<code>commit</code>切一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout ef1db99ecfa475ce34d4be744d1f811fadf566ac</span><br><span class="line"></span><br><span class="line">git reset HEAD~</span><br></pre></td></tr></table></figure>
+
+<p>此时我们可以看到为支持<code>BAILOUT</code>功能而做出的文件改动。</p>
+<p>（现在<code>main_func</code>这个函数名字是旧的名字<code>create_func</code>）</p>
+<p>我们会发现，在<code>create_func</code>函数里面，增加了<code>zend_first_try</code>和<code>zend_catch</code>这个结构。我们很容易的想到这是用来捕获<code>PHP</code>异常的。</p>
+<p>并且增加了<code>swoole::Coroutine::bailout</code>这个函数，这个函数会在<code>zend_catch</code>里面被调用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_catch &#123;</span><br><span class="line">    Coroutine::bailout([]()&#123; sw_zend_bailout(); &#125;);</span><br><span class="line">&#125; zend_end_try();</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看<code>bailout</code>这个函数做了什么事情：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Coroutine::bailout</span><span class="params">(<span class="keyword">sw_coro_bailout_t</span> func)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!func)</span><br><span class="line">    &#123;</span><br><span class="line">        swError(<span class="string">&quot;bailout without bailout function&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!current)</span><br><span class="line">    &#123;</span><br><span class="line">        func();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Coroutine *co = current;</span><br><span class="line">        <span class="keyword">while</span> (co-&gt;origin)</span><br><span class="line">        &#123;</span><br><span class="line">            co = co-&gt;origin;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// it will jump to main context directly (it also breaks contexts)</span></span><br><span class="line">        on_bailout = func;</span><br><span class="line">        co-&gt;yield();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// expect that never here</span></span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!current)</span><br><span class="line">&#123;</span><br><span class="line">    func();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>表示如果不在协程环境，那么直接执行函数<code>func</code>。如果在协程环境，那么执行：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Coroutine *co = current;</span><br><span class="line"><span class="keyword">while</span> (co-&gt;origin)</span><br><span class="line">&#123;</span><br><span class="line">    co = co-&gt;origin;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// it will jump to main context directly (it also breaks contexts)</span></span><br><span class="line">on_bailout = func;</span><br><span class="line">co-&gt;yield();</span><br></pre></td></tr></table></figure>
+
+<p>表示查找到主协程，然后再把函数<code>on_bailout = func</code>赋值给<code>swoole::Coroutine::on_bailout</code>这个函数指针。</p>
+<p>然后调用<code>co-&gt;yield()</code>切换协程上下文。这个时候，就回到非协程环境了。</p>
+<p>现在，我们来看两个问题，第一个问题是这里的函数<code>func</code>是什么，第二个问题是<code>on_bailout</code>在哪里被调用了。</p>
+<p>首先来看第一个问题。函数<code>func</code>是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sw_zend_bailout();</span><br></pre></td></tr></table></figure>
+
+<p>对应着：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> sw_zend_bailout() zend_bailout()</span></span><br><span class="line"></span><br><span class="line">BEGIN_EXTERN_C()</span><br><span class="line">ZEND_API ZEND_COLD <span class="keyword">void</span> _zend_bailout(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">uint32_t</span> lineno) <span class="comment">/* &#123;&#123;&#123; */</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!EG(bailout)) &#123;</span><br><span class="line">        zend_output_debug_string(<span class="number">1</span>, <span class="string">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    gc_protect(<span class="number">1</span>);</span><br><span class="line">    CG(unclean_shutdown) = <span class="number">1</span>;</span><br><span class="line">    CG(active_class_entry) = <span class="literal">NULL</span>;</span><br><span class="line">    CG(in_compilation) = <span class="number">0</span>;</span><br><span class="line">    EG(current_execute_data) = <span class="literal">NULL</span>;</span><br><span class="line">    LONGJMP(*EG(bailout), FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* &#125;&#125;&#125; */</span></span><br><span class="line">END_EXTERN_C()</span><br></pre></td></tr></table></figure>
+
+<p><code>zend_bailout</code>函数是用来结束程序运行的。我们重点关注<code>LONGJMP(*EG(bailout), FAILURE)</code>做了什么事情。我们知道在<code>C</code>语言里面，有一对函数<code>setjmp</code>和<code>longjmp</code>，分别用来保存当前程序运行的环境和恢复被保存的环境。</p>
+<p>我们来看看宏<code>LONGJMP</code>展开来是什么东西：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">define</span> LONGJMP(a,b) longjmp(a, b)</span></span><br></pre></td></tr></table></figure>
+
+<p>就是我们的<code>longjmp</code>函数。</p>
+<p>我们可以看一下<code>longjmp</code>这个函数的描述：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Jump to the environment saved in ENV, making the setjmp call there return VAL, or 1 if VAL is 0.</span><br><span class="line"></span><br><span class="line">翻译：跳转到在ENV中保存的环境，使setjmp调用在那里返回VAL，如果VAL为0则返回1。</span><br></pre></td></tr></table></figure>
+
+<p>所以，<code>LONGJMP(*EG(bailout), FAILURE)</code>的意图就比较明显了，程序会跳转到<code>*EG(bailout)</code>上下文中，然后使<code>SETJMP</code>调用在那里返回<code>FAILURE</code>，也就是<code>-1</code>。</p>
+<p>我们再来看第二个问题。<code>on_bailout</code>是在函数<code>swoole::Coroutine::check_end</code>中被调用的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">check_end</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ctx.is_end())</span><br><span class="line">    &#123;</span><br><span class="line">        close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (unlikely(on_bailout))</span><br><span class="line">    &#123;</span><br><span class="line">        on_bailout();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，当<code>on_bailout</code>这个函数指针不为空的时候，会去调用这个<code>on_bailout</code>，也就是函数<code>sw_zend_bailout</code>。并且，只有当程序逻辑进入了：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_catch &#123;</span><br><span class="line">    Coroutine::bailout([]()&#123; sw_zend_bailout(); &#125;);</span><br><span class="line">&#125; zend_end_try();</span><br></pre></td></tr></table></figure>
+
+<p>的时候（即程序抛出了异常），这个<code>on_bailout</code>指针才不为空。</p>
+<p>现在，我们执行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard a0384ea2981125fc9a7e1a68e489ffb5b40ad426</span><br></pre></td></tr></table></figure>
+
+<p>此时，我们的<code>Swoole</code>就处于没有<code>bailout</code>的样子了。我们重新编译、安装扩展后，编写如下测试脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">register_shutdown_function(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;shutdown&#x27;</span> . PHP_EOL;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;execute script&#x27;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>();</span><br></pre></td></tr></table></figure>
+
+<p>我们执行脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@592b0366acbf bailout]<span class="comment"># php error.php</span></span><br><span class="line">execute script</span><br><span class="line">PHP Fatal error:  Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:9</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 9</span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:9</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 9</span><br><span class="line">shutdown</span><br><span class="line">[root@592b0366acbf bailout]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，在脚本结束执行后，会调用我们通过<code>register_shutdown_function</code>函数注册的匿名函数，打印出字符串<code>shutdown</code>。</p>
+<p>我们现在修改脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">register_shutdown_function(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;shutdown&#x27;</span> . PHP_EOL;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;execute script&#x27;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>然后执行脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@592b0366acbf bailout]<span class="comment"># php error.php</span></span><br><span class="line">execute script</span><br><span class="line">PHP Fatal error:  Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line">/root/php-7.3.12/main/main.c(1414) : Bailed out without a bailout address!</span><br><span class="line">[root@592b0366acbf bailout]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现，此时我们通过<code>register_shutdown_function</code>函数注册的匿名函数无法被执行。第二个脚本和第一个脚本的区别就是第二个脚本在<code>PHP</code>协程里面抛出了异常。</p>
+<p>为什么我们<code>PHP</code>协程里面跑出异常会出现这个问题呢？我们需要跟踪一下程序的执行流程。首先，当我们的程序跑出异常的时候，会使得协程入口函数<code>create_func</code>进入如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (UNEXPECTED(EG(exception)))</span><br><span class="line">&#123;</span><br><span class="line">    zend_exception_error(EG(exception), E_ERROR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后，程序就会调用<code>php_error_cb</code>，在这个函数里面打印出异常信息。</p>
+<p>之后，程序就会执行如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (type != E_PARSE) &#123;</span><br><span class="line">    <span class="comment">/* restore memory limit */</span></span><br><span class="line">    zend_set_memory_limit(PG(memory_limit));</span><br><span class="line">    efree(buffer);</span><br><span class="line">    zend_objects_store_mark_destructed(&amp;EG(objects_store));</span><br><span class="line">    zend_bailout();</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，这里调用了<code>zend_bailout</code>函数，我们上面分析了这个函数，它会调用<code>LONGJMP</code>，然后把上下文切换到<code>EG(bailout)</code>。因为这里的<code>EG(bailout)</code>是空指针，所以<code>zend_bailout</code>这个函数自然就会报错了。</p>
+<p>所以，<code>Swoole</code>的解决方案就是，在<code>create_func</code>这个协程入口函数体里面包了一层<code>try ... catch</code>。</p>
+<p>我们切换一下<code>commit</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout ef1db99ecfa475ce34d4be744d1f811fadf566ac</span><br><span class="line"></span><br><span class="line">git reset HEAD~</span><br></pre></td></tr></table></figure>
+
+<p>然后重新编译、安装扩展。</p>
+<p>编写如下测试脚本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">register_shutdown_function(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;shutdown&#x27;</span> . PHP_EOL;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;execute script&#x27;</span> . PHP_EOL;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>执行脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@592b0366acbf bailout]<span class="comment"># php error.php</span></span><br><span class="line">execute script</span><br><span class="line">PHP Fatal error:  Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line"></span><br><span class="line">Fatal error: Uncaught Exception <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php:10</span><br><span class="line">Stack trace:</span><br><span class="line"><span class="comment">#0 &#123;main&#125;</span></span><br><span class="line">  thrown <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/bailout/error.php on line 10</span><br><span class="line">shutdown</span><br><span class="line">[root@592b0366acbf bailout]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们发现，此时<code>register_shutdown_function</code>注册的匿名函数被执行了。也就是说，程序没有因为我们抛出异常使得<code>php cli</code>提早终止执行了。</p>
+<p>我们现在来跟踪一下程序的执行流程。</p>
+<p>首先，程序会执行<code>zend_first_try</code>，而这个宏会去设置<code>EG(bailout)</code>的地址，这个地址就在<code>create_func</code>里面，并且会保存原来的<code>EG(bailout)</code>地址。</p>
+<p>然后，我们的<code>PHP</code>脚本退出时候，程序会执行到以下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (UNEXPECTED(EG(exception)))</span><br><span class="line">&#123;</span><br><span class="line">    zend_exception_error(EG(exception), E_ERROR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后程序依然会执行函数<code>php_error_cb</code>来打印出异常信息。</p>
+<p>然后程序会执行函数<code>zend_bailout</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ZEND_API ZEND_COLD <span class="keyword">void</span> _zend_bailout(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">uint32_t</span> lineno) <span class="comment">/* &#123;&#123;&#123; */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!EG(bailout)) &#123;</span><br><span class="line">        zend_output_debug_string(<span class="number">1</span>, <span class="string">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    gc_protect(<span class="number">1</span>);</span><br><span class="line">    CG(unclean_shutdown) = <span class="number">1</span>;</span><br><span class="line">    CG(active_class_entry) = <span class="literal">NULL</span>;</span><br><span class="line">    CG(in_compilation) = <span class="number">0</span>;</span><br><span class="line">    EG(current_execute_data) = <span class="literal">NULL</span>;</span><br><span class="line">    LONGJMP(*EG(bailout), FAILURE);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>EG(bailout)</code>不在为空了，所以程序会执行到代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LONGJMP(*EG(bailout), FAILURE)</span><br></pre></td></tr></table></figure>
+
+<p>此时，程序会回到<code>Swoole</code>内核<code>create_func</code>的<code>zend_first_try</code>宏里面。然后进入<code>zend_catch</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zend_catch &#123;</span><br><span class="line">    Coroutine::bailout([]()&#123; sw_zend_bailout(); &#125;);</span><br><span class="line">&#125; zend_end_try();</span><br></pre></td></tr></table></figure>
+
+<p>然后执行函数<code>swoole::Coroutine::bailout</code>的如下代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    Coroutine *co = current;</span><br><span class="line">    <span class="keyword">while</span> (co-&gt;origin)</span><br><span class="line">    &#123;</span><br><span class="line">        co = co-&gt;origin;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// it will jump to main context directly (it also breaks contexts)</span></span><br><span class="line">    on_bailout = func;</span><br><span class="line">    co-&gt;yield();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为，我们现在就处于第一个协程里面，所以<code>co-&gt;origin</code>为<code>nullptr</code>。接着，程序执行代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on_bailout = func;</span><br></pre></td></tr></table></figure>
+
+<p>实际上就是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on_bailout = sw_zend_bailout;</span><br></pre></td></tr></table></figure>
+
+<p>接着，程序执行<code>co-&gt;yield()</code>，切换上下文，此时，就会到非协程环境。然后程序就执行到了函数<code>swoole::Coroutine::run</code>里面的<code>check_end()</code>这个位置：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">long</span> <span class="title">run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> cid = <span class="keyword">this</span>-&gt;cid;</span><br><span class="line">    origin = current;</span><br><span class="line">    current = <span class="keyword">this</span>;</span><br><span class="line">    ctx.swap_in();</span><br><span class="line">    check_end();</span><br><span class="line">    <span class="keyword">return</span> cid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们前面分析过，<code>check_end</code>这个函数会去调用<code>on_bailout</code>回调函数，也就是<code>sw_zend_bailout</code>。而<code>sw_zend_bailout</code>对应着<code>zend_bailout</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ZEND_API ZEND_COLD <span class="keyword">void</span> _zend_bailout(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">uint32_t</span> lineno) <span class="comment">/* &#123;&#123;&#123; */</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!EG(bailout)) &#123;</span><br><span class="line">        zend_output_debug_string(<span class="number">1</span>, <span class="string">&quot;%s(%d) : Bailed out without a bailout address!&quot;</span>, filename, lineno);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    gc_protect(<span class="number">1</span>);</span><br><span class="line">    CG(unclean_shutdown) = <span class="number">1</span>;</span><br><span class="line">    CG(active_class_entry) = <span class="literal">NULL</span>;</span><br><span class="line">    CG(in_compilation) = <span class="number">0</span>;</span><br><span class="line">    EG(current_execute_data) = <span class="literal">NULL</span>;</span><br><span class="line">    LONGJMP(*EG(bailout), FAILURE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时的<code>EG(bailout)</code>地址已经不再是<code>create_func</code>函数的<code>zend_first_try</code>里面了，而是<code>zend_first_try</code>中的<code>__orig_bailout</code>。</p>
+<p>所以，当程序执行完<code>LONGJMP(*EG(bailout), FAILURE)</code>之后，就会回到<code>php cli</code>的<code>php_execute_script</code>函数的<code>zend_try</code>里面：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zend_try &#123;</span><br><span class="line">    <span class="keyword">char</span> realfile[MAXPATHLEN];</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> PHP_WIN32</span></span><br><span class="line">    <span class="keyword">if</span>(primary_file-&gt;filename) &#123;</span><br><span class="line">        UpdateIniFromRegistry((<span class="keyword">char</span>*)primary_file-&gt;filename);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>接着，<code>php cli</code>程序可以顺利的回到<code>do_cli</code>函数的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">out:</span><br><span class="line"><span class="keyword">if</span> (request_started) &#123;</span><br><span class="line">    php_request_shutdown((<span class="keyword">void</span> *) <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个位置。</p>
+<p>执行完函数<code>php_request_shutdown</code>之后，我们在<code>PHP</code>脚本里面通过<code>register_shutdown_function</code>函数注册的匿名函数就会被执行。最终，<code>php cli</code>程序正常退出。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>Swoole</code>内核通过<code>zend_first_try</code>保存当前地址到<code>EG(bailout)</code>，使得程序在抛出异常的时候，程序先回到<code>Swoole</code>内核的<code>zend_first_try</code>里面。然后，恢复<code>EG(bailout)</code>为<code>__orig_bailout</code>。最终，使得<code>php cli</code>程序正常退出。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/03/21/Swoole-PHP%E5%8D%8F%E7%A8%8B%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zry003gf6vx2i8k06vq" data-title="Swoole PHP协程入口函数实战分析（一）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP实现GRPC-传输层使用Protobuf进行数据传输" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/03/18/PHP%E5%AE%9E%E7%8E%B0GRPC-%E4%BC%A0%E8%BE%93%E5%B1%82%E4%BD%BF%E7%94%A8Protobuf%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" class="article-date">
@@ -866,91 +1035,6 @@
 
 
   
-    <article id="post-深入理解连接池" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/12/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%9E%E6%8E%A5%E6%B1%A0/" class="article-date">
-  <time class="dt-published" datetime="2019-12-09T13:13:23.000Z" itemprop="datePublished">2019-12-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/12/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%9E%E6%8E%A5%E6%B1%A0/">深入理解连接池</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>长连接最大的问题就是连接失效。</p>
-</blockquote>
-<h2 id="redis-mysql等服务器为什么会限制最大连接数"><a href="#redis-mysql等服务器为什么会限制最大连接数" class="headerlink" title="redis/mysql等服务器为什么会限制最大连接数"></a>redis/mysql等服务器为什么会限制最大连接数</h2><h3 id="内核角度，过多的TCP连接非常的不环保"><a href="#内核角度，过多的TCP连接非常的不环保" class="headerlink" title="内核角度，过多的TCP连接非常的不环保"></a>内核角度，过多的TCP连接非常的不环保</h3><p>首先，过多的内存占用，尤其是阻塞的情况下。</p>
-<p>例如如下代码。</p>
-<p>服务器：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> Swoole\Server(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">6666</span>, SWOOLE_BASE);</span><br><span class="line">$serv-&gt;set(<span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">));</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">    var_dump(<span class="string">&quot;Client: Connect <span class="subst">$fd</span>&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd, $reactor_id, $data</span>) </span>&#123;</span><br><span class="line">    var_dump(strlen($data));</span><br><span class="line">    sleep(<span class="number">100000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
-
-<p>代码很简单，服务器在第一次收到数据的时候，就调用<code>sleep</code>函数阻塞起来。（因为只有一个<code>worker</code>进程，所以后面不会处理客户端发来的其他数据）</p>
-<p>客户端代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>\<span class="title">Socket</span>;</span><br><span class="line"></span><br><span class="line">$socket = <span class="keyword">new</span> Socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$socket</span>) </span>&#123;</span><br><span class="line">    $socket-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">6666</span>);</span><br><span class="line"></span><br><span class="line">    $i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> ($i++ &lt; <span class="number">100000000</span>) &#123;</span><br><span class="line">        var_dump($socket-&gt;send(str_repeat(<span class="string">&quot;1&quot;</span>, <span class="number">1024</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;done\n&quot;</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>代码很简单，就是创建一个协程，然后创建一个客户端，往服务器发送数据。一共发送了<code>100000000 * 1024</code>字节的数据。</p>
-<p>我们先启动服务器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php server.php</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>然后再启动客户端：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php client.php</span><br><span class="line"><span class="meta">#</span><span class="bash"> 省略其他的输出</span></span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(1024)</span><br><span class="line">int(617)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，客户端程序会阻塞住。</p>
-<p>我们再来看看服务器端这边的输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php server.php</span><br><span class="line">string(17) &quot;Client: Connect 1&quot;</span><br><span class="line">int(6144)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，服务器读取到了<code>6144</code>字节的数据之后，就没有继续再读取了。（我们发现，服务器端读取到的字节大小不一定是<code>1024</code>，这也说明了<code>TCP</code>是面向字节流的，每次调用<code>send</code>函数，数据不一定就会立马发送过去。同理，服务器端也不会收到数据后就立马读取）</p>
-<p>此时，我们关闭客户端这边的进程：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">^C</span><br><span class="line">[root@aaeb2c267d0f test]#</span><br></pre></td></tr></table></figure>
-
-<p>然后查看<code>socket</code>内核缓存区的状态：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# cat /proc/net/sockstat</span><br><span class="line">sockets: used 177</span><br><span class="line">TCP: inuse 7 orphan 1 tw 0 alloc 15 mem 1211</span><br><span class="line">UDP: inuse 1 mem 2</span><br><span class="line">UDPLITE: inuse 0</span><br><span class="line">RAW: inuse 0</span><br><span class="line">FRAG: inuse 0 memory 0</span><br><span class="line">[root@aaeb2c267d0f test]#</span><br></pre></td></tr></table></figure>
-
-<p>我们发现内核缓冲区是有数据没有被清空的。</p>
-<p>所以我们发现，当服务器进程因为一个<code>socket</code>而被阻塞起来了，那么后续的连接都无法被处理，导致内存占用严重。</p>
-<p>其次，过多的端口占用、fd占用。我们来看一个<code>TCP</code>自连接的问题。</p>
-<p>代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>\<span class="title">Socket</span>;</span><br><span class="line"></span><br><span class="line">$socket = <span class="keyword">new</span> Socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$socket</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">1</span>; $i &lt; <span class="number">65536</span>; $i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> ($socket-&gt;connect(<span class="string">&#x27;127.0.0.1&#x27;</span>, $i)) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;connected\n&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var_dump($i);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# php client.php</span><br><span class="line">connected</span><br><span class="line">int(43991)</span><br><span class="line">[root@aaeb2c267d0f test]#</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，如果我们不限制连接的个数，那么客户端很可能就会耗尽可用的端口。可用的端口范围可以通过如下命令查看：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@aaeb2c267d0f test]# sysctl -a | grep ip_local_port_range</span><br><span class="line">net.ipv4.ip_local_port_range = 32768    60999</span><br></pre></td></tr></table></figure>
-
-<h4 id="传输效率问题"><a href="#传输效率问题" class="headerlink" title="传输效率问题"></a>传输效率问题</h4><p>因为长连接可以减少<code>TCP</code>三次握手的时间，所以长连接的效率会高于短连接（短连接每次发送数据需要进行三次握手）。</p>
-<p>综上，我们要控制长连接的数量，也就是说在限制了最大连接数的情况下，连接弥足珍贵。那我们确实有那么多进程怎么办，只能尽可能提高利用率，共享连接。</p>
-<h2 id="共享连接池"><a href="#共享连接池" class="headerlink" title="共享连接池"></a>共享连接池</h2><h3 id="多协程共享连接"><a href="#多协程共享连接" class="headerlink" title="多协程共享连接"></a>多协程共享连接</h3><p>当协程需要使用一个连接的时候，可以从<code>Channel</code>里面<code>pop</code>出来一个连接。</p>
-<h3 id="多进程共享连接"><a href="#多进程共享连接" class="headerlink" title="多进程共享连接"></a>多进程共享连接</h3><h3 id="跨机器共享连接"><a href="#跨机器共享连接" class="headerlink" title="跨机器共享连接"></a>跨机器共享连接</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/12/09/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%BF%9E%E6%8E%A5%E6%B1%A0/" data-id="ckkj72zum00aqf6vx286dacjo" data-title="深入理解连接池" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1001,6 +1085,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
           </li>
         
@@ -1014,10 +1102,6 @@
         
           <li>
             <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/07/%E5%9C%A8PHP-RSHUTDOWN%E9%98%B6%E6%AE%B5%E8%B0%83%E7%94%A8zend-bailout%E5%AF%BC%E8%87%B4zend-mm-heap-corrupted%E9%97%AE%E9%A2%98/">在PHP RSHUTDOWN阶段调用zend_bailout导致zend_mm_heap corrupted问题</a>
           </li>
         
       </ul>

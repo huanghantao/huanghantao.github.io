@@ -269,7 +269,7 @@ finally_end -> 9;
 
 如果`try`后面没有跟`catch`，那么，`catch_op`为`0`；如果`try`后面没有跟`finally`，那么`finally_op`为`0`。
 
-所以，`try_op`表示`try`里面的第一条`opline`的索引；`catch_op`表示`ZEND_CATCH`这条`opline`的索引；`finally_op`表示`finally`里面的第一套`opline`的索引；`finally_end`表示`ZEND_FAST_RET`这条`opline`的索引。
+所以，`try_op`表示`try`里面的第一条`opline`的索引；`catch_op`表示`ZEND_CATCH`这条`opline`的索引；`finally_op`表示`finally`里面的第一条`opline`的索引；`finally_end`表示`ZEND_FAST_RET`这条`opline`的索引。
 
 我们发现，`try_op`和`finally_op`都是表示它们里面的`opline`的位置，而`catch_op`却是表示`catch`这条`opline`本身的位置。这是因为我们不能给`try`和`finally`传参，但是可以给`catch`传参。例如，不能这么写：
 

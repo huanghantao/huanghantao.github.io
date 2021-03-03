@@ -14,7 +14,7 @@
 <meta property="og:description" content="本文基于PHP8.0.1  测试脚本如下： 1234567891011&lt;?phpfunction test(array $arr)&amp;#123;&amp;#125;try &amp;#123;    test(10000);&amp;#125; catch (\TypeError $e) &amp;#123;    echo &quot;handle error\n&quot;;&amp;#125;  对应的opcodes如下：">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-03-03T03:59:07.000Z">
-<meta property="article:modified_time" content="2021-03-03T16:59:04.185Z">
+<meta property="article:modified_time" content="2021-03-03T17:02:16.658Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="PHP">
 <meta property="article:tag" content="PHP内核">
@@ -154,7 +154,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">try_op -&gt; <span class="number">0</span>;</span><br><span class="line">catch_op -&gt; <span class="number">4</span>;</span><br><span class="line">finally_op -&gt; <span class="number">8</span>;</span><br><span class="line">finally_end -&gt; <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
 
 <p>如果<code>try</code>后面没有跟<code>catch</code>，那么，<code>catch_op</code>为<code>0</code>；如果<code>try</code>后面没有跟<code>finally</code>，那么<code>finally_op</code>为<code>0</code>。</p>
-<p>所以，<code>try_op</code>表示<code>try</code>里面的第一条<code>opline</code>的索引；<code>catch_op</code>表示<code>ZEND_CATCH</code>这条<code>opline</code>的索引；<code>finally_op</code>表示<code>finally</code>里面的第一套<code>opline</code>的索引；<code>finally_end</code>表示<code>ZEND_FAST_RET</code>这条<code>opline</code>的索引。</p>
+<p>所以，<code>try_op</code>表示<code>try</code>里面的第一条<code>opline</code>的索引；<code>catch_op</code>表示<code>ZEND_CATCH</code>这条<code>opline</code>的索引；<code>finally_op</code>表示<code>finally</code>里面的第一条<code>opline</code>的索引；<code>finally_end</code>表示<code>ZEND_FAST_RET</code>这条<code>opline</code>的索引。</p>
 <p>我们发现，<code>try_op</code>和<code>finally_op</code>都是表示它们里面的<code>opline</code>的位置，而<code>catch_op</code>却是表示<code>catch</code>这条<code>opline</code>本身的位置。这是因为我们不能给<code>try</code>和<code>finally</code>传参，但是可以给<code>catch</code>传参。例如，不能这么写：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (something) &#123;</span><br><span class="line">    test(<span class="number">10000</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">TypeError</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;handle error\n&quot;</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> (something) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;finally\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

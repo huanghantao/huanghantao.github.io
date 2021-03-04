@@ -77,6 +77,104 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-nginx数据结构容器-链表" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/28/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8-%E9%93%BE%E8%A1%A8/" class="article-date">
+  <time class="dt-published" datetime="2018-01-28T14:08:18.000Z" itemprop="datePublished">2018-01-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/01/28/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8-%E9%93%BE%E8%A1%A8/">nginx数据结构容器--链表</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天继续阅读了陶辉前辈的《深入理解Nginx模块开发与架构解析》，看到了Nginx的数据结构部分。因为书中并没有提供详细的源码，所以，只看书不动手做实验总是感觉很不踏实。</p>
+<p>于是我今晚把Nginx中链表和内存池中的代码抽取了出来，够折腾的，到处改代码。希望我的浪费时间可以给大家节约时间。本篇博客的代码 <a target="_blank" rel="noopener" href="https://github.com/huanghantao/ngxdatastructure/tree/master/ngx_list">在这里</a>。</p>
+<p>首先，我从设计的角度给大家介绍下Nginx中的链表。首先我们要知道，Nginx对内存分配非常吝啬（因为只有保证低内存消耗，才有可能实现巨大的同时并发连接数），所以<strong>链表是存放在内存池上面的</strong>。</p>
+<p>OK，知道这个结论之后，我给大家介绍一下Nginx中与链表有关的数据结构：</p>
+<h2 id="nginx-list-t数据结构"><a href="#nginx-list-t数据结构" class="headerlink" title="nginx_list_t数据结构"></a>nginx_list_t数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ngx_list_part_s</span> <span class="title">ngx_list_part_t</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ngx_list_part_s</span> &#123;</span></span><br><span class="line">    <span class="keyword">void</span> *elts;</span><br><span class="line">    <span class="keyword">ngx_uint_t</span> nelts;</span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *last;</span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> part;</span><br><span class="line">    <span class="keyword">size_t</span> size;</span><br><span class="line">    <span class="keyword">ngx_uint_t</span> nalloc;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *pool;</span><br><span class="line">&#125; <span class="keyword">ngx_list_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>ngx_list_t</code>结构体中的<code>ngx_pool_t *pool;</code>成员就是用来给<code>ngx_list_t</code>配置一个内存池用的。</p>
+<p>OK，知道了与链表相关的数据结构之后，我来用一幅图表示一下它们之间的联系以便于小伙伴们对于后续代码的理解：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/1.PNG"></p>
+<p><a target="_blank" rel="noopener" href="http://hankjin.blog.163.com/blog/static/33731937201091111303630/">图片来自这里，侵删</a></p>
+<p>现在我们通过代码一步一步的来理解这个数据结构如何使用以及内存分布的样子。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var = ngx_list_push(testlist);</span><br><span class="line">    *var = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *part = &amp;(testlist-&gt;part);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var1 = part-&gt;elts;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= part-&gt;nelts) &#123;</span><br><span class="line">        	<span class="keyword">if</span> (<span class="literal">NULL</span> == part-&gt;next) &#123;</span><br><span class="line">        		<span class="keyword">break</span>;</span><br><span class="line">        	&#125;</span><br><span class="line"></span><br><span class="line">        	part = part-&gt;next;</span><br><span class="line">        	var1 = part-&gt;elts;</span><br><span class="line">        	i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;list element:%d\n&quot;</span>, var1[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们执行一下这段代码：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/2.PNG"></p>
+<p>OK，代码执行没问题，我来讲解一下代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这段代码是用来创建一个内存池的，内存池的大小为1024字节。返回值是内存池的地址。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+
+<p><code>ngx_list_create</code>用来在内存池<code>ngx_mem_pool</code>上面创建新的链表。6指的是每个链表数组可容纳元素的个数是6（相当于ngx_list_t结构体中的nalloc成员）。<code>sizeof(int)</code>是每个元素的数据大小，这里我们想要在链表中存放整型数据。该函数的返回值是创建的链表的地址。</p>
+<p>好的，我们来打印一下内存池的地址和链表的地址，看看它们的关系，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;内存池地址:%p\n链表地址:%p\n&quot;</span>, ngx_mem_pool, testlist);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/3.PNG"></p>
+<p>首先，我们知道，我们给内存池开的大小有1M，而栈的大小也就几兆。所以，讲道理内存池在实现上面应该不会开在栈上面，所以是开在堆上面的。而堆的地址增长一般是从低地址到高地址的（详情查看C语言的内存模型），所以根据图中所示，链表首地址和内存池首地址只是相差了48个字节，远远小于1M。所以我们可以得出链表被分配在内存池上面的结论。我们运行代码再来测试一次：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/4.PNG"></p>
+<p>依旧是相差48字节。咦( ′◔ ‸◔`)，这是很神奇的。为啥都是相差48字节呢？我们可以读读这些函数的实现来分析出答案。</p>
+<p>OK，我们继续讲解第一份代码的剩余部分。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+
+<p>是用来初始化一个已有的链表。我们可以看到，区别只是比<code>ngx_list_create</code>函数多了第一个参数。我们来看看调用了<code>ngx_list_create</code>和<code>ngx_list_init</code>之后，链表的区别在哪里，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;create函数调用之后的结果:\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;nalloc);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, testlist-&gt;pool);</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;init函数调用之后的结果:\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, testlist-&gt;nalloc);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>, testlist-&gt;pool);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/5.PNG"></p>
+<p>可以看出，<code>ngx_list_t</code>这个结构体中的成员size、nalloc、pool在使用<code>ngx_list_create</code>函数的时候，已经进行了初始化。至于这两个函数的区别，我们还是需要从源码来分析。</p>
+<p>OK，我们继续读代码的剩余部分。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ngx_int_t</span> *var = ngx_list_push(testlist);</span><br><span class="line">*var = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码表示往链表<code>testlist</code>中添加一个元素，且返回值是这个元素的地址。我们可能会奇怪，为啥不直接<code>ngx_list_push(元素)</code>，而是要先<code>ngx_list_push(testlist)</code>后再来对其赋值呢？感觉有些脱了裤子来放屁啊！我开始读这个代码的时候也感到非常疑惑。但是细细一想，得到了答案：同一个内存池上面可能有其他链表，如果直接<code>ngx_list_push(元素)</code>，那么程序怎么知道要往哪个链表中添加元素呢？对吧。我们可以来测试一下，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_palloc.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ngx_list.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span> *ngx_mem_pool = ngx_create_pool(<span class="number">1024</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;内存池地址:%p\n&quot;</span>, ngx_mem_pool);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist_1 = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;链表1的地址:%p\n&quot;</span>, testlist_1);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist_1) &#123;</span><br><span class="line">    	exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist_1, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var = ngx_list_push(testlist_1);</span><br><span class="line">    *var = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_t</span> *testlist_2 = ngx_list_create(ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;链表2的地址:%p\n&quot;</span>, testlist_2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == testlist_2) &#123;</span><br><span class="line">        exit(&#x27;创建链表失败&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ngx_list_init(testlist_2, ngx_mem_pool, <span class="number">6</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    var = ngx_list_push(testlist_2);</span><br><span class="line">    *var = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *part1 = &amp;(testlist_1-&gt;part);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var1 = part1-&gt;elts;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= part1-&gt;nelts) &#123;</span><br><span class="line">        	<span class="keyword">if</span> (<span class="literal">NULL</span> == part1-&gt;next) &#123;</span><br><span class="line">        		<span class="keyword">break</span>;</span><br><span class="line">        	&#125;</span><br><span class="line"></span><br><span class="line">        	part1 = part1-&gt;next;</span><br><span class="line">        	var1 = part1-&gt;elts;</span><br><span class="line">        	i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;list1 element:%d\n&quot;</span>, var1[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_list_part_t</span> *part2 = &amp;(testlist_2-&gt;part);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_int_t</span> *var2 = part2-&gt;elts;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= part2-&gt;nelts) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="literal">NULL</span> == part2-&gt;next) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            part2 = part2-&gt;next;</span><br><span class="line">            var2 = part2-&gt;elts;</span><br><span class="line">            i = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;list2 element:%d\n&quot;</span>, var2[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/6.PNG"></p>
+<p>第一份代码的最后部分：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; <span class="comment">/* void */</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= part-&gt;nelts) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> == part-&gt;next) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        part = part-&gt;next;</span><br><span class="line">        var1 = part-&gt;elts;</span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;list element:%d\n&quot;</span>, var1[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的作用就是遍历出链表中的所有元素。</p>
+<p>最后，再附上一张内存池上存放链表的图片：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8--%E9%93%BE%E8%A1%A8/7.png"></p>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/u012377333/article/details/40582431">图片来自这里，侵删</a></p>
+<p>好了，这篇博客到此结束了，希望小伙伴们有所收获。希望小伙伴们可以感受到通过我的博客，我在与你面对面交流，能够达到这个作用，我就很欣慰了。</p>
+<p>happy ending……</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2018/01/28/nginx%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%B9%E5%99%A8-%E9%93%BE%E8%A1%A8/" data-id="ckkj72zst0059f6vxgpwj22n8" data-title="nginx数据结构容器--链表" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-为什么说线程是CPU调度的基本单位" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2018/01/26/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%98%AFCPU%E8%B0%83%E5%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8D%95%E4%BD%8D/" class="article-date">
@@ -780,63 +878,6 @@
 
 
   
-    <article id="post-读读代码-基于线程池的多并发Web服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
-  <time class="dt-published" datetime="2017-12-02T02:10:38.000Z" itemprop="datePublished">2017-12-02</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/">读读代码-基于线程池的多并发Web服务器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>这次与大家分享的是我阅读的一个<strong>基于线程池</strong>的多并发Web服务器，收获很多，非常感谢<a target="_blank" rel="noopener" href="https://github.com/bjut-hz/HttpServer">这位兄弟的代码</a>。</p>
-<p>如果大家不是很清楚什么是线程池，可以看<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E6%B1%A0/4745661?fr=aladdin">百度百科的解释</a>。简单的来说，线程池有如下特点：</p>
-<ul>
-<li>线程数量</li>
-<li>工作线程</li>
-<li>任务接口</li>
-<li>任务队列</li>
-</ul>
-<p>这些特点会在后面的代码中体现出来（其实也是设计线程池的一些基本内容）。</p>
-<p>那么我们为什么需要使用线程池呢？</p>
-<p>如果客户端发起一个请求，服务器就创建一个线程来处理该请求，处理完了之后，销毁该线程，那么开销是相当大的。在实际使用中，为每个请求创建新线程的服务器在创建和销毁线程上花费的时间和消耗的系统资源，甚至可能要比花在处理实际的用户请求的时间和资源要多得多（在遇到这种<strong>大量短小请求</strong>时，适合使用线程池）。除了创建和销毁线程的开销之外，活动的线程也需要消耗系统资源。因此，我们可以使用这种<strong>池化技术</strong>来减少资源不足，尽量利用已有对象来进行服务。 （这种思路和内存池有些像，也是使用池化技术）</p>
-<p>OK，介绍完了线程池和它的优点之后，小伙伴们应该对它有了一些了解。接下来就是枯燥的阅读代码时刻（我也觉得很枯燥，但是想想可以学到新知识，就会坚持读下去，这个过程需要反复的去查找资料）。</p>
-<p>这次的代码量有些大了，超过1000行了（但是无论多么的长，我们只要找到主函数，就可以一直读下去。注意<strong>使用一个好的IDE或者文本编辑器</strong>，这些东西可以大大的提高我们的阅读效率），所以呢，我只挑我个人认为需要分享的地方咯……</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72zv400c2f6vxfwx735fe" data-title="读读代码-基于线程池的多并发Web服务器" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -887,6 +928,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -900,10 +945,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

@@ -77,6 +77,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-empty和isset函数" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/" class="article-date">
+  <time class="dt-published" datetime="2017-07-04T06:07:35.000Z" itemprop="datePublished">2017-07-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/">empty和isset函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>自己对这两个函数一直是一知半解的，这里小小的总结一下</p>
+<h1 id="empty-函数"><a href="#empty-函数" class="headerlink" title="empty()函数"></a>empty()函数</h1><p>对于empty()函数，php手册给出的官方解答是：</p>
+<h3 id="判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty-并不会产生警告"><a href="#判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty-并不会产生警告" class="headerlink" title="判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty()并不会产生警告"></a><strong><em>判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty()并不会产生警告</em></strong></h3><p>也就是说<strong>我们可以通过判断与它等价的bool值来判断empty之后的值是false还是true</strong></p>
+<p>我们做一个小实验：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="number">0</span>));</span><br><span class="line">var_dump(!!<span class="number">0</span>);</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="literal">null</span>));</span><br><span class="line">var_dump(!!<span class="literal">null</span>);</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="keyword">array</span>()));</span><br><span class="line">var_dump(!!<span class="keyword">array</span>());</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="string">&#x27;0&#x27;</span>));</span><br><span class="line">var_dump(!!<span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="number">1</span>));</span><br><span class="line">var_dump(!!<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>下图是打印出的结果：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/6.PNG"></p>
+<p>也就是说，empty()函数里面的参数的值的bool等价值为false的话，那么empty函数返回true。否则返回false</p>
+<h1 id="isset-函数"><a href="#isset-函数" class="headerlink" title="isset()函数"></a>isset()函数</h1><p>对于isset()函数，php手册给出的官方解答是：</p>
+<h3 id="检测变量是否设置，并且不是-NULL"><a href="#检测变量是否设置，并且不是-NULL" class="headerlink" title="检测变量是否设置，并且不是 NULL"></a><strong><em>检测变量是否设置，并且不是 NULL</em></strong></h3><p>变量是否设置比较好理解，也就是给它值就行了(不能是NULL)，那么什么时候一个变量会是null呢？</p>
+<p>手册里面给出的答案是：</p>
+<ul>
+<li><h3 id="被赋值为-NULL"><a href="#被赋值为-NULL" class="headerlink" title="被赋值为 NULL"></a><strong><em>被赋值为 NULL</em></strong></h3></li>
+<li><h3 id="尚未被赋值"><a href="#尚未被赋值" class="headerlink" title="尚未被赋值"></a><strong><em>尚未被赋值</em></strong></h3></li>
+<li><h3 id="被-unset"><a href="#被-unset" class="headerlink" title="被 unset()"></a><strong><em>被 unset()</em></strong></h3></li>
+</ul>
+<p>做个小实验：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$var1 = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var1));</span><br><span class="line">$var2 = <span class="number">0</span>;</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var2));</span><br><span class="line">$var3 = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var3));</span><br><span class="line">$var4 = <span class="keyword">array</span>();</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var4));</span><br><span class="line">$var5 = <span class="keyword">new</span> <span class="built_in">stdClass</span>();</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var5));</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/7.PNG"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/" data-id="ckkj72zsk004of6vx2pdn0j1a" data-title="empty和isset函数" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-bind-127-0-0-1-0-failed-Error-Address-already-in-use" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/" class="article-date">
@@ -439,6 +500,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -452,10 +517,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

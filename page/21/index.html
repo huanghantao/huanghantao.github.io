@@ -77,6 +77,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-用C-写一个服务器吧（三）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/10/08/%E7%94%A8C-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2017-10-08T03:12:52.000Z" itemprop="datePublished">2017-10-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/10/08/%E7%94%A8C-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89/">用C++写一个服务器吧（三）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Hello，小伙伴们，好久没有去写我们的那个Web服务器了，原因呢是有许多事情要做，最近在刷一本700多面的书，可算是刷完了，花了快半个月了。虽然费了好些时间，但是收获满满的哦，自己对计算机底层的理解更深了一些。</p>
+<p>好了，进入正题，这次我给大家带来的教程是为我们的Web服务器增加显示<strong>动态网页</strong>的功能。</p>
+<h3 id="动态网页"><a href="#动态网页" class="headerlink" title="动态网页"></a>动态网页</h3><p>何为动态网页？简单来说，就是针对一个模板是一样（什么是模板一样呢？指的是页面的布局呀，js特效等等是一样的）的网页，随着请求的参数的改变，页面的内容会发生改变。</p>
+<h3 id="如何实现动态网页"><a href="#如何实现动态网页" class="headerlink" title="如何实现动态网页"></a>如何实现动态网页</h3><p>那么如何根据参数的不同来实现动态网页呢？在这里，我们使用一个叫做<code>CGI</code>的东西。</p>
+<h3 id="CGI"><a href="#CGI" class="headerlink" title="CGI"></a>CGI</h3><p>何为CGI？翻译过来就是Common Gateway Interface，即通用网关接口。熟悉计算机网络的小伙伴们应该知道那个网关是啥意思，简单的讲就是<strong>网关是一个翻译器，一种充当转换重任的计算机系统或设备。使用在不同的通信协议、数据格式或语言，甚至体系结构完全不同的两种系统之间。</strong>通常与网关输入输出两端通信使用的是不同的协议。<strong>即一方是HTTP协议，另一方可能是其他协议，比如企业内部的自定义协议</strong>（CGI程序也是差不多的原理）。然而，我们提到的计算机网络课中的网关大多指的是硬件层面上的网关。而我们这里要重点讲解的CGI可以说是软件层面上的网关。</p>
+<p>当有一个请求过来的时候，如果它是请求一个动态的网页，那么，Web服务器可以调用CGI程序，然后这个CGI程序去处理那些从客户端传递过来的参数。</p>
+<p>OK，小伙伴们现在对CGI应该有一个简单的认识了，如果还是不太清楚，我们跟着代码过一遍即可理解了。</p>
+<p>首先，</p>
+<p>我们先写一个简单的HTML页面：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>login page<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>form<span class="tag">&lt;/<span class="name">h1</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;/cgi-bin/login.cgi&quot;</span> <span class="attr">method</span>=<span class="string">&quot;get&quot;</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">table</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>username: <span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>password: <span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;OK&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">table</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，当我们点击提交按钮的时候，一个GET请求就会发送给我们写的Web服务器。此时我们得在Web服务器中判断一个请求是否是请求动态网页的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_cgi</span><span class="params">(<span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* start = buff + <span class="number">5</span>;</span><br><span class="line">	<span class="keyword">char</span>* end = <span class="built_in">strchr</span>(start, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span>* target = <span class="string">&quot;cgi-bin&quot;</span>; <span class="comment">// 只读</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">char</span>* p = start; p != end; p++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (*p != *target) &#123;</span><br><span class="line">        	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        target++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>小伙伴们如果对代码不是很熟悉可以先不用搞清楚，只需要知道这些代码大概要做什么即可。</p>
+<p>然后，我们需要获取对应的CGI程序的文件名，我们解析出来：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span>* <span class="title">get_cgi_file_name</span><span class="params">(<span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* file_name = <span class="keyword">new</span> <span class="keyword">char</span>[BUFFSIZE];</span><br><span class="line">    file_name = buff + <span class="number">13</span>;</span><br><span class="line">    <span class="keyword">char</span>* end = <span class="built_in">strchr</span>(file_name, <span class="string">&#x27; &#x27;</span>);</span><br><span class="line">    *end = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;file_name&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">strlen</span>(file_name)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> file_name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OK，此时，我们已经获取了CGI程序的文件名了，我们需要执行它。然而，这里会出现一个问题，什么问题呢？就是主函数只能有一个的问题。那么我们怎么去执行那个CGI程序呢？对的，现在是并发的时代了，我们切换一个进程即可做到，换个装逼一点的词汇就是让CPU去<strong>调度</strong>CGI进程。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (is_cgi(buff)) &#123;</span><br><span class="line">    <span class="keyword">char</span>* cgi_file_name = get_cgi_file_name(buff);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    pid = fork(); <span class="comment">// 创建子进程，在子进程里执行CGI程序</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> == pid) &#123;</span><br><span class="line">        <span class="keyword">char</span> path[] = <span class="string">&quot;/codedir/cppCode/cgi-bin/&quot;</span>;</span><br><span class="line">        <span class="built_in">strcat</span>(path, cgi_file_name);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, path);</span><br><span class="line">        execl(path, cgi_file_name, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好的，接下来我们来完成一下CGI程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> *buf, *p;</span><br><span class="line">	<span class="keyword">char</span> arg1[<span class="number">1024</span>], arg2[<span class="number">1024</span>], content[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="string">&quot;it is login.cgi&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;HTTP/1.0 200 OK\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Content-type: text/html\r\n\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I am hht\n&quot;</span>);</span><br><span class="line">    </span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们测试一下我们写的CGI程序：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89%E3%80%8B/1.gif"></p>
+<p>OK，没毛病😳。CGI程序成功的被我们调用。接下来，就要利用这个CGI程序实现动态网页。</p>
+<h3 id="获取参数"><a href="#获取参数" class="headerlink" title="获取参数"></a>获取参数</h3><p>那么，如果实现动态网页的话，很关键的一点就是要获取从客户端传来的参数。那么如何获取呢？</p>
+<p>当客户端通过get或post方法向CGI程序提交了数据以后，我们可以环境变量来获取那些参数。在这里，我们通过<code>QUERY_STRING</code>环境变量可以得到<strong>查询字符串</strong>。（正是因为CGI这个接口协议，这些环境变量是属于该接口协议的内容）</p>
+<p>我们通过C语言里面的<code>getenv()</code>函数来获取查询字符串。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((buf = getenv(<span class="string">&quot;QUERY_STRING&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    p = <span class="built_in">strchr</span>(buf, <span class="string">&#x27;&amp;&#x27;</span>);</span><br><span class="line">    *p = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">strcpy</span>(arg1, buf);</span><br><span class="line">    <span class="built_in">strcpy</span>(arg2, p + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sprintf</span>(content, <span class="string">&quot;your name is %s\n&quot;</span>, arg1);</span><br><span class="line">    <span class="built_in">sprintf</span>(content, <span class="string">&quot;your password is %s\n&quot;</span>, arg2);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;HTTP/1.0 200 OK\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Content-type: text/html\r\n\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, content);</span><br><span class="line"></span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>OK，我们现在来看看能否解析出我们传递给Web服务器的参数（注意，<strong>在这里我们只能传递两个参数</strong>）。这个操作我们在浏览器里面进行：</p>
+<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89%E3%80%8B/2.gif"></p>
+<p>咦( ′◔ ‸◔`)，咋没有显示呢？我们来找找bug。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/10/08/%E7%94%A8C-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ckkj72zuo00axf6vxbvia5kaf" data-title="用C++写一个服务器吧（三）" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-存储器层次结构" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/10/05/%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/" class="article-date">
@@ -609,77 +684,6 @@ Explanation:
 
 
   
-    <article id="post-I-O多路复用之select-系统调用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" class="article-date">
-  <time class="dt-published" datetime="2017-09-13T06:15:44.000Z" itemprop="datePublished">2017-09-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/">I/O多路复用之select()系统调用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="为什么要使用I-O多路复用"><a href="#为什么要使用I-O多路复用" class="headerlink" title="为什么要使用I/O多路复用"></a>为什么要使用I/O多路复用</h3><p>应用程序常常需要在多于一个文件描述符上阻塞：例如响应键盘输入（stdin）、进程间通信以及同时操作多个文件。</p>
-<p>在不使用线程（怎么理解线程的存在呢？我么可以举一个例子。当我们运行qq这个进程的时候，是可以执行不同的任务的。例如，我们可以在使用qq发送消息的同时来收发文件。而这两个不同的任务就是利用线程来完成的），<strong>尤其是独立处理每一个文件的情况下，进程无法在多个文件描述符上同时阻塞。如果文件都处于准备好被读写的状态，同时操作多个文件描述符是没有问题的</strong>。但是，一旦在该过程中出现一个未准备好的文件描述符（就是说，如果一个<code>read()</code>被调用，但没有读入数据），则这个进程将会阻塞，不能再操作其他文件。可能阻塞只有几秒钟，但是应用无响应也会造成不好的用户体验。然而，如果文件描述符始终没有任何可用数据，就可能一直阻塞下去。</p>
-<p><strong>如果使用非阻塞I/O，应用可以发起I/O请求并返回一个特别的错误，从而避免阻塞</strong>。但是，从两个方面来讲，这种方法效率较差。首先，进程需要以某种不确定的方式<strong>不断发起I/O操作</strong>，直到某个打开的文件描述符准备好进行I/O。其次，如果程序可以睡眠的话将更加有效，可以让处理器进行其他工作，直到一个或更多文件描述符可以进行I/O时再唤醒。</p>
-<h3 id="三种I-O多路复用方案"><a href="#三种I-O多路复用方案" class="headerlink" title="三种I/O多路复用方案"></a>三种I/O多路复用方案</h3><p>I/O多路复用允许应用在多个文件描述符上同时阻塞，并在其中某个可以读写时收到通知。这时I/O多路复用就成了应用的关键所在。</p>
-<p>I/O多路复用的设计遵循一下原则：</p>
-<p>1、I/O多路复用：当任何文件描述符准备好I/O时告诉我</p>
-<p>2、在一个或更多文件描述符就绪前始终处于睡眠状态</p>
-<p>3、唤醒：哪个准备好了？</p>
-<p>4、在不阻塞的情况下处理所有I/O就绪的文件描述符</p>
-<p>5、返回第一步，重新开始</p>
-<p>Linux提供了三种I/O多路复用方案：<code>select</code>、<code>poll</code>、<code>epoll</code>。</p>
-<h3 id="先来说说select"><a href="#先来说说select" class="headerlink" title="先来说说select()"></a>先来说说select()</h3><h4 id="select-系统调用的声明"><a href="#select-系统调用的声明" class="headerlink" title="select()系统调用的声明"></a>select()系统调用的声明</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">作用：通知执行了select()的进程哪个Socket或文件可读</span></span><br><span class="line"><span class="comment">返回值：负值：select错误，见ERRORS。 </span></span><br><span class="line"><span class="comment">       正值：某些文件可读写或出错  </span></span><br><span class="line"><span class="comment">       0：等待超时，没有可读写或错误的文件</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span> <span class="params">(<span class="keyword">int</span> n,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *readfds,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *writefds,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *exceptfds,</span></span></span><br><span class="line"><span class="function"><span class="params">            struct timeval *timeout</span></span></span><br><span class="line"><span class="function"><span class="params">            )</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>其中<code>fd_set</code>是<code>select</code>机制中提供的一种数据结构，实际上是一<code>long</code>类型的数组，每一个数组元素都能与一打开的文件句柄（不仅是<code>socket</code>句柄，还是其他文件或命名管道或设备句柄）建立联系，建立联系的工作由程序员完成，当调用<code>select()</code>时，由内核根据IO状态修改<code>fd_set</code>的内容，由此来通知执行了<code>select()</code>的进程哪一个<code>socket</code>或文件发生了可读或可写事件</p>
-<p>监测的文件描述符可以分为三类，分别等待不同的事件。监测<code>readfds</code>集合中的文件描述符，确认其中是否有可读数据（也就是说，确认好了的文件描述符的读操作可以<strong>无阻塞</strong>的完成）。监测<code>writefds</code>集合中的文件描述符，<strong>确认</strong>其中是否有一个写操作可以<strong>不阻塞</strong>地完成。监测<code>exceptfds</code>中的文件描述符，确认其中是否有出现异常发生或者出现带外数据（这种情况只适用于套接字）。指定的集合可能为空（NULL）。相应的，<code>select()</code>则不对此类事件进行监测。</p>
-<p><strong>成功返回时，每个集合只包含对应类型的I/O就绪的文件描述符</strong>。举个例子，<code>readfds</code>集合中有两个文件描述符：7和9.当调用返回时，如果7还在集合中，该文件描述符就准备好进行无阻塞I/O了。如果9已不在集合中，它可能在被读取时会发生阻塞。<strong>出现错误返回-1</strong>。</p>
-<p>第一个参数n，等于<strong>所有集合中文件描述符的最大值加1</strong>。这样，<code>select()</code>的调用者需要找到最大的文件描述符值，并将其加1后传给第一个参数。</p>
-<p><code>timeout</code>参数是一个指向<code>timeval</code>结构体的指针，定义如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> tv_sec; <span class="comment">/* seconds */</span></span><br><span class="line">    <span class="keyword">long</span> tv_usec; <span class="comment">/* microseconds */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>如果这个参数不是NULL，即使此时没有文件描述符处于I/O就绪状态，<code>select()</code>调用也将在<code>tv_sec秒、tv_usec微秒</code>后返回。即 <strong>select在timeout时间内阻塞，超时时间之内有事件到来就返回了，否则在超时后不管怎样一定返回</strong>。</p>
-<p><strong>如果时限中的两个值都是0</strong>，调用会立即返回，并报告调用时所有事件对应的文件描述符均不可用，且不等待任何后续事件。</p>
-<p>若将<strong>NULL</strong>以形参传入，即不传入时间结构，就是将select<strong>置于阻塞状态，</strong>一定等到监视文件描述符集合中某个文件描述符发生变化为止</p>
-<h3 id="举个select-的小例子"><a href="#举个select-的小例子" class="headerlink" title="举个select()的小例子"></a>举个select()的小例子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIMEOUT 5 <span class="comment">/* 选择超时秒数 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_LEN 1024 <span class="comment">/* 读缓冲区字节 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">    fd_set readfds;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">     </span><br><span class="line">    <span class="comment">/* 等待输入 */</span></span><br><span class="line">    FD_ZERO(&amp;readfds); <span class="comment">// 把writefds集合中的所有文件描述符移除</span></span><br><span class="line">    FD_SET(STDIN_FILENO, &amp;readfds); <span class="comment">// 向writefds集合中添加文件描述符STDIN_FILENO。STDIN_FILENO就是标准输入设备（一般是键盘）的文件描述符。它的值为0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 设置等待为5秒 */</span></span><br><span class="line">    tv.tv_sec = TIMEOUT;</span><br><span class="line">    tv.tv_usec = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 在指定的tv时间内阻塞 */</span></span><br><span class="line">    ret = select(STDIN_FILENO + <span class="number">1</span>, &amp;readfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv); <span class="comment">// 通知执行了select()的进程哪个Socket或文件可读</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ret == <span class="number">-1</span>) &#123;</span><br><span class="line">    	perror(<span class="string">&quot;select&quot;</span>);</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!ret) &#123;</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;%d 秒 已经过去了. \n&quot;</span>, TIMEOUT);</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (FD_ISSET(STDIN_FILENO, &amp;readfds)) &#123; <span class="comment">// 测试给定的文件描述符在不在给定的集合中。检查fdset联系的文件句柄fd是否可读写，当&gt;0表示可读写</span></span><br><span class="line">    	<span class="keyword">char</span> buf[BUF_LEN + <span class="number">1</span>];</span><br><span class="line">    	<span class="keyword">int</span> len;</span><br><span class="line">    	<span class="comment">/* 保证没有阻塞 */</span></span><br><span class="line">    	len = read(STDIN_FILENO, buf, BUF_LEN);</span><br><span class="line">    	<span class="keyword">if</span> (len == <span class="number">-1</span>) &#123;</span><br><span class="line">    		perror(<span class="string">&quot;read&quot;</span>);</span><br><span class="line">    		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">if</span> (len) &#123;</span><br><span class="line">    		buf[len] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    		<span class="built_in">printf</span>(<span class="string">&quot;read: %s\n&quot;</span>, buf);</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;This should not happen!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>让我们执行这段代码之后，等待5秒：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/I/O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect%28%29%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/1.gif"></p>
-<p>可以看到，在这5秒内，进程是处于阻塞状态的（因为文件描述符的状态没有发生变化）</p>
-<p>现在让我们执行完这段代码后输入一些内容：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/I/O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect%28%29%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/2.gif"></p>
-<p>上面这个例子虽然只是检测了一个文件描述符（因此不是多路复用），但是对于<code>select()</code>这个系统调用的用法已经很清晰了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/09/13/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B9%8Bselect-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" data-id="ckkj72zqr000qf6vx35pa1b2d" data-title="I/O多路复用之select()系统调用" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -730,6 +734,10 @@ Explanation:
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -743,10 +751,6 @@ Explanation:
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

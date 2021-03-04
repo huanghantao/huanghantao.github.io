@@ -77,6 +77,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-在PHP代码里面通过ini-set设置upload-max-filesize不生效" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" class="article-date">
+  <time class="dt-published" datetime="2019-01-10T11:01:18.000Z" itemprop="datePublished">2019-01-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/">在PHP代码里面通过ini_set设置upload_max_filesize不生效</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今天在测试项目的时候，遇到了一个bug，如题所说的。经过排查发现，ini_set不是对所有的配置项都可以进行设置的。例如<code>upload_max_filesize</code>这个值。我们来进行一个测试：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// test memory_limit</span></span><br><span class="line">$value = ini_get(<span class="string">&#x27;memory_limit&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;old memory_limit value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;memory_limit&#x27;</span>, <span class="string">&#x27;256M&#x27;</span>);</span><br><span class="line">$value = ini_get(<span class="string">&#x27;memory_limit&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;new memory_limit value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line"><span class="comment">// test upload_max_filesize</span></span><br><span class="line">$value = ini_get(<span class="string">&#x27;upload_max_filesize&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;old upload_max_filesize value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;upload_max_filesize&#x27;</span>, <span class="string">&#x27;20M&#x27;</span>);</span><br><span class="line">$value = ini_get(<span class="string">&#x27;upload_max_filesize&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;new upload_max_filesize value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行后输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">old memory_limit value: 128M</span><br><span class="line">new memory_limit value: 256M</span><br><span class="line">old upload_max_filesize value: 2M</span><br><span class="line">new upload_max_filesize value: 2M</span><br></pre></td></tr></table></figure>
+
+<p>可以发现<code>memory_limit</code>的值是可以在php脚本运行时候修改的，但是<code>upload_max_filesize</code>却不可以。所以，当我们遇到<code>ini_set</code>函数不生效的时候，我们需要去查一查这个配置值是否可以在脚本运行的时候进行动态的修改。这里我给出两个链接：</p>
+<p>1、<a target="_blank" rel="noopener" href="http://www.php.net/manual/en/ini.list.php">ini list</a></p>
+<p>2、<a target="_blank" rel="noopener" href="http://php.net/manual/en/configuration.changes.modes.php">configuration changes modes</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" data-id="ckkj72zty0090f6vx1kczau7r" data-title="在PHP代码里面通过ini_set设置upload_max_filesize不生效" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-tinyswoole中的worker进程如何数据返回给指定的reactor线程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/" class="article-date">
@@ -669,117 +718,6 @@
 
 
   
-    <article id="post-《就是要你懂swoole》-动手写一个服务器扩展（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2018-11-19T07:45:51.000Z" itemprop="datePublished">2018-11-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/">《就是要你懂swoole》-动手写一个服务器扩展（一）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>小伙伴们大家好，这篇博客教大家如何开发一个服务器扩展雏形。</p>
-<p>我们的环境如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">操作系统：alpine（小伙伴们如果不是这个Linux发行版的话也没事）</span><br><span class="line">PHP版本：7.2.10</span><br></pre></td></tr></table></figure>
-
-<h2 id="初始化目录结构"><a href="#初始化目录结构" class="headerlink" title="初始化目录结构"></a>初始化目录结构</h2><p>PHP官方给我们提供了构建PHP扩展的一个工具<code>ext_skel</code>，我们可以在PHP的源码（你可以在PHP的官网得到PHP源码）里面找到。</p>
-<p>我们找到这个工具之后，执行命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ext_skel --extname=tinyswoole</span><br><span class="line">cd tinyswoole</span><br></pre></td></tr></table></figure>
-
-<p>然后我们执行一下tree命令查看一下生成的目录结构：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">tree</span><br><span class="line">.</span><br><span class="line">├── CREDITS</span><br><span class="line">├── EXPERIMENTAL</span><br><span class="line">├── config.m4</span><br><span class="line">├── config.w32</span><br><span class="line">├── tinyswoole.c</span><br><span class="line">├── tinyswoole.php</span><br><span class="line">├── php_tinyswoole.h</span><br><span class="line">└── tests</span><br><span class="line">    └── 001.phpt</span><br><span class="line"></span><br><span class="line">1 directory, 8 files</span><br></pre></td></tr></table></figure>
-
-<p>（OK，文件很多，但是我们只需要关注一部分即可）</p>
-<p>我们首先在<code>tinyswoole</code>目录下面创建一个<code>src</code>目录用来存放我们开发的扩展源码。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir src</span><br><span class="line">touch src/server.c</span><br></pre></td></tr></table></figure>
-
-<p>编辑一下<code>config.m4</code>文件，把这个文件的内容替换为如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE(tinyswoole, whether to enable tinyswoole support,</span><br><span class="line">dnl Make sure that the comment is aligned:</span><br><span class="line">[  --enable-tinyswoole           Enable tinyswoole support])</span><br><span class="line"></span><br><span class="line">if test &quot;$PHP_TINYSWOOLE&quot; !&#x3D; &quot;no&quot;; then</span><br><span class="line">  PHP_SUBST(TINYSWOOLE_SHARED_LIBADD)</span><br><span class="line">  source_file&#x3D;&quot;tinyswoole.c tinyswoole_client.c src&#x2F;client.c src&#x2F;server.c&quot;</span><br><span class="line">  PHP_NEW_EXTENSION(tinyswoole, $source_file, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE&#x3D;1)</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
-
-<p>我这里说一点，<code>source_file</code>这个变量里面的文件直接使用空格隔开的，不要用逗号哈。</p>
-<p>OK，到了这一步，我们的准备工作已经做完了。我们可以开始开发服务器扩展了。</p>
-<h2 id="开发扩展"><a href="#开发扩展" class="headerlink" title="开发扩展"></a>开发扩展</h2><p>我们编写我们的<code>src/server.c</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim src/server.c</span><br></pre></td></tr></table></figure>
-
-<p>然后，把这个文件的内容替换为如下内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LISTENQ 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_BUF_SIZE 1024</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">server</span><span class="params">(<span class="keyword">char</span> *ip, <span class="keyword">int</span> port)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> listenfd;</span><br><span class="line">    <span class="keyword">int</span> connfd;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">socklen_t</span> len;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">servaddr</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">cliaddr</span>;</span></span><br><span class="line">    <span class="keyword">char</span> buffer[MAX_BUF_SIZE];</span><br><span class="line"></span><br><span class="line">    listenfd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    bzero(&amp;servaddr, <span class="keyword">sizeof</span>(servaddr));</span><br><span class="line">    servaddr.sin_family = AF_INET;</span><br><span class="line">    inet_aton(ip, &amp;(servaddr.sin_addr));</span><br><span class="line">    servaddr.sin_port = htons(port);</span><br><span class="line">    bind(listenfd, (struct sockaddr *)&amp;servaddr, <span class="keyword">sizeof</span>(servaddr));</span><br><span class="line">    listen(listenfd, LISTENQ);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        len = <span class="keyword">sizeof</span>(cliaddr);</span><br><span class="line">        connfd = accept(listenfd, (struct sockaddr *)&amp;cliaddr, &amp;len);</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            n = read(connfd, buffer, MAX_BUF_SIZE);</span><br><span class="line">            <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                close(connfd);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            write(connfd, buffer, n);  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    close(listenfd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>通过之前我对swoole服务器的讲解，小伙伴们应该是可以读懂这个代码的。这里我解释一下。</p>
-<p>1、创建一个监听socket</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listenfd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>2、指定服务器绑定的端口</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bind(listenfd, (struct sockaddr *)&amp;servaddr, <span class="keyword">sizeof</span>(servaddr));</span><br></pre></td></tr></table></figure>
-
-<p>3、监听客户端的连接</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen(listenfd, LISTENQ);</span><br></pre></td></tr></table></figure>
-
-<p>4、获取一个连接</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connfd = accept(listenfd, (struct sockaddr *)&amp;cliaddr, &amp;len);</span><br></pre></td></tr></table></figure>
-
-<p>5、读取客户端发来的数据</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n = read(connfd, buffer, MAX_BUF_SIZE);</span><br></pre></td></tr></table></figure>
-
-<p>6、返回客户端数据</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">write(connfd, buffer, n);</span><br></pre></td></tr></table></figure>
-
-<p>所以，这个服务器做的事情很简单，客户端发给服务器什么数据，服务器就原样返回给客户端。</p>
-<h2 id="注册这个server函数"><a href="#注册这个server函数" class="headerlink" title="注册这个server函数"></a>注册这个server函数</h2><p>然后，我们编辑<code>tinyswoole.c</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim tinyswoole.c</span><br></pre></td></tr></table></figure>
-
-<p>把里面的内容替换为如下内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_CONFIG_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;config.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;php.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;php_ini.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ext/standard/info.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;php_tinyswoole.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">zend_class_entry *tinyswoole_ce;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ZEND_BEGIN_ARG_INFO_EX(arginfo_tinyswoole__construct, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">	ZEND_ARG_INFO(<span class="number">0</span>, ip)</span><br><span class="line">    ZEND_ARG_INFO(<span class="number">0</span>, port)</span><br><span class="line">ZEND_END_ARG_INFO()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> zval* <span class="title">tsw_zend_read_property</span><span class="params">(zend_class_entry *class_ptr, zval *obj, <span class="keyword">const</span> <span class="keyword">char</span> *s, <span class="keyword">int</span> len, <span class="keyword">int</span> silent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zval rv;</span><br><span class="line">    <span class="keyword">return</span> zend_read_property(class_ptr, obj, s, len, silent, &amp;rv);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_METHOD(tinyswoole_server, __construct)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> *ip;</span><br><span class="line">	<span class="keyword">size_t</span> ip_len;</span><br><span class="line">	<span class="keyword">long</span> port;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, <span class="string">&quot;sl&quot;</span>, &amp;ip, &amp;ip_len, &amp;port) == FAILURE) &#123;</span><br><span class="line">		RETURN_NULL();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	zend_update_property_string(tinyswoole_ce, getThis(), <span class="string">&quot;ip&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;ip&quot;</span>) - <span class="number">1</span>, ip);</span><br><span class="line">	zend_update_property_long(tinyswoole_ce, getThis(), <span class="string">&quot;port&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;port&quot;</span>) - <span class="number">1</span>, port);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_METHOD(tinyswoole, start)</span><br><span class="line">&#123;</span><br><span class="line">	zval *ip;</span><br><span class="line">	zval *port;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;running server...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	ip = tsw_zend_read_property(tinyswoole_ce, getThis(), <span class="string">&quot;ip&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;ip&quot;</span>) - <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">	port = tsw_zend_read_property(tinyswoole_ce, getThis(), <span class="string">&quot;port&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;port&quot;</span>) - <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	server(Z_STRVAL(*ip), Z_LVAL(*port));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">zend_function_entry tinyswoole_method[]=</span><br><span class="line">&#123;</span><br><span class="line">	ZEND_ME(tinyswoole_server, __construct, arginfo_tinyswoole__construct, ZEND_ACC_PUBLIC)</span><br><span class="line">	ZEND_ME(tinyswoole_server, start, <span class="literal">NULL</span>, ZEND_ACC_PUBLIC)</span><br><span class="line">	&#123;<span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">PHP_MINIT_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	zend_class_entry ce;</span><br><span class="line">	INIT_CLASS_ENTRY(ce, <span class="string">&quot;tinyswoole_server&quot;</span>, tinyswoole_method);</span><br><span class="line">	tinyswoole_ce = zend_register_internal_class(&amp;ce TSRMLS_CC);</span><br><span class="line"></span><br><span class="line">	zend_declare_property_null(tinyswoole_ce, <span class="string">&quot;ip&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;ip&quot;</span>) - <span class="number">1</span>, ZEND_ACC_PRIVATE);</span><br><span class="line">	zend_declare_property_null(tinyswoole_ce, <span class="string">&quot;port&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;port&quot;</span>) - <span class="number">1</span>, ZEND_ACC_PRIVATE);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_MSHUTDOWN_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_RINIT_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(COMPILE_DL_TINYSWOOLE) &amp;&amp; defined(ZTS)</span></span><br><span class="line">	ZEND_TSRMLS_CACHE_UPDATE();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_RSHUTDOWN_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_MINFO_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	php_info_print_table_start();</span><br><span class="line">	php_info_print_table_header(<span class="number">2</span>, <span class="string">&quot;tinyswoole support&quot;</span>, <span class="string">&quot;enabled&quot;</span>);</span><br><span class="line">	php_info_print_table_end();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> zend_function_entry tinyswoole_functions[] = &#123;</span><br><span class="line">	PHP_FE_END</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zend_module_entry tinyswoole_module_entry = &#123;</span><br><span class="line">	STANDARD_MODULE_HEADER,</span><br><span class="line">	<span class="string">&quot;tinyswoole&quot;</span>,</span><br><span class="line">	tinyswoole_functions,</span><br><span class="line">	PHP_MINIT(tinyswoole),</span><br><span class="line">	PHP_MSHUTDOWN(tinyswoole),</span><br><span class="line">	PHP_RINIT(tinyswoole),</span><br><span class="line">	PHP_RSHUTDOWN(tinyswoole),</span><br><span class="line">	PHP_MINFO(tinyswoole),</span><br><span class="line">	PHP_TINYSWOOLE_VERSION,</span><br><span class="line">	STANDARD_MODULE_PROPERTIES</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> COMPILE_DL_TINYSWOOLE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> ZTS</span></span><br><span class="line">ZEND_TSRMLS_CACHE_DEFINE()</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">ZEND_GET_MODULE(tinyswoole)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="测试扩展"><a href="#测试扩展" class="headerlink" title="测试扩展"></a>测试扩展</h2><p>然后，我们编译这个扩展：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们在php.ini配置文件里面加上这个扩展：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extension&#x3D;tinyswoole</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们编写一个脚本来测试一下这个扩展：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> tinyswoole_server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
-
-<p>执行这个脚本，你将会得到如下输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">php server.php </span><br><span class="line">running server...</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们用一个客户端去连接我们写好的服务器。可以使用nc命令去连接它：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 9501</span><br></pre></td></tr></table></figure>
-
-<p>然后，输入字符串<code>hello world</code>，你将会收到服务器发回给你的<code>hello world</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 9501</span><br><span class="line">hello world</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
-
-<p>OK，到了这里，我们的服务器扩展算是开发完成了，尽管他的功能很弱。但是，随着我们的学习，这个扩展会一步一步的变得更加的强大。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zt7006ff6vx6p91ajpd" data-title="《就是要你懂swoole》-动手写一个服务器扩展（一）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -830,6 +768,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -843,10 +785,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

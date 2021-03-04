@@ -77,6 +77,78 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-暴力生成支配树" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/" class="article-date">
+  <time class="dt-published" datetime="2020-11-21T19:03:57.000Z" itemprop="datePublished">2020-11-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/">暴力生成支配树</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在编译器进行后端优化的时候，会使用支配树来构造<code>SSA</code>。支配树的生成算法有好几种，这里我们介绍一下最暴力的方法。（<code>Opcache</code>则是使用其他算法来实现，我们可以搜索论文<code>A Simple, Fast Dominance Algorithm</code>找到）</p>
+<h2 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h2><h3 id="支配"><a href="#支配" class="headerlink" title="支配"></a>支配</h3><p>在一个图里面，有两个点<code>u</code>和<code>w</code>，如果从图的源顶点出发，必须经过<code>u</code>才能到达<code>w</code>，那么我们称<code>u</code>支配<code>w</code>。</p>
+<p>如下图：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">                        ┌────────────┐                        </span><br><span class="line">                        │     1      │                        </span><br><span class="line">                        │            │                        </span><br><span class="line">                        └────────────┘                        </span><br><span class="line">                               │                              </span><br><span class="line">                               │                              </span><br><span class="line">                               │                              </span><br><span class="line">                               │                              </span><br><span class="line">                               ▼                              </span><br><span class="line">                        ┌────────────┐                        </span><br><span class="line">                        │     2      │                        </span><br><span class="line">                        │            │                        </span><br><span class="line">                        └────────────┘                        </span><br><span class="line">                               │                              </span><br><span class="line">       ┌───────────────────────┴───────────────────────┐      </span><br><span class="line">       │                                               │      </span><br><span class="line">       ▼                                               ▼      </span><br><span class="line">┌────────────┐                                  ┌────────────┐</span><br><span class="line">│     3      │                                  │     4      │</span><br><span class="line">│            │                                  │            │</span><br><span class="line">└────────────┘                                  └────────────┘</span><br><span class="line">      │                                                │      </span><br><span class="line">      │                                                │      </span><br><span class="line">      └────────────────────────┬───────────────────────┘      </span><br><span class="line">                               │                              </span><br><span class="line">                               ▼                              </span><br><span class="line">                        ┌────────────┐                        </span><br><span class="line">                        │     5      │                        </span><br><span class="line">                        │            │                        </span><br><span class="line">                        └────────────┘                        </span><br></pre></td></tr></table></figure>
+
+<p>那么有如下支配关系：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1支配2，1支配3，1支配4，1支配5</span><br><span class="line">2支配3，2支配4，2支配5</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>因为<code>3</code>和<code>4</code>都可以到达<code>5</code>，所以<code>3</code>和<code>4</code>不支配<code>5</code>。</p>
+</blockquote>
+<h3 id="直接支配"><a href="#直接支配" class="headerlink" title="直接支配"></a>直接支配</h3><p>如果<code>u</code>支配<code>w</code>，而<code>w</code>的其他支配者支配<code>u</code>，则节点<code>u</code>被认为是节点<code>w</code>的直接支配者，表示为<code>idom (w)</code>。</p>
+<p>如下图：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">                        ┌────────────┐                        </span><br><span class="line">                        │     1      │                        </span><br><span class="line">                        │            │                        </span><br><span class="line">                        └────────────┘                        </span><br><span class="line">                               │                              </span><br><span class="line">                               │                              </span><br><span class="line">                               │                              </span><br><span class="line">                               │                              </span><br><span class="line">                               ▼                              </span><br><span class="line">                        ┌────────────┐                        </span><br><span class="line">                        │     2      │                        </span><br><span class="line">                        │            │                        </span><br><span class="line">                        └────────────┘                        </span><br><span class="line">                               │                              </span><br><span class="line">       ┌───────────────────────┴───────────────────────┐      </span><br><span class="line">       │                                               │      </span><br><span class="line">       ▼                                               ▼      </span><br><span class="line">┌────────────┐                                  ┌────────────┐</span><br><span class="line">│     3      │                                  │     4      │</span><br><span class="line">│            │                                  │            │</span><br><span class="line">└────────────┘                                  └────────────┘</span><br><span class="line">      │                                                │      </span><br><span class="line">      │                                                │      </span><br><span class="line">      └────────────────────────┬───────────────────────┘      </span><br><span class="line">                               │                              </span><br><span class="line">                               ▼                              </span><br><span class="line">                        ┌────────────┐                        </span><br><span class="line">                        │     5      │                        </span><br><span class="line">                        │            │                        </span><br><span class="line">                        └────────────┘                        </span><br></pre></td></tr></table></figure>
+
+<p>那么有如下直接支配关系：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1直接支配2</span><br><span class="line">2直接支配3，2直接支配4，2直接支配5</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，<code>1</code>和<code>2</code>都支配着<code>3</code>、<code>4</code>、<code>5</code>。但是，因为<code>1</code>支配了<code>2</code>，所以，按照直接支配的定义，<code>2</code>才是<code>3</code>、<code>4</code>、<code>5</code>的直接支配。</p>
+<h2 id="定理"><a href="#定理" class="headerlink" title="定理"></a>定理</h2><p>1.除了图的源点外，其他点至少有一个点支配着它。</p>
+<p>我们从上面的直接支配点可以看出，<code>2</code>、<code>3</code>、<code>4</code>、<code>5</code>都被支配着。</p>
+<p>2.除了图的源点外，其他点只有一个点直接支配着它。（我们可以结合上面的例子来理解）</p>
+<h2 id="支配树"><a href="#支配树" class="headerlink" title="支配树"></a>支配树</h2><p>我们可以通过<code>edges &#123;(idom(w),w)&#125;</code>来得到支配树。其中，有向图的源点就是支配树的根。</p>
+<h3 id="生成支配树的算法"><a href="#生成支配树的算法" class="headerlink" title="生成支配树的算法"></a>生成支配树的算法</h3><h4 id="DFS树"><a href="#DFS树" class="headerlink" title="DFS树"></a>DFS树</h4><p>可以通过<code>DFS</code>来遍历有向图：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">domDFS</span>(<span class="params">Vertex $vertex</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;isVisited($vertex)) &#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;visitedVertexs[$vertex-&gt;name] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">foreach</span> ($vertex-&gt;nexts <span class="keyword">as</span> $next) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;isVisited($next)) <span class="keyword">$this</span>-&gt;domDFS($next);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">computeDominatorTree</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;predOrder <span class="keyword">as</span> $parent) &#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;visitedVertexs = [];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;visitedVertexs[$parent-&gt;name] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;domDFS(<span class="keyword">$this</span>-&gt;predOrder[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;predOrder <span class="keyword">as</span> $child) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;isVisited($child)) &#123;</span><br><span class="line">                $child-&gt;dominator = $parent;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，这个算法很好理解，非常的直观暴力，但是我们还是来解释下。</p>
+<blockquote>
+<p>前提，对图进行深度优先遍历，得到一组序列。</p>
+</blockquote>
+<p>从第一个序列开始，每次取出一个序列，我们记作<code>s</code>。然后重新对图进行深度优先遍历，但是，如果遇到了当前这个点<code>s</code>，就停止往<code>s</code>这个点后面的点深度遍历了，开始回退，深度遍历其他的点。我们把每一个遍历到的点保存下来，比如放在一个<code>visitedMap</code>里面。最后，我们和所有的点进行对比，不在<code>visitedMap</code>里面的点，就是被当前<code>s</code>这个点支配的。一直重复下去，可以得到每一个点的直接支配点。最终，得到支配树。</p>
+<p>在演算的过程中我们发现，对于这个算法，如果有两个点（记作<code>v1</code>、<code>v2</code>）可以到达第三个点（记作<code>v3</code>）。那么，当选取<code>v1</code>或者<code>v2</code>进行深度遍历的时候，<code>visitedMap</code>会保存所有的顶点。也就意味着，<code>v1</code>和<code>v2</code>不支配任何点。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/11/22/%E6%9A%B4%E5%8A%9B%E7%94%9F%E6%88%90%E6%94%AF%E9%85%8D%E6%A0%91/" data-id="ckkj72zug00adf6vxakth7gmp" data-title="暴力生成支配树" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Swoole-AIO线程池实现协程化的思路" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/11/20/Swoole-AIO%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0%E5%8D%8F%E7%A8%8B%E5%8C%96%E7%9A%84%E6%80%9D%E8%B7%AF/" class="article-date">
@@ -577,47 +649,6 @@
 
 
   
-    <article id="post-虚拟机设计与实现-虚拟机组成" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/11/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%84%E6%88%90/" class="article-date">
-  <time class="dt-published" datetime="2020-11-05T16:32:25.000Z" itemprop="datePublished">2020-11-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/11/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%84%E6%88%90/">虚拟机设计与实现--虚拟机组成</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">                               ┌─────────────────────────────┐                                                            </span><br><span class="line">                               │                             │                                                            </span><br><span class="line">                               │                             │               ┌─────────────────────────────────────────┐  </span><br><span class="line">                               │                             │               │                                         │  </span><br><span class="line">                          ┌───▶│ Loaders and dynamic linkers │──────────────▶│For example, convert symbols to addresses│  </span><br><span class="line">                          │    │                             │               │                                         │  </span><br><span class="line">                          │    │                             │               └─────────────────────────────────────────┘  </span><br><span class="line">                          │    │                             │                                                            </span><br><span class="line">                          │    └─────────────────────────────┘                                                            </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │                                                                                               </span><br><span class="line">                          │    ┌─────────────────────────────┐                                                            </span><br><span class="line">                          │    │                             │                                                            </span><br><span class="line">                          │    │                             │            ┌─────────────────────────────────────────┐     </span><br><span class="line">                          │    │                             │            │                                         │     </span><br><span class="line">                          ├───▶│      Execution engine       │───────────▶│     Execute opcode or machine code      │     </span><br><span class="line">                          │    │                             │            │                                         │     </span><br><span class="line">┌────────────────────┐    │    │                             │            └─────────────────────────────────────────┘     </span><br><span class="line">│                    │    │    │                             │                                                            </span><br><span class="line">│                    │    │    └─────────────────────────────┘                                                            </span><br><span class="line">│                    │    │                                                                                               </span><br><span class="line">│  virtual machine   │    │                                               ┌─────────────────────────────────────────┐     </span><br><span class="line">│                    │────┤                                               │Use traditional memory managers, such as │     </span><br><span class="line">│                    │    │                                        ┌─────▶│  malloc and Free. Focus more on memory  │     </span><br><span class="line">│                    │    │                                        │      │               allocation                │     </span><br><span class="line">│                    │    │    ┌─────────────────────────────┐     │      └─────────────────────────────────────────┘     </span><br><span class="line">└────────────────────┘    │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          ├───▶│       Memory manager        │─────┤                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │                                                      </span><br><span class="line">                          │    │                             │     │      ┌──────────────────────────────────────────────┐</span><br><span class="line">                          │    └─────────────────────────────┘     │      │   Or use the virtual machine<span class="string">&#x27;s own memory    │</span></span><br><span class="line"><span class="string">                          │                                        │      │ allocation strategy to pay more attention to │</span></span><br><span class="line"><span class="string">                          │                                        └─────▶│  memory recovery. For example, the garbage   │</span></span><br><span class="line"><span class="string">                          │                                               │                  collector                   │</span></span><br><span class="line"><span class="string">                          │                                               │                                              │</span></span><br><span class="line"><span class="string">                          │                                               └──────────────────────────────────────────────┘</span></span><br><span class="line"><span class="string">                          │                                                                                               </span></span><br><span class="line"><span class="string">                          │     ┌─────────────────────────────┐                                                           </span></span><br><span class="line"><span class="string">                          │     │                             │           ┌──────────────────────────────────────────────┐</span></span><br><span class="line"><span class="string">                          │     │                             │           │                                              │</span></span><br><span class="line"><span class="string">                          │     │                             │           │                                              │</span></span><br><span class="line"><span class="string">                          └────▶│          extension          │──────────▶│                     FFI                      │</span></span><br><span class="line"><span class="string">                                │                             │           │                                              │</span></span><br><span class="line"><span class="string">                                │                             │           │                                              │</span></span><br><span class="line"><span class="string">                                │                             │           └──────────────────────────────────────────────┘</span></span><br><span class="line"><span class="string">                                └─────────────────────────────┘                                                           </span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/11/06/%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%84%E6%88%90/" data-id="ckkj72zv200buf6vx21t7fqeh" data-title="虚拟机设计与实现--虚拟机组成" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -668,6 +699,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -681,10 +716,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

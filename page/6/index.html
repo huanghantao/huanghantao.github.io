@@ -77,6 +77,61 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Swoole的多个线程如何处理信号" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" class="article-date">
+  <time class="dt-published" datetime="2020-08-18T10:02:14.000Z" itemprop="datePublished">2020-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/">Swoole的多个线程如何处理信号</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在<code>Swoole</code>内核里面，有多种线程。比如说心跳线程（心跳线程我们会在未来的版本进行移除），<code>reactor</code>线程，中断检查线程等等。</p>
+<p>那么，在信号的管理方面，<code>Swoole</code>又是怎么做的呢？我们又如下规则：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 如果是异常产生的信号（比如程序错误，像SIGPIPE、SIGEGV这些），则只有产生异常的线程收到并处理。</span><br><span class="line">2. 如果是用pthread_kill产生的内部信号，则只有pthread_kill参数中指定的目标线程收到并处理。</span><br><span class="line">3. 如果是外部使用kill命令产生的信号，通常是SIGINT、SIGHUP等job control信号，则会遍历所有线程，直到找到一个不阻塞该信号的线程，然后调用它来处理。注意只有一个线程能收到。</span><br></pre></td></tr></table></figure>
+
+<p>那么<code>Swoole</code>是如何实现阻塞信号的呢？它提供了一个叫做<code>swSignal_none</code>的函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swSignal_none</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">sigset_t</span> mask;</span><br><span class="line">    sigfillset(&amp;mask);</span><br><span class="line">    <span class="keyword">int</span> ret = pthread_sigmask(SIG_BLOCK, &amp;mask, <span class="literal">nullptr</span>);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        swSysWarn(<span class="string">&quot;pthread_sigmask() failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sigfillset(&amp;mask);</span><br></pre></td></tr></table></figure>
+
+<p>表示设置所有的信号。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> ret = pthread_sigmask(SIG_BLOCK, &amp;mask, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+
+<p>表示对所有的信号进行阻塞。</p>
+<p>我们发现，<code>Swoole</code>对心跳线程、中断检查线程等线程调用了<code>swSignal_none</code>。因为<code>Swoole</code>不希望这些线程去处理信号以及被这些信号打扰。具体哪些地方调用了<code>swSignal_none</code>，感兴趣的小伙伴可以看一看源码。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" data-id="ckkj72zsc0044f6vxfcrkabrg" data-title="Swoole的多个线程如何处理信号" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP数组系列函数源码分析-end" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/" class="article-date">
@@ -677,86 +732,6 @@
 
 
   
-    <article id="post-PHP在-get魔术方法中进行Swoole协程切换的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
-  <time class="dt-published" datetime="2020-08-09T08:57:51.000Z" itemprop="datePublished">2020-08-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/">PHP在__get魔术方法中进行Swoole协程切换的问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们有如下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($i=<span class="number">0</span>; $i &lt; <span class="number">2</span>; $i++) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">        $foo-&gt;aaa;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::$aaa in /root/codeDir/phpCode/swoole/coroutine/get/get.php on line <span class="number">18</span></span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::$aaa in /root/codeDir/phpCode/swoole/coroutine/get/get.php on line <span class="number">18</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们会发现，这里会有警告，说是使用了没有定义的属性。</p>
-<p>为了理解这个问题，我们可以先来了解一下<code>__get</code>这个魔术方法。首先是这么一段代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var_dump($name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，因为<code>aaa</code>这个属性是类<code>Foo</code>的动态属性，所以默认会去调用<code>Foo</code>类的<code>__get</code>魔术方法，并且，传递给魔术方法的参数就是这个动态属性的名字。</p>
-<p>好的，我们现在再来写一段代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;$name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 9</span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 9</span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，当我们在<code>__get</code>魔术方法里面去读取动态属性<code>aaa</code>的时候，报的错误和我们在<code>__get</code>方法中进行协程切换是一模一样的。我们可以来理解一下为什么<code>PHP</code>要这么警告？</p>
-<p>如果不这么警告的话，那么我们在<code>__get</code>函数里面读取动态属性<code>aaa</code>是不是又会继续调用<code>__get</code>魔术方法呢？那么这就会导致无限的递归了。所以<code>PHP</code>是禁止这种行为的。</p>
-<p>那么，<code>PHP</code>底层是如何做到这种限制的呢？我们引用<a target="_blank" rel="noopener" href="https://github.com/pangudashu/php7-internal/blob/40645cfe087b373c80738881911ae3b178818f11/3/zend_object.md">《PHP7内核剖析》</a>的内容来解释一下：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Note: 如果类存在 get () 方法，则在实例化对象分配属性内存 (即:properties_table) 时会多分配一个 zval，类型为 HashTable，每次调用 get ($var) 时会把输入的 $var 名称存入这个哈希表，这样做的目的是防止循环调用，举个例子：</span><br><span class="line"></span><br><span class="line">public function __get($var) &#123; return $this-&gt;$var; &#125;</span><br><span class="line"></span><br><span class="line">这种情况是调用 get () 时又访问了一个不存在的属性，也就是会在 get () 方法中递归调用，如果不对请求的 $var 作判断则将一直递归下去，所以在调用 get () 前首先会判断当前 $var 是不是已经在 get () 中了，如果是则不会再调用 get ()，否则会把 $var 作为 key 插入那个 HashTable，然后将哈希值设置为：*guard |= IN_ISSET，调用完 get () 再把哈希值设置为：*guard &amp;= ~IN_ISSET。</span><br><span class="line"></span><br><span class="line">这个 HashTable 不仅仅是给 get () 用的，其它魔术方法也会用到，所以其哈希值类型是 zend_long，不同的魔术方法占不同的 bit 位；其次，并不是所有的对象都会额外分配这个 HashTable，在对象创建时会根据 zend_class_entry.ce_flags 是否包含 ZEND_ACC_USE_GUARDS 确定是否分配，在类编译时如果发现定义了 get()、set()、unset ()、__isset () 方法则会将 ce_flags 打上这个掩码。</span><br></pre></td></tr></table></figure>
-
-<p>所以，总结起来就是，当调用了<code>__get</code>时，会对这个动态属性做一个<code>IN_ISSET</code>标记，直到结束了这次<code>__get</code>调用，才会取消这个<code>IN_ISSET</code>标记。如果在有<code>IN_ISSET</code>的时候，再次对这个动态属性进行访问，那么就会报这个警告了。</p>
-<p>所以，如下写法就是可以的了：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var_dump($name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>因为我们是在退出第一次<code>__get</code>魔术方法调用之后再次访问动态属性<code>aaa</code>的，这个时候<code>IN_ISSET</code>标记已经没了。</p>
-<p>好的，我们现在来修改一下之前的协程切换的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">    $foo-&gt;aaa;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">    $foo-&gt;aaa;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>这样或许会更加直观一点。首先，当第一个协程读取动态属性<code>aaa</code>的时候，对象<code>$foo</code>第一次调用了<code>__get</code>魔术方法。然后，因为<code>Coroutine::sleep</code>，协程被挂起了，<code>__get</code>魔术方法还没有退出，此时<code>IN_ISSET</code>标记还在。这个时候，轮到第二个协程进行动态属性<code>aaa</code>的读取，此时，因为<code>IN_ISSET</code>还在，所以此时访问动态属性<code>aaa</code>就是禁止的了：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 21</span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 21</span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现报错的地方是第<code>21</code>行，是第二个协程报出的警告。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72zrn002mf6vxf2dwgxmz" data-title="PHP在__get魔术方法中进行Swoole协程切换的问题" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -807,6 +782,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -820,10 +799,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

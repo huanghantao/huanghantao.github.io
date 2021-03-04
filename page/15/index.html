@@ -77,6 +77,73 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP-版本7-2-14中，一个数除以0会发生什么" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/02/PHP-%E7%89%88%E6%9C%AC7-2-14%E4%B8%AD%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%95%B0%E9%99%A4%E4%BB%A50%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88/" class="article-date">
+  <time class="dt-published" datetime="2019-04-02T05:09:28.000Z" itemprop="datePublished">2019-04-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/04/02/PHP-%E7%89%88%E6%9C%AC7-2-14%E4%B8%AD%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%95%B0%E9%99%A4%E4%BB%A50%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88/">PHP 版本7.2.14中，一个数除以0会发生什么</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>PHP版本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php -v</span><br><span class="line">PHP 7.2.14 (cli) (built: Jan 11 2019 01:35:56) ( NTS )</span><br><span class="line">Copyright (c) 1997-2018 The PHP Group</span><br><span class="line">Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies</span><br><span class="line">    with Zend OPcache v7.2.14, Copyright (c) 1999-2018, by Zend Technologies</span><br></pre></td></tr></table></figure>
+
+<p>代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$a = <span class="number">10</span>;</span><br><span class="line">$b = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> $a / $b;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line"></span><br><span class="line">Warning: Division by zero in /root/codeDir/phpCode/test/test.php on line 6</span><br><span class="line">INF~/codeDir/phpCode/test #</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，报了<code>Warning</code>问题，这是PHP错误的一种等级。说明，就<code>7.2.14</code>版本的PHP而言：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个数除以0，PHP会当作错误来看待</span><br></pre></td></tr></table></figure>
+
+<p>自然，我们就不可以通过捕获异常的方式来处理除0问题了：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$a = <span class="number">10</span>;</span><br><span class="line">$b = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> $a / $b;</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">Exception</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> $e-&gt;getMessage() . PHP_EOL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line"></span><br><span class="line">Warning: Division by zero in /root/codeDir/phpCode/test/test.php on line 7</span><br><span class="line">INF~/codeDir/phpCode/test #</span><br></pre></td></tr></table></figure>
+
+<p>捕获异常失败了对吧。</p>
+<p>所以，对于这种情况，我们还是需要单独去判断<code>$b</code>是否为0。</p>
+<p>（注意，这是在目前的PHP版本中，除以0是当作错误来处理，在其他语言例如Java中，是当作异常来处理的）</p>
+<p>如果可以的话，能够使用<code>set_error_handler</code>来接管PHP错误处理：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">customError</span>(<span class="params">$errno, $errstr</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Exception</span>($errno . <span class="string">&#x27;|&#x27;</span> . $errstr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">set_error_handler(<span class="string">&#x27;customError&#x27;</span>, E_WARNING | E_STRICT);</span><br><span class="line"></span><br><span class="line">$a = <span class="number">10</span>;</span><br><span class="line">$b = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">echo</span> $a / $b;</span><br><span class="line">&#125; <span class="keyword">catch</span> (\<span class="built_in">Exception</span> $e) &#123;</span><br><span class="line">    <span class="keyword">echo</span> $e-&gt;getMessage() . PHP_EOL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line">2|Division by zero</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/04/02/PHP-%E7%89%88%E6%9C%AC7-2-14%E4%B8%AD%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%95%B0%E9%99%A4%E4%BB%A50%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88/" data-id="ckkj72zr10019f6vx7d0f867a" data-title="PHP 版本7.2.14中，一个数除以0会发生什么" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-PHP7中到底可不可以-调用对象的非静态方法？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/04/01/PHP7%E4%B8%AD%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5-%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%9D%9E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%9F/" class="article-date">
@@ -699,55 +766,6 @@
 
 
   
-    <article id="post-在PHP代码里面通过ini-set设置upload-max-filesize不生效" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" class="article-date">
-  <time class="dt-published" datetime="2019-01-10T11:01:18.000Z" itemprop="datePublished">2019-01-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/">在PHP代码里面通过ini_set设置upload_max_filesize不生效</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天在测试项目的时候，遇到了一个bug，如题所说的。经过排查发现，ini_set不是对所有的配置项都可以进行设置的。例如<code>upload_max_filesize</code>这个值。我们来进行一个测试：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// test memory_limit</span></span><br><span class="line">$value = ini_get(<span class="string">&#x27;memory_limit&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;old memory_limit value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;memory_limit&#x27;</span>, <span class="string">&#x27;256M&#x27;</span>);</span><br><span class="line">$value = ini_get(<span class="string">&#x27;memory_limit&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;new memory_limit value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line"><span class="comment">// test upload_max_filesize</span></span><br><span class="line">$value = ini_get(<span class="string">&#x27;upload_max_filesize&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;old upload_max_filesize value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;upload_max_filesize&#x27;</span>, <span class="string">&#x27;20M&#x27;</span>);</span><br><span class="line">$value = ini_get(<span class="string">&#x27;upload_max_filesize&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;new upload_max_filesize value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>执行后输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">old memory_limit value: 128M</span><br><span class="line">new memory_limit value: 256M</span><br><span class="line">old upload_max_filesize value: 2M</span><br><span class="line">new upload_max_filesize value: 2M</span><br></pre></td></tr></table></figure>
-
-<p>可以发现<code>memory_limit</code>的值是可以在php脚本运行时候修改的，但是<code>upload_max_filesize</code>却不可以。所以，当我们遇到<code>ini_set</code>函数不生效的时候，我们需要去查一查这个配置值是否可以在脚本运行的时候进行动态的修改。这里我给出两个链接：</p>
-<p>1、<a target="_blank" rel="noopener" href="http://www.php.net/manual/en/ini.list.php">ini list</a></p>
-<p>2、<a target="_blank" rel="noopener" href="http://php.net/manual/en/configuration.changes.modes.php">configuration changes modes</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" data-id="ckkj72zty0090f6vx1kczau7r" data-title="在PHP代码里面通过ini_set设置upload_max_filesize不生效" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -798,6 +816,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -811,10 +833,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

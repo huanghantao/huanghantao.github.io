@@ -77,6 +77,61 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux下Mutex的所有者线程先死亡造成其他线程获取锁阻塞的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/09/16/Linux%E4%B8%8BMutex%E7%9A%84%E6%89%80%E6%9C%89%E8%80%85%E7%BA%BF%E7%A8%8B%E5%85%88%E6%AD%BB%E4%BA%A1%E9%80%A0%E6%88%90%E5%85%B6%E4%BB%96%E7%BA%BF%E7%A8%8B%E8%8E%B7%E5%8F%96%E9%94%81%E9%98%BB%E5%A1%9E%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2020-09-16T10:48:38.000Z" itemprop="datePublished">2020-09-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/09/16/Linux%E4%B8%8BMutex%E7%9A%84%E6%89%80%E6%9C%89%E8%80%85%E7%BA%BF%E7%A8%8B%E5%85%88%E6%AD%BB%E4%BA%A1%E9%80%A0%E6%88%90%E5%85%B6%E4%BB%96%E7%BA%BF%E7%A8%8B%E8%8E%B7%E5%8F%96%E9%94%81%E9%98%BB%E5%A1%9E%E7%9A%84%E9%97%AE%E9%A2%98/">Linux下Mutex的所有者线程先死亡造成其他线程获取锁阻塞的问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><code>Swoole</code>最近有一个<code>BUG</code>，大概就是<code>Mutex</code>的所有者线程先死亡，造成其他线程获取锁阻塞的问题。具体的<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/issues/3644"><code>iseue</code>在这里</a>。</p>
+<p>我们可以用如下代码来对这个问题进行复现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pthread_mutex_t</span> mutex;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">handler</span><span class="params">(<span class="keyword">void</span> *)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;child thread&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">int</span> ret = pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;child ret: &quot;</span> &lt;&lt; ret &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    <span class="keyword">pthread_mutexattr_t</span> attr;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">    pthread_mutexattr_init(&amp;attr);</span><br><span class="line">    pthread_mutexattr_settype(&amp;attr, PTHREAD_MUTEX_ERRORCHECK);</span><br><span class="line"></span><br><span class="line">    pthread_mutex_init(&amp;mutex, &amp;attr);</span><br><span class="line">    pthread_mutexattr_destroy(&amp;attr);</span><br><span class="line"></span><br><span class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, handler, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    sleep(<span class="number">2</span>);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;father awake&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    ret = pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;father ret: &quot;</span> &lt;&lt; ret &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的意思是，主线程创建了子线程之后，立马调用<code>sleep</code>阻塞住。然后子线程去获取锁，然后子线程立马退出，导致锁没有被解开。然后当主线程<code>sleep</code>结束后，尝试获取锁的时候，就会阻塞住。（导致这个现象的原因是，子线程退出后，操作系统并不会把锁解开）</p>
+<p>我们可以执行下上面这段代码，执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">g++ lock.cc -lpthread</span><br><span class="line">./a.out</span><br><span class="line"></span><br><span class="line">child thread</span><br><span class="line">child ret: 0</span><br><span class="line">father awake</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解决方式如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pthread_mutex_t</span> lock;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">dropped_thread</span><span class="params">(<span class="keyword">void</span>*)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Setting lock...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    pthread_mutex_lock(&amp;lock);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Lock set, now exiting without unlocking...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">    <span class="keyword">pthread_t</span> lock_getter;</span><br><span class="line">    <span class="keyword">pthread_mutexattr_t</span> attr;</span><br><span class="line"></span><br><span class="line">    pthread_mutexattr_init(&amp;attr);</span><br><span class="line">    pthread_mutexattr_setrobust(&amp;attr, PTHREAD_MUTEX_ROBUST);</span><br><span class="line">    pthread_mutex_init(&amp;lock, &amp;attr);</span><br><span class="line">    pthread_mutexattr_destroy(&amp;attr);</span><br><span class="line">    pthread_create(&amp;lock_getter, <span class="literal">NULL</span>, dropped_thread, <span class="literal">NULL</span>);</span><br><span class="line">    sleep(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Inside main&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Attempting to acquire mutex?&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    ret = pthread_mutex_lock(&amp;lock);</span><br><span class="line">    <span class="keyword">if</span> (ret == EOWNERDEAD) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;errno: &quot;</span> &lt;&lt; ret &lt;&lt; <span class="string">&quot;, error: &quot;</span> &lt;&lt; strerror(ret) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;consistent mutex&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        pthread_mutex_consistent(&amp;lock);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;unlock mutex&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        pthread_mutex_unlock(&amp;lock);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;errno: &quot;</span> &lt;&lt; ret &lt;&lt; <span class="string">&quot;, error: &quot;</span> &lt;&lt; strerror(ret) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Attempting to acquire mutex?&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    ret = pthread_mutex_lock(&amp;lock);</span><br><span class="line">    <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;errno: &quot;</span> &lt;&lt; ret &lt;&lt; <span class="string">&quot;, error: &quot;</span> &lt;&lt; strerror(ret) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Successfully acquired lock!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        pthread_mutex_destroy(&amp;lock);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">g++ lock.cc -lpthread</span><br><span class="line">./a.out</span><br><span class="line"></span><br><span class="line">Setting lock...</span><br><span class="line">Lock <span class="built_in">set</span>, now exiting without unlocking...</span><br><span class="line">Inside main</span><br><span class="line">Attempting to acquire mutex?</span><br><span class="line">errno: 130, error: Owner died</span><br><span class="line">consistent mutex</span><br><span class="line">unlock mutex</span><br><span class="line">Attempting to acquire mutex?</span><br><span class="line">Successfully acquired lock!</span><br></pre></td></tr></table></figure>
+
+<p>这里的核心是，我们对这个锁设置了<code>PTHREAD_MUTEX_ROBUST</code>。这样的话，锁的拥有者退出后，其他线程去获取锁的时候，就不会阻塞住了，而是返回错误码<code>EOWNERDEAD</code>。并且，这里还有一个细节就是，在获得了错误码之后，我们需要设置锁的状态为<code>consistent</code>。这样，其他线程就能解开锁了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2020/09/16/Linux%E4%B8%8BMutex%E7%9A%84%E6%89%80%E6%9C%89%E8%80%85%E7%BA%BF%E7%A8%8B%E5%85%88%E6%AD%BB%E4%BA%A1%E9%80%A0%E6%88%90%E5%85%B6%E4%BB%96%E7%BA%BF%E7%A8%8B%E8%8E%B7%E5%8F%96%E9%94%81%E9%98%BB%E5%A1%9E%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72zqt000vf6vx9axh96tq" data-title="Linux下Mutex的所有者线程先死亡造成其他线程获取锁阻塞的问题" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-《手把手教你编写PHP编译器》-开篇" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/09/16/%E3%80%8A%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99PHP%E7%BC%96%E8%AF%91%E5%99%A8%E3%80%8B-%E5%BC%80%E7%AF%87/" class="article-date">
@@ -623,61 +678,6 @@
 
 
   
-    <article id="post-Swoole的多个线程如何处理信号" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" class="article-date">
-  <time class="dt-published" datetime="2020-08-18T10:02:14.000Z" itemprop="datePublished">2020-08-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/">Swoole的多个线程如何处理信号</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在<code>Swoole</code>内核里面，有多种线程。比如说心跳线程（心跳线程我们会在未来的版本进行移除），<code>reactor</code>线程，中断检查线程等等。</p>
-<p>那么，在信号的管理方面，<code>Swoole</code>又是怎么做的呢？我们又如下规则：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 如果是异常产生的信号（比如程序错误，像SIGPIPE、SIGEGV这些），则只有产生异常的线程收到并处理。</span><br><span class="line">2. 如果是用pthread_kill产生的内部信号，则只有pthread_kill参数中指定的目标线程收到并处理。</span><br><span class="line">3. 如果是外部使用kill命令产生的信号，通常是SIGINT、SIGHUP等job control信号，则会遍历所有线程，直到找到一个不阻塞该信号的线程，然后调用它来处理。注意只有一个线程能收到。</span><br></pre></td></tr></table></figure>
-
-<p>那么<code>Swoole</code>是如何实现阻塞信号的呢？它提供了一个叫做<code>swSignal_none</code>的函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swSignal_none</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">sigset_t</span> mask;</span><br><span class="line">    sigfillset(&amp;mask);</span><br><span class="line">    <span class="keyword">int</span> ret = pthread_sigmask(SIG_BLOCK, &amp;mask, <span class="literal">nullptr</span>);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        swSysWarn(<span class="string">&quot;pthread_sigmask() failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sigfillset(&amp;mask);</span><br></pre></td></tr></table></figure>
-
-<p>表示设置所有的信号。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> ret = pthread_sigmask(SIG_BLOCK, &amp;mask, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
-
-<p>表示对所有的信号进行阻塞。</p>
-<p>我们发现，<code>Swoole</code>对心跳线程、中断检查线程等线程调用了<code>swSignal_none</code>。因为<code>Swoole</code>不希望这些线程去处理信号以及被这些信号打扰。具体哪些地方调用了<code>swSignal_none</code>，感兴趣的小伙伴可以看一看源码。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" data-id="ckkj72zsc0044f6vxfcrkabrg" data-title="Swoole的多个线程如何处理信号" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -728,6 +728,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -741,10 +745,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

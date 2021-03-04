@@ -77,6 +77,63 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-读读代码-基于线程池的多并发Web服务器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2017-12-02T02:10:38.000Z" itemprop="datePublished">2017-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/">读读代码-基于线程池的多并发Web服务器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这次与大家分享的是我阅读的一个<strong>基于线程池</strong>的多并发Web服务器，收获很多，非常感谢<a target="_blank" rel="noopener" href="https://github.com/bjut-hz/HttpServer">这位兄弟的代码</a>。</p>
+<p>如果大家不是很清楚什么是线程池，可以看<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E6%B1%A0/4745661?fr=aladdin">百度百科的解释</a>。简单的来说，线程池有如下特点：</p>
+<ul>
+<li>线程数量</li>
+<li>工作线程</li>
+<li>任务接口</li>
+<li>任务队列</li>
+</ul>
+<p>这些特点会在后面的代码中体现出来（其实也是设计线程池的一些基本内容）。</p>
+<p>那么我们为什么需要使用线程池呢？</p>
+<p>如果客户端发起一个请求，服务器就创建一个线程来处理该请求，处理完了之后，销毁该线程，那么开销是相当大的。在实际使用中，为每个请求创建新线程的服务器在创建和销毁线程上花费的时间和消耗的系统资源，甚至可能要比花在处理实际的用户请求的时间和资源要多得多（在遇到这种<strong>大量短小请求</strong>时，适合使用线程池）。除了创建和销毁线程的开销之外，活动的线程也需要消耗系统资源。因此，我们可以使用这种<strong>池化技术</strong>来减少资源不足，尽量利用已有对象来进行服务。 （这种思路和内存池有些像，也是使用池化技术）</p>
+<p>OK，介绍完了线程池和它的优点之后，小伙伴们应该对它有了一些了解。接下来就是枯燥的阅读代码时刻（我也觉得很枯燥，但是想想可以学到新知识，就会坚持读下去，这个过程需要反复的去查找资料）。</p>
+<p>这次的代码量有些大了，超过1000行了（但是无论多么的长，我们只要找到主函数，就可以一直读下去。注意<strong>使用一个好的IDE或者文本编辑器</strong>，这些东西可以大大的提高我们的阅读效率），所以呢，我只挑我个人认为需要分享的地方咯……</p>
+        
+          <p class="article-more-link">
+            <a href="/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2017/12/02/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A4%9A%E5%B9%B6%E5%8F%91Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-id="ckkj72zv400c2f6vxfwx735fe" data-title="读读代码-基于线程池的多并发Web服务器" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-读读代码-select-epoll的比较" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2017/11/30/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81-select-epoll%E7%9A%84%E6%AF%94%E8%BE%83/" class="article-date">
@@ -728,81 +785,6 @@
 
 
   
-    <article id="post-用C-写一个服务器吧（三）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/10/08/%E7%94%A8C-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2017-10-08T03:12:52.000Z" itemprop="datePublished">2017-10-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/10/08/%E7%94%A8C-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89/">用C++写一个服务器吧（三）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Hello，小伙伴们，好久没有去写我们的那个Web服务器了，原因呢是有许多事情要做，最近在刷一本700多面的书，可算是刷完了，花了快半个月了。虽然费了好些时间，但是收获满满的哦，自己对计算机底层的理解更深了一些。</p>
-<p>好了，进入正题，这次我给大家带来的教程是为我们的Web服务器增加显示<strong>动态网页</strong>的功能。</p>
-<h3 id="动态网页"><a href="#动态网页" class="headerlink" title="动态网页"></a>动态网页</h3><p>何为动态网页？简单来说，就是针对一个模板是一样（什么是模板一样呢？指的是页面的布局呀，js特效等等是一样的）的网页，随着请求的参数的改变，页面的内容会发生改变。</p>
-<h3 id="如何实现动态网页"><a href="#如何实现动态网页" class="headerlink" title="如何实现动态网页"></a>如何实现动态网页</h3><p>那么如何根据参数的不同来实现动态网页呢？在这里，我们使用一个叫做<code>CGI</code>的东西。</p>
-<h3 id="CGI"><a href="#CGI" class="headerlink" title="CGI"></a>CGI</h3><p>何为CGI？翻译过来就是Common Gateway Interface，即通用网关接口。熟悉计算机网络的小伙伴们应该知道那个网关是啥意思，简单的讲就是<strong>网关是一个翻译器，一种充当转换重任的计算机系统或设备。使用在不同的通信协议、数据格式或语言，甚至体系结构完全不同的两种系统之间。</strong>通常与网关输入输出两端通信使用的是不同的协议。<strong>即一方是HTTP协议，另一方可能是其他协议，比如企业内部的自定义协议</strong>（CGI程序也是差不多的原理）。然而，我们提到的计算机网络课中的网关大多指的是硬件层面上的网关。而我们这里要重点讲解的CGI可以说是软件层面上的网关。</p>
-<p>当有一个请求过来的时候，如果它是请求一个动态的网页，那么，Web服务器可以调用CGI程序，然后这个CGI程序去处理那些从客户端传递过来的参数。</p>
-<p>OK，小伙伴们现在对CGI应该有一个简单的认识了，如果还是不太清楚，我们跟着代码过一遍即可理解了。</p>
-<p>首先，</p>
-<p>我们先写一个简单的HTML页面：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>login page<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>form<span class="tag">&lt;/<span class="name">h1</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;/cgi-bin/login.cgi&quot;</span> <span class="attr">method</span>=<span class="string">&quot;get&quot;</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">table</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>username: <span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>password: <span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">tr</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;OK&quot;</span>/&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;/<span class="name">table</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>然后，当我们点击提交按钮的时候，一个GET请求就会发送给我们写的Web服务器。此时我们得在Web服务器中判断一个请求是否是请求动态网页的：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_cgi</span><span class="params">(<span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* start = buff + <span class="number">5</span>;</span><br><span class="line">	<span class="keyword">char</span>* end = <span class="built_in">strchr</span>(start, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span>* target = <span class="string">&quot;cgi-bin&quot;</span>; <span class="comment">// 只读</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">char</span>* p = start; p != end; p++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (*p != *target) &#123;</span><br><span class="line">        	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        target++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>小伙伴们如果对代码不是很熟悉可以先不用搞清楚，只需要知道这些代码大概要做什么即可。</p>
-<p>然后，我们需要获取对应的CGI程序的文件名，我们解析出来：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span>* <span class="title">get_cgi_file_name</span><span class="params">(<span class="keyword">char</span>* buff)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* file_name = <span class="keyword">new</span> <span class="keyword">char</span>[BUFFSIZE];</span><br><span class="line">    file_name = buff + <span class="number">13</span>;</span><br><span class="line">    <span class="keyword">char</span>* end = <span class="built_in">strchr</span>(file_name, <span class="string">&#x27; &#x27;</span>);</span><br><span class="line">    *end = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;file_name&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">strlen</span>(file_name)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> file_name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>OK，此时，我们已经获取了CGI程序的文件名了，我们需要执行它。然而，这里会出现一个问题，什么问题呢？就是主函数只能有一个的问题。那么我们怎么去执行那个CGI程序呢？对的，现在是并发的时代了，我们切换一个进程即可做到，换个装逼一点的词汇就是让CPU去<strong>调度</strong>CGI进程。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (is_cgi(buff)) &#123;</span><br><span class="line">    <span class="keyword">char</span>* cgi_file_name = get_cgi_file_name(buff);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    pid = fork(); <span class="comment">// 创建子进程，在子进程里执行CGI程序</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> == pid) &#123;</span><br><span class="line">        <span class="keyword">char</span> path[] = <span class="string">&quot;/codedir/cppCode/cgi-bin/&quot;</span>;</span><br><span class="line">        <span class="built_in">strcat</span>(path, cgi_file_name);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, path);</span><br><span class="line">        execl(path, cgi_file_name, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>好的，接下来我们来完成一下CGI程序：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> *buf, *p;</span><br><span class="line">	<span class="keyword">char</span> arg1[<span class="number">1024</span>], arg2[<span class="number">1024</span>], content[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="string">&quot;it is login.cgi&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;HTTP/1.0 200 OK\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Content-type: text/html\r\n\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I am hht\n&quot;</span>);</span><br><span class="line">    </span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>接下来我们测试一下我们写的CGI程序：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89%E3%80%8B/1.gif"></p>
-<p>OK，没毛病😳。CGI程序成功的被我们调用。接下来，就要利用这个CGI程序实现动态网页。</p>
-<h3 id="获取参数"><a href="#获取参数" class="headerlink" title="获取参数"></a>获取参数</h3><p>那么，如果实现动态网页的话，很关键的一点就是要获取从客户端传来的参数。那么如何获取呢？</p>
-<p>当客户端通过get或post方法向CGI程序提交了数据以后，我们可以环境变量来获取那些参数。在这里，我们通过<code>QUERY_STRING</code>环境变量可以得到<strong>查询字符串</strong>。（正是因为CGI这个接口协议，这些环境变量是属于该接口协议的内容）</p>
-<p>我们通过C语言里面的<code>getenv()</code>函数来获取查询字符串。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((buf = getenv(<span class="string">&quot;QUERY_STRING&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    p = <span class="built_in">strchr</span>(buf, <span class="string">&#x27;&amp;&#x27;</span>);</span><br><span class="line">    *p = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">strcpy</span>(arg1, buf);</span><br><span class="line">    <span class="built_in">strcpy</span>(arg2, p + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sprintf</span>(content, <span class="string">&quot;your name is %s\n&quot;</span>, arg1);</span><br><span class="line">    <span class="built_in">sprintf</span>(content, <span class="string">&quot;your password is %s\n&quot;</span>, arg2);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;HTTP/1.0 200 OK\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Content-type: text/html\r\n\r\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, content);</span><br><span class="line"></span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>OK，我们现在来看看能否解析出我们传递给Web服务器的参数（注意，<strong>在这里我们只能传递两个参数</strong>）。这个操作我们在浏览器里面进行：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E7%94%A8C++%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89%E3%80%8B/2.gif"></p>
-<p>咦( ′◔ ‸◔`)，咋没有显示呢？我们来找找bug。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/10/08/%E7%94%A8C-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%A7%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ckkj72zuo00axf6vxbvia5kaf" data-title="用C++写一个服务器吧（三）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -853,6 +835,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -866,10 +852,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

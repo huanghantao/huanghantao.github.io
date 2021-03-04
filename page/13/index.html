@@ -77,6 +77,56 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux性能分析常用工具" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/07/30/Linux%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time class="dt-published" datetime="2019-07-30T09:14:07.000Z" itemprop="datePublished">2019-07-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/07/30/Linux%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/">Linux性能分析常用工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="模拟"><a href="#模拟" class="headerlink" title="模拟"></a>模拟</h1><h2 id="系统压力测试"><a href="#系统压力测试" class="headerlink" title="系统压力测试"></a>系统压力测试</h2><p><code>stress</code>，可以模拟很多的系统压力测试，例如CPU密集型场景、IO密集型场景等等。</p>
+<h2 id="模拟系统多线程调度切换"><a href="#模拟系统多线程调度切换" class="headerlink" title="模拟系统多线程调度切换"></a>模拟系统多线程调度切换</h2><p><code>sysbench</code>，多线程的基准测试工具。</p>
+<p>碰到上下文切换次数过多的问题时，我们可以借助<code>vmstat</code>、<code>pidstat</code>和<code>/proc/interrupts</code>等工具，来辅助排查性能问题的根源。</p>
+<h2 id="模拟磁盘和文件的-I-O"><a href="#模拟磁盘和文件的-I-O" class="headerlink" title="模拟磁盘和文件的 I/O"></a>模拟磁盘和文件的 I/O</h2><p><code>dd</code></p>
+<h1 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h1><h2 id="平均负载"><a href="#平均负载" class="headerlink" title="平均负载"></a>平均负载</h2><p><code>uptime</code></p>
+<h2 id="多核CPU性能分析"><a href="#多核CPU性能分析" class="headerlink" title="多核CPU性能分析"></a>多核CPU性能分析</h2><p><code>mpstat</code>，可以实时查看每个<code>CPU</code>的性能指标，以及所有<code>CPU</code>的平均指标。</p>
+<h2 id="进程性能分析"><a href="#进程性能分析" class="headerlink" title="进程性能分析"></a>进程性能分析</h2><p><code>pidstat</code>，可以实时查看进程的<code>CPU</code>、内存、<code>I/O</code>以及上下文切换等性能指标。</p>
+<h2 id="系统的内存使用情况分析"><a href="#系统的内存使用情况分析" class="headerlink" title="系统的内存使用情况分析"></a>系统的内存使用情况分析</h2><p><code>vmstat</code>，主要用来分析系统的内存使用情况，也常用来分析<code>CPU</code>上下文切换和中断的次数。</p>
+<h2 id="CPU上下文切换和中断的次数分析"><a href="#CPU上下文切换和中断的次数分析" class="headerlink" title="CPU上下文切换和中断的次数分析"></a>CPU上下文切换和中断的次数分析</h2><p><code>vmstat</code></p>
+<h2 id="查看系统缓存命中情况"><a href="#查看系统缓存命中情况" class="headerlink" title="查看系统缓存命中情况"></a>查看系统缓存命中情况</h2><p>cachestat 提供了整个操作系统缓存的读写命中情况。<br>cachetop 提供了每个进程的缓存命中情况。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://huanghantao.github.io/2019/07/30/Linux%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7/" data-id="ckkj72zqw000zf6vxhq4tfeat" data-title="Linux性能分析常用工具" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-安装了Swoole扩展之后，查看opcode，出现许多swoole的opcode的解决方法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/07/26/%E5%AE%89%E8%A3%85%E4%BA%86Swoole%E6%89%A9%E5%B1%95%E4%B9%8B%E5%90%8E%EF%BC%8C%E6%9F%A5%E7%9C%8Bopcode%EF%BC%8C%E5%87%BA%E7%8E%B0%E8%AE%B8%E5%A4%9Aswoole%E7%9A%84opcode%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" class="article-date">
@@ -707,111 +757,6 @@
 
 
   
-    <article id="post-《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/" class="article-date">
-  <time class="dt-published" datetime="2019-05-29T10:38:29.000Z" itemprop="datePublished">2019-05-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/">《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>昨天，有人给<code>Swoole</code>提了一个问题：<a target="_blank" rel="noopener" href="https://github.com/swoole/swoole-src/issues/2601">What is the reason to deprecate <code>Lock</code> in swoole 4.4 ?</a></p>
-<p>然后，峰哥给出了一个例子：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$lock = <span class="keyword">new</span> Swoole\Lock();</span><br><span class="line">$c = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> ($c--) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$lock</span>) </span>&#123;</span><br><span class="line">        $lock-&gt;lock();</span><br><span class="line">        Co::sleep(<span class="number">1</span>);</span><br><span class="line">        $lock-&gt;unlock();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们来看看执行这段代码会有什么影响。（使用<code>4.3.4</code>版本的<code>Swoole</code>）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/codeDir/phpCode/test # php test.php </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>我们会发现：进程一直卡着不退出。实际上，这是死锁导致的，而且是由于同一个线程里面的两个协程去竞争锁导致的。</p>
-<p>我们来调试一下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">~&#x2F;codeDir&#x2F;phpCode&#x2F;test # cgdb php</span><br><span class="line">GNU gdb (GDB) 8.2</span><br><span class="line">Copyright (C) 2018 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http:&#x2F;&#x2F;gnu.org&#x2F;licenses&#x2F;gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line">Type &quot;show copying&quot; and &quot;show warranty&quot; for details.</span><br><span class="line">This GDB was configured as &quot;x86_64-alpine-linux-musl&quot;.</span><br><span class="line">Type &quot;show configuration&quot; for configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;gdb&#x2F;bugs&#x2F;&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;gdb&#x2F;documentation&#x2F;&gt;.</span><br><span class="line"></span><br><span class="line">For help, type &quot;help&quot;.</span><br><span class="line">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...</span><br><span class="line">Reading symbols from php...(no debugging symbols found)...done.</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>然后在创建锁以及上锁的地方打断点：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b zim_swoole_lock___construct</span><br><span class="line">Breakpoint 1 at 0x7ffff74d3ea0: file &#x2F;root&#x2F;codeDir&#x2F;cCode&#x2F;swoole-src-4.3.4&#x2F;swoole_lock.c, line 88.</span><br><span class="line">(gdb) b zim_swoole_lock_lock</span><br><span class="line">Breakpoint 2 at 0x7ffff74d3ac0: file &#x2F;usr&#x2F;local&#x2F;include&#x2F;php&#x2F;Zend&#x2F;zend_types.h, line 411.</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>我们执行一下程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(gdb) r test.php</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Start it from the beginning? (y or n) y</span><br><span class="line">The program being debugged has been started already.</span><br><span class="line">Starting program: &#x2F;usr&#x2F;local&#x2F;bin&#x2F;php test.php</span><br><span class="line"></span><br><span class="line">Breakpoint 1, zim_swoole_lock___construct (execute_data&#x3D;0x7ffff761d110, return_value&#x3D;0x7fffffffb0b0) at &#x2F;root&#x2F;codeDir&#x2F;cCode&#x2F;swoole-src-4.3.4&#x2F;swoole_lock.c:88</span><br><span class="line">warning: Source file is more recent than executable.</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">87</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, __construct)</span></span></span><br><span class="line">88├&gt;&#123;</span><br><span class="line"><span class="number">89</span>│     <span class="keyword">long</span> type = SW_MUTEX;</span><br><span class="line"><span class="number">90</span>│     <span class="keyword">char</span> *filelock;</span><br><span class="line"><span class="number">91</span>│     <span class="keyword">size_t</span> filelock_len = <span class="number">0</span>;</span><br><span class="line"><span class="number">92</span>│     <span class="keyword">int</span> ret;</span><br><span class="line"><span class="number">93</span>│</span><br><span class="line"><span class="number">94</span>│     <span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS(), <span class="string">&quot;|ls&quot;</span>, &amp;type, &amp;filelock, &amp;filelock_len) == FAILURE)</span><br><span class="line"><span class="number">95</span>│     &#123;</span><br><span class="line"><span class="number">96</span>│         RETURN_FALSE;</span><br><span class="line"><span class="number">97</span>│     &#125;</span><br></pre></td></tr></table></figure>
-
-<p>在创建<code>Swoole\Lock</code>的地方触发了断点。</p>
-<p>我们继续运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 2, zim_swoole_lock_lock (execute_data&#x3D;0x7ffff767d130, return_value&#x3D;0x7ffff7040f30) at &#x2F;usr&#x2F;local&#x2F;include&#x2F;php&#x2F;Zend&#x2F;zend_types.h:411</span><br><span class="line">(gdb) n</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">162</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, lock)</span></span></span><br><span class="line">163│ &#123;</span><br><span class="line"><span class="number">164</span>│     swLock *lock = swoole_get_object(getThis());</span><br><span class="line"><span class="number">165</span>├───&gt; SW_LOCK_CHECK_RETURN(lock-&gt;lock(lock));</span><br><span class="line"><span class="number">166</span>│ &#125;</span><br></pre></td></tr></table></figure>
-
-<p>协程1停在了即将获取锁的地方。我们来看看此时的线程<code>id</code>是多少：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) thread</span><br><span class="line">[Current thread is 1 (process 39810)]</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>OK，此时协程1在线程1里面。我们在协程<code>sleep</code>的地方打一个断点：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b swoole::Coroutine::sleep</span><br><span class="line">Breakpoint 3 at 0x7ffff74579d0 (2 locations)</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>我们继续执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 3, 0x00007ffff74579d0 in swoole::Coroutine::sleep(double)@plt () from &#x2F;usr&#x2F;local&#x2F;lib&#x2F;php&#x2F;extensions&#x2F;no-debug-non-zts-20180731&#x2F;swoole.so</span><br><span class="line">(gdb) n</span><br><span class="line">Single stepping until exit from function _ZN6swoole9Coroutine5sleepEd@plt,</span><br><span class="line">which has no line number information.</span><br><span class="line"></span><br><span class="line">Breakpoint 3, swoole::Coroutine::sleep (sec&#x3D;1) at &#x2F;root&#x2F;codeDir&#x2F;cCode&#x2F;swoole-src-4.3.4&#x2F;include&#x2F;coroutine.h:145</span><br><span class="line">(gdb) n</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">652</span>│ <span class="function"><span class="keyword">int</span> <span class="title">Coroutine::sleep</span><span class="params">(<span class="keyword">double</span> sec)</span></span></span><br><span class="line">653│ &#123;</span><br><span class="line"><span class="number">654</span>│     Coroutine* co = Coroutine::get_current_safe();</span><br><span class="line"><span class="number">655</span>├───&gt; <span class="keyword">if</span> (swTimer_add(&amp;SwooleG.timer, (<span class="keyword">long</span>) (sec * <span class="number">1000</span>), <span class="number">0</span>, co, sleep_timeout) == <span class="literal">NULL</span>)</span><br><span class="line"><span class="number">656</span>│     &#123;</span><br><span class="line"><span class="number">657</span>│         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"><span class="number">658</span>│     &#125;</span><br><span class="line"><span class="number">659</span>│     co-&gt;yield();</span><br><span class="line"><span class="number">660</span>│     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">661</span>│ &#125;</span><br></pre></td></tr></table></figure>
-
-<p>此时，协程1即将被<code>yield</code>出去。我们再看看所处的线程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) thread</span><br><span class="line">[Current thread is 1 (process 39810)]</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>此时协程1还是处于线程1里面。</p>
-<p>我们继续执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) c</span><br><span class="line">Continuing.</span><br><span class="line"></span><br><span class="line">Breakpoint 2, zim_swoole_lock_lock (execute_data&#x3D;0x7ffff767f130, return_value&#x3D;0x7ffff6e3ff30) at &#x2F;usr&#x2F;local&#x2F;include&#x2F;php&#x2F;Zend&#x2F;zend_types.h:411</span><br><span class="line">(gdb) n</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>此时，已经切换到了协程2，轮到第2个协程获取锁：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">162</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, lock)</span></span></span><br><span class="line">163│ &#123;</span><br><span class="line"><span class="number">164</span>│     swLock *lock = swoole_get_object(getThis());</span><br><span class="line"><span class="number">165</span>├───&gt; SW_LOCK_CHECK_RETURN(lock-&gt;lock(lock));</span><br><span class="line"><span class="number">166</span>│ &#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们看看协程2现在所处的线程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) thread</span><br><span class="line">[Current thread is 1 (process 39810)]</span><br><span class="line">(gdb) </span><br></pre></td></tr></table></figure>
-
-<p>发现，协程2也处于线程1里面。</p>
-<p>我们继续执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(gdb) n</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">162</span>│ <span class="function"><span class="keyword">static</span> <span class="title">PHP_METHOD</span><span class="params">(swoole_lock, lock)</span></span></span><br><span class="line">163│ &#123;</span><br><span class="line"><span class="number">164</span>│     swLock *lock = swoole_get_object(getThis());</span><br><span class="line"><span class="number">165</span>├───&gt; SW_LOCK_CHECK_RETURN(lock-&gt;lock(lock));</span><br><span class="line"><span class="number">166</span>│ &#125;</span><br></pre></td></tr></table></figure>
-
-<p>发现，此时协程2卡住。整个进程/线程也卡住了。</p>
-<p>原因如下：</p>
-<p>协程1一直没有释放锁，本质上会导致线程1一直占有锁。此时协程2去获取锁，本质上是线程1再去获取锁，是获取不到的。因为锁没有被释放掉，从而导致线程1挂起。导致线程1一直无法释放锁，从而造成了死锁。从而，所有的协程都无法继续执行任务。</p>
-<p>那么，现如今的Swoole有没有避免死锁的办法呢？其实是可以的，代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$lock = <span class="keyword">new</span> Swoole\Lock();</span><br><span class="line">$c = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> ($c--) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$lock</span>) </span>&#123;</span><br><span class="line">        $lock-&gt;trylock();</span><br><span class="line">        Co::sleep(<span class="number">1</span>);</span><br><span class="line">        $lock-&gt;unlock();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>只要不让线程阻塞起来就可以了。</p>
-<p>但是，这样做终究是不好的，会浪费CPU。因为如果协程1需要一段时间释放锁，那么协程2每次执行的时候，都会做无用的<code>trylock</code>工作。</p>
-<p>这个问题归根结底是<code>Swoole</code>的协程是跑在同一个线程里面的。</p>
-<p>我个人认为，<code>Swoole</code>后期会增加协程锁。当协程获取不到锁的时候，不是去阻塞整个线程，而是<code>yield</code>这个协程。因为<code>Swoole</code>现在支持抢占式的协程调度，所以，协程的竞争问题是肯定要解决的。除非我们编写的代码不会导致协程之间竞争共享资源。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/" data-id="ckkj72zt30063f6vx67rr56mx" data-title="《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -862,6 +807,10 @@
       <ul>
         
           <li>
+            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
           </li>
         
@@ -875,10 +824,6 @@
         
           <li>
             <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
-          </li>
-        
-          <li>
-            <a href="/2021/01/30/PHP%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E4%B9%8B%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">PHP函数编译之后的内存存储结构</a>
           </li>
         
       </ul>

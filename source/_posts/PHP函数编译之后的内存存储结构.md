@@ -15,10 +15,10 @@ tags:
 
 namespace Bar;
 
-function Foo1(string $a) {
+function Foo1(string $arg1) {
 }
 
-function foo2(string $b) {
+function foo2(string $arg2) {
 }
 
 Foo1('aa');
@@ -128,8 +128,42 @@ foo2('bb');
 5: bar\foo2
 6: foo2
 7: bb
+8: 1
 ```
 
 说明，在常量表里面，既存了函数原来的名字，也存了函数的全小写名字。
 
 `opline`如果要用到函数的名字，那么偏移量存的是函数原来的名字。但是，在查找函数的时候，需要用小写的名字，因为`CG(function_table)`里面存的是全小写的名字（目的是为了让PHP脚本的函数不区分大小写）。所以，如果`opline`需要通过函数名字来查找`zend_function`，那么要对`opline`引用的`zval *literal`偏移量`+1`。
+
+那如果使用了命名参数，那么常量区还会存储参数的名字，例如：
+
+```php
+<?php
+
+namespace Bar;
+
+function Foo1(string $arg1) {
+}
+
+function foo2(string $arg2) {
+}
+
+Foo1(arg1: 'aa');
+foo2(arg2: 'bb');
+```
+
+对应的主函数常量存储的内容如下：
+
+```bash
+0: Bar\Foo1
+1: bar\foo1
+2: foo1
+3: aa
+4: arg1
+5: Bar\foo2
+6: bar\foo2
+7: foo2
+8: bb
+9: arg2
+10: 1
+```

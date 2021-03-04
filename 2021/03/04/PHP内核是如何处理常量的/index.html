@@ -14,7 +14,7 @@
 <meta property="og:description" content="在PHP内核中，有两种常量，一种是内核预定义常量，一种是魔术常量。 内核预定义常量内核预定义常量它的值不会被改变。 内核预定义常量注册流程如下： 1234567891011121314151617181920212223242526272829303132333435graph-easy &lt;&lt;&lt; &quot;graph &amp;#123; flow: down; &amp;#125;[php_">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-03-04T03:29:36.000Z">
-<meta property="article:modified_time" content="2021-03-04T07:08:04.155Z">
+<meta property="article:modified_time" content="2021-03-04T07:53:34.983Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="PHP">
 <meta property="article:tag" content="PHP内核">
@@ -124,7 +124,7 @@
 <p>那么，什么场景下需要禁止编译期间的常量替换呢？比如我们在机器<code>1</code>上面，通过<code>PHP7.3</code>持久化了<code>op_array</code>，然后我们需要在机器<code>2</code>上面通过<code>PHP7.4</code>来跑，这时候就不能够在编译期间进行常量替换。否则当我们的代码依赖于<code>PHP</code>版本的时候，就会出现问题，例如：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">assert(PHP_VERSION == <span class="number">7.3</span>);</span><br></pre></td></tr></table></figure>
 
-<p>在机器<code>1</code>上通过<code>PHP7.3</code>持久化<code>op_array</code>，在机器<code>2</code>通过<code>PHP7.4</code>执行这个脚本，就会断言出错。</p>
+<p>在机器<code>1</code>上通过<code>PHP7.3</code>持久化<code>op_array</code>，如果进行常量替换的话，常量区存放的是<code>7.3</code>，在机器<code>2</code>通过<code>PHP7.4</code>执行这个脚本，就会断言出错。如果不进行常量替换，持久化<code>op_array</code>的时候，常量区存放的是<code>PHP_VERSION</code>这个字符串，然后程序在运行的时候，去<code>EG(zend_constants)</code>表里面找，这个时候，得到的就是<code>7.4</code>。</p>
 
       
     </div>

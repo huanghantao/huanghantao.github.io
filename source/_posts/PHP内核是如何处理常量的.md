@@ -154,4 +154,4 @@ static zend_bool can_ct_eval_const(zend_constant *c) {
 assert(PHP_VERSION == 7.3);
 ```
 
-在机器`1`上通过`PHP7.3`持久化`op_array`，在机器`2`通过`PHP7.4`执行这个脚本，就会断言出错。
+在机器`1`上通过`PHP7.3`持久化`op_array`，如果进行常量替换的话，常量区存放的是`7.3`，在机器`2`通过`PHP7.4`执行这个脚本，就会断言出错。如果不进行常量替换，持久化`op_array`的时候，常量区存放的是`PHP_VERSION`这个字符串，然后程序在运行的时候，去`EG(zend_constants)`表里面找，这个时候，得到的就是`7.4`。

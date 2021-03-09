@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
   
   <title>codinghuang的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="比PHP多一些">
 <meta property="og:type" content="website">
 <meta property="og:title" content="codinghuang的个人博客">
@@ -15,838 +27,742 @@
 <meta property="og:locale">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/page/6/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
   
   
 <link rel="stylesheet" href="/css/style.css">
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+  
+  
   
 <meta name="generator" content="Hexo 5.1.1"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">codinghuang的个人博客</a>
-      </h1>
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
-        </h2>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
       </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
     </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
   </div>
 </header>
 
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-Swoole的多个线程如何处理信号" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" class="article-date">
-  <time class="dt-published" datetime="2020-08-18T10:02:14.000Z" itemprop="datePublished">2020-08-18</time>
-</a>
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/">Swoole的多个线程如何处理信号</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在<code>Swoole</code>内核里面，有多种线程。比如说心跳线程（心跳线程我们会在未来的版本进行移除），<code>reactor</code>线程，中断检查线程等等。</p>
-<p>那么，在信号的管理方面，<code>Swoole</code>又是怎么做的呢？我们又如下规则：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 如果是异常产生的信号（比如程序错误，像SIGPIPE、SIGEGV这些），则只有产生异常的线程收到并处理。</span><br><span class="line">2. 如果是用pthread_kill产生的内部信号，则只有pthread_kill参数中指定的目标线程收到并处理。</span><br><span class="line">3. 如果是外部使用kill命令产生的信号，通常是SIGINT、SIGHUP等job control信号，则会遍历所有线程，直到找到一个不阻塞该信号的线程，然后调用它来处理。注意只有一个线程能收到。</span><br></pre></td></tr></table></figure>
-
-<p>那么<code>Swoole</code>是如何实现阻塞信号的呢？它提供了一个叫做<code>swSignal_none</code>的函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swSignal_none</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">sigset_t</span> mask;</span><br><span class="line">    sigfillset(&amp;mask);</span><br><span class="line">    <span class="keyword">int</span> ret = pthread_sigmask(SIG_BLOCK, &amp;mask, <span class="literal">nullptr</span>);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        swSysWarn(<span class="string">&quot;pthread_sigmask() failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中，</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sigfillset(&amp;mask);</span><br></pre></td></tr></table></figure>
-
-<p>表示设置所有的信号。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> ret = pthread_sigmask(SIG_BLOCK, &amp;mask, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
-
-<p>表示对所有的信号进行阻塞。</p>
-<p>我们发现，<code>Swoole</code>对心跳线程、中断检查线程等线程调用了<code>swSignal_none</code>。因为<code>Swoole</code>不希望这些线程去处理信号以及被这些信号打扰。具体哪些地方调用了<code>swSignal_none</code>，感兴趣的小伙伴可以看一看源码。</p>
-
-      
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" data-id="ckkj72zsc0044f6vxfcrkabrg" data-title="Swoole的多个线程如何处理信号" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+</div>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP数组系列函数源码分析-end" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/" class="article-date">
-  <time class="dt-published" datetime="2020-08-16T12:15:42.000Z" itemprop="datePublished">2020-08-16</time>
-</a>
     
-  </div>
-  <div class="article-inner">
+      
+
     
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/">PHP数组系列函数源码分析--end</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>本文基于PHP的commit: d92229d8c78aac25925284e23aa7903dca9ed005</p>
-</blockquote>
-<p>如果我们要获取数组的最后一个元素，我们很可能会这么写：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$arr = [</span><br><span class="line">    <span class="string">&#x27;one&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">    <span class="string">&#x27;two&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">    <span class="string">&#x27;three&#x27;</span> =&gt; <span class="number">3</span>,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">var_dump(end($arr));</span><br></pre></td></tr></table></figure>
-
-<p>输出结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int(3)</span><br></pre></td></tr></table></figure>
-
-<p>我们来看一下<code>end</code>对应的<code>PHP</code>层代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">PHP_FUNCTION(end)</span><br><span class="line">&#123;</span><br><span class="line">    HashTable *<span class="built_in">array</span>;</span><br><span class="line">    zval *entry;</span><br><span class="line"></span><br><span class="line">    ZEND_PARSE_PARAMETERS_START(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        Z_PARAM_ARRAY_OR_OBJECT_HT_EX(<span class="built_in">array</span>, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    ZEND_PARSE_PARAMETERS_END();</span><br><span class="line"></span><br><span class="line">    zend_hash_internal_pointer_end(<span class="built_in">array</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (USED_RET()) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((entry = zend_hash_get_current_data(<span class="built_in">array</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            RETURN_FALSE;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (Z_TYPE_P(entry) == IS_INDIRECT) &#123;</span><br><span class="line">            entry = Z_INDIRECT_P(entry);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ZVAL_COPY_DEREF(return_value, entry);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，核心代码就是<code>zend_hash_internal_pointer_end</code>，它负责找到数组的最后一个元素：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> zend_hash_internal_pointer_end(ht) \</span></span><br><span class="line">    zend_hash_internal_pointer_end_ex(ht, &amp;(ht)-&gt;nInternalPointer)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* This function will be extremely optimized by remembering</span></span><br><span class="line"><span class="comment">* the end of the list</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">ZEND_API <span class="keyword">void</span> ZEND_FASTCALL <span class="title">zend_hash_internal_pointer_end_ex</span><span class="params">(HashTable *ht, HashPosition *pos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> idx;</span><br><span class="line"></span><br><span class="line">    IS_CONSISTENT(ht);</span><br><span class="line">    HT_ASSERT(ht, &amp;ht-&gt;nInternalPointer != pos || GC_REFCOUNT(ht) == <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    idx = ht-&gt;nNumUsed;</span><br><span class="line">    <span class="keyword">while</span> (idx &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        idx--;</span><br><span class="line">        <span class="keyword">if</span> (Z_TYPE(ht-&gt;arData[idx].val) != IS_UNDEF) &#123;</span><br><span class="line">            *pos = idx;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    *pos = ht-&gt;nNumUsed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过这个函数的注释，我们可以明白。如果我们能够大概记住数组的末尾的元素，那么，这个函数的性能是非常高的。</p>
-<p>这个代码也是很简单的，首先，通过：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">idx = ht-&gt;nNumUsed;</span><br><span class="line">idx--;</span><br></pre></td></tr></table></figure>
-
-<p>来找到最后一个<code>bucket</code>的位置。然后，判断<code>bucket</code>里面的变量是否是<code>IS_UNDEF</code>。如果不是，那么就找到了数组的最后一个元素；否则，一直往前找。</p>
-<p>所以，如果这个数组的末尾都是<code>IS_UNDEF</code>，那么这个函数的性能会非常的差劲。极端情况下，只有数组的第一个元素不是<code>IS_UNDEF</code>，其他的都是<code>IS_UNDEF</code>，那么这个函数的时间复杂度就是<code>O(n)</code>了。</p>
-<p>这里，我们有一个需要非常注意的点，这个<code>end</code>函数会去设置<code>nInternalPointer</code>指针。如果我们调用<code>end</code>函数后，紧接着调用<code>current</code>函数，那么我们就会得到数组的最后一个元素：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$arr = [</span><br><span class="line">    <span class="string">&#x27;one&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">    <span class="string">&#x27;two&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">    <span class="string">&#x27;three&#x27;</span> =&gt; <span class="number">3</span>,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">var_dump(current($arr));</span><br><span class="line">var_dump(end($arr));</span><br><span class="line">var_dump(current($arr));</span><br></pre></td></tr></table></figure>
-
-<p>输出结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int(1)</span><br><span class="line">int(3)</span><br><span class="line">int(3)</span><br></pre></td></tr></table></figure>
-
-<p>但是，并不是说<code>nInternalPointer</code>就代表最后一个元素的位置。<code>nInternalPointer</code>表示数组里面有这么一个指针，它指向了<code>PHP</code>数组里面的一个元素，仅此而已。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/" data-id="ckkj72zrt0032f6vx74wegcm7" data-title="PHP数组系列函数源码分析--end" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP数组系列函数源码分析（一）--count" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89--count/" class="article-date">
-  <time class="dt-published" datetime="2020-08-16T07:47:33.000Z" itemprop="datePublished">2020-08-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89--count/">PHP数组系列函数源码分析（一）--count</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文基于的PHP commit为: d92229d8c78aac25925284e23aa7903dca9ed005</p>
-</blockquote>
-<p>首先，我们来看一下<code>count</code>函数的<code>PHP</code>层：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* &#123;&#123;&#123; Count the number of elements in a variable (usually an array) */</span></span><br><span class="line">PHP_FUNCTION(count)</span><br><span class="line">&#123;</span><br><span class="line">    zval *<span class="built_in">array</span>;</span><br><span class="line">    zend_long mode = COUNT_NORMAL;</span><br><span class="line">    zend_long cnt;</span><br><span class="line"></span><br><span class="line">    ZEND_PARSE_PARAMETERS_START(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">        Z_PARAM_ZVAL(<span class="built_in">array</span>)</span><br><span class="line">        Z_PARAM_OPTIONAL</span><br><span class="line">        Z_PARAM_LONG(mode)</span><br><span class="line">    ZEND_PARSE_PARAMETERS_END();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode != COUNT_NORMAL &amp;&amp; mode != COUNT_RECURSIVE) &#123;</span><br><span class="line">        zend_argument_value_error(<span class="number">2</span>, <span class="string">&quot;must be either COUNT_NORMAL or COUNT_RECURSIVE&quot;</span>);</span><br><span class="line">        RETURN_THROWS();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (Z_TYPE_P(<span class="built_in">array</span>)) &#123;</span><br><span class="line">        <span class="keyword">case</span> IS_NULL:</span><br><span class="line">            <span class="comment">/* Intentionally not converted to an exception */</span></span><br><span class="line">            php_error_docref(<span class="literal">NULL</span>, E_WARNING, <span class="string">&quot;Parameter must be an array or an object that implements Countable&quot;</span>);</span><br><span class="line">            RETURN_LONG(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> IS_ARRAY:</span><br><span class="line">            <span class="keyword">if</span> (mode != COUNT_RECURSIVE) &#123;</span><br><span class="line">                cnt = zend_array_count(Z_ARRVAL_P(<span class="built_in">array</span>));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                cnt = php_count_recursive(Z_ARRVAL_P(<span class="built_in">array</span>));</span><br><span class="line">            &#125;</span><br><span class="line">            RETURN_LONG(cnt);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> IS_OBJECT: &#123;</span><br><span class="line">            zval retval;</span><br><span class="line">            <span class="comment">/* first, we check if the handler is defined */</span></span><br><span class="line">            <span class="keyword">if</span> (Z_OBJ_HT_P(<span class="built_in">array</span>)-&gt;count_elements) &#123;</span><br><span class="line">                RETVAL_LONG(<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">if</span> (SUCCESS == Z_OBJ_HT(*<span class="built_in">array</span>)-&gt;count_elements(Z_OBJ_P(<span class="built_in">array</span>), &amp;Z_LVAL_P(return_value))) &#123;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (EG(exception)) &#123;</span><br><span class="line">                    RETURN_THROWS();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/* if not and the object implements Countable we call its count() method */</span></span><br><span class="line">            <span class="keyword">if</span> (instanceof_function(Z_OBJCE_P(<span class="built_in">array</span>), zend_ce_countable)) &#123;</span><br><span class="line">                zend_call_method_with_0_params(Z_OBJ_P(<span class="built_in">array</span>), <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="string">&quot;count&quot;</span>, &amp;retval);</span><br><span class="line">                <span class="keyword">if</span> (Z_TYPE(retval) != IS_UNDEF) &#123;</span><br><span class="line">                    RETVAL_LONG(zval_get_long(&amp;retval));</span><br><span class="line">                    zval_ptr_dtor(&amp;retval);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* If There&#x27;s no handler and it doesn&#x27;t implement Countable then add a warning */</span></span><br><span class="line">            <span class="comment">/* Intentionally not converted to an exception */</span></span><br><span class="line">            php_error_docref(<span class="literal">NULL</span>, E_WARNING, <span class="string">&quot;Parameter must be an array or an object that implements Countable&quot;</span>);</span><br><span class="line">            RETURN_LONG(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">/* Intentionally not converted to an exception */</span></span><br><span class="line">            php_error_docref(<span class="literal">NULL</span>, E_WARNING, <span class="string">&quot;Parameter must be an array or an object that implements Countable&quot;</span>);</span><br><span class="line">            RETURN_LONG(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* &#125;&#125;&#125; */</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看出，这个函数可以计算数组和对象。我们先来看一下是如何计算数组元素的个数的：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mode != COUNT_RECURSIVE) &#123;</span><br><span class="line">    cnt = zend_array_count(Z_ARRVAL_P(<span class="built_in">array</span>));</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    cnt = php_count_recursive(Z_ARRVAL_P(<span class="built_in">array</span>));</span><br><span class="line">&#125;</span><br><span class="line">RETURN_LONG(cnt);</span><br></pre></td></tr></table></figure>
-
-<p><code>COUNT_RECURSIVE</code>代表是否需要递归的去计算数组的元素个数（比如说，数组里面又套了一个数组）。如果不需要递归的去计算，那么调用<code>zend_array_count</code>；如果需要递归的去计算，那么调用<code>php_count_recursive</code>。</p>
-<p>注意，<code>count</code>这个函数要被调用的话，我们得设置<code>count</code>的<code>mode</code>为<code>COUNT_RECURSIVE</code>。例如：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$arr = [</span><br><span class="line">    <span class="string">&#x27;one&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">    <span class="string">&#x27;two&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">    <span class="string">&#x27;three&#x27;</span> =&gt; <span class="number">3</span>,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">$num = count($arr, COUNT_RECURSIVE);</span><br><span class="line">var_dump($num);</span><br></pre></td></tr></table></figure>
-
-<p>否则，<code>count</code>会直接走<code>zend_count</code>对应的<code>opcode handler</code>，然后调用<code>zend_array_count</code>。</p>
-<p>我们来看一看<code>zend_array_count</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API <span class="keyword">uint32_t</span> <span class="title">zend_array_count</span><span class="params">(HashTable *ht)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> num;</span><br><span class="line">    <span class="keyword">if</span> (UNEXPECTED(HT_FLAGS(ht) &amp; HASH_FLAG_HAS_EMPTY_IND)) &#123;</span><br><span class="line">        num = zend_array_recalc_elements(ht);</span><br><span class="line">        <span class="keyword">if</span> (UNEXPECTED(ht-&gt;nNumOfElements == num)) &#123;</span><br><span class="line">            HT_FLAGS(ht) &amp;= ~HASH_FLAG_HAS_EMPTY_IND;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (UNEXPECTED(ht == &amp;EG(symbol_table))) &#123;</span><br><span class="line">        num = zend_array_recalc_elements(ht);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        num = zend_hash_num_elements(ht);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，一个看似简单的<code>PHP</code>函数，有非常多的细节需要考虑。（我之前是觉得这个函数要实现起来非常简单啊，直接调用<code>zend_hash_num_elements</code>就好了）</p>
-<p>我们先来看这部分代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (UNEXPECTED(HT_FLAGS(ht) &amp; HASH_FLAG_HAS_EMPTY_IND)) &#123;</span><br><span class="line">    num = zend_array_recalc_elements(ht);</span><br><span class="line">    <span class="keyword">if</span> (UNEXPECTED(ht-&gt;nNumOfElements == num)) &#123;</span><br><span class="line">        HT_FLAGS(ht) &amp;= ~HASH_FLAG_HAS_EMPTY_IND;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>首先是判断是否是<code>HASH_FLAG_HAS_EMPTY_IND</code>标志（<code>IND</code>应该是<code>indirect</code>的意思，而不是<code>index</code>）。这个标志表示是否存在空的间接<code>zval</code>。搜索整个<code>PHP</code>源码，我们发现，这个标志在两个地方会被设置：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API <span class="keyword">int</span> ZEND_FASTCALL <span class="title">zend_hash_del_ind</span><span class="params">(HashTable *ht, zend_string *key)</span></span>;</span><br><span class="line"><span class="function">ZEND_API <span class="keyword">int</span> ZEND_FASTCALL <span class="title">zend_hash_str_del_ind</span><span class="params">(HashTable *ht, <span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">size_t</span> len)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>并且，我们会发现，这两个函数似乎只使用在了符号表<code>EG(symbol_table)</code>上面。而<code>EG(symbol_table)</code>对应的<code>PHP</code>变量是<code>$GLOBALS</code>。</p>
-<p>所以，我们可以很轻易的写一个测试例子：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">var_dump(count($GLOBALS));</span><br><span class="line"></span><br><span class="line">$one = <span class="number">1</span>;</span><br><span class="line">$two = <span class="number">2</span>;</span><br><span class="line">$three = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">var_dump(count($GLOBALS));</span><br><span class="line"></span><br><span class="line"><span class="keyword">unset</span>($GLOBALS[<span class="string">&#x27;two&#x27;</span>]);</span><br><span class="line"></span><br><span class="line">var_dump(count($GLOBALS));</span><br><span class="line"></span><br><span class="line">var_dump($two);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int(8)</span><br><span class="line">int(11)</span><br><span class="line">int(10)</span><br><span class="line"></span><br><span class="line">Warning: Undefined variable <span class="variable">$two</span> <span class="keyword">in</span> /Users/hantaohuang/codeDir/cCode/php-src/test.php on line 17</span><br><span class="line">NULL</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，最初<code>$GLOBALS</code>数组里面的元素个数是<code>8</code>个。</p>
-<p>注意，这里指的是<code>$GLOBALS</code>数组里面非<code>UNDEF</code>的元素个数是<code>8</code>个，实际上，因为最初的<code>$GLOBALS</code>有一些元素它是<code>UNDEF</code>，所以，<code>nNumOfElements</code>它的值会大于<code>8</code>，就这个脚本而言，初始的<code>nNumOfElements</code>的值是<code>11</code>，因为<code>PHP</code>在编译阶段，就会往<code>$GLOBALS</code>数组里面插入我们在全局作用域使用到的变量（即<code>a</code>、<code>b</code>、<code>c</code>），但是因为这些变量是在后面使用的，所以，最开始的时候，这<code>3</code>个数组元素是<code>UNDEF</code>的。</p>
-<p>当我们在全局作用域里面为这<code>3</code>个数组元素赋值之后，<code>$GLOBALS</code>数组里面的元素个数变成了<code>11</code>。并且，当我们<code>unset</code>掉<code>$GLOBALS</code>数组里面的一个元素之后，数组里面的元素少了一个。</p>
-<p>这里，我们需要注意的一个点是，我们得<code>unset($GLOBALS[&#39;two&#39;])</code>，而不能<code>unset($two)</code>。否则是不会设置<code>HASH_FLAG_HAS_EMPTY_IND</code>标志的。（因为这个标志是在<code>UNSET_DIM</code>这个<code>opcode</code>里面设置的）</p>
-<p>然后就是<code>zend_array_recalc_elements</code>这个函数了：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">uint32_t</span> <span class="title">zend_array_recalc_elements</span><span class="params">(HashTable *ht)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zval *val;</span><br><span class="line">    <span class="keyword">uint32_t</span> num = ht-&gt;nNumOfElements;</span><br><span class="line"></span><br><span class="line">    ZEND_HASH_FOREACH_VAL(ht, val) &#123;</span><br><span class="line">        <span class="keyword">if</span> (Z_TYPE_P(val) == IS_INDIRECT) &#123;</span><br><span class="line">            <span class="keyword">if</span> (UNEXPECTED(Z_TYPE_P(Z_INDIRECT_P(val)) == IS_UNDEF)) &#123;</span><br><span class="line">                num--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; ZEND_HASH_FOREACH_END();</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>顾名思义，这个函数就是用来重新计算数组里面元素的个数的。那上面的那个例子来说，<code>unset($GLOBALS[&#39;two&#39;])</code>是不会减少数组的<code>nNumOfElements</code>的值的。所以，我们需要这么一个函数来计算真正的元素个数。</p>
-<p>我们接着来看后面的代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (UNEXPECTED(ht == &amp;EG(symbol_table))) &#123;</span><br><span class="line">    num = zend_array_recalc_elements(ht);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们也可以很轻易的写出对应的测试代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$one = <span class="number">1</span>;</span><br><span class="line">$two = <span class="number">2</span>;</span><br><span class="line">$three = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unset</span>($two);</span><br><span class="line"></span><br><span class="line">var_dump(count($GLOBALS));</span><br><span class="line"></span><br><span class="line">var_dump($two);</span><br></pre></td></tr></table></figure>
-
-<p>输出如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int(10)</span><br><span class="line"></span><br><span class="line">Warning: Undefined variable <span class="variable">$two</span> <span class="keyword">in</span> /Users/hantaohuang/codeDir/cCode/php-src/test.php on line 13</span><br><span class="line">NULL</span><br></pre></td></tr></table></figure>
-
-<p>这个代码和上面的代码的区别是，这里我们是直接<code>unset($two)</code>。那么，此时就不会执行<code>UNSET_DIM handler</code>了，因此也不会设置数组的<code>HASH_FLAG_HAS_EMPTY_IND</code>标志。但是，<code>$GLOBALS[&#39;two&#39;]</code>它依然是<code>UNDEF</code>的，因为<code>$GLOBALS[&#39;two&#39;]</code>它是变量<code>$two</code>的一个间接<code>zval</code>。所以，在<code>unset</code>之后，<code>$GLOBALS</code>的元素个数也是<code>10</code>。</p>
-<p>我们接着来看后面的代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    num = zend_hash_num_elements(ht);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码就简单了，直接是取数组的<code>nNumOfElements</code>值。我们可以非常轻易的写出测试代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">declare</span>(strict_types=<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$arr = [</span><br><span class="line">    <span class="string">&#x27;one&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">    <span class="string">&#x27;two&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">    <span class="string">&#x27;three&#x27;</span> =&gt; <span class="number">3</span>,</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">var_dump(count($arr));</span><br><span class="line"></span><br><span class="line"><span class="keyword">unset</span>($arr[<span class="string">&#x27;two&#x27;</span>]);</span><br><span class="line"></span><br><span class="line">var_dump(count($arr));</span><br></pre></td></tr></table></figure>
-
-<p>我们稍微解释一下。</p>
-<p>当最开始定义数组的时候，数组的<code>nNumUsed</code>和<code>nNumOfElements</code>都是<code>3</code>。<code>unset($arr[&#39;two&#39;])</code>之后，<code>nNumUsed</code>和<code>nNumOfElements</code>分别是<code>3</code>和<code>2</code>。所以，<code>count($arr)</code>得到的元素个数是<code>2</code>。</p>
-<blockquote>
-<p>可以看出，一个简单的<code>count</code>函数，实际上还是有非常多的细节需要考虑的。而这一切的一切，都来自于<code>$GLOBALS</code>这个变量。顺便一提的是，最近<code>PHP</code>内核的诸多<code>bug</code>都是由<code>$GLOBALS</code>这个变量引起的。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89--count/" data-id="ckkj72zrv0036f6vxdzqpb9pe" data-title="PHP数组系列函数源码分析（一）--count" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-supervisor原理分析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/14/supervisor%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" class="article-date">
-  <time class="dt-published" datetime="2020-08-14T07:21:57.000Z" itemprop="datePublished">2020-08-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/14/supervisor%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">supervisor原理分析</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>背景</p>
-<p>之前听过这个工具，但是没用过它，只知道它是一个进程管理的工具。然后最近我在公司要用到这个东西来部署<code>Swoole Server</code>服务，并且在使用它的时候，遇到了端口占用的问题，经过同事指点，说是<code>supervisor</code>不能够用来管理守护进程，而我的<code>Swoole Server</code>配置了守护进程。于是我对这个工具的工作原理产生了兴趣。</p>
-</blockquote>
-<p>我们先来感受一下<code>supervisor</code>的工作原理。首先，我们来写一份配置：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@e2a14c00e7f6 ~]</span><span class="comment"># cat /etc/supervisord.d/cat.ini</span></span><br><span class="line"><span class="section">[program:cat]</span></span><br><span class="line"><span class="attr">process_name</span>=%(program_name)s</span><br><span class="line"><span class="attr">directory</span>=/tmp</span><br><span class="line"><span class="attr">command</span>=cat</span><br><span class="line"><span class="attr">autostart</span>=<span class="literal">true</span></span><br><span class="line"><span class="attr">autorestart</span>=<span class="literal">true</span></span><br><span class="line"><span class="attr">user</span>=root</span><br><span class="line"><span class="attr">stdout_logfile</span>=/tmp/cat.log</span><br><span class="line"><span class="attr">stderr_logfile</span>=/tmp/cat.err.log</span><br></pre></td></tr></table></figure>
-
-<p>这里，我打算起一个<code>cat</code>命令进程。</p>
-<p>然后，我们来启动服务：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># supervisorctl restart cat</span></span><br><span class="line">cat: stopped</span><br><span class="line">cat: started</span><br><span class="line">[root@e2a14c00e7f6 ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>这个时候，我们来看一看我们的进程：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># ps -ef</span></span><br><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># ps -ef</span></span><br><span class="line">UID        PID  PPID  C STIME TTY          TIME CMD</span><br><span class="line">root         1     0  0 05:26 pts/0    00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root         6     1  0 05:26 ?        00:00:01 sshd: root@pts/1</span><br><span class="line">root         8     6  0 05:26 pts/1    00:00:00 -bash</span><br><span class="line">root       153     1  0 07:17 ?        00:00:00 /usr/bin/python /usr/bin/supervisord -c /etc/supervis</span><br><span class="line">root       172     1  0 07:19 ?        00:00:00 sshd: root@pts/2</span><br><span class="line">root       174   172  0 07:19 pts/2    00:00:00 -bash</span><br><span class="line">root       201   153  0 07:31 ?        00:00:00 cat</span><br><span class="line">root       202   174  0 07:32 pts/2    00:00:00 ps -ef</span><br><span class="line">[root@e2a14c00e7f6 ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，这里有一个<code>supervisord</code>进程，根据名字后面有一个<code>d</code>，我们可以很容易猜到，这应该是一个守护进程。然后，我们发现<code>cat</code>进程他的父进程是<code>153</code>，这正好是<code>supervisord</code>进程的<code>pid</code>。所以，我们可以大概猜测，<code>supervisord</code>是通过监听<code>SIGCHLD</code>来实现进程重启的。我们来验证下。</p>
-<p>首先，我们查看一下<code>supervisord</code>进程的系统调用：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># strace -p 153</span></span><br><span class="line">strace: Process 153 attached</span><br><span class="line">restart_syscall(&lt;... resuming interrupted <span class="built_in">read</span> ...&gt;) = 0</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390386, tv_usec=920369&#125;, NULL) = 0</span><br><span class="line">wait4(-1, 0x7ffc80915174, WNOHANG, NULL) = 0</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390386, tv_usec=921726&#125;, NULL) = 0</span><br><span class="line">poll([&#123;fd=4, events=POLLIN|POLLPRI|POLLHUP&#125;, &#123;fd=9, events=POLLIN|POLLPRI|POLLHUP&#125;, &#123;fd=11, events=POLLIN|POLLPRI|POLLHUP&#125;], 3, 1000) = 0 (Timeout)</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390387, tv_usec=924476&#125;, NULL) = 0</span><br><span class="line">wait4(-1, 0x7ffc80915174, WNOHANG, NULL) = 0</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390387, tv_usec=924774&#125;, NULL) = 0</span><br><span class="line">poll([&#123;fd=4, events=POLLIN|POLLPRI|POLLHUP&#125;, &#123;fd=9, events=POLLIN|POLLPRI|POLLHUP&#125;, &#123;fd=11, events=POLLIN|POLLPRI|POLLHUP&#125;], 3, 1000) = 0 (Timeout)</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390388, tv_usec=930374&#125;, NULL) = 0</span><br><span class="line">wait4(-1, 0x7ffc80915174, WNOHANG, NULL) = 0</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，<code>supervisord</code>一直在调用<code>poll</code>系统调用。这应该就是在监听<code>SIGCHLD</code>信号了。我们来给<code>cat</code>进程发送一个<code>kill</code>的信号试试：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">poll([&#123;fd=4, events=POLLIN|POLLPRI|POLLHUP&#125;, &#123;fd=9, events=POLLIN|POLLPRI|POLLHUP&#125;, &#123;fd=11, events=POLLIN|POLLPRI|POLLHUP&#125;], 3, 1000) = 2 ([&#123;fd=9, revents=POLLHUP&#125;, &#123;fd=11, revents=POLLHUP&#125;])</span><br><span class="line">--- SIGCHLD &#123;si_signo=SIGCHLD, si_code=CLD_KILLED, si_pid=201, si_uid=0, si_status=SIGTERM, si_utime=0, si_stime=0&#125; ---</span><br><span class="line">rt_sigreturn(&#123;mask=[]&#125;)                 = 2</span><br><span class="line"><span class="built_in">read</span>(9, <span class="string">&quot;&quot;</span>, 131072)                     = 0</span><br><span class="line"><span class="built_in">read</span>(11, <span class="string">&quot;&quot;</span>, 131072)                    = 0</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390506, tv_usec=625701&#125;, NULL) = 0</span><br><span class="line">wait4(-1, [&#123;WIFSIGNALED(s) &amp;&amp; WTERMSIG(s) == SIGTERM&#125;], WNOHANG, NULL) = 201</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390506, tv_usec=627230&#125;, NULL) = 0</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390506, tv_usec=627396&#125;, NULL) = 0</span><br><span class="line"><span class="built_in">stat</span>(<span class="string">&quot;/etc/localtime&quot;</span>, &#123;st_mode=S_IFREG|0644, st_size=118, ...&#125;) = 0</span><br><span class="line">write(3, <span class="string">&quot;2020-08-14 07:35:06,627 INFO exi&quot;</span>..., 79) = 79</span><br><span class="line">lseek(3, 0, SEEK_CUR)                   = 2831</span><br><span class="line">close(8)                                = 0</span><br><span class="line">close(9)                                = 0</span><br><span class="line">close(11)                               = 0</span><br><span class="line">wait4(-1, 0x7ffc80914f64, WNOHANG, NULL) = -1 ECHILD (No child processes)</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390506, tv_usec=628325&#125;, NULL) = 0</span><br><span class="line">close(13)                               = 0</span><br><span class="line">close(14)                               = 0</span><br><span class="line">poll([&#123;fd=4, events=POLLIN|POLLPRI|POLLHUP&#125;], 1, 1000) = 0 (Timeout)</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390507, tv_usec=632307&#125;, NULL) = 0</span><br><span class="line">gettimeofday(&#123;tv_sec=1597390507, tv_usec=632405&#125;, NULL) = 0</span><br><span class="line"><span class="built_in">stat</span>(<span class="string">&quot;/usr/local/sbin/cat&quot;</span>, 0x7ffc80914d10) = -1 ENOENT (No such file or directory)</span><br><span class="line"><span class="built_in">stat</span>(<span class="string">&quot;/usr/local/bin/cat&quot;</span>, 0x7ffc80914d10) = -1 ENOENT (No such file or directory)</span><br><span class="line"><span class="built_in">stat</span>(<span class="string">&quot;/usr/sbin/cat&quot;</span>, 0x7ffc80914d10)   = -1 ENOENT (No such file or directory)</span><br><span class="line"><span class="built_in">stat</span>(<span class="string">&quot;/usr/bin/cat&quot;</span>, &#123;st_mode=S_IFREG|0755, st_size=54080, ...&#125;) = 0</span><br><span class="line">access(<span class="string">&quot;/usr/bin/cat&quot;</span>, X_OK)            = 0</span><br><span class="line">pipe([5, 6])                            = 0</span><br><span class="line">pipe([8, 9])                            = 0</span><br><span class="line">pipe([10, 11])                          = 0</span><br><span class="line">fcntl(8, F_GETFL)                       = 0 (flags O_RDONLY)</span><br><span class="line">fcntl(8, F_SETFL, O_RDONLY|O_NONBLOCK)  = 0</span><br><span class="line">fcntl(10, F_GETFL)                      = 0 (flags O_RDONLY)</span><br><span class="line">fcntl(10, F_SETFL, O_RDONLY|O_NONBLOCK) = 0</span><br><span class="line">fcntl(6, F_GETFL)                       = 0x1 (flags O_WRONLY)</span><br><span class="line">fcntl(6, F_SETFL, O_WRONLY|O_NONBLOCK)  = 0</span><br><span class="line">open(<span class="string">&quot;/tmp/cat.log&quot;</span>, O_WRONLY|O_CREAT|O_APPEND, 0666) = 12</span><br><span class="line">lseek(12, 0, SEEK_END)                  = 0</span><br><span class="line">fstat(12, &#123;st_mode=S_IFREG|0644, st_size=0, ...&#125;) = 0</span><br><span class="line">open(<span class="string">&quot;/tmp/cat.err.log&quot;</span>, O_WRONLY|O_CREAT|O_APPEND, 0666) = 13</span><br><span class="line">lseek(13, 0, SEEK_END)                  = 0</span><br><span class="line">fstat(13, &#123;st_mode=S_IFREG|0644, st_size=0, ...&#125;) = 0</span><br><span class="line"><span class="built_in">clone</span>(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f161ad54a10) = 207</span><br></pre></td></tr></table></figure>
-
-<p>此时，<code>supervisord</code>收到了<code>SIGCHLD</code>信号，它知道<code>cat</code>进程挂了。然后，我们发现，这里调用了<code>clone</code>系统调用，创建了一个新的子进程，<code>pid</code>是<code>207</code>。我们可以来看看是不是：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># ps -ef</span></span><br><span class="line">UID        PID  PPID  C STIME TTY          TIME CMD</span><br><span class="line">root         1     0  0 05:26 pts/0    00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root         6     1  0 05:26 ?        00:00:01 sshd: root@pts/1</span><br><span class="line">root         8     6  0 05:26 pts/1    00:00:00 -bash</span><br><span class="line">root       153     1  0 07:17 ?        00:00:00 /usr/bin/python /usr/bin/supervisord -c /etc/supervis</span><br><span class="line">root       172     1  0 07:19 ?        00:00:00 sshd: root@pts/2</span><br><span class="line">root       174   172  0 07:19 pts/2    00:00:00 -bash</span><br><span class="line">root       207   153  0 07:35 ?        00:00:00 cat</span><br><span class="line">root       208   174  0 07:36 pts/2    00:00:00 ps -efs</span><br><span class="line">[root@e2a14c00e7f6 ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>确实是<code>207</code>。</p>
-<p>所以，<code>supervisord</code>这就实现了自动重启子进程的功能。</p>
-<p>那么，为什么<code>supervisord</code>无法监控守护进程呢？我们来继续做实验。</p>
-<p>这里有一个<code>Swoole Server</code>的例子：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Server</span>;</span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9580</span>);</span><br><span class="line"></span><br><span class="line">$serv-&gt;set([</span><br><span class="line">    <span class="string">&#x27;daemonize&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;Receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
-
-<p>我们可以先来确认一下程序是否可以手动启动成功：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># php start.php</span></span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment">#</span></span><br><span class="line"></span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># netstat -antp | grep 9580</span></span><br><span class="line">tcp        0      0 127.0.0.1:9580          0.0.0.0:*               LISTEN      337/php</span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，启动成功了。然后，我们需要杀死这个<code>server</code>进程：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># kill 337</span></span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment">#</span></span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># netstat -antp | grep 9580</span></span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>确认没有问题之后，我们通过<code>supervisor</code>来启动<code>Swoole Server</code>（具体的<code>supervisor ini</code>配置大家可以自己配一下）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># supervisorctl restart server</span></span><br><span class="line">server: ERROR (not running)</span><br><span class="line">server: ERROR (spawn error)</span><br></pre></td></tr></table></figure>
-
-<p>然后我们发现启动失败了，查看日志可以看到：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PHP Fatal error:  Uncaught Swoole\Exception: failed to listen server port[127.0.0.1:9580], Error: Address already in use[98] in &#x2F;root&#x2F;codeDir&#x2F;phpCode&#x2F;swoole&#x2F;server&#x2F;start.php:5</span><br><span class="line">Stack trace:</span><br><span class="line">#0 &#x2F;root&#x2F;codeDir&#x2F;phpCode&#x2F;swoole&#x2F;server&#x2F;start.php(5): Swoole\Server-&gt;__construct(&#39;127.0.0.1&#39;, 9580)</span><br><span class="line">#1 &#123;main&#125;</span><br><span class="line">  thrown in &#x2F;root&#x2F;codeDir&#x2F;phpCode&#x2F;swoole&#x2F;server&#x2F;start.php on line 5</span><br></pre></td></tr></table></figure>
-
-<p>说是端口被占用了。我们来看一下端口：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># netstat -antp | grep 9580</span></span><br><span class="line">tcp        0      0 127.0.0.1:9580          0.0.0.0:*               LISTEN      234/php</span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，程序确实被我们的服务器给占用了。那么为什么会报这个错误呢？说明在<code>supervisor</code>的接管下，<code>server</code>被多次启动，并且是直接在<code>server</code>还没有退出的情况下启动。</p>
-<p>首先，我们来看一下服务器进程状态：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># ps -ef</span></span><br><span class="line">UID        PID  PPID  C STIME TTY          TIME CMD</span><br><span class="line">root         1     0  0 05:26 pts/0    00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root         6     1  0 05:26 ?        00:00:01 sshd: root@pts/1</span><br><span class="line">root         8     6  0 05:26 pts/1    00:00:00 -bash</span><br><span class="line">root       153     1  0 07:17 ?        00:00:00 /usr/bin/python /usr/bin/supervisord -c /etc/supervis</span><br><span class="line">root       172     1  0 07:19 ?        00:00:00 sshd: root@pts/2</span><br><span class="line">root       174   172  0 07:19 pts/2    00:00:00 -bash</span><br><span class="line">root       234     1  0 07:48 ?        00:00:00 php start.php</span><br><span class="line">root       235   234  0 07:48 ?        00:00:00 php start.php</span><br><span class="line">root       238   235  0 07:48 ?        00:00:00 php start.php</span><br><span class="line">root       239   235  0 07:48 ?        00:00:00 php start.php</span><br><span class="line">root       250   174  0 07:52 pts/2    00:00:00 ps -ef</span><br><span class="line">[root@e2a14c00e7f6 server]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，因为<code>server</code>是以守护进程的方式启动的，所以<code>master</code>进程的<code>ppid</code>是<code>1</code>。（因为守护进程的实现原理是<code>fork + fork + exit</code>，所以，<code>master</code>进程自然就被<code>pid</code>为<code>1</code>的进程接管了）</p>
-<p>正是因为<code>server</code>的父进程不是<code>supervisor</code>了，所以，<code>supervisor</code>此时不能正确的监控<code>server</code>的状态。（至于有没有其他的操作实现监控，这我没有过多的去研究它）</p>
-<p>我们现在通过<code>strace</code>来看看。首先，<code>kill</code>掉这个<code>server</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># kill 234</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 ~]<span class="comment"># strace -p 153</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>然后我们另开一个终端，此时我们再次通过<code>supervisor</code>来启动<code>server</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 server]<span class="comment"># supervisorctl restart server</span></span><br><span class="line">server: ERROR (not running)</span><br><span class="line">server: ERROR (spawn error)</span><br></pre></td></tr></table></figure>
-
-<p>在<code>strace</code>的终端，我们可以看到如下输出：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">clone</span>(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f161ad54a10) = 324</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">START_RESTARTBLOCK (Interrupted by signal)</span><br><span class="line">--- SIGCHLD &#123;si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=324, si_uid=0, si_status=0, si_utime=3, si_stime=3&#125; ---</span><br><span class="line"></span><br><span class="line"><span class="built_in">clone</span>(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f161ad54a10) = 331</span><br><span class="line"></span><br><span class="line">--- SIGCHLD &#123;si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=331, si_uid=0, si_status=255, si_utime=3, si_stime=1&#125; ---</span><br><span class="line"></span><br><span class="line"><span class="built_in">clone</span>(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f161ad54a10) = 332</span><br><span class="line"></span><br><span class="line">--- SIGCHLD &#123;si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=332, si_uid=0, si_status=255, si_utime=3, si_stime=1&#125; ---</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，收到了子进程退出的信息。因为我们的<code>server</code>进程因为守护进程化，最初的那个子进程是退出了的。所以，<code>supervisor</code>误认为<code>server</code>是不正常退出，它又对<code>server</code>进行了重启。但是实际上，我们的<code>server</code>已经监听了端口了，所以<code>supervisor</code>再次启动<code>server</code>，就会报错了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/14/supervisor%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" data-id="ckkj72zsu005df6vx1ykjhe21" data-title="supervisor原理分析" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Xdebug单步调试原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/" class="article-date">
-  <time class="dt-published" datetime="2020-08-12T14:22:07.000Z" itemprop="datePublished">2020-08-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/">Xdebug单步调试原理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>这篇文章，我们来分析一下<code>Xdebug</code>单步调试的原理。</p>
-<p>一句话总结起来就是，<code>Xdebug</code>利用<code>ZEND_EXT_STMT</code>这个<code>opcode</code>来实现了单步调试的功能。</p>
-<p>那么，<code>ZEND_EXT_STMT</code>这个<code>opcode</code>是什么呢？大概可以这么理解，在执行一条语句之前，会执行<code>ZEND_EXT_STMT</code>这个<code>opcode</code>，这个<code>opcode</code>不会对代码的执行结果造成影响，但是它可以帮助我们来实现调试器的功能。</p>
-<p>举个例子，有如下的<code>PHP</code>代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">$b = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">$c = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
-
-<p>那么，它对应的<code>opcode</code>为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 <span class="built_in">test</span>]<span class="comment"># phpdbg test.php</span></span><br><span class="line">[Welcome to phpdbg, the interactive PHP debugger, v0.5.0]</span><br><span class="line">To get <span class="built_in">help</span> using phpdbg <span class="built_in">type</span> <span class="string">&quot;help&quot;</span> and press enter</span><br><span class="line">[Please report bugs to &lt;http://bugs.php.net/report.php&gt;]</span><br><span class="line">[Successful compilation of /root/codeDir/phpCode/swoole/<span class="built_in">test</span>/test.php]</span><br><span class="line">prompt&gt; b main</span><br><span class="line">[Breakpoint <span class="comment">#0 added at main]</span></span><br><span class="line">prompt&gt; r</span><br><span class="line">[Breakpoint <span class="comment">#0 in main() at /root/codeDir/phpCode/swoole/test/test.php:3, hits: 1]</span></span><br><span class="line">&gt;00003: <span class="variable">$a</span> = 1;</span><br><span class="line"> 00004:</span><br><span class="line"> 00005: <span class="variable">$b</span> = 2;</span><br><span class="line">prompt&gt; p</span><br><span class="line">[Stack <span class="keyword">in</span> /root/codeDir/phpCode/swoole/<span class="built_in">test</span>/test.php (7 ops)]</span><br><span class="line">L1-8 &#123;main&#125;() /root/codeDir/phpCode/swoole/<span class="built_in">test</span>/test.php - 0x7f607d0693c0 + 7 ops</span><br><span class="line"> L3    <span class="comment">#0     EXT_STMT</span></span><br><span class="line"> L3    <span class="comment">#1     ASSIGN                  $a                   1</span></span><br><span class="line"> L5    <span class="comment">#2     EXT_STMT</span></span><br><span class="line"> L5    <span class="comment">#3     ASSIGN                  $b                   2</span></span><br><span class="line"> L7    <span class="comment">#4     EXT_STMT</span></span><br><span class="line"> L7    <span class="comment">#5     ASSIGN                  $c                   3</span></span><br><span class="line"> L8    <span class="comment">#6     RETURN&lt;-1&gt;              1</span></span><br><span class="line">prompt&gt;</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>L1-8</code>表示的是行数。我们发现，在执行每一条功能性的<code>opcode</code>的时候，都会先执行一条<code>ZEND_EXT_STMT</code>。</p>
-<p>如果你没有开启<code>Xdebug</code>，大概率是看不到这个<code>EXT_STMT</code>的。也就是说，<code>Xdebug</code>做了某些手脚，使得生成的<code>opcode</code>里面包含了<code>EXT_STMT</code>。我们可以来看一看在哪个地方对生成的<code>opcode</code>进行了修改。</p>
-<p>首先，我们得看一下<code>PHP</code>内核是如何为生成的<code>oparray</code>插入<code>EXT_STMT</code>的：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zend_do_extended_stmt</span><span class="params">(<span class="keyword">void</span>)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_op *opline;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(CG(compiler_options) &amp; ZEND_COMPILE_EXTENDED_STMT)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    opline = get_next_op();</span><br><span class="line"></span><br><span class="line">    opline-&gt;opcode = ZEND_EXT_STMT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过<code>zend_do_extended_stmt</code>这个函数来实现的。我们看到，只有当<code>CG(compiler_options)</code>开启了<code>ZEND_COMPILE_EXTENDED_STMT</code>标志，才会为<code>oparray</code>插入<code>EXT_STMT opcode</code>。</p>
-<p>然后，我们发现，<code>Xdebug</code>里面，就有添加<code>ZEND_COMPILE_EXTENDED_STMT</code>标志的代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PHP_RINIT_FUNCTION(xdebug)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Only enabled extended info when it is not disabled */</span></span><br><span class="line">    CG(compiler_options) = CG(compiler_options) | ZEND_COMPILE_EXTENDED_STMT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果你把这一行代码注释掉，那么生成的<code>opcode</code>就不会带有<code>EXT_STMT</code>了，并且<code>Xdebug</code>的单步调试功能会失效。</p>
-<p><code>OK</code>，介绍完了<code>ZEND_EXT_STMT</code>之后，我们来看一看他对应的<code>handler</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL <span class="title">ZEND_EXT_STMT_SPEC_HANDLER</span><span class="params">(ZEND_OPCODE_HANDLER_ARGS)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    USE_OPLINE</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!EG(no_extensions)) &#123;</span><br><span class="line">        SAVE_OPLINE();</span><br><span class="line">        zend_llist_apply_with_argument(&amp;zend_extensions, (<span class="keyword">llist_apply_with_arg_func_t</span>) zend_extension_statement_handler, execute_data);</span><br><span class="line">        ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();</span><br><span class="line">    &#125;</span><br><span class="line">    ZEND_VM_NEXT_OPCODE();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，这个函数会去调用<code>zend_extensions</code>的<code>zend_extension_statement_handler</code>函数。而这个函数实际上就是<code>xdebug_statement_call</code>，它在<code>zend_extension_entry</code>里面被注册了。</p>
-<p><code>xdebug_statement_call</code>这个函数做的事情就是<strong>阻塞</strong>读取客户端发来的命令。</p>
-<p>所以，在客户端发来命令之前，是不会执行<code>ZEND_EXT_STMT</code>后面的语句的。这就给了我们一种单步调试的感觉了。</p>
-<p>明白了这个原理之后，我们完全可以自己写一个调试器了，有时间我写一个<code>demo</code>出来给大家分享下。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/" data-id="ckkj72zsg004gf6vxbmafcwbq" data-title="Xdebug单步调试原理" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Swoole创建多个Process的时候报错打开太多文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/" class="article-date">
-  <time class="dt-published" datetime="2020-08-12T09:16:02.000Z" itemprop="datePublished">2020-08-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/">Swoole创建多个Process的时候报错打开太多文件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>例如如下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$files = <span class="keyword">array</span>(&lt;URLs of over <span class="number">500</span> files&gt;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>($files <span class="keyword">as</span> $file) &#123;</span><br><span class="line">    $processes[$file] = <span class="keyword">new</span> \Swoole\Process(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$file</span>) </span>&#123;</span><br><span class="line">        $data = file_get_contents($file);</span><br><span class="line">        file_put_contents(<span class="string">&quot;dir/path/to/new/file.abc&quot;</span>, $data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $processes[$data]-&gt;start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可能会报如下错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WARNING swPipeUnsock_create(:83): socketpair() failed, Error: Too many open files[24]</span><br></pre></td></tr></table></figure>
-
-<p>这是因为<code>Swoole</code>在<code>new Process</code>的时候，默认会创建一对管道，这样就会消耗两个<code>fd</code>（每创建一个进程，都会消耗两个<code>fd</code>）。如果创建的<code>Process</code>过多的话，就会出现“打开文件过多的错误”。</p>
-<p>解决这个问题的方法有两个。</p>
-<p>第一，我们配置<code>ulimit -n</code>，调大最大打开文件的上限。例如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ulimit</span> -n 100000</span><br></pre></td></tr></table></figure>
-
-<p>第二，因为我们这个程序并没有涉及到进程间的通信，所以完全可以不创建这<code>pipe</code>。此时，我们只需要设置<code>new Process</code>的第三个参数为<code>0</code>即可。例如：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Swoole\Process($fn, <span class="literal">false</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/" data-id="ckkj72zs9003vf6vx9p8mdjx4" data-title="Swoole创建多个Process的时候报错打开太多文件" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Swoole内核中和连接关闭有关的各种标志位" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/" class="article-date">
-  <time class="dt-published" datetime="2020-08-11T02:37:05.000Z" itemprop="datePublished">2020-08-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/">Swoole内核中和连接关闭有关的各种标志位</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们来总结一下<code>Swoole</code>内核中和连接关闭有关的各种标志位。</p>
-<p>在<code>swoole::Connection</code>结构里面：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Connection</span> &#123;</span></span><br><span class="line">    <span class="comment">//--------------------------------------------------------------</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * server is actively close the connection</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> close_actively;</span><br><span class="line">    <span class="keyword">uint8_t</span> closed;</span><br><span class="line">    <span class="keyword">uint8_t</span> close_queued;</span><br><span class="line">    <span class="keyword">uint8_t</span> closing;</span><br><span class="line">    <span class="keyword">uint8_t</span> close_reset;</span><br><span class="line">    <span class="keyword">uint8_t</span> peer_closed;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * protected connection, cannot be closed by heartbeat thread.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> protect;</span><br><span class="line">    <span class="comment">//--------------------------------------------------------------</span></span><br><span class="line">    <span class="keyword">uint8_t</span> close_notify;</span><br><span class="line">    <span class="keyword">uint8_t</span> close_force;</span><br><span class="line">    <span class="comment">//--------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * received time with last data</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">time_t</span> last_time;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> SW_BUFFER_RECV_TIME</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * received time(microseconds) with last data</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">double</span> last_time_usec;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其中，</p>
-<p><code>close_actively</code>代表服务器主动关闭了连接。</p>
-<p><code>closing</code>代表服务器将要调用<code>onClose</code>回调函数（但还未调用）。</p>
-<p><code>closed</code>代表服务器已经调用完了<code>onClose</code>回调函数。</p>
-<p><code>close_queued</code>代表关闭连接的事件已经在排队了，一旦服务器要发送给客户端的数据发送完了，就会关闭对应的连接。这个东西是挂在对应的<code>socket</code>的<code>out_buffer</code>上的<code>chunk</code>上面。</p>
-<p><code>close_reset</code>代表要暴力关闭连接，不会等待<code>send_buffer</code>的数据发送完之后关闭连接，所以这种关闭模式会产生<code>RST</code>分节。</p>
-<p><code>peer_closed</code>代表客户端主动关闭了连接。</p>
-<p><code>protect</code>用来设置客户端连接为保护状态，不被心跳线程切断。</p>
-<p><code>close_notify</code>心跳线程设置这个标志位，用来通知<code>reactor</code>线程关闭连接。</p>
-<p><code>close_force</code>当<code>reactor</code>线程从管道里面收到<code>SW_SERVER_EVENT_CLOSE_FORCE</code>类型的数据的时候，<code>reactor</code>线程会去设置这个标志位。</p>
-<p><code>last_time</code>代表这个连接最后一次收到数据的时间，单位是毫秒。</p>
-<p><code>last_time_usec</code>代表这个连接最后一次收到数据的时间，单位是微秒。</p>
-<p>理解这些标志位，对于处理一些连接泄漏的问题，会非常的有帮助。一旦某个进程连接泄漏了，我们可以<code>attach</code>进这个进程里面，然后选一个泄漏的<code>Connection</code>，看看这些标志位哪些是不正常的，就可以大概找到泄漏的原因。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/" data-id="ckkj72zs6003qf6vx36qh2i1z" data-title="Swoole内核中和连接关闭有关的各种标志位" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP是如何找到扩展的安装目录的" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/" class="article-date">
-  <time class="dt-published" datetime="2020-08-11T01:40:02.000Z" itemprop="datePublished">2020-08-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/">PHP是如何找到扩展的安装目录的</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>有小伙伴可能会疑问，自己没有在<code>php.ini</code>文件里面配置<code>extension_dir</code>，那么<code>PHP</code>它是如何找到扩展的安装目录的呢？</p>
-<p>实际上，我们在编译<code>PHP</code>的时候，这个时候就决定了扩展的安装目录。并且，这个路径在<code>php-src/main/build-defs.h</code>里面可以找到，例如，在我的机器上面，就是：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_EXTENSION_DIR       <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/lib/php/extensions/debug-zts-20190128&quot;</span></span></span><br></pre></td></tr></table></figure>
-
-<p>除了这个之外，还有很多其他的在编译<code>PHP</code>的时候就写入头文件的内容，例如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">| Copyright (c) The PHP Group                                          |</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">| This source file is subject to version 3.01 of the PHP license,      |</span></span><br><span class="line"><span class="comment">| that is bundled with this package in the file LICENSE, and is        |</span></span><br><span class="line"><span class="comment">| available through the world-wide-web at the following url:           |</span></span><br><span class="line"><span class="comment">| http://www.php.net/license/3_01.txt                                  |</span></span><br><span class="line"><span class="comment">| If you did not receive a copy of the PHP license and are unable to   |</span></span><br><span class="line"><span class="comment">| obtain it through the world-wide-web, please send a note to          |</span></span><br><span class="line"><span class="comment">| license@php.net so we can mail you a copy immediately.               |</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">| Author: Stig Sæther Bakken &lt;ssb@php.net&gt;                             |</span></span><br><span class="line"><span class="comment">+----------------------------------------------------------------------+</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CONFIGURE_COMMAND <span class="meta-string">&quot; &#x27;./configure&#x27;  &#x27;--disable-all&#x27; &#x27;--prefix=/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr&#x27; &#x27;--with-config-file-path=/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc&#x27; &#x27;--with-config-file-scan-dir=/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc/php.d&#x27; &#x27;--enable-debug&#x27; &#x27;--enable-zts&#x27; &#x27;--with-ffi&#x27;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_CFLAGS <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_LFLAGS     <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_LIBS       <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_ODBC_TYPE       <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_OCI8_DIR            <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_OCI8_ORACLE_VERSION     <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_PROG_SENDMAIL   <span class="meta-string">&quot;/usr/sbin/sendmail&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PEAR_INSTALLDIR         <span class="meta-string">&quot;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_INCLUDE_PATH    <span class="meta-string">&quot;.:&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_EXTENSION_DIR       <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/lib/php/extensions/debug-zts-20190128&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_PREFIX              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_BINDIR              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/bin&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SBINDIR             <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/sbin&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_MANDIR              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/php/man&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_LIBDIR              <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/lib/php&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_DATADIR             <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/share/php&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SYSCONFDIR          <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/etc&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_LOCALSTATEDIR       <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/usr/var&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_CONFIG_FILE_PATH    <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_CONFIG_FILE_SCAN_DIR    <span class="meta-string">&quot;/Users/hantaohuang/codeDir/cCode/php-src/tmp/etc/php.d&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SHLIB_SUFFIX        <span class="meta-string">&quot;so&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PHP_SHLIB_EXT_PREFIX    <span class="meta-string">&quot;&quot;</span></span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，<code>PHP_EXTENSION_DIR</code>的命名规范如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;install-dir&gt;/lib/php/extensions/&lt;debug-or-not&gt;-&lt;zts-or-not&gt;-ZEND_MODULE_API_NO</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>&lt;install-dir&gt;</code>就是我们的<code>PHP_PREFIX</code>了。<code>&lt;debug-or-not&gt;</code>代表是否开启<code>PHP</code>的<code>debug</code>模式，我们可以在编译的时候指定<code>--enable-debug</code>。<code>&lt;zts-or-not&gt;</code>代表是否开启<code>zts</code>，<code>PHP8</code>中，可以通过指定<code>--enable-zts</code>来开启它。<code>ZEND_MODULE_API_NO</code>是一个可以表示<code>PHP</code>版本的数字，大概是由<code>年/月/日</code>组成。</p>
-<p>正是因为<code>PHP_EXTENSION_DIR</code>的目录有多个在编译期间决定的变量，所以我们要注意，在编译扩展的时候，<code>PHP</code>版本要是一致的，要不然<code>PHP</code>找不到编译的扩展。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/" data-id="ckkj72zrw0038f6vxb9ex2o5e" data-title="PHP是如何找到扩展的安装目录的" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-在PHP的run-tests测试里面保持closing-tag" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/" class="article-date">
-  <time class="dt-published" datetime="2020-08-10T02:01:12.000Z" itemprop="datePublished">2020-08-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/">在PHP的run-tests测试里面保持closing tag</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>这里的测试指的是<code>PHP</code>底层的测试，例如一些扩展呀啥的测试，而不是<code>PHPUnit</code>之类的测试。</p>
-<p>我们尽可能的保留<code>PHP</code>的<code>closing tag</code>，即<code>?&gt;</code>。例如我们应该这么写：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">--FILE--</span><br><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"> var_dump(<span class="keyword">new</span> <span class="class"><span class="keyword">class</span></span>&#123;&#125;);</span><br><span class="line"> <span class="meta">?&gt;</span></span><br><span class="line"> --EXPECTF--</span><br><span class="line"> object(class@%s)#%d (0) &#123;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>而不是：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">--FILE--</span><br><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"> var_dump(<span class="keyword">new</span> <span class="class"><span class="keyword">class</span></span>&#123;&#125;);</span><br><span class="line"> --EXPECTF--</span><br><span class="line"> object(class@%s)#%d (0) &#123;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>详细的可以看<code>php-src</code>的<a target="_blank" rel="noopener" href="https://github.com/php/php-src/pull/5958">这个pr</a>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/" data-id="ckkj72ztz0092f6vx2l1r3k1r" data-title="在PHP的run-tests测试里面保持closing tag" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-zend-read-property的rv参数作用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/" class="article-date">
-  <time class="dt-published" datetime="2020-08-09T13:54:46.000Z" itemprop="datePublished">2020-08-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/">zend_read_property的rv参数作用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文基于的PHP版本为7.3.12</p>
-</blockquote>
-<p>我们在开发<code>PHP</code>扩展的时候，经常会要去读取对象的属性，一般来说就是使用<code>zend_read_property</code>这个函数来完成。这个函数的原型如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API zval *<span class="title">zend_read_property</span><span class="params">(zend_class_entry *scope, zval *object, <span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">size_t</span> name_length, zend_bool silent, zval *rv)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>这个函数的返回值很容易理解，就是这个属性对应的<code>value</code>值。那么，最后一个参数<code>zval *rv</code>有什么用呢？</p>
-<p>这个参数是给动态属性来用的。我们知道，当访问一个<code>PHP</code>对象的动态属性的时候，是会去调用这个对象的<code>__get</code>魔术方法。而动态属性它的内存是不在<code>zend_object</code>上面的，它是通过<code>__get</code>魔术方法来得到的。而普通的属性它的内存是在<code>zend_object</code>上面的，所以，当我们去访问普通的属性的时候，可以直接返回一个<code>zval</code>。</p>
-<p>既然访问动态属性是通过调用<code>__get</code>魔术方法来实现的，那么，类似于<code>zend_call_method</code>一样，我们需要去设置<code>zend_fcall_info::retval</code>。当函数调用结束的时候，返回值就会存放在这个<code>zval</code>中。这样，我们就可以取到动态属性的值了。</p>
-<p>核心的代码如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">zend_std_call_getter</span><span class="params">(zend_object *zobj, zend_string *prop_name, zval *retval)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_class_entry *ce = zobj-&gt;ce;</span><br><span class="line">    zend_class_entry *orig_fake_scope = EG(fake_scope);</span><br><span class="line">    zend_fcall_info fci;</span><br><span class="line">    zend_fcall_info_cache fcic;</span><br><span class="line">    zval member;</span><br><span class="line"></span><br><span class="line">    EG(fake_scope) = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* __get handler is called with one argument:</span></span><br><span class="line"><span class="comment">        property name</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    it should return whether the call was successful or not</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    ZVAL_STR(&amp;member, prop_name);</span><br><span class="line"></span><br><span class="line">    fci.size = <span class="keyword">sizeof</span>(fci);</span><br><span class="line">    fci.object = zobj;</span><br><span class="line">    fci.retval = retval;</span><br><span class="line">    fci.param_count = <span class="number">1</span>;</span><br><span class="line">    fci.params = &amp;member;</span><br><span class="line">    fci.no_separation = <span class="number">1</span>;</span><br><span class="line">    ZVAL_UNDEF(&amp;fci.function_name); <span class="comment">/* Unused */</span></span><br><span class="line"></span><br><span class="line">    fcic.function_handler = ce-&gt;__get;</span><br><span class="line">    fcic.called_scope = ce;</span><br><span class="line">    fcic.object = zobj;</span><br><span class="line"></span><br><span class="line">    zend_call_function(&amp;fci, &amp;fcic);</span><br><span class="line"></span><br><span class="line">    EG(fake_scope) = orig_fake_scope;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当访问<code>PHP</code>对象的动态属性的时候，就会去调用这个函数。而这个函数的<code>retval</code>就是我们<code>zend_read_property</code>的<code>rv</code>参数。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/" data-id="ckkj72zsx005mf6vxcanz8kj0" data-title="zend_read_property的rv参数作用" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
 
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
+      
+  <div class="widget">
     <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
         
           <li>
-            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="title">ptrace使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-02T12:19:39.000Z" itemprop="datePublished">2021-02-02</time>
+              </p>
+            </div>
           </li>
-        
+          
       </ul>
     </div>
   </div>
+  
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 codinghuang<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
+  </div>
+</aside>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+  <main class="main" role="main">
+  
+  <div class="content article-list">
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/">Swoole的多个线程如何处理信号</a>
+    </h1>
+  
 
   </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/" class="article-date">
+	  <time datetime="2020-08-18T10:02:14.000Z" itemprop="datePublished">Aug 18</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Swoole/" rel="tag">Swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/18/Swoole%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 365(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/">PHP数组系列函数源码分析--end</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/" class="article-date">
+	  <time datetime="2020-08-16T12:15:42.000Z" itemprop="datePublished">Aug 16</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-end/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 559(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89--count/">PHP数组系列函数源码分析（一）--count</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89--count/" class="article-date">
+	  <time datetime="2020-08-16T07:47:33.000Z" itemprop="datePublished">Aug 16</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/16/PHP%E6%95%B0%E7%BB%84%E7%B3%BB%E5%88%97%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89--count/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.6k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 7(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/14/supervisor%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">supervisor原理分析</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/14/supervisor%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" class="article-date">
+	  <time datetime="2020-08-14T07:21:57.000Z" itemprop="datePublished">Aug 14</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Linux/" rel="tag">Linux</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/14/supervisor%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2.1k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 10(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/">Xdebug单步调试原理</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/" class="article-date">
+	  <time datetime="2020-08-12T14:22:07.000Z" itemprop="datePublished">Aug 12</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/Xdebug/" rel="tag">Xdebug</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/12/Xdebug%E5%8D%95%E6%AD%A5%E8%B0%83%E8%AF%95%E5%8E%9F%E7%90%86/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 733(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/">Swoole创建多个Process的时候报错打开太多文件</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/" class="article-date">
+	  <time datetime="2020-08-12T09:16:02.000Z" itemprop="datePublished">Aug 12</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Swoole/" rel="tag">Swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/12/Swoole%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AAProcess%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99%E6%89%93%E5%BC%80%E5%A4%AA%E5%A4%9A%E6%96%87%E4%BB%B6/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 230(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/">Swoole内核中和连接关闭有关的各种标志位</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/" class="article-date">
+	  <time datetime="2020-08-11T02:37:05.000Z" itemprop="datePublished">Aug 11</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Swoole/" rel="tag">Swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/11/Swoole%E5%86%85%E6%A0%B8%E4%B8%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%85%B3%E9%97%AD%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%84%E7%A7%8D%E6%A0%87%E5%BF%97%E4%BD%8D/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 457(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/">PHP是如何找到扩展的安装目录的</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/" class="article-date">
+	  <time datetime="2020-08-11T01:40:02.000Z" itemprop="datePublished">Aug 11</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/11/PHP%E6%98%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%89%A9%E5%B1%95%E7%9A%84%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95%E7%9A%84/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 683(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/">在PHP的run-tests测试里面保持closing tag</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/" class="article-date">
+	  <time datetime="2020-08-10T02:01:12.000Z" itemprop="datePublished">Aug 10</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/10/%E5%9C%A8PHP%E7%9A%84run-tests%E6%B5%8B%E8%AF%95%E9%87%8C%E9%9D%A2%E4%BF%9D%E6%8C%81closing-tag/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 105(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/">zend_read_property的rv参数作用</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/" class="article-date">
+	  <time datetime="2020-08-09T13:54:46.000Z" itemprop="datePublished">Aug 9</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/09/zend-read-property%E7%9A%84rv%E5%8F%82%E6%95%B0%E4%BD%9C%E7%94%A8/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 452(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+  </div>
+
+  
+    
+    <nav class="bar bar-footer clearfix" data-stick-bottom>
+        <div class="bar-inner">
+        <ul class="pager pull-left">
+            
+            <li class="prev">
+                <a href="/page/5/">
+                    <i class="icon icon-angle-left"></i>
+                    Prev
+                </a>
+            </li>
+            
+            
+            <li class="next">
+                <a href="/page/7/">
+                    Next
+                    <i class="icon icon-angle-right"></i>
+                </a>
+            </li>
+            
+        </ul>
+        <div class="total-article bar-right">Page 6 of 23</div>
+        </div>
+    </nav>
+    
+ 
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
 </body>
 </html>

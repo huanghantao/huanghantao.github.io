@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
   
   <title>codinghuang的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="比PHP多一些">
 <meta property="og:type" content="website">
 <meta property="og:title" content="codinghuang的个人博客">
@@ -15,556 +27,625 @@
 <meta property="og:locale">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/page/23/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
   
   
 <link rel="stylesheet" href="/css/style.css">
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+  
+  
   
 <meta name="generator" content="Hexo 5.1.1"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">codinghuang的个人博客</a>
-      </h1>
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
-        </h2>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
       </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
     </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
   </div>
 </header>
 
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-empty和isset函数" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/" class="article-date">
-  <time class="dt-published" datetime="2017-07-04T06:07:35.000Z" itemprop="datePublished">2017-07-04</time>
-</a>
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/">empty和isset函数</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>自己对这两个函数一直是一知半解的，这里小小的总结一下</p>
-<h1 id="empty-函数"><a href="#empty-函数" class="headerlink" title="empty()函数"></a>empty()函数</h1><p>对于empty()函数，php手册给出的官方解答是：</p>
-<h3 id="判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty-并不会产生警告"><a href="#判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty-并不会产生警告" class="headerlink" title="判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty()并不会产生警告"></a><strong><em>判断一个变量是否被认为是空的。当一个变量并不存在，或者它的值等同于FALSE，那么它会被认为不存在。如果变量不存在的话，empty()并不会产生警告</em></strong></h3><p>也就是说<strong>我们可以通过判断与它等价的bool值来判断empty之后的值是false还是true</strong></p>
-<p>我们做一个小实验：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="number">0</span>));</span><br><span class="line">var_dump(!!<span class="number">0</span>);</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="literal">null</span>));</span><br><span class="line">var_dump(!!<span class="literal">null</span>);</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="keyword">array</span>()));</span><br><span class="line">var_dump(!!<span class="keyword">array</span>());</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="string">&#x27;0&#x27;</span>));</span><br><span class="line">var_dump(!!<span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">var_dump(<span class="keyword">empty</span>(<span class="number">1</span>));</span><br><span class="line">var_dump(!!<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<p>下图是打印出的结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/6.PNG"></p>
-<p>也就是说，empty()函数里面的参数的值的bool等价值为false的话，那么empty函数返回true。否则返回false</p>
-<h1 id="isset-函数"><a href="#isset-函数" class="headerlink" title="isset()函数"></a>isset()函数</h1><p>对于isset()函数，php手册给出的官方解答是：</p>
-<h3 id="检测变量是否设置，并且不是-NULL"><a href="#检测变量是否设置，并且不是-NULL" class="headerlink" title="检测变量是否设置，并且不是 NULL"></a><strong><em>检测变量是否设置，并且不是 NULL</em></strong></h3><p>变量是否设置比较好理解，也就是给它值就行了(不能是NULL)，那么什么时候一个变量会是null呢？</p>
-<p>手册里面给出的答案是：</p>
-<ul>
-<li><h3 id="被赋值为-NULL"><a href="#被赋值为-NULL" class="headerlink" title="被赋值为 NULL"></a><strong><em>被赋值为 NULL</em></strong></h3></li>
-<li><h3 id="尚未被赋值"><a href="#尚未被赋值" class="headerlink" title="尚未被赋值"></a><strong><em>尚未被赋值</em></strong></h3></li>
-<li><h3 id="被-unset"><a href="#被-unset" class="headerlink" title="被 unset()"></a><strong><em>被 unset()</em></strong></h3></li>
-</ul>
-<p>做个小实验：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$var1 = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var1));</span><br><span class="line">$var2 = <span class="number">0</span>;</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var2));</span><br><span class="line">$var3 = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var3));</span><br><span class="line">$var4 = <span class="keyword">array</span>();</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var4));</span><br><span class="line">$var5 = <span class="keyword">new</span> <span class="built_in">stdClass</span>();</span><br><span class="line">var_dump(<span class="keyword">isset</span>($var5));</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/7.PNG"></p>
-
-      
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/" data-id="ckkj72zsk004of6vx2pdn0j1a" data-title="empty和isset函数" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
+</div>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-bind-127-0-0-1-0-failed-Error-Address-already-in-use" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/" class="article-date">
-  <time class="dt-published" datetime="2017-07-02T03:53:24.000Z" itemprop="datePublished">2017-07-02</time>
-</a>
     
-  </div>
-  <div class="article-inner">
+      
+
     
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/">bind(127.0.0.1:0) failed. Error: Address already in use</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <p><strong>最近正在学习swoole，发现要学太多的计算机基础知识了</strong></p>
-<p>今天在入门swoole的时候，我先按照官网的例子写了一个服务端的php代码，发现没有问题。但是再次运行的时候，就有了报错<code>WARNING swSocket_bind: bind(127.0.0.1:0) failed. Error: Address already in use [98]</code></p>
-<p>这个意思是说<strong>端口正在被占用</strong>，所以下次运行的时候会报一个这样的错</p>
-<p>那么，我们该怎么做呢？</p>
-<p>因为在系统服务中，端口不是独立存在的，它是依附于进程的。某个进程开启，那么它对应的端口就开启了，进程关闭，则该端口也就关闭了。下次若某个进程再次开启，则相应的端口也再次开启。所以，不要纯粹的认为你要去关闭掉某个端口了。但是，禁用某个端口是可行的。因为，linux里面端口的活动与进程是紧密相连的，如果想要关闭某个端口，那么只要kill掉与它对应的进程就可以了</p>
-<p>那么，这个端口是和哪个进程有关呢？</p>
-<p>我们可以使用如下命令：<code>netstat -anp | grep 端口号</code>来查看，例如，我的9501端口被占用了，那么，我可以使用：<code>netstat -anp | grep 9501</code>来查看，显示如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/swoole%E5%AD%A6%E4%B9%A0/1.PNG"></p>
-<p>LISTEN说明它是被监听着的，2888是这个进程的进程ID，我们可以通过：<code>kill 进程ID</code>来杀死一个进程</p>
-<p>我们执行了kill指令之后，再次执行：<code>netstat -anp | grep 9501</code>就会发现9501这个端口没有被占用了</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/" data-id="ckkj72zsg004if6vxed8wei1c" data-title="bind(127.0.0.1:0) failed. Error: Address already in use" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-通过局域网来让手机访问本地的vue项目" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/" class="article-date">
-  <time class="dt-published" datetime="2017-06-22T12:54:02.000Z" itemprop="datePublished">2017-06-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/">通过局域网来让手机访问本地的vue.js项目</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>相信大家在用vue.js写WebApp的时候，都想用手机来访问本地的vue.js项目，但是一般人想到的都是先把文件上传到托管的服务器里面（例如：阿里云、腾讯云等等），然后在通过服务器的ip来访问。这种方法可以是可以，但是非常耗时间，最快的方法还是通过局域网来让手机访问本地的vue.js项目。</p>
-<p>那么如何通过局域网来访问呢？下面介绍一种方法。</p>
-<h3 id="一、先让手机和电脑连上同一个局域网"><a href="#一、先让手机和电脑连上同一个局域网" class="headerlink" title="一、先让手机和电脑连上同一个局域网"></a>一、先让手机和电脑连上同一个局域网</h3><p>首先，我们让电脑连上无线网，然后再用电脑给手机开网络共享，然后手机连上电脑发出的共享网络</p>
-<h3 id="二、查看ip"><a href="#二、查看ip" class="headerlink" title="二、查看ip"></a>二、查看ip</h3><p>在百度里面直接输入ip即可查看（分别用手机和电脑查看，一般来说查到的ip是一样的）</p>
-<h3 id="三、把电脑的防火墙先关闭"><a href="#三、把电脑的防火墙先关闭" class="headerlink" title="三、把电脑的防火墙先关闭"></a>三、把电脑的防火墙先关闭</h3><h3 id="四、开启你电脑本地的vue-js项目"><a href="#四、开启你电脑本地的vue-js项目" class="headerlink" title="四、开启你电脑本地的vue.js项目"></a>四、开启你电脑本地的vue.js项目</h3><p>此时你得到了端口号（应该是8080）</p>
-<h3 id="五、使用手机访问你的项目"><a href="#五、使用手机访问你的项目" class="headerlink" title="五、使用手机访问你的项目"></a>五、使用手机访问你的项目</h3><p>你需要在手机的浏览器里面输入你刚才查到的Ip，例如：120.203.28.43</p>
-<p>然后在加上刚才的端口号（例如：8080）</p>
-<p>也就是通过：<code>120.203.28.43:8080</code>即可访问你的项目了</p>
-<p><strong>注意用完了之后要开启防火墙哦</strong></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/" data-id="ckkj72zv800chf6vxfuoe88r8" data-title="通过局域网来让手机访问本地的vue.js项目" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-什么是HTML实体" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/" class="article-date">
-  <time class="dt-published" datetime="2017-06-21T09:43:21.000Z" itemprop="datePublished">2017-06-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/">什么是HTML实体</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>有些字符，例如左尖括号和右尖括号是不允许在html文本中使用的，要在html中显示这些字符，我们必须使用html实体，那么，如何使用html实体呢？在html里面，我们如果要在浏览器中之间显示<br>，而不是换行的话，我们可以有如下写法：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&amp;lt;</span>br<span class="symbol">&amp;gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>这里的&amp; lt;在浏览器会输出左尖括号，&amp; gt;会输出右尖括号</p>
-<p>此时，你会在浏览器里面真正的看到这个<br>标签，这个标签是没有任何实际含义的</p>
-<p>如果你在HTML文件里面直接写：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>你会发现，浏览器里面是看不到任何字符，因为，这里的<br>是有含义的，也就是“换行”</p>
-<p>现在，你应该对实体有了一定的了解。我现在大概解释一下你的博客的那个问题</p>
-<p>首先，你要明白你为什么要使用wangeditor那个插件。原因就是，你可以获取到你写的文字的html实体。如果你直接在textarea里面写文字的话，你是不能够提取实体的，这样当你去获取那些文字的时候，你就丢失了那些标签，也就意味着你在下次修改文章的时候，你原来的那些换行呀，分段呀，给文字加粗呀，这些东西都不会显示在你面前，而显示在你面前的是一篇黑压压的字，他们没有任何格式</p>
-<p>但是，如果你使用了那个插件获取了HTML实体的话，你就可以得到那些标签，这时候，你就把这些HTML实体（也就是那些标签）连同你写的文章一起存入数据库中。当你下次修改文章的时候，你可以从你的数据库中获取到带有html实体的文章。但是，我前面说了，实体是没有任何实际意义的，它是会直接显示在你眼前的。而你是不想要实体显示在你眼前的，所以，需要对实体转化，转化为标签</p>
-<p>记住，你在数据库里面存放的一定不是标签，否则，在页面上是不会显示标签的。你在数据库中的标签一定是以实体的形式存在的也就是下面这种类似的形式；</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&amp;lt;</span>br<span class="symbol">&amp;gt;</span></span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/" data-id="ckkj72ztj007mf6vxe79w38qm" data-title="什么是HTML实体" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Vue-js路由报错TypeError-Cannot-read-property-c-of-undefined" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/16/Vue-js%E8%B7%AF%E7%94%B1%E6%8A%A5%E9%94%99TypeError-Cannot-read-property-c-of-undefined/" class="article-date">
-  <time class="dt-published" datetime="2017-06-16T11:22:37.000Z" itemprop="datePublished">2017-06-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/16/Vue-js%E8%B7%AF%E7%94%B1%E6%8A%A5%E9%94%99TypeError-Cannot-read-property-c-of-undefined/">Vue.js路由报错:TypeError: Cannot read property &#39;_c&#39; of undefined</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>错误详情：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/images/%E6%8D%95%E8%8E%B7.PNG"></p>
-<p>像上面这个报错真的是是十分的蛋疼，根本看不懂，也定位不了，所以只能一行一行代码的去寻找可能出错的原因</p>
-<p>先来看看我的代码（在main.js文件里面）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Apple <span class="keyword">from</span> <span class="string">&#x27;./components/apple.vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Banana <span class="keyword">from</span> <span class="string">&#x27;./components/banana.vue&#x27;</span></span><br><span class="line">Vue.use(VRouter);</span><br><span class="line"><span class="keyword">let</span> router = <span class="keyword">new</span> VRouter(&#123;</span><br><span class="line">  mode: <span class="string">&#x27;history&#x27;</span>,</span><br><span class="line">  routes: [</span><br><span class="line">  	&#123;</span><br><span class="line">	  	path: <span class="string">&#x27;/apple&#x27;</span>,</span><br><span class="line">	  	components: Apple</span><br><span class="line">  	&#125;,</span><br><span class="line">  	&#123;</span><br><span class="line">  		path: <span class="string">&#x27;/banana&#x27;</span>,</span><br><span class="line">  		components: Banana</span><br><span class="line">  	&#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">	el: <span class="string">&#x27;#app&#x27;</span>,</span><br><span class="line">	router,</span><br><span class="line">	render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>仔细排查错误后发现，routes里面的components多了一个s，正确的应该是：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">routes: [</span><br><span class="line">  	&#123;</span><br><span class="line">	  	path: <span class="string">&#x27;/apple&#x27;</span>,</span><br><span class="line">	  	component: Apple</span><br><span class="line">  	&#125;,</span><br><span class="line">  	&#123;</span><br><span class="line">  		path: <span class="string">&#x27;/banana&#x27;</span>,</span><br><span class="line">  		component: Banana</span><br><span class="line">  	&#125;</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
-
-<p>所以一定要细心！！！</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/16/Vue-js%E8%B7%AF%E7%94%B1%E6%8A%A5%E9%94%99TypeError-Cannot-read-property-c-of-undefined/" data-id="ckkj72zse004af6vx0ioba1rx" data-title="Vue.js路由报错:TypeError: Cannot read property &#39;_c&#39; of undefined" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-php实现评论功能（仅有两层）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/12/php%E5%AE%9E%E7%8E%B0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%EF%BC%88%E4%BB%85%E6%9C%89%E4%B8%A4%E5%B1%82%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2017-06-12T08:21:53.000Z" itemprop="datePublished">2017-06-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/12/php%E5%AE%9E%E7%8E%B0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%EF%BC%88%E4%BB%85%E6%9C%89%E4%B8%A4%E5%B1%82%EF%BC%89/">php实现评论功能（仅有两层）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><strong>目前做的一个项目涉及到了说说功能</strong></p>
-<p>以下是我的数据表：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/images5.PNG"></p>
-<p>其中可以看到，我只有两层评论，并没有那种很多层的复杂的树形结构</p>
-<p>我现在想把这个杂乱的一系列评论分成一组一组的评论，其中，parent_id为0的作为第一层，parent_id与talk_id相同的作为第二层</p>
-<p>开始我想的方法是递归来分出两层来，后来还是用比较暴力的方法来解决</p>
-<p>以下是我的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSubTree</span>(<span class="params">$data = <span class="keyword">array</span>(<span class="params"></span>), $pid = <span class="number">0</span></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">static</span> $tmp = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">foreach</span>($data <span class="keyword">as</span> $key =&gt; $value)&#123;</span><br><span class="line">		<span class="keyword">if</span>($value[<span class="string">&#x27;parent_id&#x27;</span>] == $pid)&#123;</span><br><span class="line">			$talk_id = $value[<span class="string">&#x27;talk_id&#x27;</span>];</span><br><span class="line">			$value[<span class="string">&#x27;child&#x27;</span>] = getSubTree_1($data, $talk_id);</span><br><span class="line">			$value[<span class="string">&#x27;childCount&#x27;</span>] = count($value[<span class="string">&#x27;child&#x27;</span>]);</span><br><span class="line">			$tmp[] = $value;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSubTree_1</span>(<span class="params">$data = <span class="keyword">array</span>(<span class="params"></span>), $pid</span>)</span>&#123;</span><br><span class="line">	$tmp = <span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">foreach</span>($data <span class="keyword">as</span> $key =&gt; $value)&#123;</span><br><span class="line">		<span class="keyword">if</span>($value[<span class="string">&#x27;parent_id&#x27;</span>] == $pid)&#123;</span><br><span class="line">			$tmp[] = $value;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>思路是先在getSubTree函数里面找出parent_id为0的说说，然后再得到它的talk_id，然后再为这个说说（也就是这个parent_id为0的数组）构造一个一维数组child</p>
-<p>接着再调用getSubTree_1函数来找出parent_id为$talk_id的说说，也就是第一层说说的评论</p>
-<p>一直循环（找出parent_id为0的说说，然后再找这条说说的评论）</p>
-<p>最终，我构造了一个新的数组（这个数组是三位数组，原来没有分类的时候是二维数组）</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/12/php%E5%AE%9E%E7%8E%B0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%EF%BC%88%E4%BB%85%E6%9C%89%E4%B8%A4%E5%B1%82%EF%BC%89/" data-id="ckkj72zsu005bf6vx3v62h6x3" data-title="php实现评论功能（仅有两层）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-用PHP实现删除数据表中的一个节点（记录）以及它的子树" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/06/12/%E7%94%A8PHP%E5%AE%9E%E7%8E%B0%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%88%E8%AE%B0%E5%BD%95%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E5%AD%90%E6%A0%91/" class="article-date">
-  <time class="dt-published" datetime="2017-06-12T07:17:23.000Z" itemprop="datePublished">2017-06-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/06/12/%E7%94%A8PHP%E5%AE%9E%E7%8E%B0%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%88%E8%AE%B0%E5%BD%95%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E5%AD%90%E6%A0%91/">用PHP实现删除数据表中的一个节点（记录）以及它的子树</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们知道，在评论区中，经常会看见一个人评论之后，后面有人艾特前面的那个人，对他进行评论，然后又有人对上一个人进行评论<br>我们叫这种结构为<strong>树形结构</strong>，其中的一条评论我们可以称之为<strong>节点</strong></p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/images1.PNG"></p>
-<p>这张数据表对应的树形结构是：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/images2.PNG"></p>
-<p>如果我要删除节点16，那么，这个树形图会变成</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/images3.PNG"></p>
-<p><strong>不要在意树的箭头方向变了，我们关注的是树的逻辑结构的变化</strong></p>
-<p>接下来用代码实现这个删除操作</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$con = mysqli_connect(<span class="string">&#x27;localhost&#x27;</span>, <span class="string">&#x27;root&#x27;</span>,<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!$con)&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">die</span>(<span class="string">&#x27;没有连到数据库&#x27;</span>.msql_error());</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mysqli_select_db($con, <span class="string">&#x27;test&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    $sql = <span class="string">&#x27;select * from treeNodes&#x27;</span>;</span><br><span class="line">    $result = mysqli_query($con, $sql);</span><br><span class="line">    <span class="keyword">if</span>(!$result)&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27;查询失败！&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    $row = <span class="keyword">array</span>();<span class="comment">//用来保存从数据库查询出来的记录</span></span><br><span class="line">    $i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>($da = mysqli_fetch_array($result, MYSQL_ASSOC))&#123;</span><br><span class="line">        $row[$i++] = $da;<span class="comment">//一条一条的保存</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    delete_child_tree($con, $row, <span class="number">16</span>);<span class="comment">//删除父id为16的子树</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">delete_child_tree</span>(<span class="params">$con, $data, $pid = <span class="number">0</span></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">static</span> $save_id = <span class="keyword">array</span>();<span class="comment">//用来保存需要删除的那个节点的id的数组</span></span><br><span class="line">        $new_data = <span class="keyword">array</span>();<span class="comment">//用来保存删除节点后的新的数组</span></span><br><span class="line">        <span class="keyword">foreach</span> ($data <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">            <span class="keyword">if</span>($value[<span class="string">&#x27;pid&#x27;</span>] == $pid)&#123;</span><br><span class="line">                array_push($save_id, $value[<span class="string">&#x27;id&#x27;</span>]);<span class="comment">//保存需要删除的那个节点的id</span></span><br><span class="line">                $sql = <span class="string">&#x27;delete from treeNodes where id = &#x27;</span>.$value[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">                mysqli_query($con, $sql);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                $new_data[] = $value;<span class="comment">//如果这个节点不用被删除的话，那个就保存他到新的数组里面</span></span><br><span class="line">            &#125;</span><br><span class="line">    </span><br><span class="line">        &#125;</span><br><span class="line">        var_dump($save_id, $new_data);</span><br><span class="line">        <span class="keyword">if</span>($id = array_shift($save_id))&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&#x27;&lt;span style=&quot;color:red;&quot;&gt;&#x27;</span>.$id.<span class="string">&#x27;&lt;/span&gt;&#x27;</span>;</span><br><span class="line">            delete_child_tree($con, $new_data, $id);<span class="comment">//递归调用</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    mysqli_close($con);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>执行这段代码之后，数据表变为：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/hexo/images4.PNG"></p>
-<p>至于id为16的那个节点，大家可以自己动手删掉它，也不难</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2017/06/12/%E7%94%A8PHP%E5%AE%9E%E7%8E%B0%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%88%E8%AE%B0%E5%BD%95%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E5%AD%90%E6%A0%91/" data-id="ckkj72zur00b5f6vxfudzayv2" data-title="用PHP实现删除数据表中的一个节点（记录）以及它的子树" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
 
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
+      
+  <div class="widget">
     <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
         
           <li>
-            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="title">ptrace使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-02T12:19:39.000Z" itemprop="datePublished">2021-02-02</time>
+              </p>
+            </div>
           </li>
-        
+          
       </ul>
     </div>
   </div>
+  
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 codinghuang<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
+  </div>
+</aside>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+  <main class="main" role="main">
+  
+  <div class="content article-list">
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/">empty和isset函数</a>
+    </h1>
+  
 
   </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/" class="article-date">
+	  <time datetime="2017-07-04T06:07:35.000Z" itemprop="datePublished">Jul 4</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/php/" rel="tag">php</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/07/04/empty%E5%92%8Cisset%E5%87%BD%E6%95%B0/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 343(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/">bind(127.0.0.1:0) failed. Error: Address already in use</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/" class="article-date">
+	  <time datetime="2017-07-02T03:53:24.000Z" itemprop="datePublished">Jul 2</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/linux/" rel="tag">linux</a>, <a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>, <a class="article-tag-link-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/07/02/bind-127-0-0-1-0-failed-Error-Address-already-in-use/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 412(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/">通过局域网来让手机访问本地的vue.js项目</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/" class="article-date">
+	  <time datetime="2017-06-22T12:54:02.000Z" itemprop="datePublished">Jun 22</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/vue-js/" rel="tag">vue.js</a>, <a class="article-tag-link-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/22/%E9%80%9A%E8%BF%87%E5%B1%80%E5%9F%9F%E7%BD%91%E6%9D%A5%E8%AE%A9%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%AC%E5%9C%B0%E7%9A%84vue%E9%A1%B9%E7%9B%AE/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 355(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/">什么是HTML实体</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/" class="article-date">
+	  <time datetime="2017-06-21T09:43:21.000Z" itemprop="datePublished">Jun 21</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/HTML/" rel="tag">HTML</a>, <a class="article-tag-link-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/21/%E4%BB%80%E4%B9%88%E6%98%AFHTML%E5%AE%9E%E4%BD%93/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 616(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/16/Vue-js%E8%B7%AF%E7%94%B1%E6%8A%A5%E9%94%99TypeError-Cannot-read-property-c-of-undefined/">Vue.js路由报错:TypeError: Cannot read property &#39;_c&#39; of undefined</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/06/16/Vue-js%E8%B7%AF%E7%94%B1%E6%8A%A5%E9%94%99TypeError-Cannot-read-property-c-of-undefined/" class="article-date">
+	  <time datetime="2017-06-16T11:22:37.000Z" itemprop="datePublished">Jun 16</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/vue-js/" rel="tag">vue.js</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/16/Vue-js%E8%B7%AF%E7%94%B1%E6%8A%A5%E9%94%99TypeError-Cannot-read-property-c-of-undefined/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 193(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/php%E5%AE%9E%E7%8E%B0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%EF%BC%88%E4%BB%85%E6%9C%89%E4%B8%A4%E5%B1%82%EF%BC%89/">php实现评论功能（仅有两层）</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/06/12/php%E5%AE%9E%E7%8E%B0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%EF%BC%88%E4%BB%85%E6%9C%89%E4%B8%A4%E5%B1%82%EF%BC%89/" class="article-date">
+	  <time datetime="2017-06-12T08:21:53.000Z" itemprop="datePublished">Jun 12</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/php/" rel="tag">php</a>, <a class="article-tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/12/php%E5%AE%9E%E7%8E%B0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%EF%BC%88%E4%BB%85%E6%9C%89%E4%B8%A4%E5%B1%82%EF%BC%89/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 351(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/12/%E7%94%A8PHP%E5%AE%9E%E7%8E%B0%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%88%E8%AE%B0%E5%BD%95%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E5%AD%90%E6%A0%91/">用PHP实现删除数据表中的一个节点（记录）以及它的子树</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/06/12/%E7%94%A8PHP%E5%AE%9E%E7%8E%B0%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%88%E8%AE%B0%E5%BD%95%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E5%AD%90%E6%A0%91/" class="article-date">
+	  <time datetime="2017-06-12T07:17:23.000Z" itemprop="datePublished">Jun 12</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/php/" rel="tag">php</a>, <a class="article-tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>, <a class="article-tag-link-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/12/%E7%94%A8PHP%E5%AE%9E%E7%8E%B0%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E8%A1%A8%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%EF%BC%88%E8%AE%B0%E5%BD%95%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%AE%83%E7%9A%84%E5%AD%90%E6%A0%91/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 455(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+  </div>
+
+  
+    
+    <nav class="bar bar-footer clearfix" data-stick-bottom>
+        <div class="bar-inner">
+        <ul class="pager pull-left">
+            
+            <li class="prev">
+                <a href="/page/22/">
+                    <i class="icon icon-angle-left"></i>
+                    Prev
+                </a>
+            </li>
+            
+            
+            <li class="next disabled">
+                <a href="javascript:;">
+                    Next
+                    <i class="icon icon-angle-right"></i>                    
+                </a>
+            </li>
+            
+        </ul>
+        <div class="total-article bar-right">Page 23 of 23</div>
+        </div>
+    </nav>
+    
+ 
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
 </body>
 </html>

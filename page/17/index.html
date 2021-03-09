@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
   
   <title>codinghuang的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="比PHP多一些">
 <meta property="og:type" content="website">
 <meta property="og:title" content="codinghuang的个人博客">
@@ -15,1095 +27,742 @@
 <meta property="og:locale">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/page/17/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
   
   
 <link rel="stylesheet" href="/css/style.css">
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+  
+  
   
 <meta name="generator" content="Hexo 5.1.1"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">codinghuang的个人博客</a>
-      </h1>
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
-        </h2>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
       </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
     </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
   </div>
 </header>
 
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-《就是要你懂swoole》-动手写一个服务器扩展（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2018-11-19T07:45:51.000Z" itemprop="datePublished">2018-11-19</time>
-</a>
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/">《就是要你懂swoole》-动手写一个服务器扩展（一）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>小伙伴们大家好，这篇博客教大家如何开发一个服务器扩展雏形。</p>
-<p>我们的环境如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">操作系统：alpine（小伙伴们如果不是这个Linux发行版的话也没事）</span><br><span class="line">PHP版本：7.2.10</span><br></pre></td></tr></table></figure>
-
-<h2 id="初始化目录结构"><a href="#初始化目录结构" class="headerlink" title="初始化目录结构"></a>初始化目录结构</h2><p>PHP官方给我们提供了构建PHP扩展的一个工具<code>ext_skel</code>，我们可以在PHP的源码（你可以在PHP的官网得到PHP源码）里面找到。</p>
-<p>我们找到这个工具之后，执行命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ext_skel --extname=tinyswoole</span><br><span class="line">cd tinyswoole</span><br></pre></td></tr></table></figure>
-
-<p>然后我们执行一下tree命令查看一下生成的目录结构：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">tree</span><br><span class="line">.</span><br><span class="line">├── CREDITS</span><br><span class="line">├── EXPERIMENTAL</span><br><span class="line">├── config.m4</span><br><span class="line">├── config.w32</span><br><span class="line">├── tinyswoole.c</span><br><span class="line">├── tinyswoole.php</span><br><span class="line">├── php_tinyswoole.h</span><br><span class="line">└── tests</span><br><span class="line">    └── 001.phpt</span><br><span class="line"></span><br><span class="line">1 directory, 8 files</span><br></pre></td></tr></table></figure>
-
-<p>（OK，文件很多，但是我们只需要关注一部分即可）</p>
-<p>我们首先在<code>tinyswoole</code>目录下面创建一个<code>src</code>目录用来存放我们开发的扩展源码。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir src</span><br><span class="line">touch src/server.c</span><br></pre></td></tr></table></figure>
-
-<p>编辑一下<code>config.m4</code>文件，把这个文件的内容替换为如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE(tinyswoole, whether to enable tinyswoole support,</span><br><span class="line">dnl Make sure that the comment is aligned:</span><br><span class="line">[  --enable-tinyswoole           Enable tinyswoole support])</span><br><span class="line"></span><br><span class="line">if test &quot;$PHP_TINYSWOOLE&quot; !&#x3D; &quot;no&quot;; then</span><br><span class="line">  PHP_SUBST(TINYSWOOLE_SHARED_LIBADD)</span><br><span class="line">  source_file&#x3D;&quot;tinyswoole.c tinyswoole_client.c src&#x2F;client.c src&#x2F;server.c&quot;</span><br><span class="line">  PHP_NEW_EXTENSION(tinyswoole, $source_file, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE&#x3D;1)</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
-
-<p>我这里说一点，<code>source_file</code>这个变量里面的文件直接使用空格隔开的，不要用逗号哈。</p>
-<p>OK，到了这一步，我们的准备工作已经做完了。我们可以开始开发服务器扩展了。</p>
-<h2 id="开发扩展"><a href="#开发扩展" class="headerlink" title="开发扩展"></a>开发扩展</h2><p>我们编写我们的<code>src/server.c</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim src/server.c</span><br></pre></td></tr></table></figure>
-
-<p>然后，把这个文件的内容替换为如下内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LISTENQ 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_BUF_SIZE 1024</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">server</span><span class="params">(<span class="keyword">char</span> *ip, <span class="keyword">int</span> port)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> listenfd;</span><br><span class="line">    <span class="keyword">int</span> connfd;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">socklen_t</span> len;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">servaddr</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">cliaddr</span>;</span></span><br><span class="line">    <span class="keyword">char</span> buffer[MAX_BUF_SIZE];</span><br><span class="line"></span><br><span class="line">    listenfd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    bzero(&amp;servaddr, <span class="keyword">sizeof</span>(servaddr));</span><br><span class="line">    servaddr.sin_family = AF_INET;</span><br><span class="line">    inet_aton(ip, &amp;(servaddr.sin_addr));</span><br><span class="line">    servaddr.sin_port = htons(port);</span><br><span class="line">    bind(listenfd, (struct sockaddr *)&amp;servaddr, <span class="keyword">sizeof</span>(servaddr));</span><br><span class="line">    listen(listenfd, LISTENQ);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        len = <span class="keyword">sizeof</span>(cliaddr);</span><br><span class="line">        connfd = accept(listenfd, (struct sockaddr *)&amp;cliaddr, &amp;len);</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            n = read(connfd, buffer, MAX_BUF_SIZE);</span><br><span class="line">            <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                close(connfd);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            write(connfd, buffer, n);  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    close(listenfd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>通过之前我对swoole服务器的讲解，小伙伴们应该是可以读懂这个代码的。这里我解释一下。</p>
-<p>1、创建一个监听socket</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listenfd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>2、指定服务器绑定的端口</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bind(listenfd, (struct sockaddr *)&amp;servaddr, <span class="keyword">sizeof</span>(servaddr));</span><br></pre></td></tr></table></figure>
-
-<p>3、监听客户端的连接</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listen(listenfd, LISTENQ);</span><br></pre></td></tr></table></figure>
-
-<p>4、获取一个连接</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connfd = accept(listenfd, (struct sockaddr *)&amp;cliaddr, &amp;len);</span><br></pre></td></tr></table></figure>
-
-<p>5、读取客户端发来的数据</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n = read(connfd, buffer, MAX_BUF_SIZE);</span><br></pre></td></tr></table></figure>
-
-<p>6、返回客户端数据</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">write(connfd, buffer, n);</span><br></pre></td></tr></table></figure>
-
-<p>所以，这个服务器做的事情很简单，客户端发给服务器什么数据，服务器就原样返回给客户端。</p>
-<h2 id="注册这个server函数"><a href="#注册这个server函数" class="headerlink" title="注册这个server函数"></a>注册这个server函数</h2><p>然后，我们编辑<code>tinyswoole.c</code>文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim tinyswoole.c</span><br></pre></td></tr></table></figure>
-
-<p>把里面的内容替换为如下内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> HAVE_CONFIG_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;config.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;php.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;php_ini.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ext/standard/info.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;php_tinyswoole.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">zend_class_entry *tinyswoole_ce;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ZEND_BEGIN_ARG_INFO_EX(arginfo_tinyswoole__construct, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">	ZEND_ARG_INFO(<span class="number">0</span>, ip)</span><br><span class="line">    ZEND_ARG_INFO(<span class="number">0</span>, port)</span><br><span class="line">ZEND_END_ARG_INFO()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> zval* <span class="title">tsw_zend_read_property</span><span class="params">(zend_class_entry *class_ptr, zval *obj, <span class="keyword">const</span> <span class="keyword">char</span> *s, <span class="keyword">int</span> len, <span class="keyword">int</span> silent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zval rv;</span><br><span class="line">    <span class="keyword">return</span> zend_read_property(class_ptr, obj, s, len, silent, &amp;rv);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_METHOD(tinyswoole_server, __construct)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> *ip;</span><br><span class="line">	<span class="keyword">size_t</span> ip_len;</span><br><span class="line">	<span class="keyword">long</span> port;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, <span class="string">&quot;sl&quot;</span>, &amp;ip, &amp;ip_len, &amp;port) == FAILURE) &#123;</span><br><span class="line">		RETURN_NULL();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	zend_update_property_string(tinyswoole_ce, getThis(), <span class="string">&quot;ip&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;ip&quot;</span>) - <span class="number">1</span>, ip);</span><br><span class="line">	zend_update_property_long(tinyswoole_ce, getThis(), <span class="string">&quot;port&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;port&quot;</span>) - <span class="number">1</span>, port);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_METHOD(tinyswoole, start)</span><br><span class="line">&#123;</span><br><span class="line">	zval *ip;</span><br><span class="line">	zval *port;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;running server...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	ip = tsw_zend_read_property(tinyswoole_ce, getThis(), <span class="string">&quot;ip&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;ip&quot;</span>) - <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">	port = tsw_zend_read_property(tinyswoole_ce, getThis(), <span class="string">&quot;port&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;port&quot;</span>) - <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	server(Z_STRVAL(*ip), Z_LVAL(*port));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">zend_function_entry tinyswoole_method[]=</span><br><span class="line">&#123;</span><br><span class="line">	ZEND_ME(tinyswoole_server, __construct, arginfo_tinyswoole__construct, ZEND_ACC_PUBLIC)</span><br><span class="line">	ZEND_ME(tinyswoole_server, start, <span class="literal">NULL</span>, ZEND_ACC_PUBLIC)</span><br><span class="line">	&#123;<span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">PHP_MINIT_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	zend_class_entry ce;</span><br><span class="line">	INIT_CLASS_ENTRY(ce, <span class="string">&quot;tinyswoole_server&quot;</span>, tinyswoole_method);</span><br><span class="line">	tinyswoole_ce = zend_register_internal_class(&amp;ce TSRMLS_CC);</span><br><span class="line"></span><br><span class="line">	zend_declare_property_null(tinyswoole_ce, <span class="string">&quot;ip&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;ip&quot;</span>) - <span class="number">1</span>, ZEND_ACC_PRIVATE);</span><br><span class="line">	zend_declare_property_null(tinyswoole_ce, <span class="string">&quot;port&quot;</span>, <span class="keyword">sizeof</span>(<span class="string">&quot;port&quot;</span>) - <span class="number">1</span>, ZEND_ACC_PRIVATE);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_MSHUTDOWN_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_RINIT_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(COMPILE_DL_TINYSWOOLE) &amp;&amp; defined(ZTS)</span></span><br><span class="line">	ZEND_TSRMLS_CACHE_UPDATE();</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_RSHUTDOWN_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PHP_MINFO_FUNCTION(tinyswoole)</span><br><span class="line">&#123;</span><br><span class="line">	php_info_print_table_start();</span><br><span class="line">	php_info_print_table_header(<span class="number">2</span>, <span class="string">&quot;tinyswoole support&quot;</span>, <span class="string">&quot;enabled&quot;</span>);</span><br><span class="line">	php_info_print_table_end();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> zend_function_entry tinyswoole_functions[] = &#123;</span><br><span class="line">	PHP_FE_END</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">zend_module_entry tinyswoole_module_entry = &#123;</span><br><span class="line">	STANDARD_MODULE_HEADER,</span><br><span class="line">	<span class="string">&quot;tinyswoole&quot;</span>,</span><br><span class="line">	tinyswoole_functions,</span><br><span class="line">	PHP_MINIT(tinyswoole),</span><br><span class="line">	PHP_MSHUTDOWN(tinyswoole),</span><br><span class="line">	PHP_RINIT(tinyswoole),</span><br><span class="line">	PHP_RSHUTDOWN(tinyswoole),</span><br><span class="line">	PHP_MINFO(tinyswoole),</span><br><span class="line">	PHP_TINYSWOOLE_VERSION,</span><br><span class="line">	STANDARD_MODULE_PROPERTIES</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> COMPILE_DL_TINYSWOOLE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> ZTS</span></span><br><span class="line">ZEND_TSRMLS_CACHE_DEFINE()</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">ZEND_GET_MODULE(tinyswoole)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="测试扩展"><a href="#测试扩展" class="headerlink" title="测试扩展"></a>测试扩展</h2><p>然后，我们编译这个扩展：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们在php.ini配置文件里面加上这个扩展：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extension&#x3D;tinyswoole</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们编写一个脚本来测试一下这个扩展：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> tinyswoole_server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>);</span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
-
-<p>执行这个脚本，你将会得到如下输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">php server.php </span><br><span class="line">running server...</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们用一个客户端去连接我们写好的服务器。可以使用nc命令去连接它：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 9501</span><br></pre></td></tr></table></figure>
-
-<p>然后，输入字符串<code>hello world</code>，你将会收到服务器发回给你的<code>hello world</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 9501</span><br><span class="line">hello world</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
-
-<p>OK，到了这里，我们的服务器扩展算是开发完成了，尽管他的功能很弱。但是，随着我们的学习，这个扩展会一步一步的变得更加的强大。</p>
-
-      
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zt7006ff6vx6p91ajpd" data-title="《就是要你懂swoole》-动手写一个服务器扩展（一）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
+</div>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-《就是要你懂swoole》-Server（二）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/11/06/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2018-11-06T06:14:19.000Z" itemprop="datePublished">2018-11-06</time>
-</a>
     
-  </div>
-  <div class="article-inner">
+      
+
     
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/11/06/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%BA%8C%EF%BC%89/">《就是要你懂swoole》-Server（二）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>小伙伴们，大家好，这篇博客给大家带来的是有关swoole server的<code>set</code>方法的相关知识。对应的官方文档<a target="_blank" rel="noopener" href="https://wiki.swoole.com/wiki/page/13.html">在这里</a>。</p>
-<p>这个方法是用来设置服务器启动时候的参数的。官网中给出了一个例子：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$serv-&gt;set(<span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;reactor_num&#x27;</span> =&gt; <span class="number">2</span>, <span class="comment">//reactor thread num</span></span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">4</span>,    <span class="comment">//worker process num</span></span><br><span class="line">    <span class="string">&#x27;backlog&#x27;</span> =&gt; <span class="number">128</span>,   <span class="comment">//listen backlog</span></span><br><span class="line">    <span class="string">&#x27;max_request&#x27;</span> =&gt; <span class="number">50</span>,</span><br><span class="line">    <span class="string">&#x27;dispatch_mode&#x27;</span> =&gt; <span class="number">1</span>,</span><br><span class="line">));</span><br></pre></td></tr></table></figure>
-
-<p>我们一个一个的来看看这几个参数是什么意思。</p>
-<p>第一个参数说是设置Reactor线程的数目。说到Reactor线程，我们得先理清一下swoole进程、线程的架构了。</p>
-<p><img src="https://wiki.swoole.com/static/image/process.jpg" alt="来自官网的图片"></p>
-<p><img src="https://wiki.swoole.com/static/uploads/wiki/201808/03/635680420659.png"></p>
-<p>（图片来自官网）</p>
-<p>总结一下：</p>
-<ul>
-<li>Master线程对连接进行accept。</li>
-<li>Reactor线程处理连接，读取客户端发来的请求数据（Receive），将请求封装好后投递给work进程。</li>
-<li>Work进程用来处理业务数据，然后把处理后的结果返回给Reactor线程。</li>
-<li>Reactor线程将结果发送给客户端（Sendto）。</li>
-</ul>
-<p>（至于其他的一些功能，我们这篇文章先不讲，我们聚焦官网给出的那5个参数）</p>
-<p>第二个参数说的是设置Worker进程（进程的概念请看我<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/40762899">第二篇文章</a>）的数目。</p>
-<p>第三个参数说的是设置监督的backlog大小。它指定了等待<code>accept</code>系统调用的已建立连接队列的长度。</p>
-<p>第四个参数说的是每个worker进程处理50次请求之后就会自动重启。</p>
-<p>第五个参数说的是worker进程数据包分配模式，1代表平均分配。</p>
-<p>ok，我们接下来通过实践来直观的感受一下。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$config = [</span><br><span class="line">    <span class="string">&#x27;reactor_num&#x27;</span> =&gt;<span class="number">2</span>, <span class="comment">// Reactor线程个数</span></span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">4</span>, <span class="comment">// Worker进程个数</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> swoole_server(<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">9501</span>, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);</span><br><span class="line"></span><br><span class="line">$serv-&gt;set($config);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;  </span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client: Connect.\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd, $from_id, $data</span>) </span>&#123;</span><br><span class="line">    $serv-&gt;send($fd, <span class="string">&quot;Server: &quot;</span>.$data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client: Close.\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br></pre></td></tr></table></figure>
-
-<p>然后启动服务器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php server2.php</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[2018-11-06 16:35:16 @53435.0]	TRACE	php_swoole_server_before_start(:593): Create swoole_server host=0.0.0.0, port=9501, mode=2, type=1</span><br><span class="line">[2018-11-06 16:35:16 @53435.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=14|FD=4, events=1</span><br><span class="line">[2018-11-06 16:35:16 @53435.0]	TRACE	swReactorKqueue_add(:152): [THREAD #1]EP=15|FD=9, events=5</span><br><span class="line">[2018-11-06 16:35:16 @53435.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=16|FD=7, events=5</span><br><span class="line">[2018-11-06 16:35:16 @53435.0]	TRACE	swReactorKqueue_add(:152): [THREAD #1]EP=15|FD=13, events=5</span><br><span class="line">[2018-11-06 16:35:16 @53435.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=16|FD=11, events=5</span><br><span class="line">[2018-11-06 16:35:17 #53435.2]	TRACE	swTimer_add(:171): id=1, exec_msec=1000, msec=1000, round=0</span><br><span class="line">[2018-11-06 16:35:17 @53437.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=4|FD=5, events=517</span><br><span class="line">[2018-11-06 16:35:17 @53438.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=4|FD=8, events=517</span><br><span class="line">[2018-11-06 16:35:17 @53439.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=4|FD=10, events=517</span><br><span class="line">[2018-11-06 16:35:17 @53440.0]	TRACE	swReactorKqueue_add(:152): [THREAD #0]EP=4|FD=12, events=517</span><br></pre></td></tr></table></figure>
-
-<p>之后，我们通过命令<code>pstree</code>来查看一下进程之间的关系：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree | grep server2</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">| |   \-+= 53435 hantaohuang php server2.php</span><br><span class="line">| |     \-+- 53436 hantaohuang php server2.php</span><br><span class="line">| |       |--- 53437 hantaohuang php server2.php</span><br><span class="line">| |       |--- 53438 hantaohuang php server2.php</span><br><span class="line">| |       |--- 53439 hantaohuang php server2.php</span><br><span class="line">| |       \--- 53440 hantaohuang php server2.php</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，我们启动服务器之后，有6个进程与服务器有关，进程id分别为53435、53436、53437、53438、53439、53440。它们的层次关系就体现出了谁是父进程，谁是子进程。结合上面的架构图，我们可以很轻易的分析出这四个进程分别对应着：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">53435 --&gt; Master进程</span><br><span class="line">53436 --&gt; Manager进程</span><br><span class="line">53437 --&gt; Worker1进程</span><br><span class="line">53438 --&gt; Worker2进程</span><br><span class="line">53439 --&gt; Worker3进程</span><br><span class="line">53440 --&gt; Worker4进程</span><br></pre></td></tr></table></figure>
-
-<p>然后我们查看一下Reactor线程的个数。我们从上面的架构图已经知道了Reactor线程是属于Master进程的。所以，我们可以通过如下命令查看：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps M 53435</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">USER          PID   TT   %CPU STAT PRI     STIME     UTIME COMMAND</span><br><span class="line">hantaohuang 53435 s006    2.1 S    31T   0:02.44   0:00.93 php server2.php</span><br><span class="line">            53435         0.0 S    31T   0:00.00   0:00.00 </span><br><span class="line">            53435         0.0 S    31T   0:00.00   0:00.00 </span><br></pre></td></tr></table></figure>
-
-<p>可以看出，这里有3个线程，一个是Master线程，两个Reactor线程。</p>
-<p>这里，我们又抛出了线程的概念。如果同学们之前理解了进程的概念，然后再来理解线程的概念，就会比较简单了。目前，我们只需要这样简单理解此时的进程和线程模型即可：</p>
-<p>![1(1)](/Users/hantaohuang/Library/Containers/com.tencent.WeWorkMac/Data/Library/Application Support/WXWork/Data/1688850523145108/Cache/Image/2018-11/1(1).PNG)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/11/06/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ckkj72zt6006df6vx47oh6ur6" data-title="《就是要你懂swoole》-Server（二）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-手把手教你使用JWT" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/" class="article-date">
-  <time class="dt-published" datetime="2018-08-29T11:01:17.000Z" itemprop="datePublished">2018-08-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/">手把手教你使用JWT</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>实习期间比较忙，好久没有写博客了，今天做完了项目来写一写。</p>
-<p>这篇博客介绍的东西是JWT（json web token的简称）。用户通过JWT，就可以登录到我们的系统。OK，接下来让菜鸡我来给小伙伴们演示一下，以PHP的Laravel框架为例子，并且通过jwt-auth这个库来进行演示。这个库的官方文档<a target="_blank" rel="noopener" href="https://jwt-auth.readthedocs.io/en/develop/">这这里</a>。</p>
-<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><p>为了能够跑我们的项目，我们需要一个可以跑Laravel项目的环境，这里我就直接使用一个可以跑Laravel项目的Docker镜像，小伙伴们可以自己去找比较流行的镜像。</p>
-<p>我这里Laravel框架的版本是5.6的，大家也尽量使用5.6的版本，和我的保持一致。</p>
-<p>（注：如果小伙伴们自己的电脑已经可以跑Laravel项目了，<strong>准备环境</strong>这一步就可以省略了）</p>
-<h2 id="准备一个空的Laravel项目"><a href="#准备一个空的Laravel项目" class="headerlink" title="准备一个空的Laravel项目"></a>准备一个空的Laravel项目</h2><p>准备一个空的Laravel项目，项目名字叫做<strong>jwt-test</strong>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo composer create-project --prefer-dist laravel/laravel jwt-test</span><br></pre></td></tr></table></figure>
-
-<h2 id="准备jwt-auth库"><a href="#准备jwt-auth库" class="headerlink" title="准备jwt-auth库"></a>准备jwt-auth库</h2><p>安装jwt-auth这个库：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo composer require tymon/jwt-auth</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们打开jwt-test项目下的composer.json文件，找到如下地方：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/1.png"></p>
-<p>然后把</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;tymon/jwt-auth&quot;: &quot;^0.5.12&quot;</span><br></pre></td></tr></table></figure>
-
-<p>换成</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;tymon/jwt-auth&quot;: &quot;^1.0.0-rc.2&quot;</span><br></pre></td></tr></table></figure>
-
-<p>（注意，一定要记得改这里的版本，要不然后面的发布配置会出问题）</p>
-<p>然后在命令行中执行命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo composer update</span><br></pre></td></tr></table></figure>
-
-<p>然后再发布配置：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan vendor:publish --provider=&quot;Tymon\JWTAuth\Providers\LaravelServiceProvider&quot;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/2.png"></p>
-<p>此时，会在<code>jwt-test/config</code>目录下多出一个文件<code>jwt.php</code>（这个文件保存了一些和jwt有关的默认配置信息），并且，我们执行<code>php artisan</code>命令的时候，也会多出一个命令：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/3.png"></p>
-<p>然后生成密钥：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo php artisan jwt:secret</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/5.png"></p>
-<p>此时，在<code>jwt-test/.env</code>文件中会有这个密钥：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/6.png"></p>
-<p>（注：我后面会解释这个密钥是用来干嘛的）</p>
-<p>然后，我们修改一下Laravel框架默认给我们生成的User.php文件的内容：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Tymon</span>\<span class="title">JWTAuth</span>\<span class="title">Contracts</span>\<span class="title">JWTSubject</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Notifications</span>\<span class="title">Notifiable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Foundation</span>\<span class="title">Auth</span>\<span class="title">User</span> <span class="title">as</span> <span class="title">Authenticatable</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">Authenticatable</span> <span class="keyword">implements</span> <span class="title">JWTSubject</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">Notifiable</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The attributes that are mass assignable.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> $fillable = [</span><br><span class="line">        <span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;password&#x27;</span>,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The attributes that should be hidden for arrays.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> $hidden = [</span><br><span class="line">        <span class="string">&#x27;password&#x27;</span>, <span class="string">&#x27;remember_token&#x27;</span>,</span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the identifier that will be stored in the subject claim of the JWT.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJWTIdentifier</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;getKey();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Return a key value array, containing any custom claims to be added to the JWT.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJWTCustomClaims</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> [];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>然后，我们再修改一下<code>jwt-test/config/auth.php</code>文件里面的内容：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;defaults&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;guard&#x27;</span> =&gt; <span class="string">&#x27;web&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;passwords&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
-
-<p>改成</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;defaults&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;guard&#x27;</span> =&gt; <span class="string">&#x27;api&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;passwords&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
-
-<p>然后</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;api&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;driver&#x27;</span> =&gt; <span class="string">&#x27;token&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;provider&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
-
-<p>改成</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;api&#x27;</span> =&gt; [</span><br><span class="line">    <span class="string">&#x27;driver&#x27;</span> =&gt; <span class="string">&#x27;jwt&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;provider&#x27;</span> =&gt; <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
-
-<h2 id="模拟用户数据"><a href="#模拟用户数据" class="headerlink" title="模拟用户数据"></a>模拟用户数据</h2><p>因为Laravel框架为我们准备好了一张users表的迁移表，所以我们就不创建新的users迁移表了。我们直接在框架提供的迁移表上进行修改。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">up</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Schema::create(<span class="string">&#x27;users&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Blueprint $table</span>) </span>&#123;</span><br><span class="line">        $table-&gt;increments(<span class="string">&#x27;id&#x27;</span>);</span><br><span class="line">        $table-&gt;string(<span class="string">&#x27;username&#x27;</span>);</span><br><span class="line">        $table-&gt;string(<span class="string">&#x27;password&#x27;</span>);</span><br><span class="line">        $table-&gt;timestamps();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/7.png"></p>
-<p>然后<code>jwt-test/User.php</code>文件我们也修改一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> $fillable = [</span><br><span class="line">    <span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;password&#x27;</span>,</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/8.png"></p>
-<p>然后<code>database/UserFactory.php</code>文件我们也修改一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$factory-&gt;define(App\User::class, <span class="function"><span class="keyword">function</span> (<span class="params">Faker $faker</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [</span><br><span class="line">        <span class="string">&#x27;username&#x27;</span> =&gt; $faker-&gt;name,</span><br><span class="line">        <span class="string">&#x27;password&#x27;</span> =&gt; bcrypt(<span class="string">&#x27;123456&#x27;</span>), <span class="comment">// 123456</span></span><br><span class="line">    ];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/9.png"></p>
-<p>然后，我们在<code>.env</code>文件中配置一下我们的数据库：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DB_DATABASE&#x3D;jwt</span><br><span class="line">DB_USERNAME&#x3D;USERNAME</span><br><span class="line">DB_PASSWORD&#x3D;PASSWORD</span><br></pre></td></tr></table></figure>
-
-<p>（注意：这里的DB_USERNAME和DB_PASSWORD根据小伙伴们的自身情况填写）</p>
-<p>然后，我们用MySQL客户端连接上MySQL服务器，创建一个数据库，命名为<code>jwt</code>：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database jwt;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/10.png"></p>
-<p>然后，我们在jwt-test项目的根目录下执行命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan migrate</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/11.png"></p>
-<p>然后，我们通过tinker来模拟出用户：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">php artisan tinker</span><br><span class="line">Factory(App\User::class, 3)-&gt;create();</span><br></pre></td></tr></table></figure>
-
-<p>这样，在数据表users就有3个用户了，他们的明文密码都是<code>123456</code>。</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/12.png"></p>
-<h2 id="编写登录接口"><a href="#编写登录接口" class="headerlink" title="编写登录接口"></a>编写登录接口</h2><p>现在用户有了，我们需要开始编写接口了。首先，我们先定义一个登录接口，这个接口在用户登录成功的时候，返回一个token给客户端。</p>
-<p>我们在<code>routes/api.php</code>中做如下定义：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Route::group([<span class="string">&#x27;prefix&#x27;</span>=&gt;<span class="string">&#x27;user&#x27;</span>], <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">    Route::post(<span class="string">&#x27;login&#x27;</span>, <span class="string">&#x27;UserController@login&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们创建对应的<code>UserController</code>控制器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo php artisan make:controller UserController</span><br></pre></td></tr></table></figure>
-
-<p>我们在这个控制器里面编写<code>login</code>方法：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">login</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $credentials = request([<span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;password&#x27;</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (! $token = auth()-&gt;attempt($credentials)) &#123;</span><br><span class="line">        <span class="keyword">return</span> response()-&gt;json([<span class="string">&#x27;error&#x27;</span> =&gt; <span class="string">&#x27;Unauthorized&#x27;</span>], <span class="number">401</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">        <span class="string">&#x27;token&#x27;</span> =&gt; $token,</span><br><span class="line">    ]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>编写完之后，我们通过postman来测试这个接口：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/29.png"></p>
-<p>（注意：图中的https是因为我制作的这个docker容器里面使用了证书，所以用了https协议，如果大家是http协议的话，那么把https改成http协议即可）</p>
-<p>然后，我们在postman中填写用户名和密码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/14.png"></p>
-<p>（这个是刚才我们模拟出来的第一个用户）</p>
-<p>然后，我们点击右边蓝色的按钮<code>Send</code>：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/15.png"></p>
-<p>这个字符串就是jwt。</p>
-<p>好了，接下来，我们编写新的接口。我们在<code>routes/api.php</code>文件中定义一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Route::group([<span class="string">&#x27;prefix&#x27;</span>=&gt;<span class="string">&#x27;user&#x27;</span>], <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">    Route::post(<span class="string">&#x27;login&#x27;</span>, <span class="string">&#x27;UserController@login&#x27;</span>);</span><br><span class="line">    Route::post(<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;UserController@hello&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>然后，我们编写这个接口对应的hello方法：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">        <span class="string">&#x27;info&#x27;</span> =&gt; <span class="string">&#x27;hello&#x27;</span>,</span><br><span class="line">    ]); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们增加了一个接口：<code>/api/user/hello</code>，但是，我们又不希望没有登录的用户访问这个接口。那么，我们该怎么做呢？</p>
-<p>我们可以编写一个中间件，专门用来检测用户是否登录了，这个中间件就叫做jwt吧。以下是中间件编写的过程。</p>
-<p>在jwt-test项目的根目录下执行命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan make:middleware Jwt</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/16.png"></p>
-<p>执行完之后，会在<code>app/Http/Middleware</code>目录下创建一个<code>Jwt.php</code>文件。</p>
-<p>然后，我们在<code>Jwt.php</code>文件里面写入如下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>\<span class="title">Http</span>\<span class="title">Middleware</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Jwt</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Handle an incoming request.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>  \Illuminate\Http\Request  $request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>  \Closure  $next</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">$request, <span class="built_in">Closure</span> $next</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (auth()-&gt;user() == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">                <span class="string">&#x27;code&#x27;</span> =&gt; <span class="number">1001</span>,</span><br><span class="line">                <span class="string">&#x27;info&#x27;</span> =&gt; <span class="string">&#x27;Not logged in&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;body&#x27;</span> =&gt; []</span><br><span class="line">            ]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> $next($request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>编写完中间件之后，我们需要注册这个中间件。</p>
-<p>在<code>app/Http/Kernel.php</code>文件中的<code>$routeMiddleware</code>变量加入上面所写的中间件：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;jwt&#x27;</span> =&gt; \App\Http\Middleware\Jwt::class,</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/17.png"></p>
-<p>注册完jwt中间件之后，我们就可以使用这个jwt中间件了，我们在UserController控制器中使用。</p>
-<p>在UserController中的构造函数里面这样写：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;middleware(<span class="string">&#x27;jwt&#x27;</span>, [<span class="string">&#x27;except&#x27;</span> =&gt; [<span class="string">&#x27;login&#x27;</span>]]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>它代表的意思就是除了login方法外，其他的方法都需要经过中间件。OK，我们现在来测试以下我们的那个hello接口。</p>
-<p>首先，我们得进行登录，因此，需要先访问login接口得到一个token字符串：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/18.png"></p>
-<p>我们拿着这个token字符串去访问hello接口：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/19.png"></p>
-<p>那么，如果我们的这个token是错误的，会有什么现象呢？我们来试试：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/20.png"></p>
-<p>我们把正确的那个token的最后一个字符Q删除了时候，得到了用户未登录的信息。为什么？因为你的token是错误的，所以说明用户没有登录过。</p>
-<p>博客写到这里，大家应该就知道如何使用jwt了吧。</p>
-<p>小伙伴们可能会想，这个token到底是个啥呢？别急，我们对这个token串进行base64解码。我们随便找一个可以进行base64解码的网站：</p>
-<p>我们把jwt中第一个<code>.</code>前面的字符串都删掉（包括这个<code>.</code>），然后再把第二个<code>.</code>后面的字符串都删掉（包括这个<code>.</code>）：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/21.png"></p>
-<p>然后再点击解密：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/22.png"></p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;iss&quot;</span>: <span class="string">&quot;https://localhost/api/user/login&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;iat&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;exp&quot;</span>: <span class="number">1535561234</span>,</span><br><span class="line">  <span class="attr">&quot;nbf&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;jti&quot;</span>: <span class="string">&quot;kjNhwJ7KESuX2AGR&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;sub&quot;</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="attr">&quot;prv&quot;</span>: <span class="string">&quot;87e0af1ef9fd15812fdec97153a14e0b047546aa&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中，sub对应的1就指的是用户的id。这个token默认保存的用户信息就是用户的id值。</p>
-<p>那么为什么我要删除掉两个<code>.</code>号前面和后面的字符串呢？因为我想重点说一下这两个东西。我们单独解码一下第一个<code>.</code>号的内容：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/23.png"></p>
-<p>我们点击解密：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/24.png"></p>
-<p>typ代表这是一个jwt字符串、alg代表使用了哈希算法hash256。那么，这个哈希算法用在了什么地方呢？</p>
-<p>我们第二个<code>.</code>后面的字符串就用到了。</p>
-<p>我们对第二个点后面的内容进行解码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/25.png"></p>
-<p>我们点击解密：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/26.png"></p>
-<p>这个就是一个签名。</p>
-<p>那么这个签名是怎么来的呢？就是通过<code>hash256</code>算法得来的。</p>
-<p>OK，那么又有小伙伴们会问了。那我是不是就可以伪造出其他用户的token啦！！因为我可以先用自己的账号进行一个登录，登录完之后，我对第一部分字符串进行解码，知道了用的是什么hash算法。然后，我再解码第二部分的字符串，得到了：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;iss&quot;</span>: <span class="string">&quot;https://localhost/api/user/login&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;iat&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;exp&quot;</span>: <span class="number">1535561234</span>,</span><br><span class="line">  <span class="attr">&quot;nbf&quot;</span>: <span class="number">1535557634</span>,</span><br><span class="line">  <span class="attr">&quot;jti&quot;</span>: <span class="string">&quot;kjNhwJ7KESuX2AGR&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;sub&quot;</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="attr">&quot;prv&quot;</span>: <span class="string">&quot;87e0af1ef9fd15812fdec97153a14e0b047546aa&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我就去修改sub的值，改成其他用户的，去构造一个新的字符串，这样总会构造出一个正确的jwt吧。</p>
-<p>如果没有第三部分的字符串（即签名部分），理论上来说是可以的。但是，有了签名，就很难构造了。因为，这个签名的得来用到了我们之前生成的那个密钥。因为密钥是服务器才知道的，所以，构造者除非是得到了这个密钥，要不然想要构造出jwt，是比较难的。</p>
-<p>OK，那么这个jwt是存放在哪里的呢？如果小伙伴们阅读jwt-auth的源码就会发现，其实它是存放在Laravel框架的<code>jwt-test/storage/</code>里面。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/" data-id="ckkj72zud00a8f6vxbv3vgmv7" data-title="手把手教你使用JWT" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-《就是要你懂swoole》-Server（一）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2018-08-04T10:59:42.000Z" itemprop="datePublished">2018-08-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/">《就是要你懂swoole》-Server（一）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>小伙伴们，大家好，这篇博客给大家带来的是有关swoole server的<code>__construct</code>的相关知识。对应的官方文档<a target="_blank" rel="noopener" href="https://wiki.swoole.com/wiki/page/14.html">在这里</a>。</p>
-<p>构造函数的原型如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">swoole_server(<span class="keyword">string</span> $host, <span class="keyword">int</span> $port = <span class="number">0</span>, <span class="keyword">int</span> $mode = SWOOLE_PROCESS,</span><br><span class="line">    <span class="keyword">int</span> $sock_type = SWOOLE_SOCK_TCP);</span><br></pre></td></tr></table></figure>
-
-<p>我们一个一个的过一下构造函数里面的参数。</p>
-<h2 id="host"><a href="#host" class="headerlink" title="host"></a>host</h2><p><code>$host</code>，翻译过来就是主机的意思。什么是主机呢？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">主机是指计算机除去输入输出设备以外的主要机体部分。也是用于放置主板及其他主要部件的控制箱体（容器Mainframe）。通常包括 CPU、内存、硬盘、光驱、电源、以及其他输入输出控制器和接口。</span><br></pre></td></tr></table></figure>
-
-<p>这是百度百科的解释。但是，在这个系列的文章里面，为了描述简单，我们直接把我们的计算机叫做主机。（我个人觉得计算机这个名词是包含了输入输出设备的，例如鼠标、键盘、显示器等等）</p>
-<h2 id="port"><a href="#port" class="headerlink" title="port"></a>port</h2><p><code>$port</code>，翻译过来就是端口的意思。什么是端口呢？</p>
-<p>在这里，我们所说的端口不是指硬件领域的端口。也就是说不是指USB端口、串行端口等（即不是指IO接口里面的数据寄存器等等东西）。<strong>而指的是软件领域的端口</strong>。也就是说指的是网络中面向连接服务和无连接服务（后面会说什么是面向连接服务和无连接服务）的<strong>通信协议端口</strong>，<strong>是一种抽象的软件结构</strong>，包括一些数据结构和I/O（基本输入输出）缓冲区。</p>
-<p>如果还是有一些抽象，不要紧，我们去看看Linux中端口这个数据结构的定义是怎样的。数据结构的定义<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/include/net/inet_hashtables.h">在这里</a>，大概是在80行的位置：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/1.png"></p>
-<p>这个数据结构里面，就有我们现在正在说的port：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inet_bind_bucket</span> &#123;</span></span><br><span class="line">    <span class="comment">/* other member */</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">short</span>		port; <span class="comment">/* 端口号 */</span></span><br><span class="line">    <span class="keyword">signed</span> <span class="keyword">char</span>		fastreuse; <span class="comment">/* 端口是否允许被重用 */</span></span><br><span class="line">    <span class="comment">/* other member */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>所以说，当我们给<code>swoole_server</code>这个构造函数传递一个端口号的时候，实际上就会在这个数据结构中的port成员变量中记录下这个端口号。</p>
-<p>OK，说到这里，小伙伴们应该就更加理解什么是端口了吧。它也和进程一样，是<strong>一种数据结构</strong>。</p>
-<h2 id="mode"><a href="#mode" class="headerlink" title="mode"></a>mode</h2><p><code>$mode</code>，翻译过来就是模式的意思。在这里指的是服务器运行的模式：</p>
-<ul>
-<li><code>SWOOLE_PROCESS</code>多进程模式（默认）</li>
-<li><code>SWOOLE_BASE</code>基本模式</li>
-</ul>
-<p>模式这一块我们现在先放一下，到时候我会专门开一篇文章来讲。</p>
-<h2 id="sock-type"><a href="#sock-type" class="headerlink" title="sock_type"></a>sock_type</h2><p><code>$sock_type</code>，翻译过来就是套接字类型的意思。</p>
-<p>swoole支持<code>TCP</code>、<code>UDP</code>、<code>TCP6</code>、<code>UDP6</code>、<code>UnixSocket Stream/Dgram</code> 6种。在这里，我们重点看一下TCP和UDP。</p>
-<p>首先，我们得知道套接字（socket）是什么？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">它是网络通信过程中端点的抽象表示，包含进行网络通信必需的五种信息：连接使用的协议，本地主机的IP地址，本地进程的协议端口，远地主机的IP地址，远地进程的协议端口。</span><br></pre></td></tr></table></figure>
-
-<p>这是百度百科的解释。直接看的话，如果之前没有网络编程的基础，理解起来还是有一定的难度的，所以我们来做一个简单的解释。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">网络通信过程中端点的抽象</span><br></pre></td></tr></table></figure>
-
-<p>首先，我们要理解网络通信的<strong>本质</strong>。实际上网络通信的本质是进程之间进行通信（要说更加本质的，可以扯到通信链路等等东西，但是在这里我们只讨论软件）。为什么这么说？因为你会发现，客户端和服务器本质上是两个跑起来的程序（即进程），然后客户端和服务器之间进行数据的交流，即所谓的通信。所以，本质上是两个进程之间的通信。</p>
-<p>其次，我们要理解这里所说的<code>端点</code>是什么意思。小伙伴们可能会说，这个问题简单嘛，不就是之前所说的主机嘛，不就是通信双方的主机嘛。其实，这么说是不准确的。我们上面说了，网络通信的本质是进程之间的通信，因此，这里所说的<code>端点</code>实际上指的是通信双方的主机上面的<strong>进程</strong>。</p>
-<p>然后，我们再来看一看这句话里面所说的<code>抽象</code>指的是什么呢？就是后面那句话：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">网络通信必需的五种信息</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，套接字把这五种信息给结合起来了，只要你把套接字所需要的这五种信息描述清楚了，那么，你就可以通过这个套接字，去和其他进程进行通信。</p>
-<p>OK，我们讲完了套接字之后，现在可以讲一讲描述套接字所需要的信息之一 – 连接使用的协议（这里所说的是传输层的协议，而不是应用层的协议）。而协议，就是这里所说的<code>sock_type</code>了。那么，TCP是什么、UDP又是什么呢？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TCP（Transmission Control Protocol 传输控制协议）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。</span><br></pre></td></tr></table></figure>
-
-<p>这是百度百科的解释。所以，简单的来说，TCP实际上是一种协议，由专门的网络专家经过研究而得出的一种<strong>规范</strong>（例如源端口所占的位数、目的端口所占的位数等等规范）。然后，操作系统的研发人员就按照专家们制定的规范，开发出了和TCP协议有关的数据结构，以及对这些数据结构的相关操作（通过这些操作，实现了TCP协议面向连接、可靠、基于字节流的特点）。所以说，TCP直接的连接，更多的指的是软件层面上的连接，即通过一些变量来表示是否建立连接，以及和谁进行了连接。至于什么是<code>面向连接的、可靠的、基于字节流</code>，我这里就不说了，因为这个可以单独写成一篇文章了，为了控制这篇博客的长度，小伙伴们可以直接在网上搜一下TCP的特点就好了。</p>
-<p>UDP也是类似的道理，这里就不多说了。</p>
-<p>最后，如果小伙伴们想要更加清晰的理解套接字，建议用C语言写一写网络编程的小demo。因为概念这东西，你不动手去写，要理解起来还是有一定难度的，不是说脑瓜子笨，而是说，如果你写过，那么你的眼睛就看过，你理解的就更深刻。</p>
-<p>（未完，明天接着写）</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckkj72zt6006bf6vx5rsh5lrw" data-title="《就是要你懂swoole》-Server（一）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-《就是要你懂swoole》-编程须知" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/07/28/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/" class="article-date">
-  <time class="dt-published" datetime="2018-07-28T03:41:13.000Z" itemprop="datePublished">2018-07-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/07/28/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/">《就是要你懂swoole》-- 编程须知</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>小伙伴们，这篇博客对应的官方文档<a target="_blank" rel="noopener" href="https://wiki.swoole.com/wiki/page/p-instruction.html">在此处</a>。建议大家对照着官方文档来阅读我的博客，这样效果会更好。OK，开始我们的学习。</p>
-<h2 id="进程隔离"><a href="#进程隔离" class="headerlink" title="进程隔离"></a>进程隔离</h2><p>官网上有那么一句话：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程隔离也是很多新手经常遇到的问题。修改了全局变量的值，为什么不生效，原因就是全局变量在不同的进程，内存空间是隔离的，所以无效。</span><br></pre></td></tr></table></figure>
-
-<p>如果小伙伴们之前对进程没有概念，要理解起来还是有一定难度的。所以在这里，我有必要说一下进程是什么东西。</p>
-<p>简单来说，进程是一个<strong>数据结构</strong>，数据结构里面存放了很多成员变量，这个是最本质的。很多书说：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程是资源的集合</span><br></pre></td></tr></table></figure>
-
-<p>那么这句话所说的资源指的就是这些变量存放的东西，集合指的就是进程这个数据结构。</p>
-<p>如果还是有一些抽象，不要紧，我们去看看Linux中进程这个数据结构的定义是怎样的。数据结构的定义<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/include/linux/sched.h">在这里</a>，大概是在593行的位置：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/1.png"></p>
-<p>我列举几个这个数据结构里面我们听的比较多的成员变量：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">pid_t</span>					pid;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>		<span class="title">children</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span>		*<span class="title">files</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>pid</code>变量里面保存着这个进程的标识，也就是说给进程标一个号，区分一下各个进程。通过<code>children</code>变量，操作系统可以找到这个进程的所有子进程。变量<code>files</code>里面有一个变量<code>fdtab</code>，通过<code>fdtab</code>里面的<code>fd</code>指针，可以找到当前进程打开的所有文件，如下图所示：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/2.png"></p>
-<p>操作系统会为每一个进程分配一个<code>task_struct</code>数据结构，一旦CPU执行某个进程的代码的时候，操作系统把当前进程的这些变量提供给CPU。因为每个进程都有自己的这个<code>task_struct</code>数据结构，所以每个进程的变量是在各自的进程里面的，因此不同进程的变量是隔离的，<strong>这些变量也包括全局变量、文件句柄（即上图中的fd）</strong>。</p>
-<p>紧接着，官网又给出那么一句话：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不同进程的文件句柄是隔离的，所以在A进程创建的Socket连接或打开的文件，在B进程内是无效，即使是将它的fd发送到B进程也是不可用的</span><br></pre></td></tr></table></figure>
-
-<p>这句话什么意思呢？为了搞清楚，我们要知道文件句柄的作用。</p>
-<p>当用户调用open系统调用（或者其他打开文件的系统调用）的时候，内核会创建一个打开文件对象来表示该文件的一个打开实例。内核同时也会分配一个文件描述符（也就是上图中的fd）作为打开文件对象的句柄。如下图所示：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/3.png"></p>
-<p>open系统调用向进程返回这个文件描述符，然后这个文件描述符就被存放在<code>file array</code>里面了。然后进程就可以通过这个<code>fd1</code>来找到对应的文件。那么，图中的offset是什么意思呢（我们把offset叫做<strong>打开文件对象</strong>）？在Unix系统中，文件默认是顺序访问的。当用户打开文件的时候，内核初始化这个offset的偏移指针为0。举个例子，如果当前进程刚打开一个文件（文件内容是字符串<code>abcdefghijklnm</code>），那么此时offset的状态如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/5.png"></p>
-<p>因为offset的偏移指针为0，所以指向字母a。所以，当我们通过fd去读取文件内容的时候，读取到的第一个字符就是字母<code>a</code>。假设我连续读了3个字节，那么此时的状态应该是这个样子的：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/6.png"></p>
-<p>也就是说，当进程从文件里面读取3个字节之后，offset此时指向字母d。当进程下一次读取文件的时候，读取出来的第一个字母就是d了。这就是offset的概念。</p>
-<p>同一个进程还可以多次打开同一个文件，如下图所示：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/7.png"></p>
-<p>可以看出，虽然fd1和fd2都是指向同一个文件，但是，如果进程通过fd1去读取文件的话，读到的第一个字母是d；如果进程通过fd2去读取文件的话，读取到的第一个字母是a。所以，每个文件描述符代表着与文件的一个独立会话，对应的打开文件对象（即图中的offset）保存者该会话的内容，这包括了被打开文件的模式（只读、只写、读写）以及下一次读取或者写入时的偏移指针。</p>
-<p>我们通过代码来直观感受一下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$handle1 = fopen(<span class="string">&quot;file.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">$handle2 = fopen(<span class="string">&quot;file.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line"></span><br><span class="line">$content = fread ($handle1 , <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;The process reads three bytes through handle1, the content is: &quot;</span> . $content . PHP_EOL;</span><br><span class="line"></span><br><span class="line">$content1 = fread ($handle1 , <span class="number">1</span>);</span><br><span class="line">$content2 = fread ($handle2 , <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;The process reads one bytes through handle1, the content is: &quot;</span> . $content1 . PHP_EOL;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;The process reads one bytes through handle2, the content is: &quot;</span> . $content2 . PHP_EOL;</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/8.png"></p>
-<p>验证了我们的说法。</p>
-<p>正是因为offset这个打开文件对象对同一个文件的不同会话进行了隔离，所以，才有了官网的这句话：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不同进程的文件句柄是隔离的，所以在A进程创建的Socket连接或打开的文件，在B进程内是无效，即使是将它的fd发送到B进程也是不可用的</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，<strong>就算fd是一样的，但是offset是不一样的</strong>。</p>
-<p>其实到这里算是讲完了隔离，但是，我还想再讲一点其他的东西。</p>
-<p>即，同一个进程是否可以让多个fd指向同一个offset，从而达到多个fd共享同一个offset的效果呢？答案是可以做到。</p>
-<p>进程可以通过dup系统调用来复制一个文件描述符fd，这样一来，两个文件描述符共享着相同的会话：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/9.png"></p>
-<p>代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$handle1 = fopen(<span class="string">&quot;file.txt&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">$handle2 = dup($handle1);</span><br><span class="line"></span><br><span class="line">$content = fread ($handle1 , <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;The process reads three bytes through handle1, the content is: &quot;</span> . $content . PHP_EOL;</span><br><span class="line"></span><br><span class="line">$content1 = fread ($handle1 , <span class="number">1</span>);</span><br><span class="line">$content2 = fread ($handle2 , <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;The process reads one bytes through handle1, the content is: &quot;</span> . $content1 . PHP_EOL;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;The process reads one bytes through handle2, the content is: &quot;</span> . $content2 . PHP_EOL;</span><br></pre></td></tr></table></figure>
-
-<p>（注意，这段代码运行不了，因为PHP没有提供dup这个函数）</p>
-<p>假设，这个函数是可以运行，那么输出的结果应该是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The process reads three bytes through handle1, the content is: abc</span><br><span class="line">The process reads one bytes through handle1, the content is: d</span><br><span class="line">The process reads one bytes through handle2, the content is: e</span><br></pre></td></tr></table></figure>
-
-
-
-<hr>
-<p>下面是更新的内容，经过热心网友 <a target="_blank" rel="noopener" href="https://www.zhihu.com/people/0521957489f668a5ea4b848d93eb2494">@许怀远</a>的指正，unix domain socket可以用来在不同的进程之间传递fd，而且传过去后还可以正常使用。至于如何使用unix domain socket，小伙伴们可以在《UNIX网络编程》卷一的第15章找到答案。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/07/28/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/" data-id="ckkj72zt7006gf6vxbwfcfp1r" data-title="《就是要你懂swoole》-- 编程须知" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-《就是要你懂swoole》-起步" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/07/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E8%B5%B7%E6%AD%A5/" class="article-date">
-  <time class="dt-published" datetime="2018-07-27T14:41:12.000Z" itemprop="datePublished">2018-07-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/07/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E8%B5%B7%E6%AD%A5/">《就是要你懂swoole》-- 起步</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我想开一个swoole系列的文章。为什么？第一，我个人认为如果一个PHPer不懂swoole这个东西，就是计算机基础知识不扎实的体现。其次，因为很多PHPer以前没有接触过这方面的知识，所以学习起来会比较吃力，成本很大，所以，我希望能够尽我所能降低大家的学习成本。最后，因为是swoole让我知道了Unix网络编程，我很感激swoole。</p>
-<p>emmm，小伙伴们无需担心自己的基础不够，因为我会讲的很细，细到操作系统底层原理。所以小伙伴们大可放心。而且我给出的代码例子都是经过我测试的，并且我会把运行结果以截图和gif的形式给大家展现，绝对不会只写代码不运行。</p>
-<p>然后呢，我讲解知识的方式是按照官方文档来的，目的是过一遍官方文档，争取不落下任何一个知识点。</p>
-<p>OK，今天这篇博客我教大家如何搭建swoole的环境。我的操作系统是MacOS，如果不是MacOS的也不要紧张，问题不是很大。</p>
-<p>我选择的PHP版本是7.2.8，swoole版本是4.0.3。</p>
-<h2 id="安装PHP"><a href="#安装PHP" class="headerlink" title="安装PHP"></a>安装PHP</h2><p>（如果你之前没有安装swoole，那么尽量和我的环境保持一致）</p>
-<p>从PHP官网下载源码，然后，按照下面的命令执行（执行命令的时候，如果遇到问题，自行百度解决）：</p>
-<p>解压：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xzf php-7.2.8.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p>进入源码目录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd php-7.2.8</span><br></pre></td></tr></table></figure>
-
-<p>编译配置检测：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure --prefix&#x3D;&#x2F;usr&#x2F;local&#x2F;php7.2.8 --with-config-file-path&#x3D;&#x2F;usr&#x2F;local&#x2F;php7.2.8&#x2F;etc --with-mcrypt&#x3D;&#x2F;usr&#x2F;include --enable-mysqlnd --with-mysqli --with-pdo-mysql --enable-fpm --with-zlib --enable-xml --with-openssl --enable-pcntl --enable-sockets --enable-session --with-curl --enable-opcache</span><br></pre></td></tr></table></figure>
-
-<p>编译：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
-
-<p>显示如下结果，说明编译成功：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/1.png" alt="img"></p>
-<p>安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p>成功安装完之后，你是可以在/usr/local目录下看到目录php7.2.8：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/2.png" alt="img"></p>
-<h2 id="把PHP加入到环境变量中"><a href="#把PHP加入到环境变量中" class="headerlink" title="把PHP加入到环境变量中"></a>把PHP加入到环境变量中</h2><p>添加完之后，执行命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -v</span><br></pre></td></tr></table></figure>
-
-<p>如果显示如下结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/3.png" alt="img"></p>
-<p>说明添加成功。</p>
-<h2 id="安装swoole扩展"><a href="#安装swoole扩展" class="headerlink" title="安装swoole扩展"></a>安装swoole扩展</h2><p>下载源码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;github.com&#x2F;swoole&#x2F;swoole-src&#x2F;archive&#x2F;v4.0.3.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p>解压：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xzf v4.0.3.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p>进入源码目录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd swoole-src-4.0.3</span><br></pre></td></tr></table></figure>
-
-<p>执行命令phpize，生成编译检测脚本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">phpize</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/4.png" alt="img"></p>
-<p>编译配置检测：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure --with-php-config&#x3D;&#x2F;usr&#x2F;local&#x2F;php7.2.8&#x2F;bin&#x2F;php-config</span><br></pre></td></tr></table></figure>
-
-<p>编译：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
-
-<p>安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/5.png" alt="img"></p>
-<p>我们可以在目录/usr/local/php7.2.8/lib/php/extensions/no-debug-non-zts-20170718/</p>
-<p>中找到编译好的扩展：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/6.png" alt="img"></p>
-<p>然后，我们需要在php.ini配置文件中添加这个扩展。首先，我们需要找到这个配置文件所在的路径：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -i | grep php.ini</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/7.png" alt="img"></p>
-<p>可以看出，配置文件是要放在目录/usr/local/php7.2.8/etc中，我们去看看：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;php7.2.8&#x2F;etc</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/8.png" alt="img"></p>
-<p>我们发现，并没有php.ini文件。不要担心，这种现象很正常，例如Mongodb你下载下来也是没有配置文件的。这说明需要我们自己手动创建这个配置文件，我们可以去PHP的源码目录下面拷贝一份配置文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;downloads&#x2F;php-7.2.8</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/9.png" alt="img"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp php.ini-development &#x2F;usr&#x2F;local&#x2F;php7.2.8&#x2F;etc</span><br></pre></td></tr></table></figure>
-
-<p>重新命名一下配置文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;php7.2.8&#x2F;etc</span><br><span class="line">mv php.ini-development php.ini</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/10.png" alt="img"></p>
-<p>然后，我们修改配置文件。找一块空白的地方，添加上：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[swoole]</span><br><span class="line">extension&#x3D;swoole.so</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/11.png" alt="img"></p>
-<h2 id="判断swoole是否安装成功"><a href="#判断swoole是否安装成功" class="headerlink" title="判断swoole是否安装成功"></a>判断swoole是否安装成功</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -m | grep swoole</span><br></pre></td></tr></table></figure>
-
-<p>如果看到了swoole，那么，安装成功：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/12.png" alt="img"></p>
-<p>到这里，我们的环境算是搭建起来了。</p>
-<p>如果你还是担心没安装起来，在终端执行命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -r &quot;new swoole_server(&#39;0.0.0.0&#39;, 9501, SWOOLE_BASE, SWOOLE_SOCK_TCP);&quot;</span><br></pre></td></tr></table></figure>
-
-<p>如果没有任何报错，那么说明安装成功：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B--%20%E8%B5%B7%E6%AD%A5/13.png" alt="img"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/07/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E8%B5%B7%E6%AD%A5/" data-id="ckkj72zt8006jf6vxc62p00o7" data-title="《就是要你懂swoole》-- 起步" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swore/" rel="tag">swore</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-手把手教你编写HTTPS客户端" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/07/10/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99HTTPS%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="article-date">
-  <time class="dt-published" datetime="2018-07-09T16:18:04.000Z" itemprop="datePublished">2018-07-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/07/10/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99HTTPS%E5%AE%A2%E6%88%B7%E7%AB%AF/">手把手教你编写HTTPS客户端</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天实习的任务计划是写一个HTTPS客户端，我把今天的心得与大家分享一下（不涉及到我们的业务）。</p>
-<p>通过这篇博客，你可以理解对称加密算法和非对称加密算法的思想，如何制作证书，以及如何动手编写一个HTTPS服务器和客户端。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/07/10/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99HTTPS%E5%AE%A2%E6%88%B7%E7%AB%AF/" data-id="ckkj72zuc00a6f6vx2g5sfdn6" data-title="手把手教你编写HTTPS客户端" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-关于不可抢占的操作系统内核" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/07/07/%E5%85%B3%E4%BA%8E%E4%B8%8D%E5%8F%AF%E6%8A%A2%E5%8D%A0%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8/" class="article-date">
-  <time class="dt-published" datetime="2018-07-07T15:35:31.000Z" itemprop="datePublished">2018-07-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/07/07/%E5%85%B3%E4%BA%8E%E4%B8%8D%E5%8F%AF%E6%8A%A2%E5%8D%A0%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8/">关于不可抢占的操作系统内核</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天，我和小伙伴们分享的是关于不可抢占的操作系统内核，目的就是让大家理解一些容易被误解的问题。</p>
-<p>首先，我们要知道内核不可抢占的作用是什么？记住一点，为了使得<strong>内核在操作</strong>共享的数据/数据结构的时候，是保持同步的，也就是说数据是保持一致性的。这么说大家理解起来可能会有些困难，我举一个例子。</p>
-<p>我们知道，计算机硬件必须提供最少两种不同的执行模式：内核态和用户态。其中，内核态具有较高的特权，用户态具有较低的特权。用户程序在用户态中执行，内核函数（注意，这里我没有说成“内核进程”，至于为什么，我后面会解释）在内核态中执行。OK，知道了这个之后，我们假设有如下情景：我的单CPU单核计算机中有两个进程，分别是进程1和进程2，其中进程1最初是在用户态下执行，在执行的过程中，进程1执行了一个系统调用，进程1的执行模式就从用户态变成了内核态，然后内核函数代替进程1中用户写的函数执行（这也是为什么我前面说成内核函数而不是说成内核进程的原因，因为此时内核函数的执行上下文是进程1，而不是单独为内核函数开一个进程）。那么，此时进程1可能被切换出去然后调度进程2来运行吗？答案是不能。因为我们的进程1是运行在内核态的，而我们这台计算机上面的操作系统内核是不可以被抢占的，所以，进程1不会被切换出去，因此进程2必须要等待进程1回到用户态之后才会被调度执行。既然进程1处于内核态的时候，进程2不会被调度执行，那么内核此时操作的数据结构肯定就是保持一致性的，不会出现不同步的情况了。因此，<strong>内核不可抢占就可以保证进程在内核态操作某个数据data的时候，不会出现其他进程操作这个data的情况</strong>，因此，内核不可抢占其实等价于此时的进程不会被其他进程给抢占。</p>
-<p>OK，那么内核不可抢占是否就能保证内核此时操作的数据是保持同步的呢？答案是不能保证。为什么？因为我们这台计算机可能支持<strong>中断</strong>。怎么说呢？虽然内核不可抢占可以保证进程在内核态操作某个数据data的时候，不会出现其他进程操作这个data的情况，但是如果想操作这个data的不是其他进程，而恰恰就是内核本身呢？举个例子：还是同样的单CPU单核计算机，假设进程1是在内核态执行着的，正在操作数据data。此时，中断到来了，那么，CPU就跑去执行中断处理函数（处于内核态，处于中断上下文，不代表任何进程），不幸运的是中断处理函数也去操作数据data了，并且修改了data的值，那么，当进程1重新执行的时候，就会发现数据data是和中断前不一致的，也就是不同步的。（此时的内核不算被抢占了因为，没有其他的进程抢占了进程1的CPU，只不过换了一段内核代码执行而已）</p>
-<p>OK，如果我把中断关了的话，内核不可抢占是否就能保证内核此时操作的数据是保持同步的呢？答案是不能保证。为什么？如果我们的计算机是单CPU多核的，内核提供的不可抢占特性就不再有效了。在单CPU单核处理器上，内核可以从容地操作大部分数据结构，不要担心抢占问题。但是在多核CPU上，进程1可能跑在第一个核上面，而进程2可能跑在第二个核上面，且两个进程同时在内核态执行，且都操作同一个数据data，那么，就会出现数据不一致的问题了。此时，内核不可被抢占就无法保证<strong>内核在操作</strong>共享的数据/数据结构的时候数据是一致的。（此时，我们可以借助锁或者其他的同步机制来保证数据的一致性）</p>
-<p>好了，讲到这里，大家应该可以理解内核不可被抢占的作用以及它的局限了吧。</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/07/07/%E5%85%B3%E4%BA%8E%E4%B8%8D%E5%8F%AF%E6%8A%A2%E5%8D%A0%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8/" data-id="ckkj72zts008bf6vxau5uhi4m" data-title="关于不可抢占的操作系统内核" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-为什么进程需要阻塞态" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/06/16/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/" class="article-date">
-  <time class="dt-published" datetime="2018-06-16T08:25:36.000Z" itemprop="datePublished">2018-06-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/06/16/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/">为什么进程需要阻塞态</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>好久没有写博客了，因为在外地实习，而我的本地hexo博客是放在旧电脑上面的，最近回学校复习期末才有时间整理博客。所以，今天下午花了一些时间把hexo博客从旧电脑迁移到了新电脑上面。实习期间，我学习到了挺多的东西，最近会慢慢的总结到这个博客上面。</p>
-<p>今天，我和大家分享的是与进程状态有关的知识。我们在大学期间，对于进程的几种状态都背的很熟，最基本的三种状态：运行态、就绪态、阻塞态。</p>
-<p>运行态很容易理解，就是说这个进程是处于执行状态的。处于运行态的进程是占用CPU的，也就是说CPU此时是在执行这个进程地址空间的代码。</p>
-<p>就绪态也比较好理解，就是说这个进程已经准备好了，可以被操作系统的调度器调度，然后投入运行。</p>
-<p>OK，说到这里，小伙伴们或许认为进程只需要运行态和就绪态即可。因为我们觉得，进程要么是正在跑（运行态），要么就是还没跑（就绪态）。如果我们的计算机处理的任务都只需要平等的负责计算，那么只有运行态和就绪态或许还可行，此时，这些任务只需要轮流的去被调度即可。因为它们不需要等待任何条件（例如数据有没有到来等等条件），只要被调度了就可以进行计算。</p>
-<p>但是，在现实生活中，计算机需要处理的任务不可能都是平等的（也就是说，不可能都是类似的任务），也不可能只需要负责计算即可。打个比方，我们的计算机是单CPU单核的，在这台计算机里面有3个进程。其中，进程1处理的任务是：从0开始，每次自增1，一直自增下去。进程2处理的任务是：从0开始，每次自减1，一直自减下去。进程3处理的任务是：获取网卡中的数据。</p>
-<p>从上面三个进程负责的任务可以看出，进程1和进程2处理的任务是类似的（也就是我所说的平等的），并且只需要负责计算即可。而进程3处理的任务就和进程1、进程2的不一样了。它是从外部设备中读取数据，并且当进程3执行<code>read</code>系统调用的时候，此时网卡上面不一定是有数据的，那么，这个进程3接下来该怎么做？是循环执行<code>read</code>系统调用吗？直到网卡上面有数据来了，可读了？显然这样是不好的。因为我们的计算机是单核的，如果这个进程3不停的执行<code>read</code>系统调用，并且网卡始终没有数据，那么就白白浪费了CPU的时间片。所以，操作系统有一个做法是让进程3从运行态变为就绪态，让出CPU给进程1和进程2。但是，这样还是会有一个问题，因为进程3是处于就绪态的，所以，当调度器以后调度进程的时候，还是有可能会选择进程3。如果进程3这个时候可以从网卡中读取数据，那还好说，怕就怕当调度进程3的时候，网卡中还是没有数据可读，那么就白白调度进程3了。所以，操作系统引入一个新的状态–<strong>阻塞态</strong>。调度器不会去调度处于阻塞态的进程，只会去调度处于就绪态的进程（此时，进程1和进程2轮流处于就绪态，所以轮流占用时间片）。当网卡中有数据的时候，进程3才会从阻塞态变为就绪态，所以下次调度器去调度进程的时候，如果调度到了进程3，进程3就可以从网卡中读取数据了。</p>
-<p>以上可以用来解释“进程为什么需要阻塞态”。但是，我还想说说其他的东西。</p>
-<p>我们都知道，进程1和进程2执行的任务是类似的，所以两个任务是平等的。但是进程3的任务很特殊，需要经常性的等待网卡的数据到来，所以经常性的处于阻塞态。相对另外两个进程来说，进程3得到的CPU的时间在总数上来说是更少的，那么，这对进程3就会有一点点的不公平。</p>
-<p>我们可以通过下面的图片来直观的感受一下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/1.png"></p>
-<p>我们可以发现，进程3在t2那个时刻，是处于就绪态的，但是，调度器并没有去调度进程3，而是先去调度进程1和进程2，后面再来调度进程3。因为，我们假设进程1、进程2和进程3都是平等的，所以，调度器并不会因为进程3很久没有得到执行了，就可怜它一下，让它立刻投入运行。为了更好的处理这个问题，我们可以给进程引入一个优先级的概念，优先级越大，进程就越先被调度。按照这个概念，可想而知，我们希望给进程3分配一个更高的优先级，以让进程3在t2时刻就可以投入运行。</p>
-<p>好的，现在我们引入了优先级的概念。可能就有小伙伴们想：进程1和进程2的优先级该怎么分呢？这里，我们一般就是给它们一样的优先级，为什么？因为进程1和进程2要么是处于运行态，要么是处于就绪态。假设进程1的优先级大于进程2的优先级，那么调度器每次从就绪态中的选择一个优先级更大的进程，每次都会去选择进程1（假设进程3处于阻塞状态），这样就会导致进程2饿死（饿死的意思就是进程长时间没有运行）。所以，我们在分配进程优先级的时候，会让进程1和进程2的优先级一样，使得调度器轮流的去调度进程1和进程2。当然，如果你非要让进程1的优先级大于进程2，可以在进程1执行一段时间后，执行<code>sleep</code>系统调用，让进程1主动挂起，处于阻塞状态，这个时候，调度器就会去调度进程2了，其实，这也是进程为什么需要阻塞态。</p>
-<p>OK，讲到这里，大家应该是理解了吧。</p>
-<p>其实，在对于一个强大的操作系统，是不可能会像我这样分析的那么简单，我这里简单的分析主要是帮助大家理解。新版Linux的调度算法也绝不是仅仅依靠时间片和优先级来实现调度的，感兴趣的小伙伴可以看看Linux的CFS调度算法。还有就是，我上面说的进程3去从网卡读取数据也不严谨，进程3只能够从用户空间的缓冲区中读取数据，而网卡中的数据到达用户空间的缓冲区，是需要借助操作系统的，网卡中的数据先是拷贝到内核缓冲区，然后再从内核缓冲区拷贝到用户空间的缓冲区。当然，我说进程3去读网卡数据是为了方便小伙伴们理解。</p>
-<p>等我回去公司之后，我会继续补充这篇博客，通过操作系统的代码，来演示一下优先级和阻塞态的所起到的作用。</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/06/16/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/" data-id="ckkj72zti007jf6vx9xkndicl" data-title="为什么进程需要阻塞态" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-我的腾讯之路" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/04/19/%E6%88%91%E7%9A%84%E8%85%BE%E8%AE%AF%E4%B9%8B%E8%B7%AF/" class="article-date">
-  <time class="dt-published" datetime="2018-04-19T06:50:04.000Z" itemprop="datePublished">2018-04-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/04/19/%E6%88%91%E7%9A%84%E8%85%BE%E8%AE%AF%E4%B9%8B%E8%B7%AF/">我的腾讯之路</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>很开心，春招拿到了腾讯科恩实验室的offer。这是我大二立下的一个目标，依稀记得大一暑假，我特意跑去了深圳看腾讯大厦，拍了好几张照片～但是不敢进去，不好意思，估计也会被拦下来。我心想，总有一天我要进腾讯，和一群优秀的人一起工作。终于，我实现了这个梦想，而且还是和国内顶尖的黑客们一起工作，挺开心的～</p>
-<p>意料之外，也是情理之中。天道酬勤嘛～</p>
-<p>现在我来分享下我的经历，希望我的“粉丝”不会失望～</p>
-<p>大一的时候，其实我对编程并不感冒，C语言作业也是随便写写，因为我感觉学了C语言不知道可以做什么。写来写去就是一个黑框框弹出来，然后输出一个结果。其实这是因为我对计算机的兴趣还没有被激发出来而导致的。大一的时候我倒是对高数很感兴趣，每天刷题，刷竞赛题，然后拿了一个高数竞赛特等奖。我认为这是我们国家教育的问题，从小刷题，大学还是刷题。实际上很多人并不知道为什么要去刷题。就这样，大一就在刷题中度过了～</p>
-<p>到了大一暑假，我开始自学C++，入门书籍是谭浩强的红皮书。看完之后，我对C++的基本语法比较熟悉了。但是，我还是不知道学了C++可以干什么。</p>
-<p>到了大二，我报了我们学校的一个社团，叫做物联网基地。那时候，我的人生发生了转折。我不知道我为什么就爱上了编程～在社团里面，我学习了很多其他没有接触过的东西。例如PHP这门语言，这是我写的比较熟悉的语言（现在我可以看看内核代码，写写扩展）。每天我都保持8个小时的学习时间（包括看书和写代码）。大二上学期结束之后，我可以熟练的搭建网站了，是很有成就感的。但是因为人的精力有限，我在学校课程方面的考试能力下降了。学分绩从专业第一直线下滑，甚至差点挂科。但是我不后悔，我相信我坚持下去，我一定会实现我的目标。</p>
-<p>到了大二下学期，我有一段时间不知道该学习什么了。因为写网页还挺熟练了，所以我去找学校的资源。我找过我们学校的一个比较厉害的社团，叫做家园网（挺多人进了BAT），想加入他们，增加实战经验。但是由于某个原因，我没有去。后来我去找一个学长。他非常厉害，小学开始写代码，我个人认为他是我们学校最厉害的人。曾经以一人之力，挑战清华、复旦这些名牌学校的整个团队，得了银奖，也是唯一一个211学校的获奖学生。他那时候在创业，我想投奔他，但是因为他公司得搬去深圳了，所以我的计划又失败了。没办法，我只能去网上寻求前辈们的帮助。（因为我们学校的计算机比较差，所以在学校也很难得到提升）其中，对我产生最大影响的是<strong>韩天峰前辈</strong>，他给予了我简短但是很关键性的建议，主要是让我先打好基础，如果足够优秀，校招是可以进腾讯的。于是我按照他的建议，一步一步打好基础。主要是<strong>数据结构、操作系统、计算机网络、计算机组成原理</strong>。为了学些这些知识，我大量阅读书籍和写代码。</p>
-<p>大三上学期，我阅读了将近40本专业书籍。特别是操作系统和计算机网络方面的书籍，一些经典书籍看了两三遍。然后算法题我也每天都写3~4题，这样下来，到了春招，我算法题写了将近400题。（顺便参加了蓝桥杯，差点拿省一，有些遗憾）</p>
-<p>大三下学期，我密切关注腾讯春招动态。刚好，一个在腾讯的学长在内推，于是我就请求他帮我内推一下。所以，有了参加腾讯面试的机会，我个人认为我是幸运儿。参加腾讯面试还是很快乐的一件事，和面试官交流，可以发现自己不足。比较吃惊的就是二面有4～5个面试官轮流问我问题，哈哈，有了一个展现自我的机会。</p>
-<p>面试完之后就是等结果，这是最难熬的了。不过，等来了好消息。</p>
-<p>我能够进腾讯的原因总结起来有很多。</p>
-<p>个人原因是我专注度比较高，心里没有太多的杂念，不会去做违背自己初心的事情。这里我想给小伙伴们一些建议，就是一定要目标明确，例如，不要一边打算考研，一边又打算找工作。因为人的精力都是有限的，如果同时做两件都很耗时的事情，往往是得不偿失的。还有就是要懂得取舍，其实这个和目标明确是有关联的。例如以后打算直接工作，就不要想着其他事情了，专心写代码，老天一定会眷顾我们的。</p>
-<p>外在的原因就是我身边有很多人帮助我，例如在物联网基地的一些学长学姐。特别是一个创业好几年的学长，给予了我特别大的帮助。那时，我一天都待在基地，中午没地方休息，靠在桌子上睡觉手和腿会发麻，特别难受。然后学长他就从他们公司拿来了一张床，我中午就可以在基地休息了。大二暑假他也让我去他那里实习，但是我那时候对计算机底层更加感兴趣，所以他给的任务我也没有完成，最后离开了他公司，心里有些内疚。</p>
-<p>还有就是我有一群优秀的室友，他们都是打算法的，而我写算法只是业余爱好，练练脑子的逻辑思维。在写算法的过程中，难免会遇到一些问题，但是有些问题室友会帮我解决，这就节省了很多时间。</p>
-<p>然后是内推我的那个学长，也帮助了我很多～</p>
-<p>最关键的还是面试官们，他们对我的认可。如果没有认可，无论我做的怎么样，都是没有这个机会的。</p>
-<p>其实还有很多人，这里是列举不完的～</p>
-<p>实习好好加油～～</p>
-<p>最后，祝大家都可以去到自己梦想的公司～</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/04/19/%E6%88%91%E7%9A%84%E8%85%BE%E8%AE%AF%E4%B9%8B%E8%B7%AF/" data-id="ckkj72zuc00a3f6vx9s15egh0" data-title="我的腾讯之路" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/16/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/18/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
 
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
+      
+  <div class="widget">
     <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
         
           <li>
-            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="title">ptrace使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-02T12:19:39.000Z" itemprop="datePublished">2021-02-02</time>
+              </p>
+            </div>
           </li>
-        
+          
       </ul>
     </div>
   </div>
+  
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 codinghuang<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
+  </div>
+</aside>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+  <main class="main" role="main">
+  
+  <div class="content article-list">
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/">《就是要你懂swoole》-动手写一个服务器扩展（一）</a>
+    </h1>
+  
 
   </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+	  <time datetime="2018-11-19T07:45:51.000Z" itemprop="datePublished">Nov 19</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/11/19/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8A%A8%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%B1%95%EF%BC%88%E4%B8%80%EF%BC%89/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.3k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 6(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/06/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%BA%8C%EF%BC%89/">《就是要你懂swoole》-Server（二）</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/11/06/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
+	  <time datetime="2018-11-06T06:14:19.000Z" itemprop="datePublished">Nov 6</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/php/" rel="tag">php</a>, <a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/11/06/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.1k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 5(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/">手把手教你使用JWT</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/" class="article-date">
+	  <time datetime="2018-08-29T11:01:17.000Z" itemprop="datePublished">Aug 29</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/JWT/" rel="tag">JWT</a>, <a class="article-tag-link-link" href="/tags/Laravel/" rel="tag">Laravel</a>, <a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/08/29/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8JWT/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2.6k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 10(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/">《就是要你懂swoole》-Server（一）</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+	  <time datetime="2018-08-04T10:59:42.000Z" itemprop="datePublished">Aug 4</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/08/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%80%EF%BC%89/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.7k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 5(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/28/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/">《就是要你懂swoole》-- 编程须知</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/07/28/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/" class="article-date">
+	  <time datetime="2018-07-28T03:41:13.000Z" itemprop="datePublished">Jul 28</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/07/28/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E7%BC%96%E7%A8%8B%E9%A1%BB%E7%9F%A5/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.8k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 6(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E8%B5%B7%E6%AD%A5/">《就是要你懂swoole》-- 起步</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/07/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E8%B5%B7%E6%AD%A5/" class="article-date">
+	  <time datetime="2018-07-27T14:41:12.000Z" itemprop="datePublished">Jul 27</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/swore/" rel="tag">swore</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/07/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E8%B5%B7%E6%AD%A5/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 996(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/10/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99HTTPS%E5%AE%A2%E6%88%B7%E7%AB%AF/">手把手教你编写HTTPS客户端</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/07/10/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99HTTPS%E5%AE%A2%E6%88%B7%E7%AB%AF/" class="article-date">
+	  <time datetime="2018-07-09T16:18:04.000Z" itemprop="datePublished">Jul 10</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/07/10/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%BC%96%E5%86%99HTTPS%E5%AE%A2%E6%88%B7%E7%AB%AF/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 92(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/07/%E5%85%B3%E4%BA%8E%E4%B8%8D%E5%8F%AF%E6%8A%A2%E5%8D%A0%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8/">关于不可抢占的操作系统内核</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/07/07/%E5%85%B3%E4%BA%8E%E4%B8%8D%E5%8F%AF%E6%8A%A2%E5%8D%A0%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8/" class="article-date">
+	  <time datetime="2018-07-07T15:35:31.000Z" itemprop="datePublished">Jul 7</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/07/07/%E5%85%B3%E4%BA%8E%E4%B8%8D%E5%8F%AF%E6%8A%A2%E5%8D%A0%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.2k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/16/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/">为什么进程需要阻塞态</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/06/16/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/" class="article-date">
+	  <time datetime="2018-06-16T08:25:36.000Z" itemprop="datePublished">Jun 16</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/06/16/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%9B%E7%A8%8B%E9%9C%80%E8%A6%81%E9%98%BB%E5%A1%9E%E6%80%81/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 6(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/19/%E6%88%91%E7%9A%84%E8%85%BE%E8%AE%AF%E4%B9%8B%E8%B7%AF/">我的腾讯之路</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/04/19/%E6%88%91%E7%9A%84%E8%85%BE%E8%AE%AF%E4%B9%8B%E8%B7%AF/" class="article-date">
+	  <time datetime="2018-04-19T06:50:04.000Z" itemprop="datePublished">Apr 19</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/04/19/%E6%88%91%E7%9A%84%E8%85%BE%E8%AE%AF%E4%B9%8B%E8%B7%AF/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.8k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 5(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+  </div>
+
+  
+    
+    <nav class="bar bar-footer clearfix" data-stick-bottom>
+        <div class="bar-inner">
+        <ul class="pager pull-left">
+            
+            <li class="prev">
+                <a href="/page/16/">
+                    <i class="icon icon-angle-left"></i>
+                    Prev
+                </a>
+            </li>
+            
+            
+            <li class="next">
+                <a href="/page/18/">
+                    Next
+                    <i class="icon icon-angle-right"></i>
+                </a>
+            </li>
+            
+        </ul>
+        <div class="total-article bar-right">Page 17 of 23</div>
+        </div>
+    </nav>
+    
+ 
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
 </body>
 </html>

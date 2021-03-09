@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
   
   <title>codinghuang的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="比PHP多一些">
 <meta property="og:type" content="website">
 <meta property="og:title" content="codinghuang的个人博客">
@@ -15,824 +27,742 @@
 <meta property="og:locale">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/page/16/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
   
   
 <link rel="stylesheet" href="/css/style.css">
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+  
+  
   
 <meta name="generator" content="Hexo 5.1.1"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">codinghuang的个人博客</a>
-      </h1>
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
-        </h2>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
       </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
     </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
   </div>
 </header>
 
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-在PHP代码里面通过ini-set设置upload-max-filesize不生效" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" class="article-date">
-  <time class="dt-published" datetime="2019-01-10T11:01:18.000Z" itemprop="datePublished">2019-01-10</time>
-</a>
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/">在PHP代码里面通过ini_set设置upload_max_filesize不生效</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天在测试项目的时候，遇到了一个bug，如题所说的。经过排查发现，ini_set不是对所有的配置项都可以进行设置的。例如<code>upload_max_filesize</code>这个值。我们来进行一个测试：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// test memory_limit</span></span><br><span class="line">$value = ini_get(<span class="string">&#x27;memory_limit&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;old memory_limit value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;memory_limit&#x27;</span>, <span class="string">&#x27;256M&#x27;</span>);</span><br><span class="line">$value = ini_get(<span class="string">&#x27;memory_limit&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;new memory_limit value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line"><span class="comment">// test upload_max_filesize</span></span><br><span class="line">$value = ini_get(<span class="string">&#x27;upload_max_filesize&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;old upload_max_filesize value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br><span class="line">ini_set(<span class="string">&#x27;upload_max_filesize&#x27;</span>, <span class="string">&#x27;20M&#x27;</span>);</span><br><span class="line">$value = ini_get(<span class="string">&#x27;upload_max_filesize&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;new upload_max_filesize value: &#x27;</span> . $value . PHP_EOL;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>执行后输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">old memory_limit value: 128M</span><br><span class="line">new memory_limit value: 256M</span><br><span class="line">old upload_max_filesize value: 2M</span><br><span class="line">new upload_max_filesize value: 2M</span><br></pre></td></tr></table></figure>
-
-<p>可以发现<code>memory_limit</code>的值是可以在php脚本运行时候修改的，但是<code>upload_max_filesize</code>却不可以。所以，当我们遇到<code>ini_set</code>函数不生效的时候，我们需要去查一查这个配置值是否可以在脚本运行的时候进行动态的修改。这里我给出两个链接：</p>
-<p>1、<a target="_blank" rel="noopener" href="http://www.php.net/manual/en/ini.list.php">ini list</a></p>
-<p>2、<a target="_blank" rel="noopener" href="http://php.net/manual/en/configuration.changes.modes.php">configuration changes modes</a></p>
-
-      
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" data-id="ckkj72zty0090f6vx1kczau7r" data-title="在PHP代码里面通过ini_set设置upload_max_filesize不生效" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
+</div>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-tinyswoole中的worker进程如何数据返回给指定的reactor线程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/" class="article-date">
-  <time class="dt-published" datetime="2019-01-07T04:52:03.000Z" itemprop="datePublished">2019-01-07</time>
-</a>
     
-  </div>
-  <div class="article-inner">
+      
+
     
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/">tinyswoole中的worker进程如何把数据返回给指定的reactor线程?</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>我们的tinyswoole的<code>[1.1.0-beta]</code>版本看似完成了worker进程与reactor线程的通信，但是如果细心分析的话会发现，这里完成的实际上是worker进程与master进程的通信。为什么这么说呢？因为，worker进程返回给master进程的数据不是给指定的reactor线程的，很可能其他的reactor线程也会读取到worker进程返回给master进程的数据。</p>
-<p>举个例子，假设我们的reactor线程有3个，worker进程有4个。</p>
-<p>master线程把connfd交给reactor线程的算法是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sub_reactor = &amp;(serv-&gt;reactor_threads[connfd % serv-&gt;reactor_num].reactor);</span><br></pre></td></tr></table></figure>
-
-<p>也就是connfd对reactor线程的个数取模。</p>
-<p>reactor线程把数据交给worker进程的算法是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">worker_id = tswev-&gt;fd % TSwooleG.serv-&gt;process_pool-&gt;workers_num;</span><br></pre></td></tr></table></figure>
-
-<p>也就是connfd对worker进程的个数取模。</p>
-<p>OK，假设有一个connfd是1，那么，reactor线程1处理这个连接，并且把connfd1这个连接发来的数据传给worker进程1。假设还有一个connfd是5，那么reactor线程2处理这个连接，并且把connfd5这个连接发来的数据传给进程1。</p>
-<p>可以看出，reactor线程1和reactor线程2都有可能与worker进程1进行通信，也就意味着，reactor线程1可能与connfd5对应的客户端通信，reactor线程2可能与connfd1对应的客户端进行通信。虽然这样子我们的程序还可以跑，但是似乎违背了我们最初的设计—每个reactor线程维持自己的那个connfd连接即可。所以，这个问题我们需要解决掉。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/" data-id="ckkj72zsu005ef6vxftnecgg5" data-title="tinyswoole中的worker进程如何把数据返回给指定的reactor线程?" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-在开发tinyswoole的时候，worker进程里面执行send函数时候遇到的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/25/%E5%9C%A8%E5%BC%80%E5%8F%91tinyswoole%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Cworker%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%E6%89%A7%E8%A1%8Csend%E5%87%BD%E6%95%B0%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
-  <time class="dt-published" datetime="2018-12-25T09:57:16.000Z" itemprop="datePublished">2018-12-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/25/%E5%9C%A8%E5%BC%80%E5%8F%91tinyswoole%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Cworker%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%E6%89%A7%E8%A1%8Csend%E5%87%BD%E6%95%B0%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">在开发tinyswoole的时候，worker进程里面执行send函数时候遇到的问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们知道，tinyswoole的架构是多个线程（一个master线程，多个reactor线程），多个worker进程。master线程负责处理客户端发来的连接请求，获得connfd，然后把connfd交给reactor线程来进行处理。</p>
-<p>master线程选择哪个reactor线程来处理connfd的算法是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reactor_id = connfd % serv-&gt;reactor_num;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * reactor: Used to manage handle in tswEvent</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tswServer_master_onAccept</span><span class="params">(tswReactor *reactor, tswEvent *tswev)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> connfd;</span><br><span class="line">	<span class="keyword">socklen_t</span> len;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">cliaddr</span>;</span></span><br><span class="line">	tswServer *serv = reactor-&gt;ptr;</span><br><span class="line">	tswReactor *sub_reactor;</span><br><span class="line"></span><br><span class="line">	len = <span class="keyword">sizeof</span>(cliaddr);</span><br><span class="line">	connfd = accept(tswev-&gt;fd, (struct sockaddr *)&amp;cliaddr, &amp;len);</span><br><span class="line">	<span class="keyword">if</span> (connfd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		tswWarn(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;accept error&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> TSW_ERR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	serv-&gt;status-&gt;accept_count++;</span><br><span class="line"></span><br><span class="line">	sub_reactor = &amp;(serv-&gt;reactor_threads[connfd % serv-&gt;reactor_num].reactor);</span><br><span class="line"></span><br><span class="line">	serv-&gt;connection_list[connfd].connfd = connfd;</span><br><span class="line">	serv-&gt;connection_list[connfd].session_id = serv-&gt;status-&gt;accept_count;</span><br><span class="line">	serv-&gt;connection_list[connfd].from_reactor_id = sub_reactor-&gt;id;</span><br><span class="line">	serv-&gt;connection_list[connfd].serv_sock = serv-&gt;serv_sock;</span><br><span class="line"></span><br><span class="line">	serv-&gt;session_list[serv-&gt;status-&gt;accept_count].session_id = serv-&gt;status-&gt;accept_count;</span><br><span class="line">	serv-&gt;session_list[serv-&gt;status-&gt;accept_count].connfd = connfd;</span><br><span class="line">	serv-&gt;session_list[serv-&gt;status-&gt;accept_count].reactor_id = sub_reactor-&gt;id;</span><br><span class="line">	serv-&gt;session_list[serv-&gt;status-&gt;accept_count].serv_sock = serv-&gt;serv_sock;</span><br><span class="line"></span><br><span class="line">	serv-&gt;onConnect(serv-&gt;status-&gt;accept_count);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (sub_reactor-&gt;add(sub_reactor, connfd, TSW_EVENT_READ, tswServer_reactor_onReceive) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		tswWarn(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;reactor add error&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> TSW_ERR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> TSW_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>之后，reactor线程就可以通过connfd获取客户端请求过来的数据。再然后，reactor线程对这些数据进行封装，发送给了worker进程。</p>
-<p>ok，此时轮到worker进程开始处理reactor线程发来的数据了。</p>
-<p>worker进程处理数据这个过程很简单，只需要在worker进程里面去调用php用户空间的代码即可。例如：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onReceive</span>(<span class="params">$serv, $fd, $data</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    print_r(<span class="string">&quot;receive data from client[<span class="subst">&#123;$fd&#125;</span>]: <span class="subst">&#123;$data&#125;</span>&quot;</span>);</span><br><span class="line">    $serv-&gt;send($fd, <span class="string">&quot;hello client&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> TinySwoole\Server(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9501</span>, TSWOOLE_TCP);</span><br><span class="line"></span><br><span class="line">$serv-&gt;set([</span><br><span class="line">    <span class="string">&#x27;reactor_num&#x27;</span> =&gt; <span class="number">4</span>,</span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">4</span>,</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&quot;Receive&quot;</span>, <span class="string">&quot;onReceive&quot;</span>);</span><br><span class="line">$serv-&gt;start();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><code>Receive</code>事件处理函数中，<code>$data</code>是worker进程需要处理的数据。我们来看一看worker进程是如何调用用户空间的<code>onReceive</code>事件处理函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">tswWorker_onPipeReceive</span><span class="params">(tswReactor *reactor, tswEvent *tswev)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">	tswEventData event_data;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// tswev-&gt;fd represents the fd of the pipe</span></span><br><span class="line">    n = read(tswev-&gt;fd, &amp;event_data, <span class="keyword">sizeof</span>(event_data));</span><br><span class="line">    <span class="keyword">if</span> (event_data.info.len &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		TSwooleG.serv-&gt;onReceive(TSwooleG.serv, &amp;event_data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> TSW_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，当worker进程收到reactor线程封装的数据（event_data）之后，就调用了全局变量<code>serv</code>（worker进程的serv全局变量是worker进程在master进程fork的时候拷贝过来的一个副本）的</p>
-<p><code>onReceive</code>事件处理函数来对<code>event_data</code>进行处理。我们来看一看serv的onReceive做了些什么事情：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @fd: session_id</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * Event_data saves the data sent from the client</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">php_tswoole_onReceive</span><span class="params">(tswServer *serv, tswEventData *event_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	zval *zfd;</span><br><span class="line">	zval *zdata;</span><br><span class="line">	zval retval;</span><br><span class="line">	zval args[<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">	TSW_MAKE_STD_ZVAL(zfd);</span><br><span class="line">	ZVAL_LONG(zfd, event_data-&gt;info.fd);</span><br><span class="line">	TSW_MAKE_STD_ZVAL(zdata);</span><br><span class="line">	ZVAL_STRINGL(zdata, event_data-&gt;data, event_data-&gt;info.len);</span><br><span class="line"></span><br><span class="line">	args[<span class="number">0</span>] = *server_object;</span><br><span class="line">	args[<span class="number">1</span>] = *zfd;</span><br><span class="line">	args[<span class="number">2</span>] = *zdata;</span><br><span class="line"></span><br><span class="line">	call_user_function_ex(EG(function_table), <span class="literal">NULL</span>, php_tsw_server_callbacks[TSW_SERVER_CB_onReceive], &amp;retval, <span class="number">3</span>, args, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里的关键代码是PHP提供的<code>call_user_function_ex</code>。这个函数是用来执行PHP用户空间定义好的一个函数。我们很容易知道，<code>php_tsw_server_callbacks[TSW_SERVER_CB_onReceive]</code>就是上面PHP代码的<code>onReceive</code>事件处理函数。这里，按照用户空间定义的样子，分别传递了三个参数serv, ​fd, ​data给<code>onReceive</code>函数。OK，到了这里，一切都是很容易做到的。但是，当PHP代码执行到：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$serv-&gt;send($fd, <span class="string">&quot;hello client&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>的时候，麻烦事就来了。</p>
-<p>如果之前小伙伴们没有学习过网络编程的话，或许看不出问题所在。但是，如果你学习过网络编程，你很容易的就会发现，这里的$fd是从1开始递增的，不符合文件打开的一些行为（因为如果你没有对文件描述符0，1，2关闭的话，fd应该是从3开始计的）。而且，当客户端关闭的时候，fd并不会使用这个fd，而是会在最大的那个fd的基础上加1。所以，我们应该要立刻反应过来，这里的fd不是connfd，而是session_id，用来标识一个连接（当然，这个session_id是要和connfd进行对应的）。我们现在来看看这个如何实现。</p>
-<p>我们来看看数据结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">tswServer</span> &#123;</span></span><br><span class="line">    <span class="comment">// other attribute</span></span><br><span class="line">    tswConnection *connection_list;</span><br><span class="line">    tswSession *session_list;</span><br><span class="line">    tswServerStatus *status;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">tswServerStatus</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> accept_count;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，这里有一个属性accept_count来记录当前的session_id是多少。然后我们来看看tswConnection和tswSession这两个数据结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">tswConnection</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> connfd;</span><br><span class="line">	<span class="keyword">uint32_t</span> session_id;</span><br><span class="line">	<span class="keyword">uint32_t</span> from_reactor_id;</span><br><span class="line">	<span class="keyword">int</span> serv_sock;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">tswSession</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> session_id;</span><br><span class="line">    <span class="keyword">int</span> connfd;</span><br><span class="line">    <span class="keyword">uint32_t</span> reactor_id;</span><br><span class="line">	<span class="keyword">int</span> serv_sock;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以看到，这两个数据结构是一样的，那么为什么需要定义两个一样的数据结构呢？因为我们的服务器经常会需要在session_id和connfd之间进行转换。例如，我需要从session_id转换为connfd，有如下代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">session_id = event_data.info.fd;</span><br><span class="line">session = &amp;(TSwooleG.serv-&gt;session_list[session_id]);</span><br><span class="line"></span><br><span class="line">send(session-&gt;connfd, event_data.data, event_data.info.len, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>同理，从connfd转换为session_id也是一样的。假设我们只有connection_list，如果我们要通过session_id找到connfd，那么需要遍历一遍connection_list数组。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/25/%E5%9C%A8%E5%BC%80%E5%8F%91tinyswoole%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Cworker%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%E6%89%A7%E8%A1%8Csend%E5%87%BD%E6%95%B0%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72ztz0095f6vx89ha5xtd" data-title="在开发tinyswoole的时候，worker进程里面执行send函数时候遇到的问题" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-docker-php-ext-enable可以开启扩展的原理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/21/docker-php-ext-enable%E5%8F%AF%E4%BB%A5%E5%BC%80%E5%90%AF%E6%89%A9%E5%B1%95%E7%9A%84%E5%8E%9F%E7%90%86/" class="article-date">
-  <time class="dt-published" datetime="2018-12-21T13:36:44.000Z" itemprop="datePublished">2018-12-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/21/docker-php-ext-enable%E5%8F%AF%E4%BB%A5%E5%BC%80%E5%90%AF%E6%89%A9%E5%B1%95%E7%9A%84%E5%8E%9F%E7%90%86/">docker-php-ext-enable可以开启扩展的原理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>（我们以docker镜像<code>php:7.2-cli-alpine</code>为例进行讲解）</p>
-<p>我们知道，当我们编译完一个PHP扩展的时候，执行命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-php-ext-enable 扩展名</span><br></pre></td></tr></table></figure>
-
-<p>就可以开启这个扩展。起初我并没有觉得很奇怪，我以为肯定是在<code>php.ini</code>文件里面增加了一行：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">extension</span>=扩展名</span><br></pre></td></tr></table></figure>
-
-<p>但是，今天我由于某些原因想要去寻找这个容器里面的<code>php.ini</code>文件却发现并没有找到。于是我就很纳闷了。查看<code>docker-php-ext-enable</code>的源码才发现，原来它是这样开启扩展的：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ini=&quot;/usr/local/etc/php/conf.d/$&#123;iniName:-&quot;docker-php-ext-$ext.ini&quot;&#125;&quot;</span><br><span class="line">if ! grep -q &quot;$line&quot; &quot;$ini&quot; 2&gt;/dev/null; then</span><br><span class="line">	echo &quot;$line&quot; &gt;&gt; &quot;$ini&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
-
-<p>然后我就明白了，开启扩展的那一行是写在文件<code>/usr/local/etc/php/conf.d/docker-php-ext-扩展名.ini</code>这个配置文件里面的。查看命令<code>php -i</code>的输出，得到如下内容：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Scan this dir for additional .ini files =&gt; /usr/local/etc/php/conf.d</span><br><span class="line">Additional .ini files parsed =&gt; /usr/local/etc/php/conf.d/docker-php-ext-mysqli.ini,</span><br><span class="line">/usr/local/etc/php/conf.d/docker-php-ext-opcache.ini,</span><br><span class="line">/usr/local/etc/php/conf.d/docker-php-ext-pcntl.ini,</span><br><span class="line">/usr/local/etc/php/conf.d/docker-php-ext-pdo_mysql.ini,</span><br><span class="line">/usr/local/etc/php/conf.d/docker-php-ext-sockets.ini,</span><br><span class="line">/usr/local/etc/php/conf.d/docker-php-ext-sodium.ini,</span><br><span class="line">/usr/local/etc/php/conf.d/docker-php-ext-tinyswoole.ini,</span><br></pre></td></tr></table></figure>
-
-<p>焕然大悟。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/21/docker-php-ext-enable%E5%8F%AF%E4%BB%A5%E5%BC%80%E5%90%AF%E6%89%A9%E5%B1%95%E7%9A%84%E5%8E%9F%E7%90%86/" data-id="ckkj72zsk004qf6vx101yco1x" data-title="docker-php-ext-enable可以开启扩展的原理" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-父进程创建指定数量的子进程，并且子进程不再创建子进程的写法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/21/%E7%88%B6%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%8C%87%E5%AE%9A%E6%95%B0%E9%87%8F%E7%9A%84%E5%AD%90%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8D%E5%86%8D%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95/" class="article-date">
-  <time class="dt-published" datetime="2018-12-21T09:11:37.000Z" itemprop="datePublished">2018-12-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/21/%E7%88%B6%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%8C%87%E5%AE%9A%E6%95%B0%E9%87%8F%E7%9A%84%E5%AD%90%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8D%E5%86%8D%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95/">父进程创建指定数量的子进程，并且子进程不再创建子进程的写法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>网上很多父进程创建指定数目的子进程的方法，但是我发现很多都是很简单粗暴，只考虑了父进程创建子进程，没考虑子进程还会创建子进程，子进程的子进程还会创建子进程……</p>
-<p>这里，我们先看看网上大部分的做法：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">        fork();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    sleep(<span class="number">-1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>编译后运行代码：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc fork.c -o fork</span><br><span class="line">./fork</span><br></pre></td></tr></table></figure>
-
-<p>另外开启一个终端，然后查看进程个数：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep fork</span><br></pre></td></tr></table></figure>
-
-<p>显示结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">67521 root      0:03 ./fork</span><br><span class="line">67522 root      0:03 ./fork</span><br><span class="line">67523 root      0:03 ./fork</span><br><span class="line">67524 root      0:03 ./fork</span><br><span class="line">67525 root      0:03 ./fork</span><br><span class="line">67526 root      0:03 ./fork</span><br><span class="line">67527 root      0:03 ./fork</span><br><span class="line">67528 root      0:03 ./fork</span><br><span class="line">67529 root      0:03 ./fork</span><br><span class="line">67530 root      0:03 ./fork</span><br><span class="line">67531 root      0:03 ./fork</span><br><span class="line">67532 root      0:03 ./fork</span><br><span class="line">67533 root      0:03 ./fork</span><br><span class="line">67534 root      0:03 ./fork</span><br><span class="line">67535 root      0:03 ./fork</span><br><span class="line">67536 root      0:03 ./fork</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，这里实际上是有16个进程的，除去进程id为67521的这个最祖先进程，后面的都是多出来的。我们再看看进程树：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree -p 67521</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fork(67521)-+-fork(67522)-+-fork(67526)-+-fork(67532)---fork(67534)</span><br><span class="line">            |             |             `-fork(67533)</span><br><span class="line">            |             |-fork(67527)---fork(67536)</span><br><span class="line">            |             `-fork(67528)</span><br><span class="line">            |-fork(67523)-+-fork(67530)---fork(67535)</span><br><span class="line">            |             `-fork(67531)</span><br><span class="line">            |-fork(67524)---fork(67529)</span><br><span class="line">            `-fork(67525)</span><br></pre></td></tr></table></figure>
-
-<p>可以很清晰的看出进程之间的关系和fork了多少次。</p>
-<p>那么，正确的写法应该是什么样子的呢？我这里给出两种写法。</p>
-<p>写法一：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt; </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> ppid;</span><br><span class="line"></span><br><span class="line">    ppid = getpid();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (getpid() == ppid) &#123;</span><br><span class="line">            fork();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    sleep(<span class="number">-1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>查看进程情况：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep fork</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">70599 root      0:00 ./fork</span><br><span class="line">70600 root      0:00 ./fork</span><br><span class="line">70601 root      0:00 ./fork</span><br><span class="line">70602 root      0:00 ./fork</span><br><span class="line">70603 root      0:00 ./fork</span><br></pre></td></tr></table></figure>
-
-<p>查看进程树：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree -p 70599</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fork(70599)-+-fork(70600)</span><br><span class="line">            |-fork(70601)</span><br><span class="line">            |-fork(70602)</span><br><span class="line">            `-fork(70603)</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，确实是只创建了四个子进程，并且子进程没有再创建子进程。</p>
-<p>写法二：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fork</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> ppid;</span><br><span class="line"></span><br><span class="line">    ppid = getpid();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">        Fork();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// parent process</span></span><br><span class="line">    </span><br><span class="line">    sleep(<span class="number">-1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fork</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line"></span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> pid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// child process</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="comment">// some code</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>查看进程情况：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep fork</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">74107 root      0:00 ./fork</span><br><span class="line">74108 root      0:01 ./fork</span><br><span class="line">74109 root      0:01 ./fork</span><br><span class="line">74110 root      0:01 ./fork</span><br><span class="line">74111 root      0:01 ./fork</span><br></pre></td></tr></table></figure>
-
-<p>创建进程树：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree -p 74107</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fork(74107)-+-fork(74108)</span><br><span class="line">            |-fork(74109)</span><br><span class="line">            |-fork(74110)</span><br><span class="line">            `-fork(74111)</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/21/%E7%88%B6%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%8C%87%E5%AE%9A%E6%95%B0%E9%87%8F%E7%9A%84%E5%AD%90%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8D%E5%86%8D%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95/" data-id="ckkj72zul00anf6vx65g94fl2" data-title="父进程创建指定数量的子进程，并且子进程不再创建子进程的写法" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP扩展开发-二-处理用户传来的数组" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%BA%8C-%E5%A4%84%E7%90%86%E7%94%A8%E6%88%B7%E4%BC%A0%E6%9D%A5%E7%9A%84%E6%95%B0%E7%BB%84/" class="article-date">
-  <time class="dt-published" datetime="2018-12-18T09:07:30.000Z" itemprop="datePublished">2018-12-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%BA%8C-%E5%A4%84%E7%90%86%E7%94%A8%E6%88%B7%E4%BC%A0%E6%9D%A5%E7%9A%84%E6%95%B0%E7%BB%84/">PHP扩展开发(二)--处理用户传来的数组</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>很多时候，我们需要处理用户传来的数组，例如我们的tinyswoole server的set函数，它是接收一个数组的：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$serv-&gt;set([</span><br><span class="line">    <span class="string">&#x27;reactor_num&#x27;</span> =&gt; <span class="number">2</span>,</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
-
-<p>然后，tinyswoole server需要保存这些数组信息。</p>
-<p>这个时候，我们就需要去获取这个数组里面的值。这里，我们可以这样写：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">PHP_METHOD(tinyswoole_server, <span class="built_in">set</span>)</span><br><span class="line">&#123;</span><br><span class="line">	zval *zset = <span class="literal">NULL</span>;</span><br><span class="line">	tswServer *serv;</span><br><span class="line">	HashTable *vht;</span><br><span class="line">	zval *v;</span><br><span class="line"></span><br><span class="line">	serv = TSwooleG.serv;</span><br><span class="line"></span><br><span class="line">	ZEND_PARSE_PARAMETERS_START(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        Z_PARAM_ARRAY(zset)</span><br><span class="line">    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);</span><br><span class="line"></span><br><span class="line">    vht = Z_ARRVAL_P(zset);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (php_tinyswoole_array_get_value(vht, <span class="string">&quot;reactor_num&quot;</span>, v)) &#123;</span><br><span class="line">        convert_to_long(v);</span><br><span class="line">        serv-&gt;reactor_num = (<span class="keyword">uint16_t</span>)Z_LVAL_P(v);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		serv-&gt;reactor_num = <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中<code>Z_ARRVAL_P(zset)</code>可以获取zval结构里面的<code>HashTable *</code>。</p>
-<p>其中<code>php_tinyswoole_array_get_value</code>这个宏可以用来获取数组key所对应的值：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> php_tinyswoole_array_get_value(ht, str, v)     ((v = zend_hash_str_find(ht, str, sizeof(str)-1)) &amp;&amp; !ZVAL_IS_NULL(v))</span></span><br></pre></td></tr></table></figure>
-
-<p><code>convert_to_long</code>函数的作用是进行zval类型的转换。我们来看一看zval的数据结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zval_struct</span> &#123;</span></span><br><span class="line">	zend_value        value;			<span class="comment">/* value */</span></span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			ZEND_ENDIAN_LOHI_4(</span><br><span class="line">				zend_uchar    type,			<span class="comment">/* active type */</span></span><br><span class="line">				zend_uchar    type_flags,</span><br><span class="line">				zend_uchar    const_flags,</span><br><span class="line">				zend_uchar    reserved)	    <span class="comment">/* call info for EX(This) */</span></span><br><span class="line">		&#125; v;</span><br><span class="line">		<span class="keyword">uint32_t</span> type_info;</span><br><span class="line">	&#125; u1;</span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="keyword">uint32_t</span>     next;                 <span class="comment">/* hash collision chain */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     cache_slot;           <span class="comment">/* literal cache slot */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     lineno;               <span class="comment">/* line number (for ast nodes) */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     num_args;             <span class="comment">/* arguments number for EX(This) */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     fe_pos;               <span class="comment">/* foreach position */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     fe_iter_idx;          <span class="comment">/* foreach iterator index */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     access_flags;         <span class="comment">/* class constant access flags */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     property_guard;       <span class="comment">/* single property guard */</span></span><br><span class="line">		<span class="keyword">uint32_t</span>     extra;                <span class="comment">/* not further specified */</span></span><br><span class="line">	&#125; u2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>这里的<code>zend_uchar type</code>会记录变量的类型。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%BA%8C-%E5%A4%84%E7%90%86%E7%94%A8%E6%88%B7%E4%BC%A0%E6%9D%A5%E7%9A%84%E6%95%B0%E7%BB%84/" data-id="ckkj72zrt0030f6vxdi084qxw" data-title="PHP扩展开发(二)--处理用户传来的数组" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP扩展开发-一-获取用户传递过来的值之后，转变成zval结构" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%B8%80-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BC%A0%E9%80%92%E8%BF%87%E6%9D%A5%E7%9A%84%E5%80%BC%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BD%AC%E5%8F%98%E6%88%90zval%E7%BB%93%E6%9E%84/" class="article-date">
-  <time class="dt-published" datetime="2018-12-18T04:10:25.000Z" itemprop="datePublished">2018-12-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%B8%80-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BC%A0%E9%80%92%E8%BF%87%E6%9D%A5%E7%9A%84%E5%80%BC%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BD%AC%E5%8F%98%E6%88%90zval%E7%BB%93%E6%9E%84/">PHP扩展开发(一)--把基本类型的值转变成zval结构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们在开发PHP扩展的时候，经常会有需要把基本类型的值转化为zval结构的需求，这里，我给出两段代码，来完成这个需求。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> fd;</span><br><span class="line">zval *zfd;</span><br><span class="line"></span><br><span class="line">fd = <span class="number">1</span>;</span><br><span class="line">TSW_MAKE_STD_ZVAL(zfd); <span class="comment">// Let zfd point to a piece of memory in the stack</span></span><br><span class="line">ZVAL_LONG(zfd, fd); <span class="comment">// Before using ZVAL_LONG, you need to allocate memory first.</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TSW_MAKE_STD_ZVAL(p)		zval _stack_zval_##p; p = &amp;(_stack_zval_##p)</span></span><br></pre></td></tr></table></figure>
-
-<p><code>TSW_MAKE_STD_ZVAL</code>宏的作用就是在栈上创建一块临时的内存，然后让p指针指向这块内存。然后，我们再使用<code>ZVAL_*</code>系列的函数来进行转换。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%B8%80-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BC%A0%E9%80%92%E8%BF%87%E6%9D%A5%E7%9A%84%E5%80%BC%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BD%AC%E5%8F%98%E6%88%90zval%E7%BB%93%E6%9E%84/" data-id="ckkj72zrs002yf6vxg3pydnbn" data-title="PHP扩展开发(一)--把基本类型的值转变成zval结构" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-浅谈Reactor设计模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/11/%E6%B5%85%E8%B0%88Reactor%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="article-date">
-  <time class="dt-published" datetime="2018-12-11T08:02:03.000Z" itemprop="datePublished">2018-12-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/11/%E6%B5%85%E8%B0%88Reactor%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">浅谈Reactor设计模式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>顾名思义，Reactor是一种事件发生时候做出某种<strong>反应</strong>的机制。我们先来说一说概念，Reactor设计模式至少应该具备什么东西：</p>
-<ul>
-<li>事件源（Handle）</li>
-<li>事件处理器 （Event Handler）</li>
-<li>反应器 （Reactor）</li>
-<li>同步事件分离器（Synchronous Event Demultiplexer）</li>
-</ul>
-<p>我们一个一个来解释一下。</p>
-<p><strong>事件源</strong></p>
-<p>可以产生事件的东西。例如文件，可以产生可读/可写事件。</p>
-<p><strong>事件处理器</strong></p>
-<p>当事件发生的时候，用来处理事件的函数。</p>
-<p><strong>反应器</strong></p>
-<p>注册/移除事件处理器；执行事件分发器；调度合适的事件处理器。</p>
-<p><strong>同步事件分离器</strong></p>
-<p>分离（区分）不同handle上发生的事件。我们可以通过操作系统为我们提供的某些接口（例如epoll）来实现同步事件分离器。</p>
-<p>从上面的介绍可以看出，整个Reactor围绕的都是事件，而不是事件源。这样做的好处是可以让我们从众多的事件源中解放出来。这里贴两段代码对比一下：</p>
-<p><strong>没有使用Reactor的代码</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="keyword">int</span> nfds;</span><br><span class="line"></span><br><span class="line">    nfds = epoll_wait(epollfd, events, MAXEVENTS, <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nfds; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (events[i].data.fd == listenfd) &#123;</span><br><span class="line">            <span class="keyword">int</span> connfd;</span><br><span class="line">            tswEvent event;</span><br><span class="line">            event.fd = events[i].data.fd;</span><br><span class="line">            connfd = tswServer_master_onAccept(epollfd, &amp;event);</span><br><span class="line">            <span class="keyword">if</span> (serv-&gt;onConnect != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                serv-&gt;onConnect(connfd);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (events[i].events &amp; EPOLLIN) &#123;</span><br><span class="line">            <span class="keyword">int</span> n;</span><br><span class="line"></span><br><span class="line">            n = read(events[i].data.fd, buffer, MAX_BUF_SIZE);</span><br><span class="line">            <span class="keyword">if</span> (n == <span class="number">0</span>) &#123;</span><br><span class="line">                epoll_del(epollfd, events[i].data.fd);</span><br><span class="line">                close(events[i].data.fd);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            buffer[n] = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (serv-&gt;onReceive != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                serv-&gt;onReceive(serv, events[i].data.fd, buffer);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用了Reactor的代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (;;) &#123;</span><br><span class="line">    <span class="keyword">int</span> nfds;</span><br><span class="line"></span><br><span class="line">    nfds = reactor-&gt;wait(reactor);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nfds; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> connfd;</span><br><span class="line">        tswReactorEpoll *reactor_epoll_object = reactor-&gt;object;</span><br><span class="line"></span><br><span class="line">        tswEvent *tswev = (tswEvent *)reactor_epoll_object-&gt;events[i].data.ptr;</span><br><span class="line">        <span class="keyword">if</span> (tswev-&gt;event_handler(reactor, tswev) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            tswWarn(<span class="string">&quot;event_handler error&quot;</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以发现，使用了Reactor的代码看起来变干净了许多。为什么会这样呢？我个人认为，第一种写法我们关注的点是复杂多变的事件源，例如，我们先判断了一下这个fd是不是listenfd，如果是的话，我们执行accept，如果不是的话，我们进行其他处理。因为第一段代码还算是业务简单，要么是accept一个客户端连接，要么是处理客户端发来的请求，但是如果业务变复杂了，应该是有点痛苦的。而第二种写法我们关注的点是<strong>事件</strong>，我们只需要调用处理事件的处理器（函数）即可。我不管你是什么类型的事件源，统一调用事件处理器。</p>
-<p>为什么我这里要特别说一说Reactor呢？因为这会有助于我们理解Swoole。后续，我会介绍如何实现Reactor设计模式。同学们也可以提前学习，<a target="_blank" rel="noopener" href="https://github.com/huanghantao/tinyswoole">仓库地址</a>。也欢迎大家一起来贡献代码，一同学习如何开发服务器扩展。（不用担心没有基础，勇敢的迈出第一步）</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/11/%E6%B5%85%E8%B0%88Reactor%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" data-id="ckkj72zuk00alf6vx6herfh9j" data-title="浅谈Reactor设计模式" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-怎样通俗的理解操作系统中内存管理分页和分段？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/12/11/%E6%80%8E%E6%A0%B7%E9%80%9A%E4%BF%97%E7%9A%84%E7%90%86%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9F/" class="article-date">
-  <time class="dt-published" datetime="2018-12-11T07:26:16.000Z" itemprop="datePublished">2018-12-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/12/11/%E6%80%8E%E6%A0%B7%E9%80%9A%E4%BF%97%E7%9A%84%E7%90%86%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9F/">怎样通俗的理解操作系统中内存管理分页和分段？</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>最近看到一个问题：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/50796850/answer/522734117">怎样通俗的理解操作系统中内存管理分页和分段？</a></p>
-<p>这个问题相信有很多初学操作系统的同学都有过。因为这两个概念有很多相似的地方，所以自然就会有疑问了。希望这篇文章可以帮助同学们理解。</p>
-<p>要理解分段和分页，那么得理解为什么会出现分段和分页的技术</p>
-<p>首先，这两个技术都是<strong>为了利用和管理好计算机的资源–内存</strong>。</p>
-<p>在分段这个技术还没有出现之前，程序运行是需要从内存中分配出足够多的<strong>连续的</strong>内存，然后把<strong>整个</strong>程序装载进去。举个例子，某个程序大小是10M，然后，就需要有<strong>连续的</strong>10M内存空间才能把这个程序装载到内存里面。如果无法找到连续的10M内存，就无法把这个程序装载进内存里面，程序也就无法得到运行。</p>
-<p>上面这种直接把整个程序装载进内存的方式是有一定的问题的。例如：</p>
-<p>1、地址空间不隔离</p>
-<p>如何理解地址空间不隔离？</p>
-<p>举个例子，假设我有两个程序，一个是程序A，一个是程序B。程序A在内存中的地址<strong>假设</strong>是0x00000000<del>0x00000099，程序B在内存中的地址<strong>假设</strong>是0x00000100</del>x00000199。那么假设你在程序A中，本来想操作地址0x00000050，不小心<strong>手残</strong>操作了地址0x00000150，那么，不好的事情或许会发生。你影响了程序A也就罢了，你把程序B也搞了一顿。</p>
-<p>2、程序运行时候的地址不确定</p>
-<p>如何理解程序运行时候的地址不确定？</p>
-<p>因为我们程序每次要运行的时候，都是需要装载到内存中的，假设你在程序中写死了要操作某个地址的内存，例如你要地址0x00000010。但是问题来了，你能够保证你操作的地址0x00000010真的就是你<strong>原来</strong>想操作的那个位置吗？很可能程序第一次装载进内存的位置是0x00000000<del>0x00000099，而程序第二次运行的时候，这个程序装载进内存的位置变成了0x00000200</del>0x00000299，而你操作的0x00000010地址压根就不是属于这个程序所占有的内存。</p>
-<p>3、内存使用率低下</p>
-<p>如何理解内存使用率低下呢？</p>
-<p>举个例子，假设你写了3个程序，其中程序A大小为10M，程序B为70M，程序C的大小为30M你的计算机的内存总共有100M。</p>
-<p>这三个程序加起来有110M，显然这三个程序是无法<strong>同时</strong>存在于内存中的。</p>
-<p>并且最多只能够同时运行两个程序。可能是这样的，程序A占有的内存空间是0x00000000～0x00000009，程序B占有的内存空间是0x00000010～0x00000079。假设这个时候程序C要运行该怎么做？可以<strong>把其中的一个程序换出到磁盘上</strong>，然后再把程序C装载到内存中。假设是把程序A换出，那么程序C还是无法装载进内存中，因为内存中空闲的连续区域有两块，一块是原来程序A占有的那10M，还有就是从0x00000080～0x00000099这20M，所以，30M的程序C无法装载进内存中。那么，唯一的办法就是把程序B换出，保留程序A，但是，此时会有60M的内存无法利用起来，<strong>很浪费</strong>对吧。</p>
-<p>然后，人们就去寻求一种办法来解决这些问题。</p>
-<p>有一句话说的好：计算机科学领域的任何问题都可以通过增加一个间接的<strong>中间层</strong>来解决。</p>
-<p>（这种思想在现在也用的很广泛，例如很多优秀的中间层：Nginx、Redis等等）</p>
-<p>所以，分段这种技术就出现了。</p>
-<p>为了实现分段的这个技术，需要引入虚拟地址空间的概念。那么什么是地址空间呢？简单的说就是可以寻址的一片空间。如果这个空间是虚拟的，我们就叫做虚拟地址空间；如果这个空间是真实存在的，我们就叫做物理地址空间。虚拟地址空间是可以<strong>任意的</strong>大的，因为是虚拟的。而物理地址空间是真实存在的，所以是有限的。</p>
-<p>然后，分段这个技术做了一件什么事情呢？</p>
-<p>它<strong>把虚拟地址空间映射到了物理地址空间，并且你写的程序操作的是虚拟地址</strong>。假设，程序A的虚拟地址空间是0x00000100～0x00000200。此时，不仅需要一块<strong>连续的</strong>物理内存来存放程序A，还需要把程序A的虚拟地址空间映射到（转换为）物理地址空间。可能，程序A的虚拟地址空间从0x00000100～0x00000200映射到了物理地址空间0x00000000～0x00000100。</p>
-<p>那么分段的技术可以解决什么问题呢？可以解决上面1、2两个问题。</p>
-<p>在问题1中，假设程序A的<strong>虚拟</strong>地址空间是0x00000000<del>0x00000099，映射到的物理地址空间是0x00000600</del>0x00000699，程序B的<strong>虚拟</strong>地址空间是0x00000100<del>0x00000199，映射到的物理地址空间是0x00000300</del>0x00000399。假设你还是手残，在程序A中操作了地址0x00000150，但是英文此时的地址0x00000150是虚拟的，而虚拟化的操作是在操作系统的掌控中的，所以，操作系统有能力判断，这个虚拟地址0x00000150是有问题的，然后阻止后续的操作。所以，<strong>体现出了</strong>隔离性。（另一种体现隔离性的方式就是，操作同一个虚拟地址，实际上<strong>可能</strong>操作的是不同的物理地址）</p>
-<p>（注意，实际上，很可能程序A和程序B的虚拟地址都是0x00000000~0x00000099。这里的举例只是为了方便理解。）</p>
-<p>问题2也很好的解决了。正是因为这种映射，使得程序<strong>无需关注物理地址</strong>是多少，只要虚拟地址没有改变，那么，程序就不会操作地址不当。</p>
-<p>但是<strong>问题3仍然没有解决</strong>。</p>
-<p>因为第三个问题是换入换出的问题，这个问题的关键是能不能在换出一个<strong>完整的</strong>程序之后，把另一个<strong>完整的</strong>程序换进来。而这种分段机制，映射的是一片<strong>连续的</strong>物理内存，所以问题3得不到解决。</p>
-<p>而问题出在哪呢？就是<strong>完整和连续</strong>。</p>
-<p>而分页技术的出现就是为了解决这个问题的。分页这个技术仍然是一种虚拟地址空间到物理地址空间映射的机制。但是，粒度更加的小了。单位不是整个程序，而是某个“页”，一段虚拟地址空间组成的某一页映射到一段物理地址空间组成的某一页。（如何理解这个“页”的概念，这个问题下的其他同学回答过）</p>
-<p>分页这个技术，它的虚拟地址空间仍然是连续的，但是，每一页映射后的物理地址就不一定是连续的了。正是因为有了分页的概念，程序的换入换出就可以以页为单位了。那么，为什么就可以只换出某一页呢？实际上，不是为什么可以换出某一页，而是可以换出CPU还用不到的那些程序代码、数据。但是，把这些都换出到磁盘，万一下次CPU就要使用这些代码和数据怎么办？又得把这些代码、数据装载进内存。性能有影响对吧。所以，我们把换入换出的单位变小，变成了“页”。（实际上，这利用了空间局部性）</p>
-<p>所以，同学们想想，问题3是不是就解决了呢？</p>
-<p>所以，分段和分页的区别在于：<strong>粒度</strong>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/12/11/%E6%80%8E%E6%A0%B7%E9%80%9A%E4%BF%97%E7%9A%84%E7%90%86%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9F/" data-id="ckkj72zub00a1f6vx1o26589g" data-title="怎样通俗的理解操作系统中内存管理分页和分段？" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-《就是要你懂swoole》-Server（三）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/11/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%89%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2018-11-29T07:27:49.000Z" itemprop="datePublished">2018-11-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/11/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%89%EF%BC%89/">《就是要你懂swoole》-Server（三）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>上一篇文章我们讲解完了下面这段代码的<code>$config</code>含义：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">// filename: server.php</span></span><br><span class="line"></span><br><span class="line">$config = [</span><br><span class="line">    <span class="string">&#x27;reactor_num&#x27;</span> =&gt;<span class="number">2</span>, <span class="comment">// Reactor线程个数</span></span><br><span class="line">    <span class="string">&#x27;worker_num&#x27;</span> =&gt; <span class="number">4</span>, <span class="comment">// Worker进程个数</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">$serv = <span class="keyword">new</span> swoole_server(<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">9501</span>, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);</span><br><span class="line"></span><br><span class="line">$serv-&gt;set($config);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;connect&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;  </span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client: Connect.\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;receive&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd, $from_id, $data</span>) </span>&#123;</span><br><span class="line">    $serv-&gt;send($fd, <span class="string">&quot;Server: &quot;</span>.$data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;on(<span class="string">&#x27;close&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client: Close.\n&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$serv-&gt;start();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>OK，这一篇文章我们来解释剩下的部分 – serv的on方法。对应的官方文档<a target="_blank" rel="noopener" href="https://wiki.swoole.com/wiki/page/142.html">在这里</a>。</p>
-<p>on方法的声明如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> Server-&gt;on(<span class="keyword">string</span> $event, mixed $callback);</span><br></pre></td></tr></table></figure>
-
-<p>on方法是用来给我们的服务器serv<strong>注册事件回调函数</strong>的。其中，<code>$event</code>是事件名字，<code>$callback</code>是事件对应的回调函数。在上面这段代码中，分别注册了connect、receive、close，3个事件的回调函数。</p>
-<p>这里，小伙伴们要注意了，<strong>on方法是用来注册事件回调函数的，不是用来注册事件的</strong>。为什么？因为这些connect、receive、close等等事件都是已经被服务器支持了的，我们通过swoole的源码可以很容易的分析出来，我后面也会给我们的tinyswoole服务器支持这些事件。</p>
-<p>那么注册这些事件回调函数是为了什么？很容易理解，就是当我们的服务器遇到了这些事件之后，触发这些函数。OK，现在我们运行一下这个服务器：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php server.php</span><br></pre></td></tr></table></figure>
-
-<p>我们新开一个shell，输入如下命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 9501</span><br></pre></td></tr></table></figure>
-
-<p>此时，会启动一个客户端连接我们的服务器。此时，我们查看一下服务器的输出，可以看到：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Client: Connect.</span><br></pre></td></tr></table></figure>
-
-<p>被打印了出来。说明，服务器的<code>connect</code>事件被触发了，所以执行了回调函数：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">$serv, $fd</span>) </span>&#123;  </span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Client: Connect.\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，connect是在客户端连接了服务器时触发的。</p>
-<p>OK，我们在执行nc命令的这个终端中输入一个字符串<code>hello world</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc 127.0.0.1 9501</span><br><span class="line">hello world</span><br><span class="line">Server: hello world</span><br></pre></td></tr></table></figure>
-
-<p>你将会发现，这个nc客户端接收到了字符串<code>Server: hello world</code>。说明，我们的<code>receive</code>事件被触发了。也就是说，receive事件是在服务器收到了客户端的消息时触发。</p>
-<p>OK，我们在执行nc命令的这个终端中按下<code>ctrl + c</code>。此时，nc这个客户端就会挂了（结束进程）。此时，我们查看一下服务器的输出，可以看到：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Client: Close.</span><br></pre></td></tr></table></figure>
-
-<p>被打印了出来。说明，服务器的<code>close</code>事件被触发了。也就是说，close事件是在服务器知道客户端断开了连接时触发的。</p>
-<p>OK，接下来，我们就来给我们tinyswoole服务器扩展支持on方法吧。你将会学习到如下知识点：</p>
-<ul>
-<li><p>如何在php扩展中注册事件回调函数。</p>
-</li>
-<li><p>事件触发的时候如何去执行用户定义的函数。</p>
-</li>
-</ul>
-<p>如果小伙伴们想提前感受一下这部分功能如何去写，可以<a target="_blank" rel="noopener" href="https://github.com/huanghantao/tinyswoole/tree/dev">点击这里</a>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/11/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ckkj72zt50068f6vx6qwqfnmr" data-title="《就是要你懂swoole》-Server（三）" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/15/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/17/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
 
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
+      
+  <div class="widget">
     <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
         
           <li>
-            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="title">ptrace使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-02T12:19:39.000Z" itemprop="datePublished">2021-02-02</time>
+              </p>
+            </div>
           </li>
-        
+          
       </ul>
     </div>
   </div>
+  
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 codinghuang<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
+  </div>
+</aside>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+  <main class="main" role="main">
+  
+  <div class="content article-list">
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/">在PHP代码里面通过ini_set设置upload_max_filesize不生效</a>
+    </h1>
+  
 
   </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" class="article-date">
+	  <time datetime="2019-01-10T11:01:18.000Z" itemprop="datePublished">Jan 10</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 242(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/">tinyswoole中的worker进程如何把数据返回给指定的reactor线程?</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/" class="article-date">
+	  <time datetime="2019-01-07T04:52:03.000Z" itemprop="datePublished">Jan 7</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>, <a class="article-tag-link-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/01/07/tinyswoole%E4%B8%AD%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E%E7%BB%99%E6%8C%87%E5%AE%9A%E7%9A%84reactor%E7%BA%BF%E7%A8%8B/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 383(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/25/%E5%9C%A8%E5%BC%80%E5%8F%91tinyswoole%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Cworker%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%E6%89%A7%E8%A1%8Csend%E5%87%BD%E6%95%B0%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">在开发tinyswoole的时候，worker进程里面执行send函数时候遇到的问题</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/25/%E5%9C%A8%E5%BC%80%E5%8F%91tinyswoole%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Cworker%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%E6%89%A7%E8%A1%8Csend%E5%87%BD%E6%95%B0%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+	  <time datetime="2018-12-25T09:57:16.000Z" itemprop="datePublished">Dec 25</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/swoole/" rel="tag">swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/25/%E5%9C%A8%E5%BC%80%E5%8F%91tinyswoole%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Cworker%E8%BF%9B%E7%A8%8B%E9%87%8C%E9%9D%A2%E6%89%A7%E8%A1%8Csend%E5%87%BD%E6%95%B0%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.2k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 5(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/21/docker-php-ext-enable%E5%8F%AF%E4%BB%A5%E5%BC%80%E5%90%AF%E6%89%A9%E5%B1%95%E7%9A%84%E5%8E%9F%E7%90%86/">docker-php-ext-enable可以开启扩展的原理</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/21/docker-php-ext-enable%E5%8F%AF%E4%BB%A5%E5%BC%80%E5%90%AF%E6%89%A9%E5%B1%95%E7%9A%84%E5%8E%9F%E7%90%86/" class="article-date">
+	  <time datetime="2018-12-21T13:36:44.000Z" itemprop="datePublished">Dec 21</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/docker/" rel="tag">docker</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/21/docker-php-ext-enable%E5%8F%AF%E4%BB%A5%E5%BC%80%E5%90%AF%E6%89%A9%E5%B1%95%E7%9A%84%E5%8E%9F%E7%90%86/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 352(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/21/%E7%88%B6%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%8C%87%E5%AE%9A%E6%95%B0%E9%87%8F%E7%9A%84%E5%AD%90%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8D%E5%86%8D%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95/">父进程创建指定数量的子进程，并且子进程不再创建子进程的写法</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/21/%E7%88%B6%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%8C%87%E5%AE%9A%E6%95%B0%E9%87%8F%E7%9A%84%E5%AD%90%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8D%E5%86%8D%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95/" class="article-date">
+	  <time datetime="2018-12-21T09:11:37.000Z" itemprop="datePublished">Dec 21</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/C/" rel="tag">C</a>, <a class="article-tag-link-link" href="/tags/Linux/" rel="tag">Linux</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/21/%E7%88%B6%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E6%8C%87%E5%AE%9A%E6%95%B0%E9%87%8F%E7%9A%84%E5%AD%90%E8%BF%9B%E7%A8%8B%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AD%90%E8%BF%9B%E7%A8%8B%E4%B8%8D%E5%86%8D%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 636(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%BA%8C-%E5%A4%84%E7%90%86%E7%94%A8%E6%88%B7%E4%BC%A0%E6%9D%A5%E7%9A%84%E6%95%B0%E7%BB%84/">PHP扩展开发(二)--处理用户传来的数组</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%BA%8C-%E5%A4%84%E7%90%86%E7%94%A8%E6%88%B7%E4%BC%A0%E6%9D%A5%E7%9A%84%E6%95%B0%E7%BB%84/" class="article-date">
+	  <time datetime="2018-12-18T09:07:30.000Z" itemprop="datePublished">Dec 18</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%BA%8C-%E5%A4%84%E7%90%86%E7%94%A8%E6%88%B7%E4%BC%A0%E6%9D%A5%E7%9A%84%E6%95%B0%E7%BB%84/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 314(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%B8%80-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BC%A0%E9%80%92%E8%BF%87%E6%9D%A5%E7%9A%84%E5%80%BC%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BD%AC%E5%8F%98%E6%88%90zval%E7%BB%93%E6%9E%84/">PHP扩展开发(一)--把基本类型的值转变成zval结构</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%B8%80-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BC%A0%E9%80%92%E8%BF%87%E6%9D%A5%E7%9A%84%E5%80%BC%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BD%AC%E5%8F%98%E6%88%90zval%E7%BB%93%E6%9E%84/" class="article-date">
+	  <time datetime="2018-12-18T04:10:25.000Z" itemprop="datePublished">Dec 18</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/18/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91-%E4%B8%80-%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BC%A0%E9%80%92%E8%BF%87%E6%9D%A5%E7%9A%84%E5%80%BC%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BD%AC%E5%8F%98%E6%88%90zval%E7%BB%93%E6%9E%84/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 139(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/11/%E6%B5%85%E8%B0%88Reactor%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">浅谈Reactor设计模式</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/11/%E6%B5%85%E8%B0%88Reactor%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="article-date">
+	  <time datetime="2018-12-11T08:02:03.000Z" itemprop="datePublished">Dec 11</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/11/%E6%B5%85%E8%B0%88Reactor%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 752(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/11/%E6%80%8E%E6%A0%B7%E9%80%9A%E4%BF%97%E7%9A%84%E7%90%86%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9F/">怎样通俗的理解操作系统中内存管理分页和分段？</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/12/11/%E6%80%8E%E6%A0%B7%E9%80%9A%E4%BF%97%E7%9A%84%E7%90%86%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9F/" class="article-date">
+	  <time datetime="2018-12-11T07:26:16.000Z" itemprop="datePublished">Dec 11</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/12/11/%E6%80%8E%E6%A0%B7%E9%80%9A%E4%BF%97%E7%9A%84%E7%90%86%E8%A7%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%EF%BC%9F/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 6(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%89%EF%BC%89/">《就是要你懂swoole》-Server（三）</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/11/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%89%EF%BC%89/" class="article-date">
+	  <time datetime="2018-11-29T07:27:49.000Z" itemprop="datePublished">Nov 29</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/Swoole/" rel="tag">Swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/11/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-Server%EF%BC%88%E4%B8%89%EF%BC%89/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 792(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+  </div>
+
+  
+    
+    <nav class="bar bar-footer clearfix" data-stick-bottom>
+        <div class="bar-inner">
+        <ul class="pager pull-left">
+            
+            <li class="prev">
+                <a href="/page/15/">
+                    <i class="icon icon-angle-left"></i>
+                    Prev
+                </a>
+            </li>
+            
+            
+            <li class="next">
+                <a href="/page/17/">
+                    Next
+                    <i class="icon icon-angle-right"></i>
+                </a>
+            </li>
+            
+        </ul>
+        <div class="total-article bar-right">Page 16 of 23</div>
+        </div>
+    </nav>
+    
+ 
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
 </body>
 </html>

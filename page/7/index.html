@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
   
   <title>codinghuang的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="比PHP多一些">
 <meta property="og:type" content="website">
 <meta property="og:title" content="codinghuang的个人博客">
@@ -15,768 +27,742 @@
 <meta property="og:locale">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/page/7/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
   
   
 <link rel="stylesheet" href="/css/style.css">
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+  
+  
   
 <meta name="generator" content="Hexo 5.1.1"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">codinghuang的个人博客</a>
-      </h1>
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
-        </h2>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
       </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
     </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
   </div>
 </header>
 
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-PHP在-get魔术方法中进行Swoole协程切换的问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
-  <time class="dt-published" datetime="2020-08-09T08:57:51.000Z" itemprop="datePublished">2020-08-09</time>
-</a>
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/">PHP在__get魔术方法中进行Swoole协程切换的问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们有如下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($i=<span class="number">0</span>; $i &lt; <span class="number">2</span>; $i++) &#123;</span><br><span class="line">    go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">        $foo-&gt;aaa;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::$aaa in /root/codeDir/phpCode/swoole/coroutine/get/get.php on line <span class="number">18</span></span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::$aaa in /root/codeDir/phpCode/swoole/coroutine/get/get.php on line <span class="number">18</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们会发现，这里会有警告，说是使用了没有定义的属性。</p>
-<p>为了理解这个问题，我们可以先来了解一下<code>__get</code>这个魔术方法。首先是这么一段代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var_dump($name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，因为<code>aaa</code>这个属性是类<code>Foo</code>的动态属性，所以默认会去调用<code>Foo</code>类的<code>__get</code>魔术方法，并且，传递给魔术方法的参数就是这个动态属性的名字。</p>
-<p>好的，我们现在再来写一段代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;$name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 9</span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 9</span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现，当我们在<code>__get</code>魔术方法里面去读取动态属性<code>aaa</code>的时候，报的错误和我们在<code>__get</code>方法中进行协程切换是一模一样的。我们可以来理解一下为什么<code>PHP</code>要这么警告？</p>
-<p>如果不这么警告的话，那么我们在<code>__get</code>函数里面读取动态属性<code>aaa</code>是不是又会继续调用<code>__get</code>魔术方法呢？那么这就会导致无限的递归了。所以<code>PHP</code>是禁止这种行为的。</p>
-<p>那么，<code>PHP</code>底层是如何做到这种限制的呢？我们引用<a target="_blank" rel="noopener" href="https://github.com/pangudashu/php7-internal/blob/40645cfe087b373c80738881911ae3b178818f11/3/zend_object.md">《PHP7内核剖析》</a>的内容来解释一下：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Note: 如果类存在 get () 方法，则在实例化对象分配属性内存 (即:properties_table) 时会多分配一个 zval，类型为 HashTable，每次调用 get ($var) 时会把输入的 $var 名称存入这个哈希表，这样做的目的是防止循环调用，举个例子：</span><br><span class="line"></span><br><span class="line">public function __get($var) &#123; return $this-&gt;$var; &#125;</span><br><span class="line"></span><br><span class="line">这种情况是调用 get () 时又访问了一个不存在的属性，也就是会在 get () 方法中递归调用，如果不对请求的 $var 作判断则将一直递归下去，所以在调用 get () 前首先会判断当前 $var 是不是已经在 get () 中了，如果是则不会再调用 get ()，否则会把 $var 作为 key 插入那个 HashTable，然后将哈希值设置为：*guard |= IN_ISSET，调用完 get () 再把哈希值设置为：*guard &amp;= ~IN_ISSET。</span><br><span class="line"></span><br><span class="line">这个 HashTable 不仅仅是给 get () 用的，其它魔术方法也会用到，所以其哈希值类型是 zend_long，不同的魔术方法占不同的 bit 位；其次，并不是所有的对象都会额外分配这个 HashTable，在对象创建时会根据 zend_class_entry.ce_flags 是否包含 ZEND_ACC_USE_GUARDS 确定是否分配，在类编译时如果发现定义了 get()、set()、unset ()、__isset () 方法则会将 ce_flags 打上这个掩码。</span><br></pre></td></tr></table></figure>
-
-<p>所以，总结起来就是，当调用了<code>__get</code>时，会对这个动态属性做一个<code>IN_ISSET</code>标记，直到结束了这次<code>__get</code>调用，才会取消这个<code>IN_ISSET</code>标记。如果在有<code>IN_ISSET</code>的时候，再次对这个动态属性进行访问，那么就会报这个警告了。</p>
-<p>所以，如下写法就是可以的了：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        var_dump($name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line">$foo-&gt;aaa;</span><br><span class="line">$foo-&gt;aaa;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">string(3) <span class="string">&quot;aaa&quot;</span></span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>因为我们是在退出第一次<code>__get</code>魔术方法调用之后再次访问动态属性<code>aaa</code>的，这个时候<code>IN_ISSET</code>标记已经没了。</p>
-<p>好的，我们现在来修改一下之前的协程切换的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Swoole</span>\<span class="title">Coroutine</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Coroutine::sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$foo = <span class="keyword">new</span> Foo;</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">    $foo-&gt;aaa;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">go(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) <span class="title">use</span> (<span class="params">$foo</span>) </span>&#123;</span><br><span class="line">    $foo-&gt;aaa;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>这样或许会更加直观一点。首先，当第一个协程读取动态属性<code>aaa</code>的时候，对象<code>$foo</code>第一次调用了<code>__get</code>魔术方法。然后，因为<code>Coroutine::sleep</code>，协程被挂起了，<code>__get</code>魔术方法还没有退出，此时<code>IN_ISSET</code>标记还在。这个时候，轮到第二个协程进行动态属性<code>aaa</code>的读取，此时，因为<code>IN_ISSET</code>还在，所以此时访问动态属性<code>aaa</code>就是禁止的了：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@e2a14c00e7f6 get]<span class="comment"># php get.php</span></span><br><span class="line">PHP Notice:  Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 21</span><br><span class="line"></span><br><span class="line">Notice: Undefined property: Foo::<span class="variable">$aaa</span> <span class="keyword">in</span> /root/codeDir/phpCode/swoole/coroutine/get/get.php on line 21</span><br><span class="line">[root@e2a14c00e7f6 get]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-
-<p>我们发现报错的地方是第<code>21</code>行，是第二个协程报出的警告。</p>
-
-      
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckkj72zrn002mf6vxf2dwgxmz" data-title="PHP在__get魔术方法中进行Swoole协程切换的问题" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li></ul>
+</div>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-KeepAlive和心跳检查" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/" class="article-date">
-  <time class="dt-published" datetime="2020-08-07T09:09:26.000Z" itemprop="datePublished">2020-08-07</time>
-</a>
     
-  </div>
-  <div class="article-inner">
+      
+
     
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/">KeepAlive和心跳检查</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>做长连接的服务，我们经常要去判断连接是否在线。那么我们怎么去判断连接是否在线呢？</p>
-<p>首先，我们需要去明确连接是否在线的含义：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 连接之间因为网络等问题无法发送数据了，我们可以认为不在线了</span><br><span class="line">2. 连接之间很长一段时间没有发送数据了，我们可以认为不在线了</span><br></pre></td></tr></table></figure>
-
-<p>针对第一种情况，我们可以使用操作系统提供的<code>KeepAlive</code>机制来检测连接之间是否可以发送数据。</p>
-<p>针对第二种情况，我们可以通过心跳检查来判断某一段时间内，连接上是否有数据发送。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/" data-id="ckkj72zqs000rf6vx1yze4y2u" data-title="KeepAlive和心跳检查" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-HTTP-trailer需要注意的点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" class="article-date">
-  <time class="dt-published" datetime="2020-07-31T15:36:03.000Z" itemprop="datePublished">2020-07-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/">HTTP trailer需要注意的点</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><code>HTTP trailer</code>的例子如下：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span>: text/plain</span><br><span class="line"><span class="attribute">Transfer-Encoding</span>: chunked</span><br><span class="line"><span class="attribute">Trailer</span>: Expires</span><br><span class="line"></span><br><span class="line"><span class="attribute">7\r\n</span></span><br><span class="line"><span class="attribute">Mozilla\r\n</span></span><br><span class="line"><span class="attribute">9\r\n</span></span><br><span class="line"><span class="attribute">Developer\r\n</span></span><br><span class="line"><span class="attribute">7\r\n</span></span><br><span class="line"><span class="attribute">Network\r\n</span></span><br><span class="line"><span class="attribute">0\r\n</span></span><br><span class="line"><span class="attribute">Expires</span>: Wed, 21 Oct 2015 07:28:00 GMT\r\n</span><br><span class="line">\r\n</span><br></pre></td></tr></table></figure>
-
-<p><code>HTTP trailer</code>有如下需要注意的点：</p>
-<ol>
-<li><p><code>Transfer-Encoding</code>得是<code>chunked</code></p>
-</li>
-<li><p>最后一个<code>chunk</code>是<code>0\r\n</code>，只有<code>Transfer-Encoding: chunked</code>而没有<code>Trailer</code>的最后一个<code>chunk</code>是<code>0\r\n\r\n</code></p>
-</li>
-<li><p><code>trailer</code>的内容得在发完所有的<code>http body</code>之后附加</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" data-id="ckkj72zqp000lf6vxffkv2jv2" data-title="HTTP trailer需要注意的点" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP中的zend-string-release和zend-string-release-ex" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" class="article-date">
-  <time class="dt-published" datetime="2020-07-29T04:37:39.000Z" itemprop="datePublished">2020-07-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/">PHP中的zend_string_release和zend_string_release_ex</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在<code>PHP</code>中，释放<code>zend_string</code>可以使用<code>zend_string_release</code>或者<code>zend_string_release_ex</code>。那什么时候应该用<code>zend_string_release</code>，什么时候应该用<code>zend_string_release_ex</code>呢？一句话总结就是，如果我们不确定这个<code>zend_string</code>是不是<code>persistent</code>方式分配的内存，那么就用<code>zend_string_release</code>，如果我们确定这个<code>zend_string</code>是不是以<code>persistent</code>方式分配的内存，那么就使用<code>zend_string_release_ex</code>，因为<code>zend_string_release_ex</code>可以稍微提升性能。我们来看一下这两个函数。</p>
-<p>首先是<code>zend_string_release</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> pefree(ptr, persistent)  ((persistent)?free(ptr):efree(ptr))</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline <span class="keyword">void</span> <span class="title">zend_string_release</span><span class="params">(zend_string *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ZSTR_IS_INTERNED(s)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (GC_DELREF(s) == <span class="number">0</span>) &#123;</span><br><span class="line">            pefree(s, GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个函数做的事情比较简单，先对<code>zend_string</code>的引用计数减一，如果引用计数变为了<code>0</code>，那么就会真正的去调用<code>pefree</code>释放内存。除此之外，这里还需要判断<code>zend_string</code>的分配方式，如果是<code>persistent</code>方式分配的，那么调用<code>free</code>，否则调用<code>efree</code>。</p>
-<p>我们再来看看<code>zend_string_release_ex</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline <span class="keyword">void</span> <span class="title">zend_string_release_ex</span><span class="params">(zend_string *s, <span class="keyword">int</span> persistent)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!ZSTR_IS_INTERNED(s)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (GC_DELREF(s) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">                ZEND_ASSERT(GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">                <span class="built_in">free</span>(s);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ZEND_ASSERT(!(GC_FLAGS(s) &amp; IS_STR_PERSISTENT));</span><br><span class="line">                efree(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>他做的事情也比较简单，先对<code>zend_string</code>的引用计数减一，如果引用计数变为了<code>0</code>，那么判断<code>persistent</code>再决定调用哪一个<code>free</code>。乍眼一看，似乎<code>zend_string_release_ex</code>做的事情比<code>zend_string_release</code>还多，多了一个断言，为啥性能就会更好呢？因为这个<code>ZEND_ASSERT</code>在<code>PHP</code>的非<code>debug</code>模式下，是不会执行的。并且，如果对<code>persistent</code>进行硬编码，编译器会对<code>zend_string_release_ex</code>进行优化：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">    ZEND_ASSERT(GC_FLAGS(s) &amp; IS_STR_PERSISTENT);</span><br><span class="line">    <span class="built_in">free</span>(s);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    ZEND_ASSERT(!(GC_FLAGS(s) &amp; IS_STR_PERSISTENT));</span><br><span class="line">    efree(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，在编译的时候，就已经知道要走哪一个分支了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" data-id="ckkj72zrb001rf6vx2hcqdb0f" data-title="PHP中的zend_string_release和zend_string_release_ex" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP使用json-encode正确的处理浮点数负零的情况" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" class="article-date">
-  <time class="dt-published" datetime="2020-07-28T16:27:24.000Z" itemprop="datePublished">2020-07-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/">PHP使用json_encode正确的处理浮点数负零的情况</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>例如这段代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$array = [<span class="number">-0.0</span>, <span class="number">0.0</span>];</span><br><span class="line">var_dump($array);</span><br><span class="line">$json = json_encode($array);</span><br><span class="line">var_dump($json);</span><br><span class="line">$array = json_decode($json);</span><br><span class="line">var_dump($array);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span>(<span class="number">6</span>) <span class="string">&quot;[-0,0]&quot;</span></span><br><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">int</span>(<span class="number">0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">int</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现，先<code>json_encode</code>再<code>json_decode</code>是不能够还原的。而且<code>value</code>也从<code>float</code>变成了<code>int</code>。这是因为我们在<code>json_encode</code>没有去保留<code>ZERO FRACTION</code>。所以，正确的做法应该是这样的：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$array = [<span class="number">-0.0</span>, <span class="number">0.0</span>];</span><br><span class="line">var_dump($array);</span><br><span class="line">$json = json_encode($array, JSON_PRESERVE_ZERO_FRACTION);</span><br><span class="line">var_dump($json);</span><br><span class="line">$array = json_decode($json);</span><br><span class="line">var_dump($array);</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">string</span>(<span class="number">10</span>) <span class="string">&quot;[-0.0,0.0]&quot;</span></span><br><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">-0</span>)</span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  <span class="keyword">float</span>(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们在<code>encode</code>的时候加上<code>JSON_PRESERVE_ZERO_FRACTION</code>，就会让得到的<code>json</code>字符串保留浮点数的<code>.0</code>，这样在<code>decode</code>的时候，就可以顺利的还原了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" data-id="ckkj72zrc001tf6vxf1sq9v67" data-title="PHP使用json_encode正确的处理浮点数负零的情况" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP使用递归迭代器来遍历指定目录下的指定文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" class="article-date">
-  <time class="dt-published" datetime="2020-07-17T10:59:56.000Z" itemprop="datePublished">2020-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/">PHP使用递归迭代器来遍历指定目录下的指定文件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>目录结构如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator  tree</span><br><span class="line">.</span><br><span class="line">├── dir1</span><br><span class="line">│   ├── dir11</span><br><span class="line">│   │   ├── file11.js</span><br><span class="line">│   │   └── file11.php</span><br><span class="line">│   ├── file1.php</span><br><span class="line">│   └── file1.py</span><br><span class="line">├── dir2</span><br><span class="line">│   ├── file2.css</span><br><span class="line">│   └── file2.php</span><br><span class="line">└── iterator.php</span><br><span class="line"></span><br><span class="line">3 directories, 7 files</span><br><span class="line"> hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator </span><br></pre></td></tr></table></figure>
-
-<p>测试代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$files = <span class="keyword">new</span> <span class="built_in">RecursiveIteratorIterator</span>(<span class="keyword">new</span> <span class="built_in">RecursiveDirectoryIterator</span>(<span class="keyword">__DIR__</span>));</span><br><span class="line">$files = <span class="keyword">new</span> <span class="built_in">RegexIterator</span>($files, <span class="string">&#x27;/\.php$/&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> ($files <span class="keyword">as</span> $file) &#123;</span><br><span class="line">    <span class="comment">/** <span class="doctag">@var</span> SplFileInfo $file */</span></span><br><span class="line">    var_dump($file);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>执行结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator  php iterator.php</span><br><span class="line">object(SplFileInfo)<span class="comment">#7 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(66) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir2/file2.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(9) <span class="string">&quot;file2.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#10 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(66) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir1/file1.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(9) <span class="string">&quot;file1.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#7 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(73) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/dir1/dir11/file11.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(10) <span class="string">&quot;file11.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">object(SplFileInfo)<span class="comment">#10 (2) &#123;</span></span><br><span class="line">  [<span class="string">&quot;pathName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(64) <span class="string">&quot;/Users/hantaohuang/codeDir/phpCode/library/iterator/iterator.php&quot;</span></span><br><span class="line">  [<span class="string">&quot;fileName&quot;</span>:<span class="string">&quot;SplFileInfo&quot;</span>:private]=&gt;</span><br><span class="line">  string(12) <span class="string">&quot;iterator.php&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">hantaohuang@HantaodeMBP  ~/codeDir/phpCode/library/iterator </span><br></pre></td></tr></table></figure>
-
-<p>用起来还是比较舒服的。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" data-id="ckkj72zrd001vf6vxdv51ftj0" data-title="PHP使用递归迭代器来遍历指定目录下的指定文件" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-自己动手实现PHP8的match语法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/" class="article-date">
-  <time class="dt-published" datetime="2020-07-15T14:20:58.000Z" itemprop="datePublished">2020-07-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/">自己动手实现PHP8的match语法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我们现在来实现一下<code>PHP8</code>的<code>match</code>语法。大概形如：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> match (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; <span class="number">2</span></span><br><span class="line">    <span class="number">2</span> =&gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>首先，我们来看看这里有哪些<code>token</code>：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> <span class="keyword">echo</span> 对应 T_ECHO</span><br><span class="line"><span class="number">2.</span> match 对应 T_MATCH</span><br><span class="line"><span class="number">3.</span> ( 对应 T_LEFT_PARENTHESIS</span><br><span class="line"><span class="number">4.</span> ) 对应 T_RIGHT_PARENTHESIS</span><br><span class="line"><span class="number">5.</span> <span class="number">1</span> 对应 T_NUMBER</span><br><span class="line"><span class="number">6.</span> =&gt; 对应 T_DOUBLE_ARROW</span><br><span class="line"><span class="number">7.</span> &#123; 对应 T_LEFT_BRACE</span><br><span class="line"><span class="number">8.</span> &#125; 对应 T_RIGHT_BRACE</span><br></pre></td></tr></table></figure>
-
-<p>所以，我们可以很轻易的写出解析<code>token</code>的规则（<code>match.l</code>）：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;match.tab.h&quot;</span></span></span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line">echo    &#123;<span class="keyword">return</span> T_ECHO;&#125;</span><br><span class="line">match   &#123;<span class="keyword">return</span> T_MATCH;&#125;</span><br><span class="line">[(]     &#123;<span class="keyword">return</span> T_LEFT_PARENTHESIS;&#125;</span><br><span class="line">[)]     &#123;<span class="keyword">return</span> T_RIGHT_PARENTHESIS;&#125;</span><br><span class="line">[&#123;]     &#123;<span class="keyword">return</span> T_LEFT_BRACE;&#125;</span><br><span class="line">[&#125;]     &#123;<span class="keyword">return</span> T_RIGHT_BRACE;&#125;</span><br><span class="line">[<span class="number">0</span><span class="number">-9</span>]+  &#123;yylval = atoi(yytext); <span class="keyword">return</span> T_NUMBER;&#125;</span><br><span class="line">=&gt;      &#123;<span class="keyword">return</span> T_DOUBLE_ARROW;&#125;</span><br><span class="line">\n      <span class="comment">/* ignore end of line */</span></span><br><span class="line">[ \t]+  <span class="comment">/* ignore whitespace */</span></span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
-
-<p>接着，我们要去定义我们的语法规则（<code>match.y</code>）：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">yylex</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">yyparse</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="keyword">extern</span> FILE *yyin;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> yylineno;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">map</span>[<span class="number">100</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">yywrap</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">yyerror</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[error] %s, in %d\n&quot;</span>, s, yylineno);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *file = argv[<span class="number">1</span>];</span><br><span class="line">    FILE *fp = fopen(file, <span class="string">&quot;r&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(fp == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;cannot open %s\n&quot;</span>, file);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    yyin = fp;</span><br><span class="line">    yyparse();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">%&#125;</span><br><span class="line"></span><br><span class="line">%token T_ECHO T_MATCH T_LEFT_PARENTHESIS T_RIGHT_PARENTHESIS T_NUMBER T_DOUBLE_ARROW T_LEFT_BRACE T_RIGHT_BRACE</span><br><span class="line"></span><br><span class="line">%%</span><br><span class="line"></span><br><span class="line">statement:</span><br><span class="line">|   T_ECHO echo_expr    &#123; <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, $<span class="number">2</span>); &#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">echo_expr:</span><br><span class="line">expr</span><br><span class="line">&#123;</span><br><span class="line">    $$ = $<span class="number">1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">expr:</span><br><span class="line">|   match_expr &#123; $$ = $<span class="number">1</span>;&#125;</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">match_expr:</span><br><span class="line">T_MATCH T_LEFT_PARENTHESIS T_NUMBER T_RIGHT_PARENTHESIS T_LEFT_BRACE match_arm_list T_RIGHT_BRACE</span><br><span class="line">&#123;</span><br><span class="line">    $<span class="number">6</span> = <span class="built_in">map</span>[$<span class="number">3</span>];</span><br><span class="line">    $$ = $<span class="number">6</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">match_arm_list:</span><br><span class="line">| match_arm_list match_arm</span><br><span class="line">;</span><br><span class="line"></span><br><span class="line">match_arm:</span><br><span class="line">T_NUMBER T_DOUBLE_ARROW T_NUMBER</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">map</span>[$<span class="number">1</span>] = $<span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">%%</span><br></pre></td></tr></table></figure>
-
-<p>语法规则会稍微难理解一点，我们来解释一下。其中，<code>statement</code>是起始的非终结符，可以推导出我们的<code>echo</code>表达式<code>echo_expr</code>；而我们的<code>echo</code>表达式实际上也是一个表达式，这个表达式可以是我们的<code>match</code>表达式<code>match_expr</code>；<code>match_expr</code>需要匹配到<code>match</code>、<code>（</code>等等这些<code>token</code>。但是，我们的匹配列表<code>match_arm_list</code>它不是终结符，我们还可以继续推导，可以发现，实际上<code>match_arm_list</code>是一个递归的，知道推导出<code>match_arm</code>某一项。一旦我们匹配到了<code>match_arm</code>，我们就把<code>key</code>和<code>value</code>保存在<code>map</code>里面。</p>
-<p>我们来编译一下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lex match.l</span><br><span class="line"></span><br><span class="line">bison -d match.y</span><br><span class="line"></span><br><span class="line">cc -o match lex.yy.c match.tab.c</span><br></pre></td></tr></table></figure>
-
-<p>此时会生成可执行文件<code>match</code>。</p>
-<p>我们来写一下我们的测试脚本 （<code>match.php</code>）：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> match (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; <span class="number">2</span></span><br><span class="line">    <span class="number">2</span> =&gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后执行脚本：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./match match.php</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
-
-<p>此时会输出<code>2</code>。如果我们把匹配条件改一下，改成<code>2</code>：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> match (<span class="number">2</span>) &#123;</span><br><span class="line">    <span class="number">1</span> =&gt; <span class="number">2</span></span><br><span class="line">    <span class="number">2</span> =&gt; <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>将会输出<code>3</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./match match.php</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
-
-<p>符合我们的预期。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/" data-id="ckkj72zv200bsf6vx0mpgbhn4" data-title="自己动手实现PHP8的match语法" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP中的SEPARATE_ARRAY" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/" class="article-date">
-  <time class="dt-published" datetime="2020-07-11T13:34:56.000Z" itemprop="datePublished">2020-07-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/">PHP中的SEPARATE_ARRAY</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本篇文章基于PHP的commit为：9fa1d1330138ac424f990ff03e62721120aaaec3</p>
-</blockquote>
-<p>在<code>PHP</code>内核里面，有一个叫做<code>SEPARATE_ARRAY</code>的宏。长这样：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEPARATE_ARRAY(zv) do &#123;                     \</span></span><br><span class="line">    zval *_zv = (zv);                               \</span><br><span class="line">    zend_array *_arr = Z_ARR_P(_zv);                \</span><br><span class="line">    <span class="keyword">if</span> (UNEXPECTED(GC_REFCOUNT(_arr) &gt; <span class="number">1</span>)) &#123;        \</span><br><span class="line">        <span class="keyword">if</span> (Z_REFCOUNTED_P(_zv)) &#123;                  \</span><br><span class="line">            GC_DELREF(_arr);                        \</span><br><span class="line">        &#125;                                           \</span><br><span class="line">        ZVAL_ARR(_zv, zend_array_dup(_arr));        \</span><br><span class="line">    &#125;                                               \</span><br><span class="line">&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-
-<p>一句话来说，这个宏做的事情就是分离<code>zend_array</code>。我们知道，<code>PHP</code>是通过引用计数来管理多个变量对数组的引用，如果其中一个变量需要去修改数组的内容，那么底层就会单独为这个变量分配一个新的<code>zend_array</code>，并且原来的<code>zend_array</code>的引用计数减一。然后，<code>SEPARATE_ARRAY</code>做的事情就是这个。</p>
-<p>因为<code>PHP</code>底层实在是有太多需要修改数组的操作了，所以我们确实需要<code>SEPARATE_ARRAY</code>来帮助我们去分离数组。</p>
-<p>除此之外，我们会在<code>zend_hash.c</code>文件的所有写数组的函数里面发现<code>HT_ASSERT_RC1</code>这个断言宏。这个宏对于写<code>C</code>扩展的我们来说，在<code>debug</code>上是非常的有帮助的。我们来看看<code>HT_ASSERT_RC1</code>这个宏：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HT_ASSERT_RC1(ht) HT_ASSERT(ht, GC_REFCOUNT(ht) == 1)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> ZEND_DEBUG</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> HT_ASSERT(ht, expr) \</span></span><br><span class="line">    ZEND_ASSERT((expr) || (HT_FLAGS(ht) &amp; HASH_FLAG_ALLOW_COW_VIOLATION))</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> HT_ASSERT(ht, expr)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>首先，这个宏只会在<code>PHP</code>开启<code>debug</code>的时候才会起作用。</p>
-<p>然后，我们发现，这个断言宏能够成功的情况有两个。一个是设置了<code>zend_array</code>的<code>HASH_FLAG_ALLOW_COW_VIOLATION</code>标志；第二个是<code>zend_array</code>的引用计数是<code>1</code>。我们先来说一下第二点，因为第一点和第二点有关系。</p>
-<p>为什么<code>zend_array</code>的引用计数要是<code>1</code>？</p>
-<p>因为<code>PHP</code>扩展操作数组的函数没法对数组进行分离。我们知道，如果修改一个数组，是需要发生写时复制的（我们也可以叫做写时分离），如果不进行写时复制，那么就会导致其他引用了这个数组的变量出问题（可能这是一个你意想不到的修改）。所以，只要这个数组的引用计数是<code>1</code>，我们就可以确定，这个数组只有一个变量在引用，所以我们可以放心的去修改它了。</p>
-<p>那么，如果我们非要在引用计数大于<code>1</code>的时候去修改这个数组呢？那么第一种情况就起作用了，我们可以设置<code>HASH_FLAG_ALLOW_COW_VIOLATION</code>这个标志（翻译过来就是<strong>允许违反写时复制</strong>），来强制不遵守写时复制的规则。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/" data-id="ckkj72zra001pf6vx7rmwee26" data-title="PHP中的SEPARATE_ARRAY" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PHP扩展中的Makefile-frag文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/" class="article-date">
-  <time class="dt-published" datetime="2020-07-10T09:31:41.000Z" itemprop="datePublished">2020-07-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/">PHP扩展中的Makefile.frag文件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文基于PHP8的commit为：9fa1d1330138ac424f990ff03e62721120aaaec3</p>
-</blockquote>
-<p>首先，我们来创建一个扩展骨架：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ php ext_skel.php --ext frag</span><br><span class="line"></span><br><span class="line">Copying config scripts... <span class="keyword">done</span></span><br><span class="line">Copying sources... <span class="keyword">done</span></span><br><span class="line">Copying tests... <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">Success. The extension is now ready to be compiled. To <span class="keyword">do</span> so, use the</span><br><span class="line">following steps:</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /path/to/php-src/ext/frag</span><br><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line">Don<span class="string">&#x27;t forget to run tests once the compilation is done:</span></span><br><span class="line"><span class="string">make test</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Thank you for using PHP!</span></span><br></pre></td></tr></table></figure>
-
-<p>然后，我们进入<code>frag</code>目录，并且创建文件<code>Makefile.frag</code>：</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">generate: show-generate-info</span></span><br><span class="line">    touch generate.c</span><br><span class="line"></span><br><span class="line"><span class="section">show-generate-info:</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            GENERATE FILE                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            =============                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo</span><br><span class="line">    @echo</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，这里实现的功能是创建文件<code>generate.c</code>。</p>
-<p>然后，我们修改<code>config.m4</code>文件，完整替换为如下内容</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PHP_ARG_ENABLE([frag],</span><br><span class="line">  [whether to <span class="built_in">enable</span> frag support],</span><br><span class="line">  [AS_HELP_STRING([--enable-frag],</span><br><span class="line">    [Enable frag support])],</span><br><span class="line">  [no])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> <span class="string">&quot;<span class="variable">$PHP_FRAG</span>&quot;</span> != <span class="string">&quot;no&quot;</span>; <span class="keyword">then</span></span><br><span class="line">  AC_DEFINE(HAVE_FRAG, 1, [ Have frag support ])</span><br><span class="line"></span><br><span class="line">  PHP_ADD_MAKEFILE_FRAGMENT(Makefile.frag)</span><br><span class="line"></span><br><span class="line">  PHP_NEW_EXTENSION(frag, frag.c generate.c, <span class="variable">$ext_shared</span>)</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<p>我们注意到，我们需要编译的文件除了<code>frag.c</code>之外，还有待生成的<code>generate.c</code>文件。</p>
-<p>接着，我们开始编译我们的扩展：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ phpize</span><br><span class="line">Configuring <span class="keyword">for</span>:</span><br><span class="line">PHP Api Version:         20190128</span><br><span class="line">Zend Module Api No:      20190128</span><br><span class="line">Zend Extension Api No:   420190128</span><br><span class="line"></span><br><span class="line">$ ./configure</span><br><span class="line">creating libtool</span><br><span class="line">appending configuration tag <span class="string">&quot;CXX&quot;</span> to libtool</span><br><span class="line">configure: patching config.h.in</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating config.h</span><br></pre></td></tr></table></figure>
-
-<p>到这里，我们的<code>Makefile</code>文件已经生成了，我们会发现，在我们的<code>Makefile</code>文件里面，有如下内容：</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">.NOEXPORT:</span></span><br><span class="line"><span class="section">generate: show-generate-info</span></span><br><span class="line">    touch generate.c</span><br><span class="line"></span><br><span class="line"><span class="section">show-generate-info:</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            GENERATE FILE                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                            =============                             |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  |                                                                      |&quot;</span></span><br><span class="line">    @echo   <span class="string">&quot;  +----------------------------------------------------------------------+&quot;</span></span><br><span class="line">    @echo</span><br><span class="line">    @echo</span><br></pre></td></tr></table></figure>
-
-<p>这实际上就是我们<code>Makefile.frag</code>里面的内容了。</p>
-<p>所以，接下来我们要先创建<code>generate.c</code>文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ make generate</span><br><span class="line">  +----------------------------------------------------------------------+</span><br><span class="line">  |                                                                      |</span><br><span class="line">  |                            GENERATE FILE                             |</span><br><span class="line">  |                            =============                             |</span><br><span class="line">  |                                                                      |</span><br><span class="line">  +----------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">touch generate.c</span><br></pre></td></tr></table></figure>
-
-<p>然后编译扩展：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">make</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">Libraries have been installed <span class="keyword">in</span>:</span><br><span class="line">   /Users/hantaohuang/codeDir/cCode/php-src/ext/frag/modules</span><br><span class="line"></span><br><span class="line">If you ever happen to want to link against installed libraries</span><br><span class="line"><span class="keyword">in</span> a given directory, LIBDIR, you must either use libtool, and</span><br><span class="line">specify the full pathname of the library, or use the `-LLIBDIR<span class="string">&#x27;</span></span><br><span class="line"><span class="string">flag during linking and do at least one of the following:</span></span><br><span class="line"><span class="string">   - add LIBDIR to the `DYLD_LIBRARY_PATH&#x27;</span> environment variable</span><br><span class="line">     during execution</span><br><span class="line"></span><br><span class="line">See any operating system documentation about shared libraries <span class="keyword">for</span></span><br><span class="line">more information, such as the ld(1) and ld.so(8) manual pages.</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">Build complete.</span><br><span class="line">Don<span class="string">&#x27;t forget to run &#x27;</span>make <span class="built_in">test</span><span class="string">&#x27;.</span></span><br></pre></td></tr></table></figure>
-
-<p>此时，我们完成了这次扩展的编译。</p>
-<p>这个技巧在我们需要动态生成源文件的时候可以使用，比如<code>json</code>扩展它有一个词法分析的文件，他就是通过这个方法来实现构建的。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/" data-id="ckkj72zrq002sf6vx4j1pgd0a" data-title="PHP扩展中的Makefile.frag文件" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-zend-throw-error用法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/" class="article-date">
-  <time class="dt-published" datetime="2020-07-08T01:34:53.000Z" itemprop="datePublished">2020-07-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/">zend_throw_error用法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本文基于PHP的commit为：b18b2c8fe587321384c9423470cf97d8040b32e2</p>
-</blockquote>
-<p>在执行<code>PHP</code>扩展层面的代码的时候，如果遇到了错误，我们可以通过<code>zend_throw_error</code>这个函数来设置<code>error</code>异常对象，然后使用宏<code>RETURN_THROWS</code>来退出扩展函数。例如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">digest = algo-&gt;hash(password, options);</span><br><span class="line"><span class="keyword">if</span> (!digest) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!EG(exception)) &#123;</span><br><span class="line">        zend_throw_error(<span class="literal">NULL</span>, <span class="string">&quot;Password hashing failed for unknown reason&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    RETURN_THROWS();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们来看看<code>zend_throw_error</code>会做些什么：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ZEND_API ZEND_COLD <span class="keyword">void</span> <span class="title">zend_throw_error</span><span class="params">(zend_class_entry *exception_ce, <span class="keyword">const</span> <span class="keyword">char</span> *format, ...)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    va_list va;</span><br><span class="line">    <span class="keyword">char</span> *message = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!exception_ce) &#123;</span><br><span class="line">        exception_ce = zend_ce_error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Marker used to disable exception generation during preloading. */</span></span><br><span class="line">    <span class="keyword">if</span> (EG(exception) == (<span class="keyword">void</span>*)(<span class="keyword">uintptr_t</span>)<span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    va_start(va, format);</span><br><span class="line">    zend_vspprintf(&amp;message, <span class="number">0</span>, format, va);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//<span class="doctag">TODO:</span> we can&#x27;t convert compile-time errors to exceptions yet???</span></span><br><span class="line">    <span class="keyword">if</span> (EG(current_execute_data) &amp;&amp; !CG(in_compilation)) &#123;</span><br><span class="line">        zend_throw_exception(exception_ce, message, <span class="number">0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        zend_error(E_ERROR, <span class="string">&quot;%s&quot;</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    efree(message);</span><br><span class="line">    va_end(va);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>首先是：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!exception_ce) &#123;</span><br><span class="line">    exception_ce = zend_ce_error;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>会先判断是否传递了异常类<code>exception_ce</code>，如果没有传递，那么使用<code>PHP</code>默认的<code>zend_ce_error</code>异常类。</p>
-<p>然后，这里核心的地方是：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (EG(current_execute_data) &amp;&amp; !CG(in_compilation)) &#123;</span><br><span class="line">    zend_throw_exception(exception_ce, message, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ZEND_API ZEND_COLD zend_object *<span class="title">zend_throw_exception</span><span class="params">(zend_class_entry *exception_ce, <span class="keyword">const</span> <span class="keyword">char</span> *message, zend_long code)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_string *msg_str = message ? zend_string_init(message, <span class="built_in">strlen</span>(message), <span class="number">0</span>) : <span class="literal">NULL</span>;</span><br><span class="line">    zend_object *ex = zend_throw_exception_zstr(exception_ce, msg_str, code);</span><br><span class="line">    <span class="keyword">if</span> (msg_str) &#123;</span><br><span class="line">        zend_string_release(msg_str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ex;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_object *<span class="title">zend_throw_exception_zstr</span><span class="params">(zend_class_entry *exception_ce, zend_string *message, zend_long code)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">    object_init_ex(&amp;ex, exception_ce);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (message) &#123;</span><br><span class="line">        ZVAL_STR(&amp;tmp, message);</span><br><span class="line">        zend_update_property_ex(exception_ce, &amp;ex, ZSTR_KNOWN(ZEND_STR_MESSAGE), &amp;tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (code) &#123;</span><br><span class="line">        ZVAL_LONG(&amp;tmp, code);</span><br><span class="line">        zend_update_property_ex(exception_ce, &amp;ex, ZSTR_KNOWN(ZEND_STR_CODE), &amp;tmp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    zend_throw_exception_internal(&amp;ex);</span><br><span class="line">    <span class="keyword">return</span> Z_OBJ(ex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ZEND_API ZEND_COLD <span class="keyword">void</span> <span class="title">zend_throw_exception_internal</span><span class="params">(zval *exception)</span> <span class="comment">/* &#123;&#123;&#123; */</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">    <span class="keyword">if</span> (exception != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        zend_object *previous = EG(exception);</span><br><span class="line">        zend_exception_set_previous(Z_OBJ_P(exception), EG(exception));</span><br><span class="line">        EG(exception) = Z_OBJ_P(exception);</span><br><span class="line">        <span class="keyword">if</span> (previous) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码做了一件事情，把<code>zend_ce_error</code>异常类实例化，然后设置它的<code>message</code>等属性，最后设置<code>EG(exception)</code>为这个实例化的对象。（所以，我们的<code>RETURN_THROWS</code>断言会成功）。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/" data-id="ckkj72zsy005nf6vx3guwgq00" data-title="zend_throw_error用法" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
 
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
+      
+  <div class="widget">
     <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
         
           <li>
-            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="title">ptrace使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-02T12:19:39.000Z" itemprop="datePublished">2021-02-02</time>
+              </p>
+            </div>
           </li>
-        
+          
       </ul>
     </div>
   </div>
+  
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 codinghuang<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
+  </div>
+</aside>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+  <main class="main" role="main">
+  
+  <div class="content article-list">
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/">PHP在__get魔术方法中进行Swoole协程切换的问题</a>
+    </h1>
+  
 
   </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+	  <time datetime="2020-08-09T08:57:51.000Z" itemprop="datePublished">Aug 9</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="article-tag-link-link" href="/tags/Swoole/" rel="tag">Swoole</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/09/PHP%E5%9C%A8-get%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E4%B8%AD%E8%BF%9B%E8%A1%8CSwoole%E5%8D%8F%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E9%97%AE%E9%A2%98/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.2k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 5(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/">KeepAlive和心跳检查</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/" class="article-date">
+	  <time datetime="2020-08-07T09:09:26.000Z" itemprop="datePublished">Aug 7</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/08/07/KeepAlive%E5%92%8C%E5%BF%83%E8%B7%B3%E6%A3%80%E6%9F%A5/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 186(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/">HTTP trailer需要注意的点</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" class="article-date">
+	  <time datetime="2020-07-31T15:36:03.000Z" itemprop="datePublished">Jul 31</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/HTTP/" rel="tag">HTTP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/31/HTTP-trailer%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 101(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/">PHP中的zend_string_release和zend_string_release_ex</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/" class="article-date">
+	  <time datetime="2020-07-29T04:37:39.000Z" itemprop="datePublished">Jul 29</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/29/PHP%E4%B8%AD%E7%9A%84zend-string-release%E5%92%8Czend-string-release-ex/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 435(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/">PHP使用json_encode正确的处理浮点数负零的情况</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/" class="article-date">
+	  <time datetime="2020-07-28T16:27:24.000Z" itemprop="datePublished">Jul 29</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/29/PHP%E4%BD%BF%E7%94%A8json-encode%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%AE%E7%82%B9%E6%95%B0%E8%B4%9F%E9%9B%B6%E7%9A%84%E6%83%85%E5%86%B5/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 212(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/">PHP使用递归迭代器来遍历指定目录下的指定文件</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/" class="article-date">
+	  <time datetime="2020-07-17T10:59:56.000Z" itemprop="datePublished">Jul 17</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/17/PHP%E4%BD%BF%E7%94%A8%E9%80%92%E5%BD%92%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%9D%A5%E9%81%8D%E5%8E%86%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 267(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/">自己动手实现PHP8的match语法</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/" class="article-date">
+	  <time datetime="2020-07-15T14:20:58.000Z" itemprop="datePublished">Jul 15</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/15/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0PHP8%E7%9A%84match%E8%AF%AD%E6%B3%95/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 591(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/">PHP中的SEPARATE_ARRAY</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/" class="article-date">
+	  <time datetime="2020-07-11T13:34:56.000Z" itemprop="datePublished">Jul 11</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/11/PHP%E4%B8%AD%E7%9A%84SEPARATE_ARRAY/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 615(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/">PHP扩展中的Makefile.frag文件</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/" class="article-date">
+	  <time datetime="2020-07-10T09:31:41.000Z" itemprop="datePublished">Jul 10</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/10/PHP%E6%89%A9%E5%B1%95%E4%B8%AD%E7%9A%84Makefile-frag%E6%96%87%E4%BB%B6/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 554(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/">zend_throw_error用法</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/" class="article-date">
+	  <time datetime="2020-07-08T01:34:53.000Z" itemprop="datePublished">Jul 8</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/07/08/zend-throw-error%E7%94%A8%E6%B3%95/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 451(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+  </div>
+
+  
+    
+    <nav class="bar bar-footer clearfix" data-stick-bottom>
+        <div class="bar-inner">
+        <ul class="pager pull-left">
+            
+            <li class="prev">
+                <a href="/page/6/">
+                    <i class="icon icon-angle-left"></i>
+                    Prev
+                </a>
+            </li>
+            
+            
+            <li class="next">
+                <a href="/page/8/">
+                    Next
+                    <i class="icon icon-angle-right"></i>
+                </a>
+            </li>
+            
+        </ul>
+        <div class="total-article bar-right">Page 7 of 23</div>
+        </div>
+    </nav>
+    
+ 
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
 </body>
 </html>

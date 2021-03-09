@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang=zh>
 <head>
   <meta charset="utf-8">
   
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
   
   <title>codinghuang的个人博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="比PHP多一些">
 <meta property="og:type" content="website">
 <meta property="og:title" content="codinghuang的个人博客">
@@ -15,951 +27,727 @@
 <meta property="og:locale">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/page/18/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
   
   
 <link rel="stylesheet" href="/css/style.css">
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
+  
+  
   
 <meta name="generator" content="Hexo 5.1.1"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">codinghuang的个人博客</a>
-      </h1>
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">简洁些、干净些、直接些...</a>
-        </h2>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://huanghantao.github.io"></form>
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
       </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
     </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
   </div>
 </header>
 
-      <div class="outer">
-        <section id="main">
   
-    <article id="post-外部排序-PHP版本" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/04/11/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F-PHP%E7%89%88%E6%9C%AC/" class="article-date">
-  <time class="dt-published" datetime="2018-04-11T10:55:22.000Z" itemprop="datePublished">2018-04-11</time>
-</a>
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/04/11/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F-PHP%E7%89%88%E6%9C%AC/">外部排序--PHP版本</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>发现网上搜不到PHP版本的外部排序，有点心疼。所以打算自己写一个，这里和大家分享下。这应该是网上第一个PHP版本的外部排序。</p>
-<p>小伙伴们应该都写过或者听过一些排序算法，例如：<code>冒泡排序</code>、<code>选择排序</code>、<code>归并排序</code>、<code>快速排序</code>、<code>堆排序</code>。（建议小伙伴们都要掌握这几种最基本的排序算法，一定要随时可以写出来）</p>
-<p>但是对于外部排序不一定都听过。因为学生嘛，平时写的项目大多是玩具，所以很少有大量的数据需要处理，自然就没必要用到外部排序了。</p>
-<p>但是，从今天开始，小伙伴们就需要知道什么是外部排序了。</p>
-<p>是这样的，一般我们要排序的数据量都很小，所以写个快速排序呀等等排序算法就可以把数据排好。而且这些排序算法都有一个特点，就是<strong>只用到了内存</strong>，因此这些算法被称为内部排序。而<strong>外部排序就是在排序过程中用到了外存，例如磁盘</strong>。为什么需要用到外存？因为需要排序的数据量很大，例如好几十个G，但是可使用的内存却只有几个G，因此，我们不能直接使用内部排序，需要借助外存来完成整个排序的过程。</p>
-<h2 id="外部排序总体思路"><a href="#外部排序总体思路" class="headerlink" title="外部排序总体思路"></a>外部排序总体思路</h2><p>1、从整个大文件里面循环读取一定量的数据到内存里面，然后把这部分数据排好序之后，写入一个小文件。达到把整个大文件分割成一定量的小文件的目的。</p>
-<p>2、因为每个小文件里面的数据都是已经排好序的了，所以可以对小文件进行归并的操作，最终得到的大文件就是完全排好序的。</p>
-<h2 id="开始实现"><a href="#开始实现" class="headerlink" title="开始实现"></a>开始实现</h2><p>首先我们定义了一些接口和类，来方便我们完成对文件的一些读写操作。</p>
-<p>FileInterface.php文件：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">FileInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params"></span>)</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">write</span>(<span class="params">$file</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>SortingAlgorithmInterface.php文件：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">SortingAlgorithmInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">$outputPath</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>File.php文件：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">File</span> <span class="keyword">implements</span> <span class="title">FileInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> $file;</span><br><span class="line">	<span class="keyword">public</span> $list = [];</span><br><span class="line">	<span class="keyword">public</span> $fileSize;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params">$file</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;file = $file;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;fileSize = filesize($file); <span class="comment">// 得到文件大小</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params">$offset= <span class="number">0</span>, $maxlen = <span class="number">500000</span> </span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// 将整个文件读入一个字符串</span></span><br><span class="line">		$list = file_get_contents(<span class="keyword">$this</span>-&gt;file);</span><br><span class="line">		<span class="keyword">$this</span>-&gt;list = explode(<span class="string">&#x27;,&#x27;</span>, $list); <span class="comment">// 将字符串打散为数组</span></span><br><span class="line">		$list = <span class="literal">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">write</span>(<span class="params">$file</span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// 打开文件$file，如果不存在则创建它</span></span><br><span class="line">		$file = fopen($file, <span class="string">&#x27;w&#x27;</span>);</span><br><span class="line">        <span class="comment">// 把排好序的数组合并成字符串后写入文件</span></span><br><span class="line">		$string = fwrite($file, implode(<span class="string">&quot;\n&quot;</span>, <span class="keyword">$this</span>-&gt;list) );</span><br><span class="line">		fclose($file);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里提一点，在<code>write</code>方法中，我使用了<code>implode(&quot;\n&quot;, $this-&gt;list)</code>，也就是说通过<code>&quot;\n&quot;</code>来对数组元素进行连接，写入文件里面。使用<code>&quot;\n&quot;</code>的原因是为了方便从文件中读取一个值。</p>
-<p>OK，接下来解释关键性的操作了，也就是ModifiedMergeSort.php文件里面的内容。</p>
-<p>先来看看ModifiedMergeSort类里面都有什么成员变量：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModifiedMergeSort</span> <span class="keyword">implements</span> <span class="title">SortingAlgorithmInterface</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $file;</span><br><span class="line">	<span class="keyword">protected</span> $sizeLimit;</span><br><span class="line">	<span class="keyword">protected</span> $tmpFiles = [];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>$file</code>是用来保存文件对象的，也就是一个<code>File</code>对象。</p>
-<p><code>$sizeLimit</code>用来存放我们可以使用多少内存来完成排序的值。</p>
-<p><code>$tmpFiles</code>用来保存小文件的文件名。</p>
-<p>OK，接下来我们来看看<code>ModifiedMergeSort</code>类里面的<code>sort</code>方法：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">$outputPath = <span class="string">&#x27;output&#x27;</span></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;file-&gt;fileSize &gt; <span class="keyword">$this</span>-&gt;sizeLimit) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;externalSort();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 如果文件在指定的大小范围内, 直接在内存中进行排序</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">// 把文件中的数字读入到数组里面，保存在$this-&gt;file-&gt;list里面</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;file-&gt;read();</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;sorting file\n&quot;</span>;</span><br><span class="line">        <span class="comment">// 对数组中的元素进行排序，排序之后$this-&gt;file-&gt;list就是有序的数组了</span></span><br><span class="line">		sort(<span class="keyword">$this</span>-&gt;file-&gt;list);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;output($outputPath);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在这里，有一个判断的操作：如果大文件的文件大小要大于我们可以使用的内存大小，则使用外部排序，即调用<code>externalSort</code>方法；否则把整个文件读取到内存中，然后直接在内存中进行内部排序即可。</p>
-<p>我们重点看看<code>externalSort</code>方法。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">externalSort</span>(<span class="params"></span>) </span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="comment">// 分成小块</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;chunk();</span><br><span class="line">		<span class="comment">// 文件拆分后，将它们按正确的顺序重新组合在一起</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;mergeFile();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;External sort TBC\n&quot;</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，这就是我们上面写的外部排序总体思路：<strong>先分块，后归并</strong>。</p>
-<p>OK，我们来看看如何把一个大文件拆分成多个小文件：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">chunk</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Splitting file...\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">		$handle = fopen(<span class="keyword">$this</span>-&gt;file-&gt;file, <span class="string">&quot;r&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Couldn&#x27;t get handle&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> ($handle) &#123;</span><br><span class="line"></span><br><span class="line">			$tmpNum = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 检测文件指针是否已到达文件末尾</span></span><br><span class="line">		    <span class="keyword">while</span> (!feof($handle)) &#123;</span><br><span class="line">		        $buffer = fgets($handle, <span class="keyword">$this</span>-&gt;sizeLimit);</span><br><span class="line"></span><br><span class="line">		        $list = explode(<span class="string">&#x27;,&#x27;</span>, $buffer);</span><br><span class="line"></span><br><span class="line">		        <span class="comment">// 在把数据保存在临时文件之前排序</span></span><br><span class="line">		        <span class="comment">// $list数组里面是已经排好序的了</span></span><br><span class="line">		        sort($list);</span><br><span class="line"></span><br><span class="line">		        <span class="comment">// 移除空域</span></span><br><span class="line">		        <span class="keyword">$this</span>-&gt;file-&gt;list = array_filter($list);</span><br><span class="line"></span><br><span class="line">		        $fileName = <span class="string">&#x27;tmp-&#x27;</span> . $tmpNum . <span class="string">&#x27;.txt&#x27;</span>;</span><br><span class="line"></span><br><span class="line">		        <span class="keyword">$this</span>-&gt;file-&gt;write(<span class="string">&quot;output/<span class="subst">$fileName</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">		        <span class="keyword">$this</span>-&gt;tmpFiles[] = $fileName;</span><br><span class="line"></span><br><span class="line">		        ++$tmpNum;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// fstat() 函数返回关于打开文件的信息，fstat($handle)[&#x27;size&#x27;]是文件大小</span></span><br><span class="line">		        <span class="comment">// $this-&gt;tmpFiles[$fileName][&#x27;size&#x27;] = fstat($handle)[&#x27;size&#x27;];</span></span><br><span class="line"></span><br><span class="line">		        <span class="keyword">echo</span> <span class="string">&quot;New file: output/<span class="subst">$fileName</span>\n&quot;</span>;</span><br><span class="line">		    &#125;</span><br><span class="line"></span><br><span class="line">		    fclose($handle);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-<p>重点看while循环里面的内容。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$buffer = fgets($handle, <span class="keyword">$this</span>-&gt;sizeLimit);</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，我们每次循环都读取<code>sizeLimit</code>字节的数据。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$list = explode(<span class="string">&#x27;,&#x27;</span>, $buffer);</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，我们把由这些数据构成的字符串变成数组。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sort($list);</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，对这个数组从小到大进行排序。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$fileName = <span class="string">&#x27;tmp-&#x27;</span> . $tmpNum . <span class="string">&#x27;.txt&#x27;</span>;</span><br><span class="line"><span class="keyword">$this</span>-&gt;file-&gt;write(<span class="string">&quot;output/<span class="subst">$fileName</span>&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>也就是说，把排好序的数据写入小文件。小文件的命名格式是<code>tmp-第几个小文件-.txt</code>。</p>
-<p>OK，完成了文件拆分，接下来是归并的过程。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">mergeFile</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;正在归并...\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断归并是否结束</span></span><br><span class="line">    $flag_num = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 最小数字的文件索引</span></span><br><span class="line">    $min_data_index = <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">// 最小数字</span></span><br><span class="line">    $min_data = PHP_INT_MAX;</span><br><span class="line"></span><br><span class="line">    $little_file_nums = count(<span class="keyword">$this</span>-&gt;tmpFiles);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 用来存放所有小文件的文件句柄</span></span><br><span class="line">    $handle = [];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 用来存放大文件的文件句柄</span></span><br><span class="line">    $big_file_handle = fopen(<span class="string">&#x27;output/big_file.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>);</span><br><span class="line">    <span class="comment">// 用来存放小文件的第一个数字，即该文件的最小值</span></span><br><span class="line">    $first_data = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; $little_file_nums; ++$i) &#123;</span><br><span class="line">        $handle[$i] = fopen(<span class="string">&#x27;output/&#x27;</span> . <span class="keyword">$this</span>-&gt;tmpFiles[$i], <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; $little_file_nums; ++$i) &#123;</span><br><span class="line">        $first_data[$i] = (<span class="keyword">int</span>)fgets($handle[$i]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ($min_data &gt; $first_data[$i]) &#123;</span><br><span class="line">            $min_data_index = $i;</span><br><span class="line">            $min_data = $first_data[$i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fwrite($big_file_handle, $min_data);</span><br><span class="line">    fwrite($big_file_handle, <span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123; <span class="comment">// 文件全部读取完毕</span></span><br><span class="line">        $first_data[$min_data_index] = (<span class="keyword">int</span>)fgets($handle[$min_data_index]);</span><br><span class="line">        <span class="keyword">if</span> ($first_data[$min_data_index] == <span class="literal">false</span>) &#123;</span><br><span class="line">            ++$flag_num;</span><br><span class="line">            $first_data[$min_data_index] = PHP_INT_MAX;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ($flag_num == $little_file_nums) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $min_data_index = <span class="number">-1</span>;</span><br><span class="line">        $min_data = PHP_INT_MAX;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 找出数组中最小的数字</span></span><br><span class="line">        <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; $little_file_nums; ++$i) &#123;</span><br><span class="line">            <span class="keyword">if</span> ($min_data &gt; $first_data[$i]) &#123;</span><br><span class="line">                $min_data_index = $i;</span><br><span class="line">                $min_data = $first_data[$i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        fwrite($big_file_handle, $min_data);</span><br><span class="line">        fwrite($big_file_handle, <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; $little_file_nums; ++$i) &#123;</span><br><span class="line">        fclose($handle[$i]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里，我们采用的是多路归并排序而不是两路归并排序。</p>
-<p>多路归并排序思路：</p>
-<ul>
-<li>将每个小文件里面的文件指针指向的数读入(由于有序，所以为该文件最小数)，存放在一个first_data数组中；</li>
-<li>找出first_data数组中最小的数min_data，及其对应的文件索引index；</li>
-<li>把从first_data数组中找到的那个最小的数写入大文件<code>big_file.txt</code>里面，然后更新数组first_data(根据index读取该文件下一个数，来代替min_data)；</li>
-<li>判断所有小文件的所有数据是否都读取完毕。如果没有，继续归并操作；如果全部读完了，跳出循环，结束归并的过程。</li>
-</ul>
-<p>所以，可以得到如下的流程图：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F--PHP%E7%89%88%E6%9C%AC/1.png"></p>
-<p>这些步骤中，比较难办的一点就是如何判断所有的数据都读取完毕了。其中，一个最笨的办法就是每次都在循环中判断所有文件的文件指针是否都指向<code>EOF</code>了，如果都指向<code>EOF</code>，那么就说明所有数据读取完毕；否则没有，需要继续读。但是，这样的话，每次都需要对所有的文件指针进行遍历。如果小文件有几万个，那消耗的时间就多了，所以我没有采取这种办法。</p>
-<p>于是我问了问我一个打算法比赛的室友，得到了一种思路：因为我们知道小文件一共有多少个，所以我们可以去统计一共有多少个文件的文件指针到达了文件末尾。一旦到达文件末尾的文件指针个数和小文件的个数相等，那么我们就可以判断所有数据被读取完毕了，也就是如下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ($flag_num == $little_file_nums) &#123;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>OK，我再讲一讲一个细节上的问题：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$first_data[$i] = (<span class="keyword">int</span>)fgets($handle[$i]);</span><br></pre></td></tr></table></figure>
-
-<p>这里对从文件里面读取出来的数据进行了数据类型的转换，原因是：从文件里面读取出来的数字是字符串类型，而字符串类型做大小比较就有些坑了。例如，字符串<code>&quot;123&quot;</code>要比字符串<code>&quot;5&quot;</code>小。</p>
-<p>下面是我的测试数据：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F--PHP%E7%89%88%E6%9C%AC/2.png"></p>
-<p>（我对一个46兆左右的数据进行排序，使用的内存限制是1兆）</p>
-<p>可以看出，耗时为185秒左右，也就是3分钟左右。</p>
-<p>好了，外部排序大致就是这样了，其实还是有很大的优化空间的，特别是在归并的过程中，可以使用胜者树，败者树来进行优化。有时间我会补充。</p>
-<p>参考：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/abdimaye/external-sort">大文件拆分成小文件</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/dce6a43d4678">外部排序</a></p>
-
-      
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/04/11/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F-PHP%E7%89%88%E6%9C%AC/" data-id="ckkj72zu1009af6vxenxv1i6t" data-title="外部排序--PHP版本" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+</div>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-使用B-树索引来模拟Hash索引" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/04/06/%E4%BD%BF%E7%94%A8B-%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/" class="article-date">
-  <time class="dt-published" datetime="2018-04-06T10:53:19.000Z" itemprop="datePublished">2018-04-06</time>
-</a>
     
-  </div>
-  <div class="article-inner">
+      
+
     
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/04/06/%E4%BD%BF%E7%94%A8B-%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/">使用B+树索引来模拟Hash索引</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>MySQL对于B+树索引的长度是有限制的。如果我们想要在一个很长字符串（例如<code>varchar(255)</code>）上进行查找，就得使用前缀索引。但是有时这样还是会使得索引列键值的可选择性很差。</p>
-<p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abcd</span><br><span class="line">abce</span><br><span class="line">abcf</span><br><span class="line">abcg</span><br></pre></td></tr></table></figure>
-
-<p>不管长度为1还是2还是3，都无法很好的筛选出数据。</p>
-<p>要解决这个问题，可以使用Hash索引。但是，并不是所有的储存引擎都支持Hash索引。此时，我们可以<strong>通过B+树索引来模拟Hash索引</strong>。</p>
-<p>举个例子：</p>
-<p>这里有一张表：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE &#96;article&#96; (  </span><br><span class="line">  &#96;id&#96; int NOT NULL AUTO_INCREMENT,</span><br><span class="line">  &#96;title&#96; varchar(255) NOT NULL,</span><br><span class="line">  PRIMARY KEY (&#96;id&#96;),</span><br><span class="line">  KEY &#96;idx_title&#96; (&#96;title&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;utf8;</span><br></pre></td></tr></table></figure>
-
-<p>表中有一个字段是一个很长的字符串类型：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#96;title&#96; varchar(255) NOT NULL</span><br></pre></td></tr></table></figure>
-
-<p>OK，现在我们开始使用B+树索引来模拟Hash索引。</p>
-<p>我们先来往表中插入一些数据：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO article</span><br><span class="line">(title)</span><br><span class="line">VALUES</span><br><span class="line">(&#39;STL源码剖析&#39;),</span><br><span class="line">(&#39;深入理解Nginx&#39;),</span><br><span class="line">(&#39;Linux高性能服务器编程&#39;),</span><br><span class="line">(&#39;Linux内核设计与实现&#39;),</span><br><span class="line">(&#39;PHP7内核剖析&#39;),</span><br><span class="line">(&#39;Linux多线程服务端编程&#39;),</span><br><span class="line">(&#39;Unix环境高级编程&#39;),</span><br><span class="line">(&#39;TCP&#x2F;IP详解&#39;),</span><br><span class="line">(&#39;深度探索C++对象模型&#39;);</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/1.png"></p>
-<p>OK，因为InnoDB储存引擎是不能够人为的去建立Hash索引。所以我们需要在表中新加一个列：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table article add title_md5 char(32);</span><br></pre></td></tr></table></figure>
-
-<p>然后为表article的每条记录增加字段<code>title_md5</code>的值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update article set title_md5 &#x3D; md5(title);</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/2.png"></p>
-<p>因为我们要使用B+树索引来模拟Hash索引，所以，我们还需要为这个<code>title_md5</code>列建立一个索引：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create index idx_md5 on article(title_md5);</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/3.png"></p>
-<p>接下来，使用这个B+树索引来模拟Hash索引：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from article where title_md5 &#x3D; md5(&#39;STL源码剖析&#39;);</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/4.png"></p>
-<p>然后我们再来使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain select * from article where title_md5 &#x3D; md5(&#39;STL源码剖析&#39;)\G</span><br></pre></td></tr></table></figure>
-
-<p>看看结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/5.png"></p>
-<p>但是，我们知道，哈希函数是会发生碰撞的，也就是说不同的key可能得到的Hash值相同。即，可能会得到多条数据。所以，我们还需要再增加一个条件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from article where title_md5 &#x3D; md5(&#39;STL源码剖析&#39;) and title &#x3D; &#39;STL源码剖析&#39;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/6.png"></p>
-<p>然后我们再来执行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain select * from article where title_md5 &#x3D; md5(&#39;STL源码剖析&#39;) and title &#x3D; &#39;STL源码剖析&#39;\G</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E4%BD%BF%E7%94%A8B+%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/7.png"></p>
-<p>我们会发现，在key这一行，是<code>idx_title</code>，也就是说，使用的索引不是<code>idx_md5</code>。其实我这里也有点纳闷，目前还不知道为什么不是使用<code>idx_md5</code>索引。希望知道的小伙伴能够告诉我一下！！</p>
-<p>所以我想到的一个方式是为字段<code>title_md5</code>和<code>title</code>建立一个联合索引。</p>
-<h2 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h2><ul>
-<li><p>和Hash索引一样，只能处理键值的<strong>全值匹配</strong>查找</p>
-</li>
-<li><p>所使用的Hash函数决定着索引键的大小</p>
-<p>如果我们使用的Hash函数生成的Hash值太大，就会造成索引比较大的情况。所以我们需要选取合适的Hash函数，既不能使生成的Hash值太大，也不能造成太多的Hash冲突。</p>
-</li>
-</ul>
-<p>既要在<code>title_md5</code>上做过滤也要在<code>title</code>上做过滤的原因：</p>
-<p>为了避免Hash冲突的出现。因为只对<code>title_md5</code>做过滤掉，那么很可能得不到我们真正想要的结果（因为不同的key可能得到的Hash值相同）。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/04/06/%E4%BD%BF%E7%94%A8B-%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/" data-id="ckkj72ztn007tf6vx8lroh8km" data-title="使用B+树索引来模拟Hash索引" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-对于php-的-sleep理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" class="article-date">
-  <time class="dt-published" datetime="2018-03-31T02:07:10.000Z" itemprop="datePublished">2018-03-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/">对于php 的 sleep理解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天知乎上有人邀请我回答一个问题，问题挺好的。这里分享下。</p>
-<p>问题描述是这样的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">比如 我现在有一个方法: a 调用方法:b</span><br><span class="line">b里面是sleep </span><br><span class="line">1分钟之后</span><br><span class="line">向数据库插入一条数据</span><br><span class="line"></span><br><span class="line">用户x在1点的时候 访问了方法a</span><br><span class="line"></span><br><span class="line">用户y在1点0分30秒的时候 访问了方法a</span><br><span class="line"></span><br><span class="line">请问:最终 到1点1分30秒的时候 ，数据库会插入一条数据 ？ 还是两条数据？</span><br><span class="line"></span><br><span class="line">为什么</span><br></pre></td></tr></table></figure>
-
-<p>我的答案：</p>
-<p>谢邀</p>
-<p>我通过代码来对你讲解吧。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> date(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>, time());</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line">sleep(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> date(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>, time());</span><br></pre></td></tr></table></figure>
-
-<p>然后我打开两个页面，同时去请求我的脚本。</p>
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9%E4%BA%8Ephp%20%E7%9A%84%20sleep%E7%90%86%E8%A7%A3/1.png"></p>
-<p>看到没？这两次请求都有对应的输出对吧（相当于向数据库里面插入信息）。</p>
-<p><strong>重点来了</strong></p>
-<p>我明明是同时请求浏览器的，为什么第二次请求被处理的时间是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2018-03-31 01:07:35</span><br></pre></td></tr></table></figure>
-
-<p>好像是第一次请求被处理完之后结束的时间对吧。</p>
-<p>为什么？因为我只开了一个PHP的worker进程：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9%E4%BA%8Ephp%20%E7%9A%84%20sleep%E7%90%86%E8%A7%A3/2.png"></p>
-<p>这意味着什么呢？</p>
-<p>因为第一次请求导致了worker进程被挂起了（因为sleep的原因，worker进程处于阻塞态）。所以，此时的worker进程不能去处理客户端的连接。因此，必须等到了第一次请求被处理完了，才可以处理第二次请求。于是第二次请求它被处理的时间是第一次请求被处理完的结束时间。</p>
-<p>那么，既然worker进程阻塞了，为什么可以处理实际上在<code>2018-03-31 01:07:05</code>就发来的第二次请求呢（第二次请求和第一次请求是同时发起的）？原因是有Web服务，例如我这里的Nginx。它会去<strong>保持</strong>Nginx于客户端的连接。所以第二次请求可以推迟到<code>2018-03-31 01:07:35</code>再被处理。其实，如果你把我上面代码的sleep时间设置更久一点，例如：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sleep(<span class="number">60</span>);</span><br></pre></td></tr></table></figure>
-
-<p>你会发现，第二次请求很可能会得到一个404状态。</p>
-<p>好的，说了这么多，现在回到你的问题。</p>
-<p>你是让用户x在1点的时候去请求PHP脚本。然后这时候调用了sleep方法对吧（sleep一分钟）。根据上面我的讲解，worker进程需要等到1点1分才可以去处理用户y实际在1点0分30秒的时候就发来的请求。然后，在1点1分的时候，worker因为sleep而在此被阻塞。直到1点2分才被唤醒，从阻塞态再到就绪态然后才处于可执行状态。然后才可以插入第二条数据。也就是说，到了1点2分的时候，数据库里面才会有第二条数据。</p>
-<p>所以，<strong>在1点1分30秒的时候，数据库里面只有一条数据</strong>。</p>
-<p>但是，我前面的结论都是在单个worker进程的基础上得到的。如果你的worker进程有多个，假设2个好吧。那么第一个worker进程因为第一次请求在1点钟被阻塞了（直到1点1分第1个worker进程才会被唤醒，然后插入数据）。OK，之后时间到了1点0分30秒，第二个请求发来了，因为第一个worker此时还是处于阻塞态，所以第二个worker进程会去处理这个请求。同样的，第二个worker进程在1点0分30秒被阻塞了（直到1点1分30秒第二个worker进程才会被唤醒，然后插入第二条数据）。因此，最终在1点1分30秒的时候，数据库里面是有两条数据的。</p>
-<p>所以在1点1分30秒的时候，数据库里面有几条记录，看情况。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" data-id="ckkj72zu8009rf6vxb8wecc2h" data-title="对于php 的 sleep理解" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-聊一聊协程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/" class="article-date">
-  <time class="dt-published" datetime="2018-03-11T15:08:44.000Z" itemprop="datePublished">2018-03-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/">聊一聊协程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>hello！我发现博客搭建在GitHub上面有点点麻烦，换电脑了，写起博客来够呛的。</p>
-<p>首先说说协程是什么吧（后面的内容都是以Go语言实现的来说，不同语言实现的可能不同。我们给Go语言的协程取了一个名字，叫做<strong>goroutine</strong>）。</p>
-<p>首先，我们说协程是一个<strong>轻量级的线程</strong>。为什么说是线程呢？因为协程它的一些作用和线程很像。比如说，从客户端来了一个请求，那么我的服务器就可以去创建一个线程来处理这个请求。协程也是类似的，可以并发的去处理一些任务。</p>
-<p>但是为什么又说它是轻量级的呢？因为我们可以去开很多个协程是没问题的，比如开1000个协程来做处理任务。但是如果我们去开1000个线程，就会对系统的性能有影响。</p>
-<p>而且协程它是非抢占式多任务处理，由协程主动交出控制权。</p>
-<p>线程在任何时候都有可能被操作系统切换。哪怕是一条语句执行到一半，也可能会被切换掉。然后操作系统在某个时候又把这个线程切换回来，继续那条语句。而协程不一样，我什么时候想交出对CPU的控制权，什么时候不想，是由协程内部决定的。正是因为这个非抢占式，才能做到轻量级。而抢占式的话，就要处理最坏的情况：我去抢的话，人家的事情正好做到一半，那么要存更多的上下文信息。而非抢占式只需要处理其中切换的几个点就行了。这样对资源的消耗就会小一点。</p>
-<p>还有一点就是协程是编译器/解释器/虚拟机层面的多任务。它不是操作系统层面的一个多任务。在Go语言中，可以看成是编译器级别的多任务，编译器会把我们的<code>go func</code>（后面会解释这个 go func）来解释为一个协程。具体在执行上，Go语言会有一个调度器来调度我们的协程。我们操作系统本身有一个调度器，Go语言里面有它自己的调度器来调度我们轻量级的线程，即协程。</p>
-<p>OK，现在我们来实际操作一下协程，感受一把。</p>
-<p>代码如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">	<span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">	fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">			time.Sleep(delay)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> x &lt; <span class="number">2</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> x</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> fib(x<span class="number">-1</span>) + fib(x<span class="number">-2</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/1.gif"></p>
-<p>其中，这个动画效果是<code>spinner</code>这个函数导致的，而我们的这个<code>fib</code>是原来计算斐波那契数列的。很明显，这两个函数不是你先我后地执行的，而是并发执行的。因为，如果这两个函数是你先我后执行的，那么因为<code>spinner</code>函数是无限循环，所以<code>fib</code>函数是不可能会得到执行的，也就不会得到数列的值。</p>
-<p>那么，这段代码是如何做到并发的执行的呢？看上去就是在main函数里面调用了两个函数而已啊。仔细看看，不难发现，在调用函数<code>spinner</code>的时候，前面加了go这个关键字。这是因为加了go关键字，所以就相当于<strong>创建了一个协程</strong>。当一个程序启动时，其主函数即在一个单独的goroutine中运行，我们叫它main goroutine。</p>
-<p>OK，知道了上面的这些知识后，我们来说一下spinner协程是如何结束无限循环的。首先一点就是，<strong>当main 协程退出时，这个程序的其他协程都会退出</strong>。所以，在spinner无限循环的情况下，一定是因为main 协程退出了。否则这个循环的过程不会结束。</p>
-<p>我们可以简单的来测试一下，我在main 函数的末尾写一个无限循环：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">	<span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">	fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">			time.Sleep(delay)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		a := <span class="number">1</span></span><br><span class="line">		a++</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/2.gif"></p>
-<p>可以看到，spinner协程一直没有结束。</p>
-<p>OK，我们前面也说了，协程可以自己来控制是否要切换，现在我们在做个测试吧：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> func1()</span><br><span class="line">    func2()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	runtime.Gosched()</span><br><span class="line">	fmt.Println(<span class="string">&quot;func1&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func2</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func2&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/3.png"></p>
-<p>可以看出，在执行func1这个协程的时候，我们使用了<code>runtime.Gosched()</code>来交出控制权，从而停止了func1协程的执行。然后看到，main协程打印出了字符串“func2”。但是我们发现没有打印出字符串“func1”对吧。这个也很好解释：字符串“func1”还没来得及打印，main协程就已经退出了，所以func1协程还没打印出字符串“func1”就已经退出了。</p>
-<p>那么是不是说因为<code>runtime.Gosched()</code>的作用，func1协程被切换为了main协程呢（即，和函数调用一样func1和main两个协程并不是并发执行的）？我们来做个实验：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> func1()</span><br><span class="line">    func2()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 1&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		a := <span class="number">1</span></span><br><span class="line">		a++</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 2&quot;</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func2</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func2&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/4.png"></p>
-<p>可以看到，我使用<code>go func1()</code>开了一个func1协程。然后main继续执行，打印出字符串“func2”，然后main结束。但是我们这次还是没有看到字符串“func1 1”被打印出来。所以，还是有可能两个协程是顺序执行的对吧。所以，我们这次让main协程慢一点退出，给func1协程一点表现的机会看看。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> func1()</span><br><span class="line">    func2()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 1&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		a := <span class="number">1</span></span><br><span class="line">		a++</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;func1 2&quot;</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func2</span> <span class="params">()</span></span>  &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;func2&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/5.png"></p>
-<p>可以看出，在func2循环的时候，func1协程在运行。并且因为func1中有一个无限循环，但是func1并没有交出控制权，进程却退出了，说明func2函数的循环执行完了，导致main函数结束。所以func1协程也退出了。</p>
-<p>因此，我们可以看出，main协程和func1协程是并发执行的。并不是函数调用那样同步的，即不是你先我后的顺序。也就是说：上面的<code>runtime.Gosched()</code>并不是去调用main协程，因为main协程本来就在执行。所以<code>runtime.Gosched()</code>只是去交出控制权，让调度器可以把其他协程调度进来。</p>
-<p>好的，接下来，我们开1000个协程试试吧：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span> <span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> func1()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> <span class="literal">true</span> &#123;</span><br><span class="line">		i := <span class="number">1</span></span><br><span class="line">		i++</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">func1</span> <span class="params">()</span></span> &#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们通过 <code>top</code>命令来看看结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/6.png"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/" data-id="ckkj72zv000bpf6vx94nyd3jm" data-title="聊一聊协程" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-SQL注入" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/" class="article-date">
-  <time class="dt-published" datetime="2018-02-26T07:21:50.000Z" itemprop="datePublished">2018-02-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/">SQL注入</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>大家应该都听说过SQL注入吧，但是，网络上的例子貌似都是一些<strong>代码片段</strong>，如果一个新手想要自己尝试一下SQL注入来直观的感受一下SQL注入的危害，显得很无助。我刚学习这方面知识的时候也苦苦找不到这样的代码。最近在知乎上看到很多人都提关于SQL注入的问题，于是，打算写一篇这样的博客。</p>
-<p>直接上代码：</p>
-<p>先创建数据表：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE IF NOT EXISTS &#96;users&#96;(</span><br><span class="line">   &#96;id&#96; INT UNSIGNED AUTO_INCREMENT,</span><br><span class="line">   &#96;username&#96; varchar(200) NOT NULL,</span><br><span class="line">   &#96;password&#96; CHAR(32) NOT NULL,</span><br><span class="line">   PRIMARY KEY ( &#96;id&#96; )</span><br><span class="line">)ENGINE &#x3D; InnoDB DEFAULT CHARSET &#x3D; utf8;</span><br><span class="line"></span><br><span class="line">INSERT INTO &#96;users&#96; (&#96;id&#96;, &#96;username&#96;, &#96;password&#96;) VALUES</span><br><span class="line">(1, &#39;admin&#39;, MD5(&#39;admin&#39;)),</span><br><span class="line">(2, &#39;huanghantao&#39;, MD5(&#39;huanghantao&#39;));</span><br></pre></td></tr></table></figure>
-
-<p>下面是结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/1.png"></p>
-<p>（密码是结果md5函数加密的）</p>
-<p>然后是PHP脚本处理登录逻辑的代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$servername = <span class="string">&quot;localhost&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 创建连接</span></span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($servername, $username, $password, $dbname);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 检测连接</span></span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;连接失败: &quot;</span> . $conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$username = <span class="string">&quot;admin&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;admin&quot;</span>;</span><br><span class="line">$sql = <span class="string">&quot;SELECT * FROM users where username = &#x27;&quot;</span> . $username . <span class="string">&quot;&#x27; AND password = &#x27;&quot;</span> . md5($password) . <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">$result_obj = $conn-&gt;query($sql);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($result_obj-&gt;num_rows) &#123;</span><br><span class="line">	<span class="keyword">while</span>($row = $result_obj-&gt;fetch_assoc()) &#123;</span><br><span class="line">		var_dump($row);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>OK，程序大概就是这样了，</p>
-<p>现在我们执行上面这段PHP脚本：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/2.png"></p>
-<p>嗯，符合我们的预期。（因为用户名和密码都正确，所以打印出了用户的结果）</p>
-<p>好的，接下来开始我们的表演：</p>
-<p>我们修改一下PHP脚本的username变量：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;admin&#x27; --&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;密码随便写&quot;</span>; <span class="comment">// 没错，你写中文也行</span></span><br></pre></td></tr></table></figure>
-
-<p>完整代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$servername = <span class="string">&quot;localhost&quot;</span>;</span><br><span class="line">$username = <span class="string">&quot;root&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$dbname = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 创建连接</span></span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($servername, $username, $password, $dbname);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 检测连接</span></span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;连接失败: &quot;</span> . $conn-&gt;connect_error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$username = <span class="string">&quot;admin&#x27; --&quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br><span class="line">$sql = <span class="string">&quot;SELECT * FROM users where username = &#x27;&quot;</span> . $username . <span class="string">&quot;&#x27; AND password = &#x27;&quot;</span> . md5($password) . <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">$result_obj = $conn-&gt;query($sql);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($result_obj-&gt;num_rows) &#123;</span><br><span class="line">	<span class="keyword">while</span>($row = $result_obj-&gt;fetch_assoc()) &#123;</span><br><span class="line">		var_dump($row);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们执行代码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/3.png"></p>
-<p>说的是<code>$result_obj</code>变量不是一个对象，所以没有属性。好的，我们打印一下<code>$result_obj</code>看看它究竟是什么：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var_dump($result_obj);</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/4.png"></p>
-<p>原来返回的是一个boolean类型的变量。说明我们的SQL语句没有执行成功。这就是很坑的一个地方了，网络上的文章大多数是草草的告诉我们，在表单填写类似这样的东西就可以了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin&#39; --</span><br></pre></td></tr></table></figure>
-
-<p>即加个单引号 <code>&#39;</code>，加两个 <code>-</code>。实际上，或许你得再加点东西。</p>
-<p>我们修改下代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;admin&#x27; -- // &quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>也就是说再加两个<code>/</code>。</p>
-<p>好的，我们执行一下代码：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/5.png"></p>
-<p>怎么样，就算我们不知道密码，只要我们知道这个用户的用户名，就可以登录到这个用户的页面对吧。</p>
-<p>好的，接下来，我们再试试，即使没有用户名和密码，我们也可以得到所有用户的用户名和密码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;&#x27; or 1 -- // &quot;</span>;</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>执行后的结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/6.png"></p>
-<p>很可怕对吧。</p>
-<p>至于这两段代码中的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">admin&#39; --</span><br><span class="line">和</span><br><span class="line">&#39; or 1 --</span><br></pre></td></tr></table></figure>
-
-<p>什么意思，网上的文章已经讲烂了，就不多说了。</p>
-<p>通过什么的操作，我们可以发现，那个单引号<code>&#39;</code>特别捣蛋对吧，所以，我们修改下代码，对单引号进行转义：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$username = <span class="string">&quot;&#x27; or 1 -- // &quot;</span>;</span><br><span class="line">$username = addslashes($username);</span><br><span class="line">$password = <span class="string">&quot;代码随便写&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>执行后的结果：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/7.png"></p>
-<p>可以看到，并没有打印出用户信息，所以这个函数阻挡了此次攻击。原因如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/SQL%E6%B3%A8%E5%85%A5/8.png"></p>
-<p><code>or</code>前面的单引号被转义了。</p>
-<p>但是，并不建议通过<code>addslashes</code>对单引号转义的方式来阻挡这种类型的SQL注入。因为**addslashes对有些特殊字符后跟上’（单引号）并不会加把这个’变成/‘**。</p>
-<p>这也是为什么很多人建议使用PDO来对数据库进行操作的原因了。</p>
-<p>好的，文章到这里结束了，希望对大家有所帮助。文中的代码都可以复制后直接使用，希望可以减少大家踩坑的时间。</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/02/26/SQL%E6%B3%A8%E5%85%A5/" data-id="ckkj72zry003ff6vx727p1aeo" data-title="SQL注入" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2018年寒假总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/" class="article-date">
-  <time class="dt-published" datetime="2018-02-20T16:11:14.000Z" itemprop="datePublished">2018-02-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/">2018年寒假总结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>很快，一个寒假就过去了。这个寒假主要是看书和刷算法题。因为阅读了一些计算机书籍，所以计算机基础更加扎实了一些。和DFS有关的算法写得也还可以了（从内存模型的角度去理解递归），动态规划也可以写一写模板题了（说到动态规划，美团今年秋招的四道编程题都是动态规划……）。还有就是入手了一个Mac Pro，贼贵，现在我还要分期两年还1W块钱。so，得好好学习啊，不然电脑都换不起，以后还怎么“养”女票，做外包也得“养”。春招加油！！</p>
-<p>这个寒假看了三本新书《深入理解Nginx:模块开发与架构解析》、《Redis设计与实现》、《MySQL技术内幕–InnoDB储存引擎》。同时还回味了一遍《深入理解PHP内核》、《Linux内核设计与实现》。</p>
-<p>看了这些书，收获很多，在这里我就不列举有哪些知识点了，因为书中都有。关键是自己要去看。我相信大家更关心的是看这些书需要具备哪些<strong>潜在的知识</strong>。</p>
-<h2 id="潜在知识"><a href="#潜在知识" class="headerlink" title="潜在知识"></a>潜在知识</h2><p>C语言，推荐书籍：<strong>《C Primer Plus》</strong>，静下心来，有编程基础可以3天过完。</p>
-<p>数据结构，推荐书籍：<strong>《图解数据结构》</strong>。只用看到二叉树那里即可，图不用看。静下心来2个星期可以看完。</p>
-<p>Linux操作系统，至少要懂得如何下载源代码、编译源代码即可。如果懂得Linux的原理就会更好了，对于Nginx的内存管理的理解会有帮助。推荐书籍：<strong>《Linux内核设计与实现》</strong>。静下心来两个星期可以看完。</p>
-<p>计算机网络，推荐书籍：<strong>谢希仁的那本计算机网络</strong>。重点看网络层、传输层、应用层这三部分。静下心来一个星期可以看完。</p>
-<p>网络编程，也就是对于计算机网络知识的实战，推荐书籍：<strong>《Unix网络编程》</strong>。重点学习IO多路复用。静下心来2个星期可以看完。</p>
-<p>可以说，上面的知识，只要是搞服务端开发的，不管是做应用层还是传输层/网络层，都是需要学习的，这对以后面临更大挑战的时候有很大的帮助，因为它可以帮助我们理解工具的本质，当出现问题的时候，可以更快的分析、解决，而不是盲目。</p>
-<p>学习这些内容的时候多动手敲代码，多谷歌和百度，可以加深我们对知识点的理解。</p>
-<p>尽量按照上面的顺序学习，因为有一些东西有联系。</p>
-<p>希望可以帮助到大家……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/" data-id="ckkj72zqd0003f6vxfxhdd899" data-title="2018年寒假总结" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-对MySQL数据表分区一定会提高查询效率吗" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/" class="article-date">
-  <time class="dt-published" datetime="2018-02-19T13:20:10.000Z" itemprop="datePublished">2018-02-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/">对MySQL数据表分区一定会提高查询效率吗</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>作为一个后端开发人员，我们一般都听说过<strong>对数据表进行分区</strong>的操作。甚至有开发人员说：这张表以后的数据量一定会很大，至少有好几千万条，我们对这张表分区吧。</p>
-<p>然而，有时候并没有感受到查询速度的提升，<strong>反而感觉更加的慢</strong>了。原因就是不好的分区设计导致对磁盘的IO操作次数增加了。</p>
-<p>我们现在来做个测试，数据有1000W条，储存引擎用的是InnoDB。</p>
-<p>首先我们创建数据表：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">create table user (</span><br><span class="line">    id int(11) not null auto_increment,</span><br><span class="line">    key_id int(11) not null,</span><br><span class="line">    primary key (id),</span><br><span class="line">    key key_id (key_id)</span><br><span class="line">) engine &#x3D; innodb</span><br><span class="line">partition by hash (id)</span><br><span class="line">partitions 10;</span><br></pre></td></tr></table></figure>
-
-<p>我们采取的分区类型是hash分区，因为这样可以让数据比较均匀的储存在不同的分区中（我们之后可以看看数据分布情况）。且以主键id为标准进行分区。</p>
-<p><code>partitions 10</code>指的是对这张表分10个区。</p>
-<p>好的，创建完数据表之后，我们插入1000W条数据。我们采用存储过程来实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">delimiter $$</span><br><span class="line"></span><br><span class="line">create procedure myproc() </span><br><span class="line">begin </span><br><span class="line">declare num int; </span><br><span class="line">set num &#x3D; 1; </span><br><span class="line">while num &lt;&#x3D; 10000000 do </span><br><span class="line">insert into user (key_id) values(num); set num &#x3D; num + 1;</span><br><span class="line">end while;</span><br><span class="line">end</span><br><span class="line">$$</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/1.png"></p>
-<p>定义完了存储过程之后，我们调用它：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call myproc()$$</span><br></pre></td></tr></table></figure>
-
-<p>执行存储过程大概有15分钟，耐心等待。</p>
-<p>OK，接下来我们大致看看数据表中的数据：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/2.png"></p>
-<p>我们来查看下总共有多少条记录在数据表里面：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count(*) from user$$</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/3.png"></p>
-<p>1000W条记录对吧，嗯，真刺激。</p>
-<p>接下来我们来看看数据在这10个分区的分布情况：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select table_name, partition_name, table_rows</span><br><span class="line">from information_schema.partitions</span><br><span class="line">where table_schema&#x3D;DATABASE() AND table_name&#x3D;&#39;user&#39;\G</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/4.png"></p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/5.png"></p>
-<p>通过table_rows可以看出，记录比较均匀的分布在10个分区里面。和我们预期一致。</p>
-<p>OK，接下来我们就开始查询比较，看看分区是否真的有用。我们先对主键进行查询：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN PARTITIONS SELECT * FROM user WHERE id &#x3D; 1\G</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/6.png"></p>
-<p>可以看到，只查询了分区p1。因为一般B+树是2～3层，所以最多进行了2～3次IO操作。</p>
-<p>这样吧，假设1000W条数据的单表构成的B+树有3层，而100W条数据表构成的B+树只有2层，那么，确实可以减少一次IO操作。但是如果100W和1000W行的数据构成的B+树层次都是一样的，可能都是2层。那么上述按照主键id分区的索引并不会带来性能的提高。</p>
-<p>OK，分析到这里，我们再来看看可能让大家吃惊的一条查询：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPLAIN PARTITIONS SELECT * FROM user WHERE key_id &#x3D; 1\G</span><br></pre></td></tr></table></figure>
-
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/7.png"></p>
-<p>可以看到，这一条查询对所有的分区（共10个）都进行了查询。这意味着什么？对磁盘的IO操作次数大大提高了。假设100W条记录构成的B+树只有2层好吧，那么对这10个分区进行查询也至少需要执行20次IO操作。很显然，因为分区后，以key_id列索引作为查询条件时，查询效率大大降低。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/" data-id="ckkj72zu8009of6vxhpfb8fvq" data-title="对MySQL数据表分区一定会提高查询效率吗" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-命令行下可以跑PHP脚本，但是浏览器就不能跑？" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/" class="article-date">
-  <time class="dt-published" datetime="2018-02-04T14:50:18.000Z" itemprop="datePublished">2018-02-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/">命令行下可以跑PHP脚本，但是通过浏览器却不能跑？</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今晚我在使用YAF框架的时候，遇到了一个问题：命令行下可以跑YAF框架的入口文件，但是通过浏览器却不能跑？</p>
-<p>这个问题折腾了我一晚上，好在一个群友慢慢帮我分析了一波，非常感谢！</p>
-<p>原因是：我的FPM并没有使用yaf.so，但是CLI使用了yaf.so。</p>
-<p>那么为什么会出现这种情况呢？因为<strong>命令行和PHP-FPM是两个不同的SAPI，它们可以加载不同路径下的php.ini文件</strong>。</p>
-<p>而通过：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php php文件名</span><br></pre></td></tr></table></figure>
-
-<p>这种方式是使用CLI这个SAPI。</p>
-<p>通过：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost&#x2F;index.php</span><br></pre></td></tr></table></figure>
-
-<p>这种方式使用的是FPM这种SAPI。</p>
-<p>那么我们如何查看CLI模式下添加了哪些扩展呢？使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -m</span><br></pre></td></tr></table></figure>
-
-<p>而在PHP脚本中使用如下函数：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">phpinfo();</span><br></pre></td></tr></table></figure>
-
-<p>则可以查看PHP-FPM添加了哪些扩展。</p>
-<p>我放错误的原因主要是我一直以为CLI和FPM一定共用同一个php.ini文件，其实不一定，这是在编译PHP源代码的时候可以指定的。</p>
-<p>emmm，希望可以帮助到大家。</p>
-<p>基础真的很重要……</p>
-<p>happy ending……</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/" data-id="ckkj72ztw008sf6vx1j7ddgzb" data-title="命令行下可以跑PHP脚本，但是通过浏览器却不能跑？" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-聊一聊PHP的对象" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="article-date">
-  <time class="dt-published" datetime="2018-01-31T14:08:07.000Z" itemprop="datePublished">2018-01-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/">聊一聊PHP的对象</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今晚在过一遍PHP手册的时候，看了一下PHP的对象那一部分知识点。我发现还是有一些坑点的。</p>
-<p>官网上有一个例子是这样的：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleClass</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">// property declaration</span></span><br><span class="line">    <span class="keyword">public</span> $var = <span class="string">&#x27;a default value&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// method declaration</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">displayVar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;var;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$instance = <span class="keyword">new</span> SimpleClass();</span><br><span class="line"></span><br><span class="line">$assigned   =  $instance;</span><br><span class="line">$reference  = &amp;$instance;</span><br><span class="line"></span><br><span class="line">$instance-&gt;var = <span class="string">&#x27;$assigned will have this value&#x27;</span>;</span><br><span class="line"></span><br><span class="line">$instance = <span class="literal">null</span>; <span class="comment">// $instance and $reference become null</span></span><br><span class="line"></span><br><span class="line">var_dump($instance);</span><br><span class="line">var_dump($assigned);</span><br><span class="line">var_dump($reference);</span><br></pre></td></tr></table></figure>
-
-<p>结果如下：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/3.PNG"></p>
-<p>通过代码的执行结果，我们可以看到，因为这一句：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$instance = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
-
-<p>而导致了变量<code>$instance</code>和<code>$reference</code>都为null。emmm，只看这一个结果还是很好解释的。因为</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$reference  = &amp;$instance;</span><br></pre></td></tr></table></figure>
-
-<p>所以我们说<code>$reference</code>是<code>$instance</code>的引用。那么什么是引用呢？emmm，我先说一说什么是拷贝吧，这样会好理解一些。emmm，我从C语言的角度来说（因为PHP有一个叫做写时拷贝的机制，所以用PHP来举例子会麻烦些）。</p>
-<p>有如下代码段：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = a;</span><br></pre></td></tr></table></figure>
-
-<p>那么，当执行这段代码的时候，在内存中会发生什么呢？</p>
-<p>首先是执行<code>int a = 1;</code>，操作系统会为变量a分配4个字节的存储单元（一般int型是4个字节，具体多少，可以用sizeof(int)查看），然后再把数据1存放到这4个字节的存储单元中。</p>
-<p>可以简单的用如下图片表示（这里不考虑机器字节序和网络字节序，反正我是记不住，哈哈哈）：</p>
-<p><img src="http://oklbfi1yj.bkt.clouddn.com/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/4.PNG"></p>
-<p>然后再执行语句<code>int b = a;</code>。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/" data-id="ckkj72zuz00bnf6vxfl7232vb" data-title="聊一聊PHP的对象" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-浅谈IO处理的几种方式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" class="article-date">
-  <time class="dt-published" datetime="2018-01-29T13:36:09.000Z" itemprop="datePublished">2018-01-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">浅谈IO处理的几种方式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="一、read阻塞方式"><a href="#一、read阻塞方式" class="headerlink" title="一、read阻塞方式"></a>一、read阻塞方式</h2><p>只能处理一个文件描述符。此时，如果进程阻塞在了某个文件描述符上面，则这个进程就不可以处理其他已经就绪的文件描述符。必须要等待这个文件描述符变活跃了，且被进程处理完了，这个进程才能处理其他文件描述符。（在这个进程阻塞的过程中，其他进程可以被切换过来。也就是说服务器这边没啥大问题，但是会导致客户端那边久等）</p>
-<h2 id="二、read非阻塞方式"><a href="#二、read非阻塞方式" class="headerlink" title="二、read非阻塞方式"></a>二、read非阻塞方式</h2><p>可以不断地循环检测所有的文件描述符，直到处理完这个文件描述符。这样就不会阻塞在这个文件描述符上面了。<br>如果这些文件描述符只是偶尔不活跃，用这种方式也是可以的。但是，如果这些文件描述符长时间处于不活跃的状态，就会浪费CPU，CPU一直循环地检测一些还没就绪的文件描述符，做无用功。<br>（在时间片用完前，其他进程可能不能够被切换进来，导致CPU浪费。也就是说客户端那边不会等太久，但是服务器这边会浪费资源）</p>
-<h2 id="三、多进程-上面的其中一种方式"><a href="#三、多进程-上面的其中一种方式" class="headerlink" title="三、多进程+上面的其中一种方式"></a>三、多进程+上面的其中一种方式</h2><p>由一个主进程负责调度子进程来处理文件描述符。如果是进程池，那么还是会遇到上面两种方式的问题；如果是每次处理一个文件描述符的时候都创建一个新的进程来处理，那么会非常消耗服务器资源（内存有限且CPU有限）。</p>
-<h2 id="四、IO多路复用方式"><a href="#四、IO多路复用方式" class="headerlink" title="四、IO多路复用方式"></a>四、IO多路复用方式</h2><p>第一种方式的问题是进程不可以处理那些已经就绪好了的文件描述符，第二种方式的问题是，CPU一直在做无用的计算。第三种方式是可能会耗服务器资源。所以，我们聪明的程序员就发明了这种先收集就绪的文件描述符，再处理的方式。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://huanghantao.github.io/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" data-id="ckkj72zuh00aif6vxh69gb9hf" data-title="浅谈IO处理的几种方式" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Composer/" rel="tag">Composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dockerfile/" rel="tag">Dockerfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GRPC/" rel="tag">GRPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GraphQL/" rel="tag">GraphQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/" rel="tag">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTTP/" rel="tag">HTTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperf/" rel="tag">Hyperf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" rel="tag">I/O多路复用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JIT/" rel="tag">JIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Laravel/" rel="tag">Laravel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MacOS/" rel="tag">MacOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/" rel="tag">Mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OPcache/" rel="tag">OPcache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/" rel="tag">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP 扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP7/" rel="tag">PHP7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95/" rel="tag">PHP扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="tag">PHP扩展开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/" rel="tag">Protobuf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RPC/" rel="tag">RPC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole/" rel="tag">Swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" rel="tag">Swoole微课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vscode/" rel="tag">Vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/" rel="tag">Xdebug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/composer/" rel="tag">composer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c%E8%AF%AD%E8%A8%80/" rel="tag">c语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-compose/" rel="tag">docker-compose</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/epoll/" rel="tag">epoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fpm/" rel="tag">fpm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/golang/" rel="tag">golang</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gqlgen/" rel="tag">gqlgen</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swoole/" rel="tag">swoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swore/" rel="tag">swore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tinyswoole/" rel="tag">tinyswoole</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unique-lock/" rel="tag">unique_lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue-js/" rel="tag">vue.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%8F%E7%A8%8B/" rel="tag">协程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="tag">多线程编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="tag">引用计数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD/" rel="tag">性能</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag">性能分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" rel="tag">服务器开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" rel="tag">服务器编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" rel="tag">汇编语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" rel="tag">秒杀系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" rel="tag">编译器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag">网络编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" rel="tag">计算机基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag">计算机系统</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" rel="tag">读读代码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
 
-  
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/C/" style="font-size: 11.43px;">C</a> <a href="/tags/C/" style="font-size: 16.43px;">C++</a> <a href="/tags/Composer/" style="font-size: 10px;">Composer</a> <a href="/tags/C%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">C语言</a> <a href="/tags/Docker/" style="font-size: 11.43px;">Docker</a> <a href="/tags/Dockerfile/" style="font-size: 10px;">Dockerfile</a> <a href="/tags/GRPC/" style="font-size: 10.71px;">GRPC</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/GraphQL/" style="font-size: 10px;">GraphQL</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTP/" style="font-size: 10px;">HTTP</a> <a href="/tags/Hyperf/" style="font-size: 10.71px;">Hyperf</a> <a href="/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" style="font-size: 10.71px;">I/O多路复用</a> <a href="/tags/JIT/" style="font-size: 10px;">JIT</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Laravel/" style="font-size: 10px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/MacOS/" style="font-size: 10px;">MacOS</a> <a href="/tags/MySQL/" style="font-size: 10.71px;">MySQL</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/OPcache/" style="font-size: 10px;">OPcache</a> <a href="/tags/PHP/" style="font-size: 20px;">PHP</a> <a href="/tags/PHP-%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 10.71px;">PHP 扩展开发</a> <a href="/tags/PHP7/" style="font-size: 10px;">PHP7</a> <a href="/tags/PHP%E5%86%85%E6%A0%B8/" style="font-size: 17.86px;">PHP内核</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95/" style="font-size: 13.57px;">PHP扩展</a> <a href="/tags/PHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" style="font-size: 12.14px;">PHP扩展开发</a> <a href="/tags/PostgreSQL/" style="font-size: 10px;">PostgreSQL</a> <a href="/tags/Protobuf/" style="font-size: 10.71px;">Protobuf</a> <a href="/tags/RPC/" style="font-size: 10px;">RPC</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Shell/" style="font-size: 10px;">Shell</a> <a href="/tags/Swoole/" style="font-size: 19.29px;">Swoole</a> <a href="/tags/Swoole%E5%BE%AE%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">Swoole微课程</a> <a href="/tags/Vscode/" style="font-size: 10px;">Vscode</a> <a href="/tags/Xdebug/" style="font-size: 10.71px;">Xdebug</a> <a href="/tags/c/" style="font-size: 10.71px;">c++</a> <a href="/tags/composer/" style="font-size: 10px;">composer</a> <a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">c语言</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/docker-compose/" style="font-size: 10px;">docker-compose</a> <a href="/tags/epoll/" style="font-size: 10px;">epoll</a> <a href="/tags/fpm/" style="font-size: 10px;">fpm</a> <a href="/tags/golang/" style="font-size: 10px;">golang</a> <a href="/tags/gqlgen/" style="font-size: 10px;">gqlgen</a> <a href="/tags/leetcode/" style="font-size: 12.14px;">leetcode</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/migrate/" style="font-size: 10px;">migrate</a> <a href="/tags/nginx/" style="font-size: 10.71px;">nginx</a> <a href="/tags/php/" style="font-size: 15.71px;">php</a> <a href="/tags/redis/" style="font-size: 10px;">redis</a> <a href="/tags/swoole/" style="font-size: 15.71px;">swoole</a> <a href="/tags/swore/" style="font-size: 10px;">swore</a> <a href="/tags/tinyswoole/" style="font-size: 10px;">tinyswoole</a> <a href="/tags/unique-lock/" style="font-size: 10px;">unique_lock</a> <a href="/tags/vue-js/" style="font-size: 10.71px;">vue.js</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 12.14px;">其他</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 10px;">前端</a> <a href="/tags/%E5%8D%8F%E7%A8%8B/" style="font-size: 15.71px;">协程</a> <a href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" style="font-size: 10px;">外部排序</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">多线程编程</a> <a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 10px;">并发</a> <a href="/tags/%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" style="font-size: 10px;">引用计数</a> <a href="/tags/%E6%80%A7%E8%83%BD/" style="font-size: 10px;">性能</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 10px;">性能优化</a> <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" style="font-size: 10px;">性能分析</a> <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 13.57px;">操作系统</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10px;">数据库</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10.71px;">数据结构</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91/" style="font-size: 12.86px;">服务器开发</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B/" style="font-size: 10px;">服务器编程</a> <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">汇编语言</a> <a href="/tags/%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">秒杀系统</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;">算法</a> <a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 10px;">线程</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 10px;">线程池</a> <a href="/tags/%E7%BC%96%E7%A0%81/" style="font-size: 10px;">编码</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" style="font-size: 18.57px;">编译原理</a> <a href="/tags/%E7%BC%96%E8%AF%91%E5%99%A8/" style="font-size: 10px;">编译器</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 14.29px;">网络编程</a> <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 10px;">虚拟机</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">计算机基础</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" style="font-size: 10px;">计算机系统</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10.71px;">计算机网络</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 10.71px;">设计模式</a> <a href="/tags/%E8%AF%BB%E8%AF%BB%E4%BB%A3%E7%A0%81/" style="font-size: 10.71px;">读读代码</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 10px;">递归</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
+      
+  <div class="widget">
     <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
         
           <li>
-            <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/">PHP内核是如何处理常量的</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/">PHP内核中与异常处理有关的结构体</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/">Swoole reload_async机制</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/">PHP中的if语句和switch语句生成的opcode对比</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
           </li>
-        
+          
           <li>
-            <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/">ptrace使用</a>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/02/ptrace%E4%BD%BF%E7%94%A8/" class="title">ptrace使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-02T12:19:39.000Z" itemprop="datePublished">2021-02-02</time>
+              </p>
+            </div>
           </li>
-        
+          
       </ul>
     </div>
   </div>
+  
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 codinghuang<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
+    
   </div>
-</footer>
+</aside>
 
-    </div>
-    <nav id="mobile-nav">
   
-    <a href="/" class="mobile-nav-link">Home</a>
+  <main class="main" role="main">
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+  <div class="content article-list">
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
   
-</nav>
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/11/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F-PHP%E7%89%88%E6%9C%AC/">外部排序--PHP版本</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/04/11/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F-PHP%E7%89%88%E6%9C%AC/" class="article-date">
+	  <time datetime="2018-04-11T10:55:22.000Z" itemprop="datePublished">Apr 11</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/php/" rel="tag">php</a>, <a class="article-tag-link-link" href="/tags/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F/" rel="tag">外部排序</a>, <a class="article-tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/04/11/%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F-PHP%E7%89%88%E6%9C%AC/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2.5k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 9(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/06/%E4%BD%BF%E7%94%A8B-%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/">使用B+树索引来模拟Hash索引</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/04/06/%E4%BD%BF%E7%94%A8B-%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/" class="article-date">
+	  <time datetime="2018-04-06T10:53:19.000Z" itemprop="datePublished">Apr 6</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/MySQL/" rel="tag">MySQL</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/04/06/%E4%BD%BF%E7%94%A8B-%E6%A0%91%E7%B4%A2%E5%BC%95%E6%9D%A5%E6%A8%A1%E6%8B%9FHash%E7%B4%A2%E5%BC%95/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 875(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/">对于php 的 sleep理解</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/" class="article-date">
+	  <time datetime="2018-03-31T02:07:10.000Z" itemprop="datePublished">Mar 31</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/php/" rel="tag">php</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/03/31/%E5%AF%B9%E4%BA%8Ephp-%E7%9A%84-sleep%E7%90%86%E8%A7%A3/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 975(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/">聊一聊协程</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/" class="article-date">
+	  <time datetime="2018-03-11T15:08:44.000Z" itemprop="datePublished">Mar 11</time>
+	</a>
+</span>
+    
     
 
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/03/11/%E8%81%8A%E4%B8%80%E8%81%8A%E5%8D%8F%E7%A8%8B/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.8k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 7(minutes)</span>
+	
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+  </p>
+</article>
 
-
-
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/">SQL注入</a>
+    </h1>
+  
 
   </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/" class="article-date">
+	  <time datetime="2018-02-26T07:21:50.000Z" itemprop="datePublished">Feb 26</time>
+	</a>
+</span>
+    
+    
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/02/26/SQL%E6%B3%A8%E5%85%A5/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.1k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/">2018年寒假总结</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/" class="article-date">
+	  <time datetime="2018-02-20T16:11:14.000Z" itemprop="datePublished">Feb 21</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E5%85%B6%E4%BB%96/" rel="tag">其他</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/02/21/2018%E5%B9%B4%E5%AF%92%E5%81%87%E6%80%BB%E7%BB%93/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 704(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/">对MySQL数据表分区一定会提高查询效率吗</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/" class="article-date">
+	  <time datetime="2018-02-19T13:20:10.000Z" itemprop="datePublished">Feb 19</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/MySQL/" rel="tag">MySQL</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/02/19/%E5%AF%B9MySQL%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%88%86%E5%8C%BA%E4%B8%80%E5%AE%9A%E4%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E5%90%97/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 782(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/">命令行下可以跑PHP脚本，但是通过浏览器却不能跑？</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/" class="article-date">
+	  <time datetime="2018-02-04T14:50:18.000Z" itemprop="datePublished">Feb 4</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/02/04/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E5%8F%AF%E4%BB%A5%E8%B7%91PHP%E8%84%9A%E6%9C%AC%EF%BC%8C%E4%BD%86%E6%98%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B0%B1%E4%B8%8D%E8%83%BD%E8%B7%91%EF%BC%9F/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 296(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/">聊一聊PHP的对象</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="article-date">
+	  <time datetime="2018-01-31T14:08:07.000Z" itemprop="datePublished">Jan 31</time>
+	</a>
+</span>
+    
+    
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>
+  </span>
+
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/01/31/%E8%81%8A%E4%B8%80%E8%81%8APHP%E7%9A%84%E5%AF%B9%E8%B1%A1/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 390(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-header">
+    
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">浅谈IO处理的几种方式</a>
+    </h1>
+  
+
+  </div>
+  
+  <p class="article-meta">
+    <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" class="article-date">
+	  <time datetime="2018-01-29T13:36:09.000Z" itemprop="datePublished">Jan 29</time>
+	</a>
+</span>
+    
+    
+
+    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/01/29/%E6%B5%85%E8%B0%88IO%E5%A4%84%E7%90%86%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/#comments" class="article-comment-link">Comments</a></span>
+    
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 539(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
+	
+
+  </p>
+</article>
+
+    
+  </div>
+
+  
+    
+    <nav class="bar bar-footer clearfix" data-stick-bottom>
+        <div class="bar-inner">
+        <ul class="pager pull-left">
+            
+            <li class="prev">
+                <a href="/page/17/">
+                    <i class="icon icon-angle-left"></i>
+                    Prev
+                </a>
+            </li>
+            
+            
+            <li class="next">
+                <a href="/page/19/">
+                    Next
+                    <i class="icon icon-angle-right"></i>
+                </a>
+            </li>
+            
+        </ul>
+        <div class="total-article bar-right">Page 18 of 23</div>
+        </div>
+    </nav>
+    
+ 
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
 </body>
 </html>

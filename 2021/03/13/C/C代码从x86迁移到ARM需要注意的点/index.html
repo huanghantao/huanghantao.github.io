@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>C代码从x86迁移到ARM需要注意的点 | codinghuang的个人博客</title>
+  <meta name="description" content="最近工作中遇到的一个问题，PHP的hash算法在x86下和ARM下计算结果不一样： 123456static zend_always_inline zend_ulong zend_inline_hash_func(const char *str, size_t len)&amp;#123;    &#x2F;&#x2F; 省略其他代码    hash &#x3D; ((hash &lt;&lt; 5) + hash) + *str++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C代码从x86迁移到ARM需要注意的点">
+<meta property="og:url" content="http://huanghantao.github.io/2021/03/13/C/C%E4%BB%A3%E7%A0%81%E4%BB%8Ex86%E8%BF%81%E7%A7%BB%E5%88%B0ARM%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="最近工作中遇到的一个问题，PHP的hash算法在x86下和ARM下计算结果不一样： 123456static zend_always_inline zend_ulong zend_inline_hash_func(const char *str, size_t len)&amp;#123;    &#x2F;&#x2F; 省略其他代码    hash &#x3D; ((hash &lt;&lt; 5) + hash) + *str++">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-03-13T13:26:03.000Z">
+<meta property="article:modified_time" content="2021-03-13T13:50:40.576Z">
+<meta property="article:author" content="codinghuang">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/2021/03/13/C/C%E4%BB%A3%E7%A0%81%E4%BB%8Ex86%E8%BF%81%E7%A7%BB%E5%88%B0ARM%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
+    </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/13/C/C%E4%BB%A3%E7%A0%81%E4%BB%8Ex86%E8%BF%81%E7%A7%BB%E5%88%B0ARM%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" class="title">C代码从x86迁移到ARM需要注意的点</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-13T13:26:03.000Z" itemprop="datePublished">2021-03-13</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" class="title">PHP内核是如何处理常量的</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-04T03:29:36.000Z" itemprop="datePublished">2021-03-04</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/03/PHP%E5%86%85%E6%A0%B8%E4%B8%AD%E4%B8%8E%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%89%E5%85%B3%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93/" class="title">PHP内核中与异常处理有关的结构体</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-03T03:59:07.000Z" itemprop="datePublished">2021-03-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/03/01/Swoole-reload-async%E6%9C%BA%E5%88%B6/" class="title">Swoole reload_async机制</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-03-01T09:42:28.000Z" itemprop="datePublished">2021-03-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/02/24/PHP%E4%B8%AD%E7%9A%84if%E8%AF%AD%E5%8F%A5%E5%92%8Cswitch%E8%AF%AD%E5%8F%A5%E7%94%9F%E6%88%90%E7%9A%84opcode%E5%AF%B9%E6%AF%94/" class="title">PHP中的if语句和switch语句生成的opcode对比</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-02-24T02:08:03.000Z" itemprop="datePublished">2021-02-24</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-C/C代码从x86迁移到ARM需要注意的点" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      C代码从x86迁移到ARM需要注意的点
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/03/13/C/C%E4%BB%A3%E7%A0%81%E4%BB%8Ex86%E8%BF%81%E7%A7%BB%E5%88%B0ARM%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/" class="article-date">
+	  <time datetime="2021-03-13T13:26:03.000Z" itemprop="datePublished">2021-03-13</time>
+	</a>
+</span>
+        
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/03/13/C/C%E4%BB%A3%E7%A0%81%E4%BB%8Ex86%E8%BF%81%E7%A7%BB%E5%88%B0ARM%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 464(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>最近工作中遇到的一个问题，<code>PHP</code>的<code>hash</code>算法在<code>x86</code>下和<code>ARM</code>下计算结果不一样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> zend_always_inline zend_ulong <span class="title">zend_inline_hash_func</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">size_t</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">    hash = ((hash &lt;&lt; <span class="number">5</span>) + hash) + *str++;</span><br><span class="line">    <span class="comment">// 省略其他代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里会对<code>str</code>进行处理。在<code>x86</code>下面，<code>char</code>默认是<code>signed</code>的；在<code>ARM</code>下，<code>char</code>是<code>unsigned</code>的。那么，就有可能出现<code>str</code>在<code>x86</code>下是负数，在<code>ARM</code>下是整数。</p>
+<p>这个问题，可以通过添加编译器的<code>-fsigned-char</code>选项得到解决。加在<code>PHP</code>的<code>Makefile</code>的<code>CFLAGS</code>后面即可：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CFLAGS = <span class="variable">$(CFLAGS_CLEAN)</span> -prefer-non-pic -static -fsigned-char</span><br></pre></td></tr></table></figure>
+
+<p>当然，我们也可以显式的定义<code>str</code>是<code>signed</code>。</p>
+<p>除了这个问题之外，还有其他的差异：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">graph-easy &lt;&lt;&lt; <span class="string">&quot;</span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    info\n</span></span><br><span class="line"><span class="string">Explicitly define a variable of type char to be signed.</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    x86 code\n</span></span><br><span class="line"><span class="string">char c = &#x27;*&#x27;;</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    ARM code\n</span></span><br><span class="line"><span class="string">signed c = &#x27;*&#x27;;</span></span><br><span class="line"><span class="string">]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    info\n</span></span><br><span class="line"><span class="string">Use the builtin function that comes with the compiler.</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    x86 code\n</span></span><br><span class="line"><span class="string">__builtin_ia32_crc32qi(__a, __b);</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    ARM code\n</span></span><br><span class="line"><span class="string">__builtin_aarch64_crc32b(__a, __b);</span></span><br><span class="line"><span class="string">]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    info\n</span></span><br><span class="line"><span class="string">prefetch memory data into the cache.</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    x86 code\n</span></span><br><span class="line"><span class="string">asm volatile(&quot;</span><span class="string">&quot;prefetcht0 %0&quot;</span><span class="string">&quot;::&quot;</span><span class="string">&quot;m&quot;</span><span class="string">&quot; (*(unsigned long *)x));</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    ARM code\n</span></span><br><span class="line"><span class="string">define prefetch(_x) __builtin_prefetch(_x);</span></span><br><span class="line"><span class="string">]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    info\n</span></span><br><span class="line"><span class="string">define the compiled program to be 64-bit.</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    x86 code\n</span></span><br><span class="line"><span class="string">-m64;</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    ARM code\n</span></span><br><span class="line"><span class="string">-mabi=lp64;</span></span><br><span class="line"><span class="string">]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    info\n</span></span><br><span class="line"><span class="string">the instruction set type is defined in the Makefile, from x86 to ARM.</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    x86 code\n</span></span><br><span class="line"><span class="string">-march=broadwell;</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    ARM code\n</span></span><br><span class="line"><span class="string">-march=armv8-a;</span></span><br><span class="line"><span class="string">]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    info\n</span></span><br><span class="line"><span class="string">replace the original x86 version of the compiled macros with the ARM version.</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    x86 code\n</span></span><br><span class="line"><span class="string">__X86_64__;</span></span><br><span class="line"><span class="string">] -&gt; </span></span><br><span class="line"><span class="string">[</span></span><br><span class="line"><span class="string">    ARM code\n</span></span><br><span class="line"><span class="string">__ARM_64__;</span></span><br><span class="line"><span class="string">]</span></span><br><span class="line"><span class="string">&quot;</span></span><br><span class="line"></span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">|                                     info                                      |     |                       x86 code                        |     |                  ARM code                   |</span><br><span class="line">|            Explicitly define a variable of <span class="built_in">type</span> char to be signed.            | --&gt; |                     char c = <span class="string">&#x27;*&#x27;</span>;                     | --&gt; |               signed c = <span class="string">&#x27;*&#x27;</span>;               |</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">|                                     info                                      |     |                       x86 code                        |     |                  ARM code                   |</span><br><span class="line">|            Use the <span class="built_in">builtin</span> <span class="keyword">function</span> that comes with the compiler.             | --&gt; |           __builtin_ia32_crc32qi(__a, __b);           | --&gt; |     __builtin_aarch64_crc32b(__a, __b);     |</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">|                                     info                                      |     |                       x86 code                        |     |                  ARM code                   |</span><br><span class="line">|                   define the compiled program to be 64-bit.                   | --&gt; |                         -m64;                         | --&gt; |                 -mabi=lp64;                 |</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">|                                     info                                      |     |                       x86 code                        |     |                  ARM code                   |</span><br><span class="line">|                     prefetch memory data into the cache.                      | --&gt; | asm volatile(prefetcht0 %0::m (*(unsigned long *)x)); | --&gt; | define prefetch(_x) __builtin_prefetch(_x); |</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">|                                     info                                      |     |                       x86 code                        |     |                  ARM code                   |</span><br><span class="line">| replace the original x86 version of the compiled macros with the ARM version. | --&gt; |                      __X86_64__;                      | --&gt; |                 __ARM_64__;                 |</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br><span class="line">|                                     info                                      |     |                       x86 code                        |     |                  ARM code                   |</span><br><span class="line">|     the instruction <span class="built_in">set</span> <span class="built_in">type</span> is defined <span class="keyword">in</span> the Makefile, from x86 to ARM.     | --&gt; |                   -march=broadwell;                   | --&gt; |               -march=armv8<span class="_">-a</span>;               |</span><br><span class="line">+-------------------------------------------------------------------------------+     +-------------------------------------------------------+     +---------------------------------------------+</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://huanghantao.github.io/2021/03/13/C/C代码从x86迁移到ARM需要注意的点/" title="C代码从x86迁移到ARM需要注意的点" target="_blank" rel="external">http://huanghantao.github.io/2021/03/13/C/C代码从x86迁移到ARM需要注意的点/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/huanghantao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/../images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/huanghantao" target="_blank"><span class="text-dark">codinghuang</span><small class="ml-1x">PHP Developer</small></a></h3>
+        <div>PHP开发者~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2021/03/04/PHP%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%B8%B8%E9%87%8F%E7%9A%84/" title="PHP内核是如何处理常量的"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'YfC6P93PkD27hTmzIVqX9csy-gzGzoHsz',
+    appKey: '8Od1wVUSFXlW18Hd1pXnQRhq',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

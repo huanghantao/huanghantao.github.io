@@ -15,7 +15,7 @@ static zend_always_inline zend_ulong zend_inline_hash_func(const char *str, size
 }
 ```
 
-这里会对`str`进行处理。在`x86`下面，`char`默认是`signed`的；在`ARM`下，`char`是`unsigned`的。那么，就有可能出现`str`在`x86`下是负数，在`ARM`下是整数。
+这里会对`str`进行处理。在`x86`下面，`char`默认是`signed`的；在`ARM`下，`char`是`unsigned`的。那么，就有可能出现`str`在`x86`下是负数，在`ARM`下是正数。
 
 这个问题，可以通过添加编译器的`-fsigned-char`选项得到解决。加在`PHP`的`Makefile`的`CFLAGS`后面即可：
 

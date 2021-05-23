@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>MacOS搭建Drone环境 | codinghuang的个人博客</title>
+  <meta name="description" content="最近想在自己机器上面搭建一个CI&#x2F;CD系统，发现Drone比较好用。（之前尝试过gitlab，这个东西太占电脑的资源了，运行几分钟，就报资源不足了） 这篇文章是基于MacOS搭建的，因为Linux上面搭建网络问题比较好解决，所以就不给出Linux下的模板了。 这里就直接给出docker-compose.yml的配置： 1234567891011121314151617181920212223242">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MacOS搭建Drone环境">
+<meta property="og:url" content="http://huanghantao.github.io/2021/05/23/MacOS%E6%90%AD%E5%BB%BADrone%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="最近想在自己机器上面搭建一个CI&#x2F;CD系统，发现Drone比较好用。（之前尝试过gitlab，这个东西太占电脑的资源了，运行几分钟，就报资源不足了） 这篇文章是基于MacOS搭建的，因为Linux上面搭建网络问题比较好解决，所以就不给出Linux下的模板了。 这里就直接给出docker-compose.yml的配置： 1234567891011121314151617181920212223242">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-05-23T08:40:53.000Z">
+<meta property="article:modified_time" content="2021-05-23T08:49:32.177Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="CI&#x2F;CD">
+<meta property="article:tag" content="Drone">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/2021/05/23/MacOS%E6%90%AD%E5%BB%BADrone%E7%8E%AF%E5%A2%83/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
+    </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/05/23/MacOS%E6%90%AD%E5%BB%BADrone%E7%8E%AF%E5%A2%83/" class="title">MacOS搭建Drone环境</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-05-23T08:40:53.000Z" itemprop="datePublished">2021-05-23</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/04/30/%E4%BD%BF%E7%94%A8ZEND_VM_REPEATABLE_OPCODE%E5%87%8F%E5%B0%91Zend%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/" class="title">使用ZEND_VM_REPEATABLE_OPCODE减少Zend虚拟机函数调用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-04-30T07:45:54.000Z" itemprop="datePublished">2021-04-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/04/25/%E4%B8%BA%E4%BB%80%E4%B9%88Swoole%E9%9C%80%E8%A6%81%E5%9C%A8DataHead%E9%87%8C%E9%9D%A2%E5%8A%A0%E4%B8%8Amsg-id/" class="title">为什么Swoole需要在DataHead里面加上msg_id</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-04-25T13:16:27.000Z" itemprop="datePublished">2021-04-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/04/25/%E5%90%91Swoole%E4%B8%BB%E8%BF%9B%E7%A8%8B%E5%8F%91%E9%80%81SIGKILL%E4%BF%A1%E5%8F%B7%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E5%A6%82%E4%BD%95%E9%80%80%E5%87%BAworker%E8%BF%9B%E7%A8%8B/" class="title">向Swoole主进程发送SIGKILL信号的时候，如何退出worker进程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-04-25T12:37:27.000Z" itemprop="datePublished">2021-04-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/04/02/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%BD%A0%E7%9A%84PHP%E4%BB%A3%E7%A0%81%E8%A2%AB%E6%88%90%E5%8A%9F%E7%9A%84Hook%E5%8D%8F%E7%A8%8B%E5%8C%96%E4%BA%86/" class="title">如何判断你的PHP代码被成功的Hook协程化了</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-04-02T09:10:33.000Z" itemprop="datePublished">2021-04-02</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-MacOS搭建Drone环境" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MacOS搭建Drone环境
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/05/23/MacOS%E6%90%AD%E5%BB%BADrone%E7%8E%AF%E5%A2%83/" class="article-date">
+	  <time datetime="2021-05-23T08:40:53.000Z" itemprop="datePublished">2021-05-23</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/CI-CD/" rel="tag">CI/CD</a>, <a class="article-tag-link-link" href="/tags/Drone/" rel="tag">Drone</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/05/23/MacOS%E6%90%AD%E5%BB%BADrone%E7%8E%AF%E5%A2%83/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 739(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>最近想在自己机器上面搭建一个<code>CI/CD</code>系统，发现<code>Drone</code>比较好用。（之前尝试过<code>gitlab</code>，这个东西太占电脑的资源了，运行几分钟，就报资源不足了）</p>
+<p>这篇文章是基于<code>MacOS</code>搭建的，因为<code>Linux</code>上面搭建网络问题比较好解决，所以就不给出<code>Linux</code>下的模板了。</p>
+<p>这里就直接给出<code>docker-compose.yml</code>的配置：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">gitea:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">gitea/gitea:latest</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;22:22&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">./gitea-data:/data</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 容器名称</span></span><br><span class="line">  <span class="attr">drone_server:</span></span><br><span class="line">    <span class="comment"># 构建所使用的镜像</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">drone/drone:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">drone_server</span></span><br><span class="line">    <span class="comment"># 映射容器内80端口到宿主机的7079端口</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8080</span><span class="string">:80</span></span><br><span class="line">    <span class="comment"># 容器随docker自动启动</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">depends_on:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">gitea</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="comment"># Gitea 服务器地址</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_GITEA_SERVER=http://host.docker.internal:3000</span></span><br><span class="line">      <span class="comment"># Gitea OAuth2客户端ID</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_GITEA_CLIENT_ID=48515522-4a19-4d5b-86e6-2a1269338829</span></span><br><span class="line">      <span class="comment"># Gitea OAuth2客户端密钥</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_GITEA_CLIENT_SECRET=Z02uD6kHYerX8FnZY2gRUDpJx3IqTHTriIVuZsVpuGNe</span></span><br><span class="line">      <span class="comment"># drone的共享密钥</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_RPC_SECRET=7a5fe2cad36b1d69f443c9aad4761bbe</span></span><br><span class="line">      <span class="comment"># drone的主机名</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_SERVER_HOST=host.docker.internal:8080</span></span><br><span class="line">      <span class="comment"># 外部协议方案</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_SERVER_PROTO=http</span></span><br><span class="line">      <span class="comment"># 创建管理员账户，这里对应为gitea的用户名</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_USER_CREATE=username:codinghuang,admin:true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_GITEA_SKIP_VERIFY=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_LOGS_TRACE=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_AGENTS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_COOKIE_SECRET=correct-horse-battery-staple</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_GIT_ALWAYS_AUTH=true</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">drone_runner:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">drone/drone-runner-docker:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">drone_runner</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7080</span><span class="string">:3000</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">drone_server</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="comment"># 用于连接到Drone服务器的协议。该值必须是http或https。</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_RPC_PROTO=http</span></span><br><span class="line">      <span class="comment"># 用于连接到Drone服务器的主机名</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_RPC_HOST=host.docker.internal:8080</span></span><br><span class="line">      <span class="comment"># Drone服务器进行身份验证的共享密钥，和上面设置一样</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_RPC_SECRET=7a5fe2cad36b1d69f443c9aad4761bbe</span></span><br><span class="line">      <span class="comment"># 限制运行程序可以执行的并发管道数。运行程序默认情况下执行2个并发管道。</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_RUNNER_CAPACITY=2</span></span><br><span class="line">      <span class="comment"># docker runner 名称</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_RUNNER_NAME=drone-runner-1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DRONE_LOGS_TRACE=true</span></span><br></pre></td></tr></table></figure>
+
+<p>然后按照以下步骤即可完成搭建。</p>
+<h2 id="配置hosts"><a href="#配置hosts" class="headerlink" title="配置hosts"></a>配置hosts</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1 host.docker.internal</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="配置gitea"><a href="#配置gitea" class="headerlink" title="配置gitea"></a>配置gitea</h3><h4 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d gitea</span><br></pre></td></tr></table></figure>
+
+<h4 id="初始化gitea网站信息"><a href="#初始化gitea网站信息" class="headerlink" title="初始化gitea网站信息"></a>初始化gitea网站信息</h4><p>然后访问<code>gitea</code><a target="_blank" rel="noopener" href="http://host.docker.internal:3000/">网站</a></p>
+<p>此时会进入<code>gitea</code>的初始化界面，我们需要把<code>localhost</code>全部换成<code>host.docker.internal</code>，然后确认配置即可。如果点击确认后跳转到登陆界面失败，那么我们可以手动在浏览器里面输入<code>http://host.docker.internal:3000/</code>访问<code>gitea</code>网站。接着，注册一个用户即可。</p>
+<h4 id="授权的-OAuth2-应用"><a href="#授权的-OAuth2-应用" class="headerlink" title="授权的 OAuth2 应用"></a>授权的 OAuth2 应用</h4><p>点击 “设置” -&gt; “应用”。然后在 “管理 OAuth2 应用程序” 这一栏里面填写”应用名称”和”重定向 URI”，其中”应用名称”可以随便填，”重定向 URI”必须填写：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://host.docker.internal:8080/login</span><br></pre></td></tr></table></figure>
+
+<p>填写完点击确认之后，会得到 “客户端ID” 和 “客户端密钥”，这两个得记下来，然后分别填写到<code>docker-compose.yml</code>里面的<code>DRONE_GITEA_CLIENT_ID</code>和<code>DRONE_GITEA_CLIENT_SECRET</code>这两个环境变量里面。</p>
+<h3 id="启动drone服务"><a href="#启动drone服务" class="headerlink" title="启动drone服务"></a>启动drone服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>接着，访问<code>Drone</code>的管理<a target="_blank" rel="noopener" href="http://host.docker.internal:8080/">网站</a>，第一次进入需要授权，点击授权，输入刚才注册的<code>gitea</code>用户名和密码。</p>
+<p>然后，在<code>gitea</code>里面随便上传一个项目，然后刷新<code>Drone</code>网站，将会发现项目被同步到里面来了。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://huanghantao.github.io/2021/05/23/MacOS搭建Drone环境/" title="MacOS搭建Drone环境" target="_blank" rel="external">http://huanghantao.github.io/2021/05/23/MacOS搭建Drone环境/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/huanghantao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/../images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/huanghantao" target="_blank"><span class="text-dark">codinghuang</span><small class="ml-1x">PHP Developer</small></a></h3>
+        <div>PHP开发者~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2021/04/30/%E4%BD%BF%E7%94%A8ZEND_VM_REPEATABLE_OPCODE%E5%87%8F%E5%B0%91Zend%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/" title="使用ZEND_VM_REPEATABLE_OPCODE减少Zend虚拟机函数调用"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'YfC6P93PkD27hTmzIVqX9csy-gzGzoHsz',
+    appKey: '8Od1wVUSFXlW18Hd1pXnQRhq',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

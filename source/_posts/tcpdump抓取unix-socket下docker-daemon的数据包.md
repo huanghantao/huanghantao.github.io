@@ -34,3 +34,9 @@ sudo curl --unix-socket /var/run/docker.sock http://localhost/containers/json
 ```bash
 tcpdump -i lo0 port 8080
 ```
+
+如果要还原回去，那么记得把复制出来的`unix socket`复制回去：
+
+```bash
+sudo mv /var/run/docker.sock.copy /var/run/docker.sock
+```

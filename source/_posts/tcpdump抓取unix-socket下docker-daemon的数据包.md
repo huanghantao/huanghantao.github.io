@@ -8,7 +8,7 @@ tags:
 工作原理如下：
 
 ```bash
-unix socket -> proxy -> sunix socketocket
+unix socket -> proxy -> unix socket
 ```
 
 当我们给`unix socket`发送数据的时候，数据包就会经过我们的代理，我们只需要在代理处抓包即可。

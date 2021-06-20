@@ -26,7 +26,7 @@
 <meta property="og:description" content="在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。  序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&amp;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-06-20T01:22:07.000Z">
-<meta property="article:modified_time" content="2021-06-20T08:25:02.247Z">
+<meta property="article:modified_time" content="2021-06-20T09:11:36.160Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="离散数学">
 <meta name="twitter:card" content="summary">
@@ -293,10 +293,10 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/#comments" class="article-comment-link">Comments</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 3k(words)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 3.2k(words)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 12(minutes)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 13(minutes)</span>
 	
 
       </div>
@@ -498,6 +498,10 @@
 <p>在第二个例子里面，因为找不到2开头的序偶，所以S关系具有传递性。</p>
 <p>在第三个例子里面，因为&lt; 1,2 &gt;, &lt; 2,3 &gt;找不到&lt; 1,3 &gt;，所以不具有传递性。</p>
 <p>第四个例子里面，因为&lt; 1,2 &gt;, &lt; 2,1 &gt;找不到&lt; 1,1 &gt;，所以不具有传递性。</p>
+<h2 id="偏序关系"><a href="#偏序关系" class="headerlink" title="偏序关系"></a>偏序关系</h2><p>设R是非空集合A上的关系，如果R是自反的、反対称的、传递的，则称R为A上的偏序关系(partial order relation), 记为”≤”。读作”小于等于”，并将”&lt; a,b &gt; ∈ ≤”记为 a ≤ b。序偶 &lt; A, ≤ &gt; 称为偏序集(partial order set)。</p>
+<blockquote>
+<p>用”≤”来表示偏序关系是由于”小于等于关系”是偏序关系的典型范例，此时已不局限于”小于等于”关系，它指代的是在偏序关系中元素之间的先后顺序,不局限于通常的数的大小。</p>
+</blockquote>
 
       
     </div>

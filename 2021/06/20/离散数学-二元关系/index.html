@@ -26,7 +26,7 @@
 <meta property="og:description" content="在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。  序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&amp;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-06-20T01:22:07.000Z">
-<meta property="article:modified_time" content="2021-06-20T07:32:40.536Z">
+<meta property="article:modified_time" content="2021-06-20T07:59:11.274Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="离散数学">
 <meta name="twitter:card" content="summary">
@@ -293,10 +293,10 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/#comments" class="article-comment-link">Comments</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2k(words)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2.6k(words)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 8(minutes)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 10(minutes)</span>
 	
 
       </div>
@@ -366,11 +366,11 @@
 </blockquote>
 <h3 id="自反性与反自反性"><a href="#自反性与反自反性" class="headerlink" title="自反性与反自反性"></a>自反性与反自反性</h3><p>设R是集合A上的关系。</p>
 <ol>
-<li>如果对<strong>任意</strong>的x ∈ A，都有&lt; x,x &gt; ∈ R, 那么称R在A上是自反的(reflexive)，或称R具有自反性(reflexivity);</li>
-<li>如果对<strong>任意</strong>的x ∈ A，都有&lt; x,x &gt; ∉ R,那么称R在A上是反自反的(antireflexive)，或称R具有反自反性(antirflexivity)</li>
+<li>如果对<strong>任意</strong>的x ∈ A，<strong>都有</strong>&lt; x,x &gt; ∈ R, 那么称R在A上是自反的(reflexive)，或称R具有自反性(reflexivity);</li>
+<li>如果对<strong>任意</strong>的x ∈ A，<strong>都有</strong>&lt; x,x &gt; ∉ R,那么称R在A上是反自反的(antireflexive)，或称R具有反自反性(antirflexivity)</li>
 </ol>
 <blockquote>
-<p>需要注意的是，我们说关系R是不是有自反性，是基于某一个给定的集合来进行讨论的，而不仅仅是关系R。因为R具有自反性的全称是R在A上是自反的</p>
+<p>这里需要注意的是，任意 … 都有，这暗示着x要取遍集合A中的每个元素<br>需要注意的是，我们说关系R是不是有自反性，是基于某一个给定的集合来进行讨论的，而不仅仅是关系R。因为R具有自反性的全称是R在A上是自反的</p>
 </blockquote>
 <p>例如：</p>
 <ol>
@@ -418,12 +418,66 @@
 <li>如果对任意的x,y ∈ A,如果&lt; x,y &gt; ∈ R,那么&lt; y,x &gt; ∈ R，则称R是对称的(symmetric)，或称R具有对称性(symmetry);</li>
 <li>如果对任意的x,y ∈ A,如果&lt; x,y &gt; ∈ R且&lt; y,x &gt; ∈ R，那么x = y，则称R是反对称的(antisymmetric)，或称R具有反对称性(antisymmetry);</li>
 </ol>
+<blockquote>
+<p>注意，对称性和反对称性的描述与自反性和反自反性的区别，这里是任意 … 如果，也就是说，不需要取遍集合A中的每个元素</p>
+</blockquote>
 <p>例如：</p>
 <ol>
 <li>同姓关系，朋友关系都是对称的关系</li>
 <li>父子关系，小于等于关系都是反对称的关系</li>
 </ol>
 <p>例子的第一条比较容易理解，如果a和b同姓，那么b和a一定同姓；如果a和b是朋友，那么b和a一定是朋友<br>例子的第二条父子关系为什么是反对称性呢？因为“如果&lt; x,y &gt; ∈ R且&lt; y,x &gt; ∈ R，那么x = y”是蕴含式，因为“如果&lt; x,y &gt; ∈ R且&lt; y,x &gt; ∈ R”为假，所以整句是真的。所以父子关系是反对称性；小于等于关系中，满足蕴含式前件为真，后件也为真，所以整句为真，所以具有反对称性。</p>
+<h3 id="对称性与反对称性的例子"><a href="#对称性与反对称性的例子" class="headerlink" title="对称性与反对称性的例子"></a>对称性与反对称性的例子</h3><p>设A = {1,2,3,4}，定义A上的关系R,S,T和V如下:</p>
+<ol>
+<li>R = {&lt; 1,1 &gt;, &lt; 1,3 &gt;, &lt; 3,1 &gt;, &lt; 4,4 &gt;} 对称性</li>
+<li>S = {&lt; 1,1 &gt;, &lt; 1,3 &gt;, &lt; 1,4 &gt;, &lt; 2,4 &gt;} 反对称性</li>
+<li>T = {&lt; 1,1 &gt;, &lt; 1,2 &gt;, &lt; 1,3 &gt;, &lt; 3,1 &gt;, &lt; 1,4 &gt;} 非对称性，非反对称性</li>
+<li>V = {&lt; 1,1 &gt;, &lt; 2,2 &gt;, &lt; 3,3 &gt;, &lt; 4,4 &gt;}  对称性，反对称性</li>
+</ol>
+<p>我们会发现两点与自反性和反自反性的差异：</p>
+<p>第一，对称性<strong>不需要包含所有</strong>满足对称的序偶；第二，关系可以同时具备对称性和反对称性，但是关系不可能同时具备自反性和反自反性（因为同一个节点不可能既有自环又没有自环）</p>
+<p>用关系图来理解对称性和反对称性。对于关系R：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 1((1))
+    1((1)) --> 3((3))
+    3((3)) --> 1((1))
+    4((4)) --> 4((4))</pre>
+
+<blockquote>
+<p>1到3有一条边，3到1也有一条边，所以具有对称性。</p>
+</blockquote>
+<p>对于关系S：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 1((1))
+    1((1)) --> 3((3))
+    1((1)) --> 4((4))
+    2((2)) --> 4((4))</pre>
+
+<blockquote>
+<p>1到3有一条边，但是3到1没有边；1到4有一条边，但是4到1没有边；2到4有一条边，但是4到2没有边。所以具有反对称性。</p>
+</blockquote>
+<p>对于关系T：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 1((1))
+    1((1)) --> 2((2))
+    1((1)) --> 3((3))
+    3((3)) --> 1((1))
+    1((1)) --> 4((4))</pre>
+
+<blockquote>
+<p>1到2有一条边，但是2到1没有边；1到3有一条边，3到1有一条边；1到4有一条边，但是4到1没有边。所以既不是对称性，也不是反对称性。</p>
+</blockquote>
+<p>对于关系V：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 1((1))
+    2((2)) --> 2((2))
+    3((3)) --> 3((3))
+    4((4)) --> 4((4))</pre>
+
+<blockquote>
+<p>只有自环，所以既具有对称性，也具有反对称性。</p>
+</blockquote>
+<p>我们会发现，对称性和反对称性更多的是关注节点与节点之间有没有边，而自反性和反自反性更多的是关注节点本身有没有自环。</p>
 
       
     </div>

@@ -26,7 +26,7 @@
 <meta property="og:description" content="在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。  序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&amp;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-06-20T01:22:07.000Z">
-<meta property="article:modified_time" content="2021-06-20T07:07:02.961Z">
+<meta property="article:modified_time" content="2021-06-20T07:32:40.536Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="离散数学">
 <meta name="twitter:card" content="summary">
@@ -293,10 +293,10 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/#comments" class="article-comment-link">Comments</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.7k(words)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2k(words)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 7(minutes)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 8(minutes)</span>
 	
 
       </div>
@@ -413,6 +413,17 @@
 <blockquote>
 <p>如果集合<code>A</code>里面的元素有的有自环，有的没有自环，那么这个关系既没有自反性，没有反自反性。</p>
 </blockquote>
+<h3 id="对称性与反对称性"><a href="#对称性与反对称性" class="headerlink" title="对称性与反对称性"></a>对称性与反对称性</h3><p>设R是集合A上的关系。</p>
+<ol>
+<li>如果对任意的x,y ∈ A,如果&lt; x,y &gt; ∈ R,那么&lt; y,x &gt; ∈ R，则称R是对称的(symmetric)，或称R具有对称性(symmetry);</li>
+<li>如果对任意的x,y ∈ A,如果&lt; x,y &gt; ∈ R且&lt; y,x &gt; ∈ R，那么x = y，则称R是反对称的(antisymmetric)，或称R具有反对称性(antisymmetry);</li>
+</ol>
+<p>例如：</p>
+<ol>
+<li>同姓关系，朋友关系都是对称的关系</li>
+<li>父子关系，小于等于关系都是反对称的关系</li>
+</ol>
+<p>例子的第一条比较容易理解，如果a和b同姓，那么b和a一定同姓；如果a和b是朋友，那么b和a一定是朋友<br>例子的第二条父子关系为什么是反对称性呢？因为“如果&lt; x,y &gt; ∈ R且&lt; y,x &gt; ∈ R，那么x = y”是蕴含式，因为“如果&lt; x,y &gt; ∈ R且&lt; y,x &gt; ∈ R”为假，所以整句是真的。所以父子关系是反对称性；小于等于关系中，满足蕴含式前件为真，后件也为真，所以整句为真，所以具有反对称性。</p>
 
       
     </div>

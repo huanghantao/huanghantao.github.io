@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>离散数学 -- 二元关系 | codinghuang的个人博客</title>
+  <meta name="description" content="序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&lt; x,y &gt;  其中x是第一元素，y是第二元素。 例如： 张明喜欢离散数学可用序偶表示为: &lt;张明，离散数学&gt;  通常情况下，尖括号&lt; &gt;都是用于表明元素之间是有顺序性的。  由定义可见，两个序偶&lt; a,b &gt; &#x3D; &lt; c,d &gt;，当且仅当 a &#x3D; c, b &#x3D; d 笛卡尔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="离散数学 -- 二元关系">
+<meta property="og:url" content="http://huanghantao.github.io/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&lt; x,y &gt;  其中x是第一元素，y是第二元素。 例如： 张明喜欢离散数学可用序偶表示为: &lt;张明，离散数学&gt;  通常情况下，尖括号&lt; &gt;都是用于表明元素之间是有顺序性的。  由定义可见，两个序偶&lt; a,b &gt; &#x3D; &lt; c,d &gt;，当且仅当 a &#x3D; c, b &#x3D; d 笛卡尔">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-06-20T01:22:07.000Z">
+<meta property="article:modified_time" content="2021-06-20T06:52:02.736Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="离散数学">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
+    </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/" class="title">离散数学 -- 二元关系</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-06-20T01:22:07.000Z" itemprop="datePublished">2021-06-20</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/06/19/tcpdump%E6%8A%93%E5%8F%96unix-socket%E4%B8%8Bdocker-daemon%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8C%85/" class="title">tcpdump抓取unix socket下docker daemon的数据包</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-06-19T04:08:45.000Z" itemprop="datePublished">2021-06-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/06/17/%E4%BD%BF%E7%94%A8nvim%E6%9D%A5%E8%B0%83%E8%AF%95phpactor/" class="title">使用nvim来调试phpactor</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-06-17T09:59:27.000Z" itemprop="datePublished">2021-06-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/05/23/MacOS%E6%90%AD%E5%BB%BADrone%E7%8E%AF%E5%A2%83/" class="title">MacOS搭建Drone环境</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-05-23T08:40:53.000Z" itemprop="datePublished">2021-05-23</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/04/30/%E4%BD%BF%E7%94%A8ZEND_VM_REPEATABLE_OPCODE%E5%87%8F%E5%B0%91Zend%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/" class="title">使用ZEND_VM_REPEATABLE_OPCODE减少Zend虚拟机函数调用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-04-30T07:45:54.000Z" itemprop="datePublished">2021-04-30</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-离散数学-二元关系" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      离散数学 -- 二元关系
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/" class="article-date">
+	  <time datetime="2021-06-20T01:22:07.000Z" itemprop="datePublished">2021-06-20</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6/" rel="tag">离散数学</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.6k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 6(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="序偶定义"><a href="#序偶定义" class="headerlink" title="序偶定义"></a>序偶定义</h2><p>由两个元素<strong>按照一定的次序</strong>组成的二元组称为序偶，记作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt; x,y &gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中x是第一元素，y是第二元素。</p>
+<p>例如：</p>
+<p>张明喜欢离散数学可用序偶表示为: &lt;张明，离散数学&gt;</p>
+<blockquote>
+<p>通常情况下，尖括号<code>&lt; &gt;</code>都是用于表明元素之间是有顺序性的。</p>
+</blockquote>
+<p>由定义可见，两个序偶&lt; a,b &gt; = &lt; c,d &gt;，当且仅当 a = c, b = d</p>
+<h2 id="笛卡尔积定义"><a href="#笛卡尔积定义" class="headerlink" title="笛卡尔积定义"></a>笛卡尔积定义</h2><p>我们可以用序偶来定义笛卡尔积，设A，B是两个集合,称集合</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A x B= &#123;&lt; x,y &gt;|(x ∈ A)^(y ∈ B)&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为集合A与B的笛卡儿积。</p>
+<h2 id="二元关系定义"><a href="#二元关系定义" class="headerlink" title="二元关系定义"></a>二元关系定义</h2><p>设A,B为两个非空集合，称AxB的任意子集R为从A到B的一个<strong>二元关系</strong>，简称<strong>关系</strong>(relation)。其中A称为关系R的前域，B称为关系R的后域。<strong>如果A=B，则称R为A上的一个二元关系</strong>。（其中，二元指的就是A，B两个集合）</p>
+<p>从定义可以得知，<strong>二元关系本身也是一个集合</strong>，并且二元关系中的元素也是序偶的形式。</p>
+<ol>
+<li>若序偶&lt; x,y &gt; ∈ R，通常把这一<strong>事实</strong>记为xRy，读作”x对y有关系R”;</li>
+</ol>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><ol>
+<li>设R1为自然数集合上的小于关系，则&lt; 2,3 &gt; ∈ R1(或2R13)，但&lt; 5,5 &gt;就不属于R1。</li>
+<li>设R2为中国城市的地区归属关系,则<strong>成都R2四川</strong>。</li>
+</ol>
+<h3 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h3><p>假没A={a,b} B= {c,d} ,试写出从A到B的所有不同关系。<br>解 首先求丙个集合的笛卡尔积: A x B = {&lt; a,c &gt;,&lt; a,d &gt;,&lt; b,c &gt;,&lt; b,d &gt;}.<br>再求A x B的所有不同子集:</p>
+<ol>
+<li>0-元子集: ∅;</li>
+<li>1-元子集: {&lt; a,c&gt;}, {&lt; a,d&gt;}, {&lt; b,c&gt;}, {&lt; b,d&gt;} ;</li>
+<li>2-元子集: {&lt; a,c&gt;,&lt; a,d&gt;}, {&lt; a,c&gt;,&lt; b,c&gt;}, {&lt; a,c&gt;,&lt; b,d&gt;}, {&lt; a,d&gt;,&lt; b,d&gt;}, {&lt; a,d&gt;,&lt; b,d&gt;}, {&lt; b,c&gt;,&lt; b,d&gt;}</li>
+<li>3-元子集: {&lt; a,c&gt;,&lt; a,d&gt;,&lt; b,c&gt;}, {&lt; a,c&gt;,&lt; a,d&gt;,&lt; b,d&gt;}, {&lt; a,c&gt;,&lt; b,c&gt;,&lt; b,d&gt;}, {&lt; a,d&gt;,&lt; b,c&gt;,&lt; b,d&gt;}</li>
+<li>4-元子集: {&lt; a,c&gt;,&lt; a,d&gt;,&lt; b,c&gt;,&lt; b,d&gt;}</li>
+</ol>
+<p>所以，上面的16个不同子集就是从A到B的所有不同关系。</p>
+<h3 id="几种重要关系"><a href="#几种重要关系" class="headerlink" title="几种重要关系"></a>几种重要关系</h3><ol>
+<li>当R=∅时，称R为从A到B的空关系(empty relation) ;</li>
+<li>当R=A x B时，称R为从A到B的全关系(total relation); A上的全关系，通常记为EA。</li>
+</ol>
+<h2 id="关系的表示"><a href="#关系的表示" class="headerlink" title="关系的表示"></a>关系的表示</h2><h3 id="关系的集合表示"><a href="#关系的集合表示" class="headerlink" title="关系的集合表示"></a>关系的集合表示</h3><p>因为关系被定义为笛卡尔积的子集，所以，关系也是集合。所以，可以使用集合的表示方法（枚举法和叙述法）来表示一个关系。</p>
+<p>例如：</p>
+<ol>
+<li><p>集合 A = {1,2,3,4}上的整除关系 R 可用枚举法表示为：<br>R = {&lt; 1,1 &gt;, &lt; 1,2 &gt;, &lt; 1,3 &gt;, &lt; 1,4 &gt;, &lt; 2,2 &gt;, &lt; 2,4 &gt;, &lt; 3,3 &gt;, &lt; 4,4 &gt;}</p>
+</li>
+<li><p>实数集R上的”相等”关系S可用叙述法表示为：<br>S= {&lt; x,y &gt; |(x,y ∈ R) ∧ (x = y)}。</p>
+</li>
+</ol>
+<h3 id="关系的图形表示（A-≠-B）"><a href="#关系的图形表示（A-≠-B）" class="headerlink" title="关系的图形表示（A ≠ B）"></a>关系的图形表示（A ≠ B）</h3><p>设 A = {a1,2,.. ,an}, B = {b1,b,… ,bm}, R是从A到B的一个关系。</p>
+<ol>
+<li>集合中的元素a1,a2,… ,an 和 b1, b2,…，bm分别作为图中的结点，用一个小圆圈”o”表示。</li>
+<li>如果&lt;ai, bj&gt; ∈ R,则从ai到bj可用一条有向边ai → bj相连。</li>
+</ol>
+<h3 id="关系的图形表示（A-B）"><a href="#关系的图形表示（A-B）" class="headerlink" title="关系的图形表示（A = B）"></a>关系的图形表示（A = B）</h3><p>设 A = {a1,a2,… ,an}, R是A上的一个关系。</p>
+<ol>
+<li>集合中的元素a1,a2,…，an分别作为图中的结点,用小圆圈”o”表示;</li>
+<li>如果&lt;ai, aj&gt; ∈ R，则从ai到aj可用一条有向边ai → aj相连。</li>
+<li>如果&lt;ai, aj&gt; ∈ R,则从ai到aj可用一条带箭头的小圆圈表示，即画个自环。</li>
+</ol>
+<h2 id="关系的性质"><a href="#关系的性质" class="headerlink" title="关系的性质"></a>关系的性质</h2><blockquote>
+<p>我们主要关注同一个集合上的关系</p>
+</blockquote>
+<h3 id="自反性与反自反性"><a href="#自反性与反自反性" class="headerlink" title="自反性与反自反性"></a>自反性与反自反性</h3><p>设R是集合A上的关系。</p>
+<ol>
+<li>如果对<strong>任意</strong>的x ∈ A，都有&lt; x,x &gt; ∈ R, 那么称R在A上是自反的(reflexive)，或称R具有自反性(reflexivity);</li>
+<li>如果对<strong>任意</strong>的x ∈ A，都有&lt; x,x &gt; ∉ R,那么称R在A上是反自反的(antireflexive)，或称R具有反自反性(antirflexivity)</li>
+</ol>
+<blockquote>
+<p>需要注意的是，我们说关系R是不是有自反性，是基于某一个给定的集合来进行讨论的，而不仅仅是关系R。因为R具有自反性的全称是R在A上是自反的</p>
+</blockquote>
+<p>例如：</p>
+<ol>
+<li>小于等于关系，包含关系，整除关系都是自反的关系。</li>
+<li>小于关系，真包含关系都是反自反的关系。</li>
+</ol>
+<h3 id="自反性和反自反性的例子"><a href="#自反性和反自反性的例子" class="headerlink" title="自反性和反自反性的例子"></a>自反性和反自反性的例子</h3><p>设A = {1,2,3}，定义A上的关系R,S和T如下:</p>
+<ol>
+<li>R = {&lt; 1,1 &gt;, &lt; 1,2 &gt;, &lt; 2,2 &gt;, &lt; 3,3 &gt;} 自反</li>
+<li>S = {&lt; 1,2 &gt;, &lt; 2,3 &gt;, &lt; 3,1 &gt;} 反自反</li>
+<li>T = {&lt; 1,1 &gt;, &lt; 1,2 &gt;, &lt; 1,3 &gt;, &lt; 3,1 &gt;, &lt; 3,3 &gt;} 非自反，非反自反</li>
+</ol>
+<p>根据自反性的例子，&lt; 1,1 &gt;、&lt; 2,2 &gt;、&lt; 3,3 &gt;<strong>都</strong>在集合R里面，所以R具有反自反性；而根据反自反性的定义，这三组序偶<strong>都</strong>不在关系S里面，所以S是反自反的；因为T不满足自反也不满足反自反，所以T是非自反的也是非反自反的。</p>
+<p>用关系图来理解自反性和反自反性。对于关系R：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 1((1))
+    1((1)) --> 2((2))
+    3((3)) --> 3((3))</pre>
+
+<blockquote>
+<p>如果集合<code>A</code>里面的每个元素都有一个自环，那么这个关系具有自反性。</p>
+</blockquote>
+<p>对于关系S：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 2((2))
+    2((2)) --> 3((3))
+    3((3)) --> 1((1))</pre>
+
+<blockquote>
+<p>如果集合<code>A</code>里面的每个元素都不存在自环，那么这个关系具有反自反性。</p>
+</blockquote>
+<p>对于关系T：</p>
+<pre class="mermaid">graph TB
+    1((1)) --> 1((1))
+    1((1)) --> 2((2))
+    1((1)) --> 3((3))
+    3((3)) --> 1((1))
+    3((3)) --> 3((3))</pre>
+
+<blockquote>
+<p>如果集合<code>A</code>里面的元素有的有自环，有的没有自环，那么这个关系既没有自反性，没有反自反性。</p>
+</blockquote>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://huanghantao.github.io/2021/06/20/离散数学-二元关系/" title="离散数学 -- 二元关系" target="_blank" rel="external">http://huanghantao.github.io/2021/06/20/离散数学-二元关系/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/huanghantao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/../images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/huanghantao" target="_blank"><span class="text-dark">codinghuang</span><small class="ml-1x">PHP Developer</small></a></h3>
+        <div>PHP开发者~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2021/06/19/tcpdump%E6%8A%93%E5%8F%96unix-socket%E4%B8%8Bdocker-daemon%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8C%85/" title="tcpdump抓取unix socket下docker daemon的数据包"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+
+
+    <script src='https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js'></script>
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({theme: 'forest'});
+      }
+    </script>
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'YfC6P93PkD27hTmzIVqX9csy-gzGzoHsz',
+    appKey: '8Od1wVUSFXlW18Hd1pXnQRhq',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

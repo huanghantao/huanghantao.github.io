@@ -26,7 +26,7 @@
 <meta property="og:description" content="在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。  序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&amp;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-06-20T01:22:07.000Z">
-<meta property="article:modified_time" content="2021-06-20T07:59:11.274Z">
+<meta property="article:modified_time" content="2021-06-20T08:25:02.247Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="离散数学">
 <meta name="twitter:card" content="summary">
@@ -293,10 +293,10 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/#comments" class="article-comment-link">Comments</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2.6k(words)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 3k(words)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 10(minutes)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 12(minutes)</span>
 	
 
       </div>
@@ -478,6 +478,26 @@
 <p>只有自环，所以既具有对称性，也具有反对称性。</p>
 </blockquote>
 <p>我们会发现，对称性和反对称性更多的是关注节点与节点之间有没有边，而自反性和反自反性更多的是关注节点本身有没有自环。</p>
+<h3 id="传递性"><a href="#传递性" class="headerlink" title="传递性"></a>传递性</h3><p>设R是集合A上的关系。对任意的 x,y,z ∈ A，如果&lt; x,y &gt; ∈ R且&lt; y,z &gt; ∈ R，那么&lt; x,z &gt; ∈ R，则称R是传递的(transitive)，或称R具有传递性(transitivity)。</p>
+<blockquote>
+<p>注意，传递性与自反性和反自反性的区别，这里是任意 … 如果，也就是说，不需要取遍集合A中的每个元素</p>
+</blockquote>
+<p>例如：</p>
+<ol>
+<li>小于等于关系是传递的关系</li>
+<li>父子关系不是传递的关系</li>
+</ol>
+<h3 id="传递性的例子"><a href="#传递性的例子" class="headerlink" title="传递性的例子"></a>传递性的例子</h3><p>设A = {1,2,3}，定义A上的关系R,S,T和V如下:</p>
+<ol>
+<li>R = {&lt; 1,1 &gt;, &lt; 1,2 &gt;, &lt; 2,3 &gt;, &lt; 1,3 &gt;} 传递性</li>
+<li>S = {&lt; 1,2 &gt;} 传递</li>
+<li>T = {&lt; 1,1 &gt;, &lt; 1,2 &gt;, &lt; 2,3 &gt;} 非传递</li>
+<li>V = {&lt; 1,2 &gt;, &lt; 2,3 &gt;, &lt; 1,3 &gt;, &lt; 2,1 &gt;} 非传递</li>
+</ol>
+<p>在第一个例子里面，像&lt; 1,1 &gt;这种自环的序偶，是一定可以找得到传递的（除非没有第二个1开头的序偶了，但是这种情况，也是符合传递性，因为蕴含式的前件为假，所以式子为真）；&lt; 1,2 &gt;, &lt; 2,3 &gt;, &lt; 1,3 &gt;满足传递性的定义；&lt; 2,3 &gt;找不到3开头的序偶；&lt; 1,3 &gt;找不到3开头的序偶。所以R关系式具有传递性的。</p>
+<p>在第二个例子里面，因为找不到2开头的序偶，所以S关系具有传递性。</p>
+<p>在第三个例子里面，因为&lt; 1,2 &gt;, &lt; 2,3 &gt;找不到&lt; 1,3 &gt;，所以不具有传递性。</p>
+<p>第四个例子里面，因为&lt; 1,2 &gt;, &lt; 2,1 &gt;找不到&lt; 1,1 &gt;，所以不具有传递性。</p>
 
       
     </div>

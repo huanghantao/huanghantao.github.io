@@ -18,15 +18,15 @@
   
   
   <title>离散数学 -- 二元关系 | codinghuang的个人博客</title>
-  <meta name="description" content="序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&lt; x,y &gt;  其中x是第一元素，y是第二元素。 例如： 张明喜欢离散数学可用序偶表示为: &lt;张明，离散数学&gt;  通常情况下，尖括号&lt; &gt;都是用于表明元素之间是有顺序性的。  由定义可见，两个序偶&lt; a,b &gt; &#x3D; &lt; c,d &gt;，当且仅当 a &#x3D; c, b &#x3D; d 笛卡尔">
+  <meta name="description" content="在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。  序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&amp;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="离散数学 -- 二元关系">
 <meta property="og:url" content="http://huanghantao.github.io/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/index.html">
 <meta property="og:site_name" content="codinghuang的个人博客">
-<meta property="og:description" content="序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&lt; x,y &gt;  其中x是第一元素，y是第二元素。 例如： 张明喜欢离散数学可用序偶表示为: &lt;张明，离散数学&gt;  通常情况下，尖括号&lt; &gt;都是用于表明元素之间是有顺序性的。  由定义可见，两个序偶&lt; a,b &gt; &#x3D; &lt; c,d &gt;，当且仅当 a &#x3D; c, b &#x3D; d 笛卡尔">
+<meta property="og:description" content="在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。  序偶定义由两个元素按照一定的次序组成的二元组称为序偶，记作： 1&amp;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-06-20T01:22:07.000Z">
-<meta property="article:modified_time" content="2021-06-20T06:55:56.218Z">
+<meta property="article:modified_time" content="2021-06-20T07:05:06.219Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="离散数学">
 <meta name="twitter:card" content="summary">
@@ -293,17 +293,20 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/#comments" class="article-comment-link">Comments</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.6k(words)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.7k(words)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 6(minutes)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 7(minutes)</span>
 	
 
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h2 id="序偶定义"><a href="#序偶定义" class="headerlink" title="序偶定义"></a>序偶定义</h2><p>由两个元素<strong>按照一定的次序</strong>组成的二元组称为序偶，记作：</p>
+        <blockquote>
+<p>在编译器进行数据流分析的时候，很多的分析都是基于gen和kill来做的，这是一个经典的算法框架，然而，要真正的理解这个算法框架的核心，例如结束迭代的条件（慢慢的达到不动点），IN和OUT的初始化什么时候全是0，什么时候全是1，这些细节都是需要通过理论去支撑的，这其中需要用到离散数学的知识。本篇博客总结自电子科技大学大学的网课。</p>
+</blockquote>
+<h2 id="序偶定义"><a href="#序偶定义" class="headerlink" title="序偶定义"></a>序偶定义</h2><p>由两个元素<strong>按照一定的次序</strong>组成的二元组称为序偶，记作：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt; x,y &gt;</span><br></pre></td></tr></table></figure>
 
 <p>其中x是第一元素，y是第二元素。</p>

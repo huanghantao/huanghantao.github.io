@@ -317,6 +317,13 @@
   "resolved" "https://registry.npm.taobao.org/decode-uri-component/download/decode-uri-component-0.2.0.tgz"
   "version" "0.2.0"
 
+"deep-assign@^2.0.0":
+  "integrity" "sha1-6+BrHwfwja5ZdiDj3RYi83GhxXI="
+  "resolved" "https://registry.npm.taobao.org/deep-assign/download/deep-assign-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "is-obj" "^1.0.0"
+
 "deepmerge@^4.2.2":
   "integrity" "sha1-RNLqNnm49NT/ujPwPYZfwee/SVU="
   "resolved" "https://registry.npm.taobao.org/deepmerge/download/deepmerge-4.2.2.tgz"
@@ -522,6 +529,13 @@
     "hexo-util" "^1.0.0"
     "moment" "^2.18.0"
     "swig-templates" "^2.0.2"
+
+"hexo-filter-mermaid-diagrams@^1.0.5":
+  "integrity" "sha1-HjL8TkbquQzzo3W1yDCp8q7xZA8="
+  "resolved" "https://registry.npm.taobao.org/hexo-filter-mermaid-diagrams/download/hexo-filter-mermaid-diagrams-1.0.5.tgz"
+  "version" "1.0.5"
+  dependencies:
+    "deep-assign" "^2.0.0"
 
 "hexo-front-matter@^2.0.0":
   "integrity" "sha1-A/Oanu2xbFRI27O+x9/yxOIkAGw="
@@ -776,6 +790,11 @@
   "integrity" "sha1-dTU0W4lnNNX4DE0GxQlVUnoU8Ss="
   "resolved" "https://registry.npm.taobao.org/is-number/download/is-number-7.0.0.tgz"
   "version" "7.0.0"
+
+"is-obj@^1.0.0":
+  "integrity" "sha1-PkcprB9f3gJc19g6iW2rn09n2w8="
+  "resolved" "https://registry.nlark.com/is-obj/download/is-obj-1.0.1.tgz"
+  "version" "1.0.1"
 
 "is-plain-object@^2.0.4":
   "integrity" "sha1-LBY7P6+xtgbZ0Xko8FwqHDjgdnc="

@@ -102,8 +102,8 @@ int(3)
 
 ```mermaid
 graph TB
-    1($array)---->3[zend_array]
-    2($array_2)---->3[zend_array]
+    1($array) --> 3[zend_array]
+    2($array_2) --> 3[zend_array]
 ```
 
 接着，实际上遍历的是这个**看不见**的`$array)2`。
@@ -112,8 +112,8 @@ graph TB
 
 ```mermaid
 graph TB
-    1($array)---->3[zend_array_1]
-    2($array_2)---->4[zend_array_2]
+    1($array) --> 3[zend_array_1]
+    2($array_2) --> 4[zend_array_2]
 ```
 
 所以，给`$array`赋值，并不会影响我们遍历`$array_2`。所以，当遍历`3`次的时候就会停下来。
@@ -140,9 +140,9 @@ Fatal error: Allowed memory size of 134217728 bytes exhausted
 
 ```mermaid
 graph TB
-    1($array)---->3[zend_ref]
-    2($array_2)---->3[zend_ref]
-    3(zend_ref)---->4[zend_array]
+    1($array) --> 3[zend_ref]
+    2($array_2) --> 3[zend_ref]
+    3(zend_ref) --> 4[zend_array]
 ```
 
 我们对`$array`的修改，会影响到`$array_2`，最终，`foreach`会死循环。

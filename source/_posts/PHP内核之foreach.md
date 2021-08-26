@@ -55,7 +55,7 @@ $value = $array[2]; // $array 此时是 [1, 2, 2].
 
 为了解决这种犹如`bug`的特性，`PHP`提出了这个[RFC](https://wiki.php.net/rfc/foreach_unwrap_ref)
 
-在这个`RFC`里面，当跳出`foreach`的时候，增加了一个`opcode UNWRAP_REF`来揭开引用。我们可以来看看对于上面这段代码，`RFC`之后的`opline`是啥：
+在这个`RFC`里面，当跳出`foreach`的时候，增加了一个`opcode UNWRAP_REF`来解开引用。我们可以来看看对于上面这段代码，`RFC`之后的`opline`是啥：
 
 ```bash
 L0003 0000 ASSIGN CV0($array) array(...)

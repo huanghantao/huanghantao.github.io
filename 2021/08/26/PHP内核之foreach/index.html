@@ -26,7 +26,7 @@
 <meta property="og:description" content="在PHP8.0及之前的版本，foreach有一个行为很容易让我们的代码写错，甚至成为很多公司的面试题： 123456&lt;?php$array &#x3D; [1, 2, 3];foreach ($array as &amp;$value) &amp;#123; &#x2F;* ... *&#x2F; &amp;#125;foreach ($array as $value) &amp;#123; &#x2F;* ... *&#x2F; &amp;#125;var_dump($">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-08-26T07:10:28.000Z">
-<meta property="article:modified_time" content="2021-08-26T07:47:48.606Z">
+<meta property="article:modified_time" content="2021-08-26T07:49:56.862Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="PHP内核">
 <meta name="twitter:card" content="summary">
@@ -319,7 +319,7 @@
 
 <p>因为<code>$value</code>始终引用着<code>$array[2]</code>，所以，修改<code>$value</code>的同时，也会修改<code>$array[2]</code>。所以，最后<code>$array[2]</code>是<code>2</code>，而不是<code>3</code>。</p>
 <p>为了解决这种犹如<code>bug</code>的特性，<code>PHP</code>提出了这个<a target="_blank" rel="noopener" href="https://wiki.php.net/rfc/foreach_unwrap_ref">RFC</a></p>
-<p>在这个<code>RFC</code>里面，当跳出<code>foreach</code>的时候，增加了一个<code>opcode UNWRAP_REF</code>来揭开引用。我们可以来看看对于上面这段代码，<code>RFC</code>之后的<code>opline</code>是啥：</p>
+<p>在这个<code>RFC</code>里面，当跳出<code>foreach</code>的时候，增加了一个<code>opcode UNWRAP_REF</code>来解开引用。我们可以来看看对于上面这段代码，<code>RFC</code>之后的<code>opline</code>是啥：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">L0003 0000 ASSIGN CV0(<span class="variable">$array</span>) array(...)</span><br><span class="line">L0004 0001 V3 = FE_RESET_RW CV0(<span class="variable">$array</span>) 0004</span><br><span class="line">L0004 0002 FE_FETCH_RW V3 CV1(<span class="variable">$value</span>) 0004</span><br><span class="line">L0004 0003 JMP 0002</span><br><span class="line">L0004 0004 FE_FREE V3</span><br><span class="line">L0004 0005 UNWRAP_REF CV1(<span class="variable">$value</span>)</span><br><span class="line">L0005 0006 V4 = FE_RESET_R CV0(<span class="variable">$array</span>) 0009</span><br><span class="line">L0005 0007 FE_FETCH_R V4 CV1(<span class="variable">$value</span>) 0009</span><br><span class="line">L0005 0008 JMP 0007</span><br><span class="line">L0005 0009 FE_FREE V4</span><br><span class="line">L0006 0010 INIT_FCALL 1 96 string(<span class="string">&quot;var_dump&quot;</span>)</span><br><span class="line">L0006 0011 SEND_VAR CV0(<span class="variable">$array</span>) 1</span><br><span class="line">L0006 0012 DO_ICALL</span><br><span class="line">L0006 0013 RETURN int(1)</span><br></pre></td></tr></table></figure>
 
 <p>我们发现，当<code>$value</code>是引用的时候，会执行<code>UNWRAP_REF</code>来解开引用。这样，<code>$value</code>不再指向<code>$array[2]</code>了。</p>

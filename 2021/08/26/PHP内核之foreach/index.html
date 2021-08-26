@@ -26,7 +26,7 @@
 <meta property="og:description" content="在PHP8.0及之前的版本，foreach有一个行为很容易让我们的代码写错，甚至成为很多公司的面试题： 123456&lt;?php$array &#x3D; [1, 2, 3];foreach ($array as &amp;$value) &amp;#123; &#x2F;* ... *&#x2F; &amp;#125;foreach ($array as $value) &amp;#123; &#x2F;* ... *&#x2F; &amp;#125;var_dump($">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-08-26T07:10:28.000Z">
-<meta property="article:modified_time" content="2021-08-26T07:49:56.862Z">
+<meta property="article:modified_time" content="2021-08-26T07:51:54.928Z">
 <meta property="article:author" content="codinghuang">
 <meta property="article:tag" content="PHP内核">
 <meta name="twitter:card" content="summary">
@@ -332,14 +332,14 @@
 <p>大家可能会奇怪为什么不会一直死循环的遍历<code>$array</code>，毕竟我们在不断的给<code>$array</code>末尾添加元素。</p>
 <p>因为在遍历<code>$array</code>之前，会创建一个<code>$array</code>的副本（我们暂且叫做<code>$array_2</code>吧），是由上面的<code>FE_RESET_R</code>的实现了，但是此时只是增加对<code>zend_array</code>的引用计数而已，即：</p>
 <pre class="mermaid">graph TB
-    1($array)---->3[zend_array]
-    2($array_2)---->3[zend_array]</pre>
+    1($array) --> 3[zend_array]
+    2($array_2) --> 3[zend_array]</pre>
 
 <p>接着，实际上遍历的是这个<strong>看不见</strong>的<code>$array)2</code>。</p>
 <p>当我们往<code>$array[count($array)]</code>位置写数据的时候，<code>$array</code>和<code>$array_2</code>会发生写时分离。此时变成如下情况：</p>
 <pre class="mermaid">graph TB
-    1($array)---->3[zend_array_1]
-    2($array_2)---->4[zend_array_2]</pre>
+    1($array) --> 3[zend_array_1]
+    2($array_2) --> 4[zend_array_2]</pre>
 
 <p>所以，给<code>$array</code>赋值，并不会影响我们遍历<code>$array_2</code>。所以，当遍历<code>3</code>次的时候就会停下来。</p>
 <p>我们再来看一段代码：</p>
@@ -350,9 +350,9 @@
 
 <p>那么这是为什么呢？实际上，在遍历<code>$array</code>的时候，也会创建一个副本<code>$array_2</code>。但是，这里不是引用计数的关系了，而是引用的关系，也就意味着<code>$array</code>就是<code>$array_2</code>：</p>
 <pre class="mermaid">graph TB
-    1($array)---->3[zend_ref]
-    2($array_2)---->3[zend_ref]
-    3(zend_ref)---->4[zend_array]</pre>
+    1($array) --> 3[zend_ref]
+    2($array_2) --> 3[zend_ref]
+    3(zend_ref) --> 4[zend_array]</pre>
 
 <p>我们对<code>$array</code>的修改，会影响到<code>$array_2</code>，最终，<code>foreach</code>会死循环。</p>
 <p>所以，<code>&amp;$value</code>不但会让<code>$value</code>自身成为引用变量，还会让<code>$array_2</code>也变成引用。</p>

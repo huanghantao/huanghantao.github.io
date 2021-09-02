@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>PHP内核之zend_observer | codinghuang的个人博客</title>
+  <meta name="description" content="如果我们要在调用PHP脚本里面的每一个函数前打印一句hello world，大致有以下几种做法。（假设我们的扩展叫做observer） Hook zend_execute_ex例如，我们可以在PHP的模块初始化之前，进行如下的操作： 123456789101112131415void (*old_zend_execute_ex)(zend_execute_data *execute_data);v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP内核之zend_observer">
+<meta property="og:url" content="http://huanghantao.github.io/2021/09/02/PHP%E5%86%85%E6%A0%B8%E4%B9%8Bzend-observer/index.html">
+<meta property="og:site_name" content="codinghuang的个人博客">
+<meta property="og:description" content="如果我们要在调用PHP脚本里面的每一个函数前打印一句hello world，大致有以下几种做法。（假设我们的扩展叫做observer） Hook zend_execute_ex例如，我们可以在PHP的模块初始化之前，进行如下的操作： 123456789101112131415void (*old_zend_execute_ex)(zend_execute_data *execute_data);v">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-09-02T02:41:37.000Z">
+<meta property="article:modified_time" content="2021-09-02T15:36:49.479Z">
+<meta property="article:author" content="codinghuang">
+<meta property="article:tag" content="PHP内核">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://huanghantao.github.io/2021/09/02/PHP%E5%86%85%E6%A0%B8%E4%B9%8Bzend-observer/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.1.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/huanghantao" target="_blank">
+          <img class="img-circle img-rotate" src="/../images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">codinghuang</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">PHP Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form" method="GET" action="https://www.baidu.com/s?">
+	<div class="input-group">
+    	<input name="wd" type="text" class="form-control search-form-input" placeholder="Search" />
+	    <span class="input-group-btn">
+	    	<button type="submit" class=" btn btn-flat search-form-submit"><i class="icon icon-search"></i></button>
+	    </span>
+    </div>
+</form>
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/02/PHP%E5%86%85%E6%A0%B8%E4%B9%8Bzend-observer/" class="title">PHP内核之zend_observer</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-02T02:41:37.000Z" itemprop="datePublished">2021-09-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/08/26/PHP%E5%86%85%E6%A0%B8%E4%B9%8BCG-arena/" class="title">PHP内核之CG(arena)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-08-26T09:02:57.000Z" itemprop="datePublished">2021-08-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/08/26/PHP%E5%86%85%E6%A0%B8%E4%B9%8Bforeach/" class="title">PHP内核之foreach</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-08-26T07:10:28.000Z" itemprop="datePublished">2021-08-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/08/12/PHP%E5%9C%A8arm%E5%92%8C%E4%BD%8E%E7%89%88%E6%9C%ACgcc%E4%B8%8B%E7%BC%96%E8%AF%91%E7%9A%84%E9%97%AE%E9%A2%98/" class="title">PHP在arm和低版本gcc下编译的问题</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-08-12T09:30:05.000Z" itemprop="datePublished">2021-08-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/06/20/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6-%E4%BA%8C%E5%85%83%E5%85%B3%E7%B3%BB/" class="title">离散数学 -- 二元关系</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-06-20T01:22:07.000Z" itemprop="datePublished">2021-06-20</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-PHP内核之zend-observer" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PHP内核之zend_observer
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/09/02/PHP%E5%86%85%E6%A0%B8%E4%B9%8Bzend-observer/" class="article-date">
+	  <time datetime="2021-09-02T02:41:37.000Z" itemprop="datePublished">2021-09-02</time>
+	</a>
+</span>
+        
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/PHP%E5%86%85%E6%A0%B8/" rel="tag">PHP内核</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/09/02/PHP%E5%86%85%E6%A0%B8%E4%B9%8Bzend-observer/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 787(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 3(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>如果我们要在调用<code>PHP</code>脚本里面的每一个函数前打印一句<code>hello world</code>，大致有以下几种做法。（假设我们的扩展叫做<code>observer</code>）</p>
+<h2 id="Hook-zend-execute-ex"><a href="#Hook-zend-execute-ex" class="headerlink" title="Hook zend_execute_ex"></a>Hook zend_execute_ex</h2><p>例如，我们可以在<code>PHP</code>的模块初始化之前，进行如下的操作：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> (*old_zend_execute_ex)(zend_execute_data *execute_data);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">observer_execute_ex</span><span class="params">(zend_execute_data *execute_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// printf(&quot;hello world\n&quot;);</span></span><br><span class="line"></span><br><span class="line">    old_zend_execute_ex(execute_data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">PHP_MINIT_FUNCTION</span><span class="params">(observer)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    old_zend_execute_ex = zend_execute_ex;</span><br><span class="line">    zend_execute_ex = observer_execute_ex;</span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是，这种方式会有堆栈溢出的风险。</p>
+<p>我们来看看，假设我们有如下的<code>PHP</code>代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">static</span> $i = <span class="number">0</span>;</span><br><span class="line">    $i++;</span><br><span class="line"></span><br><span class="line">    var_dump($i);</span><br><span class="line">    foo();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+
+<p>在没有<code>hook zend_execute_ex</code>的情况下，执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 省略其他的打印</span></span><br><span class="line">int(813536)</span><br><span class="line">int(813537)</span><br><span class="line">int(813538)</span><br><span class="line"></span><br><span class="line">Fatal error: Allowed memory size of 134217728 bytes exhausted at Zend/zend_execute.h:208 (tried to allocate 262176 bytes) <span class="keyword">in</span> /Users/codinghuang/codeDir/cCode/php-src/test.php on line 7</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，这里调用了<code>813538</code>次<code>foo</code>函数，然后进程达到<code>PHP</code>内存最大的限制而停下来了。</p>
+<p>当我们把<code>PHP</code>的内存限制设置到无限的时候，我们会发现，这个<code>foo</code>函数可以无限的递归下去。为什么可以无限的递归下去呢？因为这种情况下，PHP有一个无限制的<code>PHP</code>调用堆栈。</p>
+<p>在<code>hook</code>了<code>zend_execute_ex</code>的情况下，执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 省略其他的打印</span></span><br><span class="line">int(47597)</span><br><span class="line">int(47598)</span><br><span class="line">int(47599)</span><br><span class="line">[1]    10240 segmentation fault  php test.php</span><br></pre></td></tr></table></figure>
+
+<p>为什么这种情况下，就不能无限制的递归下去呢？因为当我们<code>hook</code>了<code>zend_execute_ex</code>之后，<code>PHP</code>的函数调用都放在<code>C</code>堆栈上面，也就意味着，受限于<code>ulimit -s</code>的值。我机器默认的堆栈大小如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ulimit</span> -s</span><br><span class="line">8192</span><br></pre></td></tr></table></figure>
+
+<p>这种情况下，我们只有调大系统的堆栈限制，才能解决堆栈被破坏的问题，例如我们扩大一倍的堆栈大小：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ulimit</span> -s 16384</span><br></pre></td></tr></table></figure>
+
+<p>再次执行脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 省略其他的打印</span></span><br><span class="line">int(95259)</span><br><span class="line">int(95260)</span><br><span class="line">int(95261)</span><br><span class="line">[1]    18466 segmentation fault  php test.php</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>foo</code>函数调用次数基本上是成倍的增加了。</p>
+<h2 id="Hook-opcode的handler"><a href="#Hook-opcode的handler" class="headerlink" title="Hook opcode的handler"></a>Hook opcode的handler</h2><p>我们可以在<code>ZendVM</code>执行函数调用的<code>opcode</code>之前，执行一段我们的<code>handler</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">do_ucall_handler</span><span class="params">(zend_execute_data *execute_data)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// printf(&quot;hello world\n&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ZEND_USER_OPCODE_DISPATCH;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">PHP_MINIT_FUNCTION</span><span class="params">(observer)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    zend_set_user_opcode_handler(ZEND_DO_UCALL, do_ucall_handler);</span><br><span class="line">    zend_set_user_opcode_handler(ZEND_DO_FCALL_BY_NAME, do_ucall_handler);</span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个实现方式也是可以无限制的递归调用<code>foo</code>函数的，因为它仅仅用到了<code>PHP</code>栈去实现<code>foo</code>函数的调用。但是这种实现方式有一个问题，就是如何去处理<code>opcode</code>的转发，我们可以会把其他扩展<code>hook</code>的这个<code>opcode</code>对应的<code>handler</code>抹掉，从而导致一些出乎意料的问题。并且，这里还有一个很大的问题就是，和<code>JIT</code>不兼容。使用<code>Swoole</code>的小伙伴们应该知道，<code>JIT</code>刚出来的时候，<code>Swoole</code>下是无法开启<code>JIT</code>的，就是因为<code>Swoole</code>去<code>Hook</code>了某些<code>opcode</code>导致的。</p>
+<h2 id="observer-api"><a href="#observer-api" class="headerlink" title="observer api"></a>observer api</h2><p>这个是新一代的方式，也是目前<code>PHP8</code>推荐的一种方式，这种即没有堆栈问题，也不会影响<code>JIT</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">observer_begin</span><span class="params">(zend_execute_data *execute_data)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> zend_observer_fcall_handlers <span class="title">observer_handler</span><span class="params">(zend_execute_data *execute_data)</span> </span>&#123;</span><br><span class="line">    zend_observer_fcall_handlers handlers = &#123;<span class="literal">NULL</span>, <span class="literal">NULL</span>&#125;;</span><br><span class="line"></span><br><span class="line">    handlers.begin = observer_begin;</span><br><span class="line">    <span class="keyword">return</span> handlers;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">PHP_MINIT_FUNCTION</span><span class="params">(observer)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    REGISTER_INI_ENTRIES();</span><br><span class="line">    zend_observer_fcall_register(observer_handler);</span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://huanghantao.github.io/2021/09/02/PHP内核之zend-observer/" title="PHP内核之zend_observer" target="_blank" rel="external">http://huanghantao.github.io/2021/09/02/PHP内核之zend-observer/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/huanghantao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/../images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/huanghantao" target="_blank"><span class="text-dark">codinghuang</span><small class="ml-1x">PHP Developer</small></a></h3>
+        <div>PHP开发者~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2021/08/26/PHP%E5%86%85%E6%A0%B8%E4%B9%8BCG-arena/" title="PHP内核之CG(arena)"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/huanghantao" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2021 codinghuang
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+
+
+    <script src='https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js'></script>
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({theme: 'forest'});
+      }
+    </script>
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+
+    <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.google.com/search?q=' + keyword + '&sitesearch=https://huanghantao.github.io';
+        return false;
+    });
+})(jQuery);
+</script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'YfC6P93PkD27hTmzIVqX9csy-gzGzoHsz',
+    appKey: '8Od1wVUSFXlW18Hd1pXnQRhq',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

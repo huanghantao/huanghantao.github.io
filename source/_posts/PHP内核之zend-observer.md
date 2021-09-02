@@ -116,7 +116,7 @@ static PHP_MINIT_FUNCTION(observer)
 }
 ```
 
-这个实现方式也是可以无限制的递归调用`foo`函数的，因为它仅仅用到了`PHP`栈去实现`foo`函数的调用。但是这种实现方式有一个问题，就是如何去处理`opcode`的转发，我们可以会把其他扩展`hook`的这个`opcode`对应的`handler`抹掉，从而导致一些出乎意料的问题。并且，这里还有一个很大的问题就是，和`JIT`不兼容。使用`Swoole`的小伙伴们应该知道，`JIT`刚出来的时候，`Swoole`下是无法开启`JIT`的，就是因为`Swoole`去`Hook`了某些`opcode`导致的。
+这个实现方式也是可以无限制的递归调用`foo`函数的，因为它仅仅用到了`PHP`栈去实现`foo`函数的调用。但是这种实现方式有一个问题，就是如何去处理`opcode`的转发，我们可能会把其他扩展`hook`的这个`opcode`对应的`handler`抹掉，从而导致一些出乎意料的问题。并且，这里还有一个很大的问题就是，和`JIT`不兼容。使用`Swoole`的小伙伴们应该知道，`JIT`刚出来的时候，`Swoole`下是无法开启`JIT`的，就是因为`Swoole`去`Hook`了某些`opcode`导致的。
 
 ## observer api
 

@@ -72,7 +72,7 @@ gettimeofday({tv_sec=1597390388, tv_usec=930374}, NULL) = 0
 wait4(-1, 0x7ffc80915174, WNOHANG, NULL) = 0
 ```
 
-我们发现，`supervisord`一直在调用`poll`系统调用。这应该就是在监听`SIGCHLD`信号了。我们来给`cat`进程发送一个`kill`的信号试试：
+我们来给`cat`进程发送一个`kill`的信号试试：
 
 ```bash
 poll([{fd=4, events=POLLIN|POLLPRI|POLLHUP}, {fd=9, events=POLLIN|POLLPRI|POLLHUP}, {fd=11, events=POLLIN|POLLPRI|POLLHUP}], 3, 1000) = 2 ([{fd=9, revents=POLLHUP}, {fd=11, revents=POLLHUP}])

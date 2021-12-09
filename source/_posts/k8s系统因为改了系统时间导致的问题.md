@@ -18,7 +18,7 @@ This certificate has expired or is not yet valid
 
 然后，告诉我证书过期了，并且显示当前时间和过期时间。仔细对比时间，发现分钟对不上，时间出现了问题。
 
-所以，如下命令，同步了一下时间：
+所以，执行如下命令，同步了一下时间：
 
 ```bash
 ntpdate us.pool.ntp.org

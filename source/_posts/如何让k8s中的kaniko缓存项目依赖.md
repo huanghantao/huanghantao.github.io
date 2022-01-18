@@ -6,7 +6,7 @@ tags:
 
 如果我们想要在kaniko缓存`composer vendor`或者`golang mod`等程序依赖，我们需要把这些依赖存起来，一个简单的思路是使用`pvc`来解决。
 
-假设我们使用的`pipeline`组件是`tekton`，那么，我们可以这么写我们的流水线：
+假设我们使用的`pipeline`组件是`tekton`，那么，我们可以这么写我们的`task`：
 
 ```yaml
 apiVersion: tekton.dev/v1beta1

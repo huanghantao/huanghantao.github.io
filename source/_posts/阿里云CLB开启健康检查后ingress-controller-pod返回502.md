@@ -1,5 +1,5 @@
 ---
-title: 阿里云CLB开启健康检查后ingress-controller-pod返回502
+title: 阿里云CLB开启健康检查后ingress-controller-pod返回404导致CLB返回502
 date: 2021-12-29 21:08:10
 tags:
 ---

@@ -4,9 +4,9 @@ date: 2022-03-03 15:40:26
 tags:
 ---
 
-参考了[这个人的](https://gist.github.com/raelga/e75e6de4fd04be60f267128e985bde6d)，但是它只能清理`default`命名空间下的，并且会删除掉正在运行中的`pipelinerun`，所以这里优化了下。
+`k8s`版本是`1.20.2`，`tekton pipeline`的版本是`0.26.0`。目前它无法自动进行清理，每次手动清理很麻烦，所以需要搞一个定时清理。
 
-`k8s`版本是`1.20.2`，`tekton pipeline`的版本是`0.26.0`。
+参考了[这个人的](https://gist.github.com/raelga/e75e6de4fd04be60f267128e985bde6d)，但是它只能清理`default`命名空间下的，并且会删除掉正在运行中的`pipelinerun`，所以这里优化了下。
 
 需求如下：
 

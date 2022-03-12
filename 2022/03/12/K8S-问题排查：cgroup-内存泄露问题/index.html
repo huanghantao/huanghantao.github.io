@@ -17,18 +17,20 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>Archive: 2019/1 | codinghuang的个人博客</title>
-  <meta name="description" content="比PHP多一些">
-<meta property="og:type" content="website">
-<meta property="og:title" content="codinghuang的个人博客">
-<meta property="og:url" content="http://huanghantao.github.io/archives/2019/01/index.html">
+  <title>K8S 问题排查：cgroup 内存泄露问题 | codinghuang的个人博客</title>
+  <meta name="description" content="公司测试环境的k8s集群突然创建不了新的pod了。报错如下： 1unable to ensure pod container exists: failed to create container for [kubepods besteffort podca64cf9d-cbe4-4bf3-ac5b-85ad793b4805] : mkdir &#x2F;sys&#x2F;fs&#x2F;cgroup&#x2F;memory&#x2F;kubepo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8S 问题排查：cgroup 内存泄露问题">
+<meta property="og:url" content="http://huanghantao.github.io/2022/03/12/K8S-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%EF%BC%9Acgroup-%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="codinghuang的个人博客">
-<meta property="og:description" content="比PHP多一些">
+<meta property="og:description" content="公司测试环境的k8s集群突然创建不了新的pod了。报错如下： 1unable to ensure pod container exists: failed to create container for [kubepods besteffort podca64cf9d-cbe4-4bf3-ac5b-85ad793b4805] : mkdir &#x2F;sys&#x2F;fs&#x2F;cgroup&#x2F;memory&#x2F;kubepo">
 <meta property="og:locale">
+<meta property="article:published_time" content="2022-03-12T08:48:33.000Z">
+<meta property="article:modified_time" content="2022-03-12T08:55:26.366Z">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://huanghantao.github.io/archives/2019/01/index.html">
+  <link rel="canonical" href="http://huanghantao.github.io/2022/03/12/K8S-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%EF%BC%9Acgroup-%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E9%97%AE%E9%A2%98/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
@@ -257,58 +259,176 @@
   
   
 <main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope="">
-	    <header class="article-header">
-	      <h1 itemprop="title">Archive: 2019/1</h1>
-	      <p class="text-muted">Total 2 articles</p>
-	    </header>
-	    <div class="article-body">
-	      
+  <div class="content">
+  <article id="post-K8S-问题排查：cgroup-内存泄露问题" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
   
+    <h1 class="article-title" itemprop="name">
+      K8S 问题排查：cgroup 内存泄露问题
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/03/12/K8S-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%EF%BC%9Acgroup-%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E9%97%AE%E9%A2%98/" class="article-date">
+	  <time datetime="2022-03-12T08:48:33.000Z" itemprop="datePublished">2022-03-12</time>
+	</a>
+</span>
+        
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/03/12/K8S-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%EF%BC%9Acgroup-%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E9%97%AE%E9%A2%98/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 379(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>公司测试环境的<code>k8s</code>集群突然创建不了新的<code>pod</code>了。报错如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unable to ensure pod container exists: failed to create container <span class="keyword">for</span> [kubepods besteffort podca64cf9d-cbe4-4bf3-ac5b-85ad793b4805] : mkdir /sys/fs/cgroup/memory/kubepods/besteffort/podca64cf9d-cbe4-4bf3-ac5b-85ad793b4805: cannot allocate memory</span><br></pre></td></tr></table></figure>
+
+<p>原因：cgroup 的 kmem account 特性在 Linux 3.x 内核上有内存泄露问题，然后<code>k8s</code>用了这个特性，导致后面创建不出新的<code>pod</code>来了。</p>
+<p>解决的办法看了下有比较多，我这里选择直接禁用<code>cgroup</code>的<code>kmem</code>特性，毕竟这个特性也是实验性质的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改/etc/default/grub 为</span></span><br><span class="line">GRUB_CMDLINE_LINUX=<span class="string">&quot;crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet cgroup.memory=nokmem&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成配置</span></span><br><span class="line">/usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启机器</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>无输出即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/fs/cgroup/memory/kubepods/burstable/pod*/*/memory.kmem.slabinfo</span><br><span class="line"></span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/podb096d657-583a-4400-aee2-8454050dcd29/2c77b07a295d72db97b7179d71b61e3ecebb2ddb501e76d12e109c357ea0cb98/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/podb096d657-583a-4400-aee2-8454050dcd29/777da0d32fd867895b0cd5f2710538758748dd2c7807afdf1b412c92640919c2/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/podbef17dfd-1625-4cbf-9617-5c1187365241/bd45c4bad9346c99e87441706563a3f9d1a9fba83da2b9005149cfac16983d70/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/podbef17dfd-1625-4cbf-9617-5c1187365241/c89a64afc1dbdb10a73bd8e8df61c8e03fd6e087b84c2899578b90f8840a9d83/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/podc0a765a7-918a-444f-b05a-4fc93a3631b5/7f533121574f96927542288c7babe3f2e2b58440e61fe84f371311d888d12b0b/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/podc0a765a7-918a-444f-b05a-4fc93a3631b5/e0165ed665cee3d9d42b22c8efa68ea28d151183c73e82027971a41eee54a774/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/pode685b3ee-ae22-44be-986d-e9338994f8f6/33f284c99520d9e307057decef9148a17b02bfad3fede697d425f614283af234/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/pode685b3ee-ae22-44be-986d-e9338994f8f6/48e06b2628076f083994b4d7e2078f5f984f434961ca0c90d329b467279f1387/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/pode8699faf-6068-454c-b232-3868f81e2fff/3215ef97074731414a5641a550b4e5f2697107c612e4b49df34d70fa2543d8a1/memory.kmem.slabinfo: Input/output error</span><br><span class="line">cat: /sys/fs/cgroup/memory/kubepods/burstable/pode8699faf-6068-454c-b232-3868f81e2fff/d08e473be78cbee1eb5ed8b9036200d3722cc5c708962b27b96333734377424e/memory.kmem.slabinfo: Input/output error</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://huanghantao.github.io/2022/03/12/K8S-问题排查：cgroup-内存泄露问题/" title="K8S 问题排查：cgroup 内存泄露问题" target="_blank" rel="external">http://huanghantao.github.io/2022/03/12/K8S-问题排查：cgroup-内存泄露问题/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/huanghantao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/../images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/huanghantao" target="_blank"><span class="text-dark">codinghuang</span><small class="ml-1x">PHP Developer</small></a></h3>
+        <div>PHP开发者~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
   
     
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
     
-      
-      
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2019" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2019
-            </a>
-            <!-- <a href="/archives/2019" class="archive-year">2019</a> -->
-          </h3>
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/03/03/%E5%AE%9A%E6%97%B6%E6%B8%85%E7%90%86tekton%E5%88%9B%E5%BB%BA%E7%9A%84pipelinerun/" title="定时清理tekton创建的pipelinerun"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="collapse2019" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2019">
-        <div class="panel-body">
-          <div class="collection">
-    
-    
-<a href="/2019/01/24/%E5%8D%8F%E7%A8%8B-ucontext%E5%AE%9E%E6%88%98%E5%88%86%E6%9E%90/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-01-24T13:51:40.000Z" itemprop="datePublished">2019-01-24</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 协程--ucontext实战分析
-</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-  
-    
-    
-    
-<a href="/2019/01/10/%E5%9C%A8PHP%E4%BB%A3%E7%A0%81%E9%87%8C%E9%9D%A2%E9%80%9A%E8%BF%87ini-set%E8%AE%BE%E7%BD%AEupload-max-filesize%E4%B8%8D%E7%94%9F%E6%95%88/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-01-10T11:01:18.000Z" itemprop="datePublished">2019-01-10</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 在PHP代码里面通过ini_set设置upload_max_filesize不生效
-</a>
 
-
-  
-  
-    </div></div></div></section>
-  
-
-	    </div>
-  	</article>
-  	 	
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -364,6 +484,37 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'YfC6P93PkD27hTmzIVqX9csy-gzGzoHsz',
+    appKey: '8Od1wVUSFXlW18Hd1pXnQRhq',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
 
 
 

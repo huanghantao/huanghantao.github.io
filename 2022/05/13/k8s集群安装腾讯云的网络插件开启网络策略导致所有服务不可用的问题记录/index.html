@@ -17,20 +17,20 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录 | codinghuang的个人博客</title>
+  <title>k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录 | codinghuang的个人博客</title>
   <meta name="description" content="本来打算做每个命名空间之间的网络隔离，在公司测试环境验证没问题之后，在腾讯云开启网络隔离策略，发现不同节点之间的服务无法访问了。于是立马把网络插件给卸载了。然后发现不同节点之间的服务还是不可访问。删除了NetworkPolicy后，不同节点之间的服务还是不可访问。 然后发现iptables里面有好几千条网络插件配置的规则，所以怀疑是网络插件配置的规则还在起作用。于是先暂停了iptables，然后重">
 <meta property="og:type" content="article">
-<meta property="og:title" content="安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录">
-<meta property="og:url" content="http://huanghantao.github.io/2022/05/13/%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:title" content="k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录">
+<meta property="og:url" content="http://huanghantao.github.io/2022/05/13/k8s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
 <meta property="og:site_name" content="codinghuang的个人博客">
 <meta property="og:description" content="本来打算做每个命名空间之间的网络隔离，在公司测试环境验证没问题之后，在腾讯云开启网络隔离策略，发现不同节点之间的服务无法访问了。于是立马把网络插件给卸载了。然后发现不同节点之间的服务还是不可访问。删除了NetworkPolicy后，不同节点之间的服务还是不可访问。 然后发现iptables里面有好几千条网络插件配置的规则，所以怀疑是网络插件配置的规则还在起作用。于是先暂停了iptables，然后重">
 <meta property="og:locale">
 <meta property="article:published_time" content="2022-05-13T09:38:36.000Z">
-<meta property="article:modified_time" content="2022-05-13T09:46:42.382Z">
+<meta property="article:modified_time" content="2022-05-13T09:50:18.095Z">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://huanghantao.github.io/2022/05/13/%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
+  <link rel="canonical" href="http://huanghantao.github.io/2022/05/13/k8s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
@@ -179,7 +179,7 @@
                 
               </p>
               <p class="item-title">
-                <a href="/2022/05/13/%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="title">安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录</a>
+                <a href="/2022/05/13/k8s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="title">k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录</a>
               </p>
               <p class="item-date">
                 <time datetime="2022-05-13T09:38:36.000Z" itemprop="datePublished">2022-05-13</time>
@@ -260,14 +260,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录
+      k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录
     </h1>
   
 
@@ -275,7 +275,7 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2022/05/13/%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="article-date">
+	<a href="/2022/05/13/k8s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="article-date">
 	  <time datetime="2022-05-13T09:38:36.000Z" itemprop="datePublished">2022-05-13</time>
 	</a>
 </span>
@@ -284,10 +284,10 @@
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/13/%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/#comments" class="article-comment-link">Comments</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/13/k8s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/#comments" class="article-comment-link">Comments</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 228(words)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 407(words)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 1(minutes)</span>
@@ -299,6 +299,12 @@
       
         <p>本来打算做每个命名空间之间的网络隔离，在公司测试环境验证没问题之后，在腾讯云开启网络隔离策略，发现不同节点之间的服务无法访问了。于是立马把网络插件给卸载了。然后发现不同节点之间的服务还是不可访问。删除了<code>NetworkPolicy</code>后，不同节点之间的服务还是不可访问。</p>
 <p>然后发现<code>iptables</code>里面有好几千条网络插件配置的规则，所以怀疑是网络插件配置的规则还在起作用。于是先暂停了<code>iptables</code>，然后重启<code>iptables</code>，然后重启机器。网络插件配置的<code>iptables</code>的规则被清理干净了（应该是这些规则没有被持久化，所以重启可以清理这些规则）。最后，不同节点之间的服务可以访问了。</p>
+<p>这里记录下<code>k8s</code>集群默认的<code>iptables</code>规则：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">iptables --list</span><br><span class="line"></span><br><span class="line">Chain INPUT (policy ACCEPT)</span><br><span class="line">target     prot opt <span class="built_in">source</span>               destination</span><br><span class="line">cali-INPUT  all  --  anywhere             anywhere             /* cali:Cz_u1IQiXIMmKD4c */</span><br><span class="line">KUBE-FIREWALL  all  --  anywhere             anywhere</span><br><span class="line"></span><br><span class="line">Chain FORWARD (policy ACCEPT)</span><br><span class="line">target     prot opt <span class="built_in">source</span>               destination</span><br><span class="line">cali-FORWARD  all  --  anywhere             anywhere             /* cali:wUHhoiAYhphO9Mso */</span><br><span class="line">KUBE-FORWARD  all  --  anywhere             anywhere             /* kubernetes forwarding rules */</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">target     prot opt <span class="built_in">source</span>               destination</span><br><span class="line">cali-OUTPUT  all  --  anywhere             anywhere             /* cali:tVnHkvAo15HuiPy0 */</span><br><span class="line">KUBE-FIREWALL  all  --  anywhere             anywhere</span><br><span class="line"></span><br><span class="line">Chain KUBE-FIREWALL (2 references)</span><br><span class="line">target     prot opt <span class="built_in">source</span>               destination</span><br><span class="line">DROP       all  --  anywhere             anywhere             /* kubernetes firewall <span class="keyword">for</span> dropping marked packets */ mark match 0x8000/0x8000</span><br><span class="line">DROP       all  -- !loopback/8           loopback/8           /* block incoming localnet connections */ ! ctstate RELATED,ESTABLISHED,DNAT</span><br><span class="line"></span><br><span class="line">Chain KUBE-FORWARD (1 references)</span><br><span class="line">target     prot opt <span class="built_in">source</span>               destination</span><br><span class="line">ACCEPT     all  --  anywhere             anywhere             /* kubernetes forwarding rules */ mark match 0x4000/0x4000</span><br><span class="line">ACCEPT     all  --  anywhere             anywhere             /* kubernetes forwarding conntrack pod <span class="built_in">source</span> rule */ ctstate RELATED,ESTABLISHED</span><br><span class="line">ACCEPT     all  --  anywhere             anywhere             /* kubernetes forwarding conntrack pod destination rule */ ctstate RELATED,ESTABLISHED</span><br><span class="line"></span><br><span class="line">Chain KUBE-KUBELET-CANARY (0 references)</span><br><span class="line">target     prot opt <span class="built_in">source</span>               destination</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以看到，还是比较干净的，没啥规则</p>
+</blockquote>
 
       
     </div>
@@ -308,7 +314,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://huanghantao.github.io/2022/05/13/安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录/" title="安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录" target="_blank" rel="external">http://huanghantao.github.io/2022/05/13/安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录/</a>
+      <a href="http://huanghantao.github.io/2022/05/13/k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录/" title="k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录" target="_blank" rel="external">http://huanghantao.github.io/2022/05/13/k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录/</a>
     </li>
     
     <li class="post-copyright-license">

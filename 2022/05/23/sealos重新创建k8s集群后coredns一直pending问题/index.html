@@ -17,18 +17,20 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>Archive: 2019/5 | codinghuang的个人博客</title>
-  <meta name="description" content="比PHP多一些">
-<meta property="og:type" content="website">
-<meta property="og:title" content="codinghuang的个人博客">
-<meta property="og:url" content="http://huanghantao.github.io/archives/2019/05/index.html">
+  <title>sealos重新创建k8s集群后coredns一直pending问题 | codinghuang的个人博客</title>
+  <meta name="description" content="版本： 1234567891011sealos versionVersion: 3.3.9-rc.11Last Commit: 49e79d2Build Date: 2022-02-17T06:17:34Zcat &#x2F;etc&#x2F;redhat-releaseCentOS Linux release 7.6.1810 (Core)kubectl versionClient Version: version">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sealos重新创建k8s集群后coredns一直pending问题">
+<meta property="og:url" content="http://huanghantao.github.io/2022/05/23/sealos%E9%87%8D%E6%96%B0%E5%88%9B%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E5%90%8Ecoredns%E4%B8%80%E7%9B%B4pending%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="codinghuang的个人博客">
-<meta property="og:description" content="比PHP多一些">
+<meta property="og:description" content="版本： 1234567891011sealos versionVersion: 3.3.9-rc.11Last Commit: 49e79d2Build Date: 2022-02-17T06:17:34Zcat &#x2F;etc&#x2F;redhat-releaseCentOS Linux release 7.6.1810 (Core)kubectl versionClient Version: version">
 <meta property="og:locale">
+<meta property="article:published_time" content="2022-05-23T02:02:30.000Z">
+<meta property="article:modified_time" content="2022-05-23T02:08:17.909Z">
 <meta property="article:author" content="codinghuang">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://huanghantao.github.io/archives/2019/05/index.html">
+  <link rel="canonical" href="http://huanghantao.github.io/2022/05/23/sealos%E9%87%8D%E6%96%B0%E5%88%9B%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E5%90%8Ecoredns%E4%B8%80%E7%9B%B4pending%E9%97%AE%E9%A2%98/index.html">
   
     <link rel="alternate" href="/atom.xml" title="codinghuang的个人博客" type="application/atom+xml">
   
@@ -257,128 +259,181 @@
   
   
 <main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope="">
-	    <header class="article-header">
-	      <h1 itemprop="title">Archive: 2019/5</h1>
-	      <p class="text-muted">Total 9 articles</p>
-	    </header>
-	    <div class="article-body">
-	      
+  <div class="content">
+  <article id="post-sealos重新创建k8s集群后coredns一直pending问题" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
   
+    <h1 class="article-title" itemprop="name">
+      sealos重新创建k8s集群后coredns一直pending问题
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/05/23/sealos%E9%87%8D%E6%96%B0%E5%88%9B%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E5%90%8Ecoredns%E4%B8%80%E7%9B%B4pending%E9%97%AE%E9%A2%98/" class="article-date">
+	  <time datetime="2022-05-23T02:02:30.000Z" itemprop="datePublished">2022-05-23</time>
+	</a>
+</span>
+        
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/05/23/sealos%E9%87%8D%E6%96%B0%E5%88%9B%E5%BB%BAk8s%E9%9B%86%E7%BE%A4%E5%90%8Ecoredns%E4%B8%80%E7%9B%B4pending%E9%97%AE%E9%A2%98/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 413(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 2(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sealos version</span><br><span class="line">Version: 3.3.9-rc.11</span><br><span class="line">Last Commit: 49e79d2</span><br><span class="line">Build Date: 2022-02-17T06:17:34Z</span><br><span class="line"></span><br><span class="line">cat /etc/redhat-release</span><br><span class="line">CentOS Linux release 7.6.1810 (Core)</span><br><span class="line"></span><br><span class="line">kubectl version</span><br><span class="line">Client Version: version.Info&#123;Major:<span class="string">&quot;1&quot;</span>, Minor:<span class="string">&quot;22&quot;</span>, GitVersion:<span class="string">&quot;v1.22.8&quot;</span>, GitCommit:<span class="string">&quot;7061dbbf75f9f82e8ab21f9be7e8ffcaae8e0d44&quot;</span>, GitTreeState:<span class="string">&quot;clean&quot;</span>, BuildDate:<span class="string">&quot;2022-03-16T14:10:06Z&quot;</span>, GoVersion:<span class="string">&quot;go1.16.15&quot;</span>, Compiler:<span class="string">&quot;gc&quot;</span>, Platform:<span class="string">&quot;linux/amd64&quot;</span>&#125;</span><br><span class="line">Server Version: version.Info&#123;Major:<span class="string">&quot;1&quot;</span>, Minor:<span class="string">&quot;22&quot;</span>, GitVersion:<span class="string">&quot;v1.22.8&quot;</span>, GitCommit:<span class="string">&quot;7061dbbf75f9f82e8ab21f9be7e8ffcaae8e0d44&quot;</span>, GitTreeState:<span class="string">&quot;clean&quot;</span>, BuildDate:<span class="string">&quot;2022-03-16T14:04:34Z&quot;</span>, GoVersion:<span class="string">&quot;go1.16.15&quot;</span>, Compiler:<span class="string">&quot;gc&quot;</span>, Platform:<span class="string">&quot;linux/amd64&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在一个纯净的虚拟机里面使用<code>sealos</code>部署<code>k8s</code>成功了。后面使用如下命令对集群进行了清理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sealos clean --all</span><br></pre></td></tr></table></figure>
+
+<p>然后使用如下命令进行安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sealos init --passwd <span class="string">&#x27;xxxxxxxx&#x27;</span> --master 10.120.117.8  --node 10.120.116.2 --pkg-url /root/kube1.22.8.tar.gz --version v1.22.8</span><br></pre></td></tr></table></figure>
+
+<p>发现集群<code>nodes</code>一直处于<code>notReady</code>的状态，并且<code>coredns</code>也启动不了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes</span><br><span class="line">NAME      STATUS        ROLES                  AGE     VERSION</span><br><span class="line">master    NotReady      control-plane,master   5m21s   v1.22.8</span><br><span class="line">worker1   NotReady      &lt;none&gt;                 4m56s   v1.22.8</span><br><span class="line"></span><br><span class="line">kubectl -n kube-system get pods</span><br><span class="line">NAME                                       READY   STATUS    RESTARTS   AGE</span><br><span class="line">calico-kube-controllers-78d6f96c7b-5kpql   0/1     Pending   0          2m53s</span><br><span class="line">calico-node-lfm5c                          1/1     Running   0          2m45s</span><br><span class="line">calico-node-npssm                          1/1     Running   0          2m54s</span><br><span class="line">coredns-78fcd69978-2jmjj                   0/1     Pending   0          2m53s</span><br><span class="line">coredns-78fcd69978-clrv5                   0/1     Pending   0          2m53s</span><br><span class="line">etcd-master                                1/1     Running   2          3m3s</span><br><span class="line">kube-apiserver-master                      1/1     Running   2          3m10s</span><br><span class="line">kube-controller-manager-master             1/1     Running   2          3m3s</span><br><span class="line">kube-proxy-5h65c                           1/1     Running   0          2m54s</span><br><span class="line">kube-proxy-xj7cw                           1/1     Running   0          2m45s</span><br><span class="line">kube-scheduler-master                      1/1     Running   2          3m10s</span><br><span class="line">kube-sealyun-lvscare-worker1               1/1     Running   2          2m44s</span><br></pre></td></tr></table></figure>
+
+<p>这是因为<code>sealos clean</code>的时候不会卸载<code>containerd</code>，但是会删除/etc/cni这个目录，重新部署的时候会创建这个目录，但是<code>containerd</code>现在忽略了这个<code>event</code>，所以要重启<code>containerd</code>重新加载<code>cni plugin</code>。</p>
+<p>具体的讨论在<a target="_blank" rel="noopener" href="https://github.com/labring/sealos/issues/834">这里</a>。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://huanghantao.github.io/2022/05/23/sealos重新创建k8s集群后coredns一直pending问题/" title="sealos重新创建k8s集群后coredns一直pending问题" target="_blank" rel="external">http://huanghantao.github.io/2022/05/23/sealos重新创建k8s集群后coredns一直pending问题/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/huanghantao" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/../images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/huanghantao" target="_blank"><span class="text-dark">codinghuang</span><small class="ml-1x">PHP Developer</small></a></h3>
+        <div>PHP开发者~</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
   
     
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
     
-      
-      
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2019" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2019
-            </a>
-            <!-- <a href="/archives/2019" class="archive-year">2019</a> -->
-          </h3>
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/05/13/k8s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E8%85%BE%E8%AE%AF%E4%BA%91%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E5%BC%80%E5%90%AF%E7%BD%91%E7%BB%9C%E7%AD%96%E7%95%A5%E5%AF%BC%E8%87%B4%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E4%B8%8D%E5%8F%AF%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="k8s集群安装腾讯云的网络插件开启网络策略导致所有服务不可用的问题记录"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="collapse2019" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2019">
-        <div class="panel-body">
-          <div class="collection">
-    
-    
-<a href="/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E8%A7%84%E8%8C%83/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-30T10:43:34.000Z" itemprop="datePublished">2019-05-30</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《PHP扩展开发》--协程(规范)
-</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-  
-    
-    
-    
-<a href="/2019/05/30/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-%E5%8D%8F%E7%A8%8B-%E7%BC%96%E5%86%99config-m4%E6%96%87%E4%BB%B6/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-30T05:51:26.000Z" itemprop="datePublished">2019-05-30</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《PHP扩展开发》--协程(编写config.m4文件)
-</a>
 
-
-  
-    
-    
-    
-<a href="/2019/05/29/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B--%E4%B8%BA%E4%BD%95Swoole4.4%E7%89%88%E6%9C%AC%E6%89%93%E7%AE%97%E6%8A%8Alock%E6%A8%A1%E5%9D%97%E7%BB%99%E7%A7%BB%E9%99%A4/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-29T10:38:29.000Z" itemprop="datePublished">2019-05-29</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《就是要你懂Swoole》--为何Swoole4.4版本打算把lock模块给移除
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/05/28/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-RETURN_*%E7%9A%84%E4%BD%BF%E7%94%A8/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-28T10:54:33.000Z" itemprop="datePublished">2019-05-28</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《PHP扩展开发》--RETURN_*宏的使用
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/05/27/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E6%96%AD/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-27T06:09:29.000Z" itemprop="datePublished">2019-05-27</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《就是要你懂Swoole》--虚拟机中断
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/05/25/%E3%80%8APHP%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91%E3%80%8B-return-value%E7%9A%84%E4%BD%BF%E7%94%A8/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-25T07:31:40.000Z" itemprop="datePublished">2019-05-25</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《PHP扩展开发》--return_value的使用
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/05/10/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-%E4%BD%BF%E7%94%A8Client%E7%9A%84%E6%97%B6%E5%80%99%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E5%9C%B0%E6%96%B9/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-10T02:52:46.000Z" itemprop="datePublished">2019-05-10</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《就是要你懂Swoole》—使用Swoole\Client的时候需要注意的地方
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/05/09/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82Swoole%E3%80%8B-package-eof%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E7%BB%86%E8%8A%82/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-09T01:29:11.000Z" itemprop="datePublished">2019-05-09</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《就是要你懂Swoole》--package_eof的一个小细节
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/05/04/%E3%80%8A%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82swoole%E3%80%8B-%E5%8D%8F%E7%A8%8B%E5%88%9B%E5%BB%BA/" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-04T09:56:35.000Z" itemprop="datePublished">2019-05-04</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 《就是要你懂swoole》--协程创建
-</a>
-
-
-  
-  
-    </div></div></div></section>
-  
-
-	    </div>
-  	</article>
-  	 	
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -434,6 +489,37 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'YfC6P93PkD27hTmzIVqX9csy-gzGzoHsz',
+    appKey: '8Od1wVUSFXlW18Hd1pXnQRhq',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
 
 
 

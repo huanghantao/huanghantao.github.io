@@ -56,6 +56,10 @@ kube-scheduler-master                      1/1     Running   2          3m10s
 kube-sealyun-lvscare-worker1               1/1     Running   2          2m44s
 ```
 
-这是因为`sealos clean`的时候不会卸载`containerd`，但是会删除/etc/cni这个目录，重新部署的时候会创建这个目录，但是`containerd`现在忽略了这个`event`，所以要重启`containerd`重新加载`cni plugin`。
+这是因为`sealos clean`的时候不会卸载`containerd`，但是会删除/etc/cni这个目录，重新部署的时候会创建这个目录，但是`containerd`现在忽略了这个`event`，所以要重启每个节点的`containerd`来重新加载`cni plugin`：
+
+```bash
+sudo systemctl restart containerd
+```
 
 具体的讨论在[这里](https://github.com/labring/sealos/issues/834)。

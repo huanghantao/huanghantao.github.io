@@ -1,6 +1,7 @@
 # 主题配置覆盖（Hexo 5.2+ alternate theme config）
 # 此文件会与 themes/pure/_config.yml 深度合并，同名键以本文件为准。
 profile:
+  avatar: images/my-avatar.jpg
   follow: https://huanghantao.github.io
   social:
     links:
